@@ -1,0 +1,96 @@
+#!/bin/bash
+
+ARROW=`echo -e "\ue0b0"`
+
+# function is_chroot()
+# {
+#     [ "$(awk '$5=="/" {print $1}' </proc/1/mountinfo)" != "$(awk '$5=="/" {print $1}' </proc/$$/mountinfo)" ] && return 0 || return 1
+# }
+
+function info() {
+    CODE=$?
+    FIRST=1
+
+    function print_virtualenv() {
+        if [[ ! -z "$VIRTUAL_ENV" ]]
+        then
+            echo -en "\[$bld\]\[$bldwht\]\[$bak22\] "
+            echo -n $VIRTUAL_ENV | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
+            echo -en " \[$txt22\]"
+            printf -v "FIRST" 0
+        elif [[ -f ".env/bin/activate" ]]
+        then
+            VIRTUAL_ENV=$( . .env/bin/activate; echo $VIRTUAL_ENV )
+            echo -en "\[$bld\]\[$bldwht\]\[$bakred\] ! "
+            echo -n $VIRTUAL_ENV | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
+            echo -en " \[$txtred\]"
+            printf -v "FIRST" 0
+        else
+            echo -en "\[$txtgrn\]"
+        fi
+    }
+
+    function print_hostname() {
+        if [[ ! "$FIRST" -eq "1" ]]
+        then
+            arrow='$ARROW'
+        else
+            arrow=''
+        fi
+        if [[ "$UID" -eq "0" ]]
+        then
+            echo -en "\[$bakred\]$arrow\[$bldwht\] $USER \[$txtred\]"
+        else
+            echo -en "\[$bakgrn\]$arrow\[$bldwht\] $USER \[$txtgrn\]"
+        fi
+    }
+
+    function print_pwd() {
+        echo -en "\[$bakblu\]$ARROW\[$bldwht\] ${PWD/$HOME/\~} \[$txtrst\]\[$txtblu\]"
+    }
+
+    function git_info() {
+        NAME=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
+
+        if [[ "$NAME" != "" ]]
+        then
+            $(git diff --quiet)
+
+            if [[ "$?" != "0" ]]
+            then
+                echo -en "\[$bakylw\]$ARROW\[$bldwht\] \u2387  $NAME \u00B1 \[$txtrst\]\[$txtylw\]"
+            else
+                echo -en "\[$bakgrn\]$ARROW\[$bldwht\] \u2387  $NAME \[$txtrst\]\[$txtgrn\]"
+            fi
+        fi
+    }
+
+    function ret_info() {
+        if [[ "$CODE" != "0" ]]
+        then
+            if [[ "$CODE" != "130" ]]
+            then
+                echo -en "\[$bakred\]$ARROW \[$bldwht\]\u00D7 $CODE \[$txtrst\]\[$txtred\]"
+            else
+                echo -en "\[$bakred\]$ARROW \[$bldwht\]\u00D7 \[$txtrst\]\[$txtred\]"
+            fi
+        fi
+    }
+
+    print_virtualenv
+    print_hostname
+    print_pwd
+    git_info
+    ret_info
+
+    echo -en "\[\e[49m\]$ARROW\[$txtrst\] "
+    PLAIN="[$PWD]"
+    echo -ne "\[\033]0;$PLAIN\007\]"
+}
+
+function set_prompt() {
+    PS1="`info`"
+    # PS1="$hostname_result\[$bakblu\]\[$bldwht\] \w \[$txtrst\]$info_result "
+}
+
+PROMPT_COMMAND=set_prompt
