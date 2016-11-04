@@ -24,8 +24,10 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-import os, subprocess
-from libqtile.config import Key, Screen, Group, Drag, Click, Match
+import os
+import subprocess
+from libqtile.config import Key, Screen, Group, Drag, Click
+# , Match
 from libqtile.command import lazy
 from libqtile import layout, bar, widget, hook
 from libqtile.layout.columns import Columns
@@ -47,24 +49,14 @@ keys = [
         [mod], "Up",
         lazy.layout.up()
     ),
-#    Key(
-#        [mod], "Left",
-#        lazy.layout.up()
-#    ),
-#    Key(
-#        [mod], "Right",
-#        lazy.layout.down()
-#    ),
-
-    # Move windows up or down in current stack
-#    Key(
-#        [mod, "control"], "Up",
-#        lazy.layout.shuffle_down()
-#    ),
-#    Key(
-#        [mod, "control"], "Down",
-#        lazy.layout.shuffle_up()
-#    ),
+    Key(
+        [mod], "Left",
+        lazy.layout.left()
+    ),
+    Key(
+        [mod], "Right",
+        lazy.layout.right()
+    ),
 
     # Switch window focus to other pane(s) of stack
     Key(
@@ -92,10 +84,10 @@ keys = [
     # Split = all windows displayed
     # Unsplit = 1 window displayed, like Max layout, but still with
     # multiple stack panes
-    Key(
-        [mod, "shift"], "Return",
-        lazy.layout.toggle_split()
-    ),
+#    Key(
+#        [mod, "shift"], "Return",
+#        lazy.layout.toggle_split()
+#    ),
     Key([mod], "Return", lazy.spawn("sakura -e stmux")),
 
     # Toggle between different layouts as defined below
@@ -106,6 +98,9 @@ keys = [
     Key([mod, "control"], "q", lazy.shutdown()),
     Key([mod], "r", lazy.spawncmd()),
 
+    Key([mod], "c", lazy.spawn('sakura -e "nano /home/anderson/.config/qtile/config.py"')),
+    Key([mod], "Print", lazy.spawn('/sh/sshot.py')),
+
     Key([], 'F12', lazy.function(commands.ToggleTerm())),
 
     Key([ctrl, alt], "l", lazy.spawn("/sh/i3lock.sh")),
@@ -113,16 +108,16 @@ keys = [
 
 # groups = [Group(i) for i in "asdfuiop"]
 groups = [
-    Group("term", spawn=['sakura -e stmux']),
-    Group("web", spawn=['chromium']),  # , matches=Match(title=["Firefox", "Chromium"]))
+    Group("term", spawn=['sakura -e stmux'], layout="max"),
+    Group("web", spawn=['chromium', 'firefox'], layout="max"),  # , matches=Match(title=["Firefox", "Chromium"]))
     Group("im", spawn=[
         'telegram-desktop',
         'slack',
-        '/sh/flowdock'
+        # '/sh/flowdock'
     ], layout='treetab'),
     Group("mail", spawn=['thunderbird']),
     Group("dev", spawn=['subl3']),
-    Group("games"),  # , spawn=['steam']),
+    Group("games", layout="max"),  # , spawn=['steam']),
     Group("misc", layout="treetab")
 ]
 
@@ -140,7 +135,7 @@ for i, group in enumerate(groups):
 
 layouts = [
     Columns(),
-#    layout.Stack(num_stacks=2),
+    # layout.Stack(num_stacks=2),
     layout.Max(),
     TreeTab(
         bg_color='#000000',
@@ -183,43 +178,42 @@ screens = [
                 widget.Sep(padding=5),
                 widget.Prompt(background='#F05040', font='DejaVu Sans Mono Bold', fontsize=12),
                 widget.WindowName(),
-#                widget.TextBox("default config", name="default"),
+                # widget.TextBox("default config", name="default"),
                 widget.Systray(),
-#                widget.LaunchBar([('firefox', 'firefox')]),
+                # widget.LaunchBar([('firefox', 'firefox')]),
                 widget.Sep(padding=5),
-                widget.Battery(),
+                widget.Battery(charge_char='+', discharge_char='-'),
                 widget.Sep(padding=5),
-#                widget.CPUGraph(border_color='#000000', samples=50, frequency=0.1, line_width=2, type='line'),
-#                widget.BatteryIcon(),
-#                widget.Backlight(),
-#                widget.Clipboard(),
+                # widget.CPUGraph(border_color='#000000', samples=50, frequency=0.1, line_width=2, type='line'),
+                # widget.BatteryIcon(),
+                # widget.Backlight(),
+                # widget.Clipboard(),
                 widget.ThermalSensor(),
-#                widget.Notify(),
-#                widget.Pacman(),
-#                widget.DF(),
-#                widget.Sep(padding=5),
+                # widget.Notify(),
+                # widget.Pacman(),
+                # widget.DF(),
+                # widget.Sep(padding=5),
                 # widget.KeyboardLayout(configured_keyboards=['us', 'ru', 'ua']),
                 widgets.KBLayout(),
-                widget.Volume(),
+                widget.Volume(theme_path='/usr/share/icons/Faenza/status/64/'),
                 widget.Sep(padding=5),
-                widgets.RSS(),
+                # widgets.RSS(),
+                widgets.Ping(),
                 widget.Sep(padding=5),
                 widget.CurrentLayout(),
                 widget.Sep(padding=5),
                 widget.Clock(format='%Y-%m-%d %H:%M'),
             ],
             28
-#            background='#222222'
+            # background='#222222'
         ),
     ),
 ]
 
 # Drag floating layouts.
 mouse = [
-    Drag([mod], "Button1", lazy.window.set_position_floating(),
-        start=lazy.window.get_position()),
-    Drag([mod], "Button3", lazy.window.set_size_floating(),
-        start=lazy.window.get_size()),
+    Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
+    Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
     Click([mod], "Button2", lazy.window.bring_to_front())
 ]
 
@@ -230,12 +224,32 @@ def floating_dialogs(window):
     transient = window.window.get_wm_transient_for()
     if dialog or transient:
         window.floating = True
+        window.float_x = 0
+        window.float_y = 0
+#        raise Exception(str(window.group))
+#        window.tweak_float(w=500, h=600, x=700, y=800, dw=500, dh=500, dx=700, dy=800)
+#        window.tweak_float(x=300, y=400)
+#        window.cmd_set_size_floating(1000, 1000, 0, 0)
+#        window.cmd_set_position_floating(100, 200, 0, 0)
+#        raise Exception(str(window.get_position()))
+#        window.place(
+#            100, 200,
+#            window.width, window.height,
+#            window.borderwidth, window.bordercolor
+#        )
 
 
 @hook.subscribe.startup_once
 def autostart():
     home = os.path.expanduser('~/.config/qtile/autostart.sh')
     subprocess.call([home])
+
+
+# look for new monitor
+@hook.subscribe.screen_change
+def restart_on_randr(qtile, ev):
+#    call("setup_screens")
+    qtile.cmd_restart()
 
 
 dgroups_key_binder = None
