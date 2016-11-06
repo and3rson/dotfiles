@@ -4,5 +4,9 @@ PATH="/sh:/bin:/usr/local/bin:/sbin:/usr/local/sbin:/usr/bin/core_perl"
 export EDITOR="nano"
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on'
 export PATH="/usr/share/perl5/vendor_perl/auto/share/dist/Cope:/home/anderson/.npm-packages/bin:/usr/lib/colorgcc/bin/:$PATH:/home/anderson/.gem/ruby/2.2.0/bin"
-export TERM=xterm-256color
+export TERM=screen-256color
 # export COPE=1
+
+case $(tty) in /dev/tty[0-9]*)
+    export TERM=linux ;;
+esac
