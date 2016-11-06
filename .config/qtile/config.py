@@ -26,8 +26,7 @@
 
 import os
 import subprocess
-from libqtile.config import Key, Screen, Group, Drag, Click
-# , Match
+from libqtile.config import Key, Screen, Group, Drag, Click, Match
 from libqtile.command import lazy
 from libqtile import layout, bar, widget, hook
 from libqtile.layout.columns import Columns
@@ -103,27 +102,52 @@ keys = [
 
     Key([], 'F12', lazy.function(commands.ToggleTerm())),
 
+    Key([], 'XF86AudioRaiseVolume', lazy.spawn('amixer -q sset Master 4%+')),
+    Key([], 'XF86AudioLowerVolume', lazy.spawn('amixer -q sset Master 4%-')),
+    Key([], 'XF86AudioMute', lazy.spawn('amixer -q sset Master toggle')),
+
+    Key([], 'XF86MonBrightnessUp', lazy.spawn('xbacklight -inc 10')),
+    Key([], 'XF86MonBrightnessDown', lazy.spawn('xbacklight -dec 10')),
+
     Key([ctrl, alt], "l", lazy.spawn("/sh/i3lock.sh")),
 ]
 
-# groups = [Group(i) for i in "asdfuiop"]
+GROUP_DEFS = (
+    ('term', ['sakura -e stmux'], 'max', dict(wm_class=['telegram-desktop', 'Slack'])),
+    ('web', ['chromium', 'firefox'], 'max', dict(wm_class=['chromium', 'Firefox'])),
+    ('im', ['telegram-desktop', 'slack'], 'treetab', dict(title=['Telegram', 'Slack'])),
+    ('mail', ['thunderbird'], 'columns', dict(wm_class='Thunderbird')),
+    ('dev', ['subl3'], 'columns', dict(wm_class='Subl3')),
+    ('music', ['vkplayer'], 'columns', dict(wm_class='Vkplayer')),
+    ('games', [], 'columns', dict()),
+    ('misc', [], 'columns', dict()),
+)
+
 groups = [
+    Group('{name}'.format(id=i + 1, name=g_name), spawn=g_startup, layout=g_layout, matches=[Match(**g_match_kwargs)])
+    for i, (g_name, g_startup, g_layout, g_match_kwargs)
+    in enumerate(GROUP_DEFS)
+]
+
+# groups = [Group(i) for i in "asdfuiop"]
+'''groups = [
     Group("term", spawn=['sakura -e stmux'], layout="max"),
-    Group("web", spawn=['chromium', 'firefox'], layout="max"),  # , matches=Match(title=["Firefox", "Chromium"]))
+    Group("web", spawn=['chromium', 'firefox'], layout="max", matches=[Match(title=["Firefox", "Chromium"])]),
     Group("im", spawn=[
         'telegram-desktop',
         'slack',
         # '/sh/flowdock'
-    ], layout='treetab'),
-    Group("mail", spawn=['thunderbird']),
-    Group("dev", spawn=['subl3']),
+    ], layout='treetab', matches=[Match(title=["Telegram", "Slack"])]),
+    Group("mail", spawn=['thunderbird'], matches=[Match(title=["Thunderbird"])]),
+    Group("dev", spawn=['subl3'], matches=[Match(title=["Sublime"])]),
+    Group("music", spawn=['vkplayer'], atches=[Match(title=["VK audio player"])]),
     Group("games", layout="max"),  # , spawn=['steam']),
     Group("misc", layout="treetab")
-]
+]'''
 
 for i, group in enumerate(groups):
     # mod1 + letter of group = switch to group
-    group.name = '{} {}'.format(i + 1, group.name)
+#    group.name = '{} {}'.format(i + 1, group.name)
     keys.append(
         Key([mod], str(i + 1), lazy.group[group.name].toscreen())
     )
@@ -220,6 +244,7 @@ mouse = [
 
 @hook.subscribe.client_new
 def floating_dialogs(window):
+    return
     dialog = window.window.get_wm_type() == 'dialog'
     transient = window.window.get_wm_transient_for()
     if dialog or transient:
