@@ -11,10 +11,13 @@ from re import findall
 # import dbus
 import time
 import socket
+import iwlib
 from select import select
 # from dbus.mainloop.glib import DBusGMainLoop
 # from gi.repository import GObject
 # import gobject
+from weakref import proxy
+from truck import BusObject
 
 
 class RSS(base.ThreadedPollText):
@@ -85,7 +88,9 @@ class Ping(base._TextBox):
         # config['foreground'] = '#F05040'
         # config['font'] = 'DejaVu Sans Medium'
         # self.text = '???'
-        self.ping = '???'
+        self.ping = '?'
+        self.last_text = ''
+        self.wlan_name = '-'
         # self.foreground = '#FFFFFF'
         base._TextBox.__init__(self, **config)
 
@@ -114,13 +119,19 @@ class Ping(base._TextBox):
             ping = '???'
 
         self.ping = ping
+        iwconfig = iwlib.get_iwconfig('wlp3s0')
+        self.wlan_name = iwconfig['ESSID'] if iwconfig['Access Point'] != '00:00:00:00:00:00' else 'Offline'
         self.timeout_add(0, self._ready)
         # self.ping = str(self.layout)
         # self._user_config['foreground'] = '#00FF00'
 
     def _ready(self):
-        self.text = self.ping
-        self.draw()
+        self.text = u'{}: {}ms'.format(self.wlan_name, self.ping)
+        if len(self.text) != len(self.last_text):
+            self.bar.draw()
+        else:
+            self.draw()
+        self.last_text = self.text
         self.timeout_add(2, lambda: Thread(target=self._update).start())
 
 
@@ -160,55 +171,64 @@ class OpenWeatherMap(base.ThreadedPollText):
 class NowPlayingWidget(base._TextBox):
     orientations = base.ORIENTATION_HORIZONTAL
 
-    class Poller(Thread):
-        def __init__(self, on_song_changed):
-            Thread.__init__(self)
-            self.on_song_changed = on_song_changed
+    # class Poller(Thread):
+    #     def __init__(self, on_song_changed):
+    #         Thread.__init__(self)
+    #         self.on_song_changed = on_song_changed
 
-        def run(self):
-            self.sock = None
-            self._connect()
-            while True:
-                try:
-                    i, o, e = select([self.sock], [], [], 1)
-                    if self.sock in i:
-                        data = self.sock.recv(1024).strip()
-                        if not data:
-                            print 'Connection dropped, reconnecting...'
-                            self._connect()
-                            continue
-                        else:
-                            for line in data.split('\n'):
-                                args = line.split(':::')
-                                if args[0] == 'current_song':
-                                    self.on_song_changed(bool(int(args[1])), args[2])
-                except Exception as e:
-                    logger.exception(e.message)
-                    self._connect()
+    #     def run(self):
+    #         self.sock = None
+    #         self._connect()
+    #         while True:
+    #             try:
+    #                 i, o, e = select([self.sock], [], [], 1)
+    #                 if self.sock in i:
+    #                     data = self.sock.recv(1024).strip()
+    #                     if not data:
+    #                         print 'Connection dropped, reconnecting...'
+    #                         self._connect()
+    #                         continue
+    #                     else:
+    #                         for line in data.split('\n'):
+    #                             args = line.split(':::')
+    #                             if args[0] == 'current_song':
+    #                                 self.on_song_changed(bool(int(args[1])), args[2])
+    #             except Exception as e:
+    #                 logger.exception(e.message)
+    #                 self._connect()
 
-        def _connect(self):
-            connected = False
-            while not connected:
-                try:
-                    self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-                    self.sock.connect('/tmp/vkplayer.sock')
-                    self.sock.send('get_current_song\n\n')
-                except:
-                    logger.error('Failed to connect to VKPlayer, reconnecting in 1s...')
-                    time.sleep(1)
-                else:
-                    connected = True
+    #     def _connect(self):
+    #         connected = False
+    #         while not connected:
+    #             try:
+    #                 self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    #                 self.sock.connect('/tmp/vkplayer.sock')
+    #                 self.sock.send('get_current_song\n\n')
+    #             except:
+    #                 logger.error('Failed to connect to VKPlayer, reconnecting in 1s...')
+    #                 time.sleep(1)
+    #             else:
+    #                 connected = True
 
-        def send(self, cmd):
-            self.sock.send(cmd + '\n')
+    #     def send(self, cmd):
+    #         self.sock.send(cmd + '\n')
+
+    class VKPlayer(BusObject):
+        def __init__(self, widget):
+            self.widget = proxy(widget)
+            super(NowPlayingWidget.VKPlayer, self).__init__('org.dunai.vkplayer')
+
+        def on_state_changed_handler(self, data):
+            self.widget._update_text(*data)
 
     def __init__(self, **config):
         config['font'] = 'DejaVu Sans Mono Bold'
         self.max_len = 28
         base._TextBox.__init__(self, **config)
 
-        self.poller = NowPlayingWidget.Poller(self._update_text)
-        self.poller.start()
+        self.vkplayer = NowPlayingWidget.VKPlayer(self)
+        self.vkplayer.start()
+        self.vkplayer.broadcast('request_state')
 
         # self.bus = dbus.SessionBus()
 
@@ -251,8 +271,8 @@ class NowPlayingWidget(base._TextBox):
     def button_press(self, x, y, button):
         if button == 1:
             # Left: play/pause
-            self.poller.send('play_pause')
+            self.vkplayer.broadcast('play_pause')
 
         elif button == 2:
             # Middle: random next
-            self.poller.send('play_random')
+            self.vkplayer.broadcast('play_random')
