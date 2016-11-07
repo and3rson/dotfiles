@@ -116,26 +116,27 @@ keys = [
 ]
 
 GROUP_DEFS = (
-    ('term', ['sakura -e stmux'], 'max', dict(wm_class=['Sakura'])),
-    ('web', ['chromium', 'firefox'], 'max', dict(wm_class=['chromium', 'Firefox'])),
-    ('im', ['telegram-desktop', 'slack'], 'treetab', dict(wm_class=['telegram-desktop', 'TelegramDesktop', 'Slack'])),
-    ('mail', ['thunderbird'], 'columns', dict(wm_class=['Thunderbird'])),
-    ('dev', ['subl3'], 'columns', dict(wm_class=['Subl3'])),
-    ('music', ['vkplayer'], 'columns', dict(title=['VK audio player'])),
-    ('games', [], 'columns', dict()),
-    ('misc', [], 'columns', dict()),
+    ('t', 'term', ['sakura -e stmux'], 'max', dict(wm_class=['Sakura'])),
+    ('w', 'web', ['chromium', 'firefox'], 'max', dict(wm_class=['chromium', 'Firefox'])),
+    ('i', 'im', ['telegram-desktop', 'slack', 'messengerfordesktop'], 'treetab', dict(wm_class=['telegram-desktop', 'TelegramDesktop', 'Slack'], title=['Messenger'])),
+    ('m', 'mail', ['thunderbird'], 'columns', dict(wm_class=['Thunderbird'])),
+    ('d', 'dev', ['subl3'], 'columns', dict(wm_class=['Subl3'])),
+    ('a', 'audio', ['vkplayer'], 'columns', dict(title=['VK audio player'])),
+    ('g', 'games', [], 'columns', dict()),
+    ('v', 'var', [], 'columns', dict()),
 )
 
 groups = [
     Group('{name}'.format(id=i + 1, name=g_name), spawn=g_startup, layout=g_layout, matches=[Match(**g_match_kwargs)])
-    for i, (g_name, g_startup, g_layout, g_match_kwargs)
+    for i, (g_hotkey, g_name, g_startup, g_layout, g_match_kwargs)
     in enumerate(GROUP_DEFS)
 ]
 
 #    # mod1 + shift + letter of group = switch to & move focused window to group
-#    keys.append(
-#        Key([mod, "shift"], i.name, lazy.window.togroup(i.name))
-#    )
+for g_hotkey, g_name, g_startup, g_layout, g_match_kwargs in GROUP_DEFS:
+    keys.append(
+        Key([mod], g_hotkey, lazy.group[g_name].toscreen())
+    )
 
 layouts = [
     Columns(),
@@ -163,6 +164,7 @@ layouts = [
 ]
 
 widget_defaults = dict(
+    # font='FuraCode Nerd Font Medium',
     font='Roboto Medium',
     fontsize=12,
     padding=5,
@@ -175,19 +177,20 @@ screens = [
                 widget.GroupBox(
                     background='#000000',
                     borderwidth=0, disable_drag=True,
-                    inactive='#888888', highlight_method='text',
+                    inactive='#888888', highlight_method='block',
                     rounded=False, highlight_color=['#FF1177', '#FF1177'],
-                    this_screen_border='#00FF00', this_current_screen_border='#F05040'
+                    this_screen_border='#00FF00', this_current_screen_border='#F05040',
+                    font='Roboto Sans Bold'
                 ),
                 widget.Sep(padding=5),
                 widget.Prompt(background='#F05040', font='DejaVu Sans Mono Bold', fontsize=12),
                 # PowerlineTextBox(),
-                widget.WindowTabs(),
+                widget.TaskList(rounded=False, max_title_width=120, highlight_method='block', border='#F05040'),
                 # widget.TextBox("default config", name="default"),
                 widget.Systray(),
                 # widget.LaunchBar([('firefox', 'firefox')]),
                 widget.Sep(padding=5),
-                widget.Battery(charge_char='+', discharge_char='-'),
+                widget.Battery(charge_char='+', discharge_char='-', foreground='#5090F0'),
                 widget.Sep(padding=5),
                 # widget.CPUGraph(border_color='#000000', samples=50, frequency=0.1, line_width=2, type='line'),
                 # widget.BatteryIcon(),
@@ -200,10 +203,18 @@ screens = [
                 # widget.Sep(padding=5),
                 # widget.KeyboardLayout(configured_keyboards=['us', 'ru', 'ua']),
                 widgets.KBLayout(),
-                widget.Volume(theme_path='/usr/share/icons/Faenza/status/64/'),
+                widget.Volume(),  # theme_path='/usr/share/icons/Faenza/status/64/'),
+                widget.Sep(padding=5),
+                widgets.OpenWeatherMap(appid='5041ca48d55a6669fe8b41ad1a8af753', location='Lviv, Ukraine'),
+                widget.Sep(padding=5),
+                widgets.NowPlayingWidget(foreground='#F0F040'),
+                #widget.KeyboardKbdd(),
+                # widget.Mpris(),
                 widget.Sep(padding=5),
                 # widgets.RSS(),
                 widgets.Ping(),
+                # widget.Sep(padding=5),
+                # widgets.TestWidget(),
                 widget.Sep(padding=5),
                 widget.CurrentLayout(),
                 widget.Sep(padding=5),
@@ -276,3 +287,4 @@ focus_on_window_activation = "smart"
 # We choose LG3D to maximize irony: it is a 3D non-reparenting WM written in
 # java that happens to be on java's whitelist.
 wmname = "LG3D"
+
