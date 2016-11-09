@@ -1,4 +1,4 @@
-from libqtile.widget import base
+from libqtile.widget import base, Volume, ThermalSensor, Battery
 from libqtile.log_utils import logger
 from libqtile import bar, hook
 import feedparser
@@ -79,7 +79,7 @@ class KBLayout(base.ThreadedPollText):
 
     def poll(self):
         out, err = Popen(['xkblayout-state', 'print', '%s'], stdout=PIPE, stderr=PIPE).communicate()
-        return out.strip().upper()
+        return u'\uf0ac {}'.format(out.strip().upper())
 
 
 class Ping(base._TextBox):
@@ -133,7 +133,8 @@ class Ping(base._TextBox):
         # self._user_config['foreground'] = '#00FF00'
 
     def _ready(self):
-        self.text = u'{}: {}ms'.format(self.wlan_name, self.ping)
+        # \uf1eb
+        self.text = u'\uf072  {}: {}ms'.format(self.wlan_name, self.ping)
         if len(self.text) != len(self.last_text):
             self.bar.draw()
         else:
@@ -166,9 +167,9 @@ class OpenWeatherMap(base.ThreadedPollText):
             return 'N/A'
         try:
             response = json.loads(urllib2.urlopen(self.url).read())
-            return u'{}: {}\u00B0C'.format(
-                response['name'],
-                response['main']['temp'] - OpenWeatherMap.ABS_ZERO
+            return u'\uF0C2 {temp}\u00B0C'.format(
+                name=response['name'],
+                temp=int(response['main']['temp'] - OpenWeatherMap.ABS_ZERO)
             )
         except Exception as e:
             logger.exception(e.message)
@@ -456,3 +457,61 @@ class CurrentLayoutIcon(base._TextBox):
 
             imgpat.set_filter(cairocffi.FILTER_BEST)
             self.surfaces[key] = imgpat
+
+
+class Volume2(Volume):
+    def _update_drawer(self):
+        if self.theme_path:
+            self.drawer.clear(self.background or self.bar.background)
+            if self.volume <= 0:
+                img_name = 'audio-volume-muted'
+            elif self.volume <= 30:
+                img_name = 'audio-volume-low'
+            elif self.volume < 80:
+                img_name = 'audio-volume-medium'
+            else:  # self.volume >= 80:
+                img_name = 'audio-volume-high'
+
+            self.drawer.ctx.set_source(self.surfaces[img_name])
+            self.drawer.ctx.paint()
+        elif self.emoji:
+            if self.volume <= 0:
+                self.text = u'\U0001f507'
+            elif self.volume <= 30:
+                self.text = u'\U0001f508'
+            elif self.volume < 80:
+                self.text = u'\U0001f509'
+            elif self.volume >= 80:
+                self.text = u'\U0001f50a'
+        else:
+            if self.volume == -1:
+                self.text = u'\uf026    M '
+            else:
+                self.text = u'\uf028 %s%%' % self.volume
+
+
+class ThermalSensor2(ThermalSensor):
+    def poll(self):
+        temp_values = self.get_temp_sensors()
+        if temp_values is None:
+            return False
+        text = u"\uf0e7 "
+        if self.show_tag and self.tag_sensor is not None:
+            text = self.tag_sensor + u": "
+        parts = temp_values.get(self.tag_sensor, ['N/A'])
+        parts = [x.decode('utf-8') for x in parts]
+        text += u"".join(parts)
+        temp_value = float(temp_values.get(self.tag_sensor, [0])[0])
+        if temp_value > self.threshold:
+            self.layout.colour = self.foreground_alert
+        else:
+            self.layout.colour = self.foreground_normal
+        return text
+
+
+class Battery2(Battery):
+    def update(self):
+        ntext = u'\uf0e7 {}'.format(self._get_text())
+        if ntext != self.text:
+            self.text = ntext
+            self.bar.draw()
