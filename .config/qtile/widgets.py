@@ -225,6 +225,9 @@ class NowPlayingWidget(base._TextBox):
             self.widget = proxy(widget)
             super(NowPlayingWidget.VKPlayer, self).__init__('org.dunai.vkplayer', logger)
 
+        def on_connected_handler(self):
+            self.broadcast('request_state')
+
         # def on_state_changed_handler(self, data):
         #     logger.error('INIT')
         #     self.widget._update_text(*data)
@@ -244,7 +247,6 @@ class NowPlayingWidget(base._TextBox):
 
             self.vkplayer = NowPlayingWidget.VKPlayer(self)
             # self.vkplayer.start()
-            self.vkplayer.broadcast('request_state')
         except Exception as e:
             logger.exception(e.message)
 
@@ -278,8 +280,9 @@ class NowPlayingWidget(base._TextBox):
         self._draw()
 #        if self.prev_len == len(self.current_song):
         self.shifted += 1
-        if self.shifted >= len(self.current_song) + len(self.sep):
+        if (self.shifted >= len(self.current_song) + len(self.sep)) or (len(self.current_song) != self.prev_len):
             self.shifted = 0
+        self.prev_len = len(self.current_song)
 
         # self.bus = dbus.SessionBus()
 
