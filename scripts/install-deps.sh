@@ -28,15 +28,14 @@ then
     exit 1
 fi
 
-pacman -S \
+pacman --noconfirm -S \
     powerline-common \
     python2-powerline \
     python2-cairocffi \
     python2-virtualenv \
-    git
-
+    git \
 &&
-yaourt --noconfirm -S \
+sudo -u ${USERNAME} yaourt --noconfirm -S \
     nerd-fonts-complete \
     qtile-git \
 &&
