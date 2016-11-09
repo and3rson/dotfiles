@@ -18,6 +18,7 @@ from select import select
 # import gobject
 from weakref import proxy
 from redtruck import RedObject
+from cal import get_next_event
 import os
 import cairocffi
 
@@ -97,7 +98,7 @@ class Ping(base._TextBox):
         base._TextBox.__init__(self, **config)
 
     def timer_setup(self):
-        self._ready()
+        self._update()
 
     def button_press(self, x, y, button):
         pass
@@ -140,7 +141,8 @@ class Ping(base._TextBox):
         else:
             self.draw()
         self.last_text = self.text
-        self.timeout_add(2, lambda: Thread(target=self._update).start())
+        # self.timeout_add(2, lambda: Thread(target=self._update).start())
+        self.timeout_add(2, self._update)
 
 
 class OpenWeatherMap(base.ThreadedPollText):
@@ -167,9 +169,10 @@ class OpenWeatherMap(base.ThreadedPollText):
             return 'N/A'
         try:
             response = json.loads(urllib2.urlopen(self.url).read())
-            return u'\uF0C2 {temp}\u00B0C'.format(
-                name=response['name'],
-                temp=int(response['main']['temp'] - OpenWeatherMap.ABS_ZERO)
+            return u'\uF0C2  {name} {temp}\u00B0C'.format(
+                city=response['name'],
+                temp=int(response['main']['temp'] - OpenWeatherMap.ABS_ZERO),
+                name=response['weather'][0]['main']
             )
         except Exception as e:
             logger.exception(e.message)
@@ -239,8 +242,8 @@ class NowPlayingWidget(base._TextBox):
         self.current_icon = '?'
         self.current_song = 'Empty'
         try:
-            config['font'] = 'DejaVu Sans Mono Bold'
-            self.max_len = 28
+            # config['font'] = 'DejaVu Sans Mono Bold'
+            self.max_len = 18
             self.prev_len = 0
             self.shifted = 0
             self.sep = '  ***  '
@@ -495,7 +498,7 @@ class ThermalSensor2(ThermalSensor):
         temp_values = self.get_temp_sensors()
         if temp_values is None:
             return False
-        text = u"\uf0e7 "
+        text = u"\uf069 "
         if self.show_tag and self.tag_sensor is not None:
             text = self.tag_sensor + u": "
         parts = temp_values.get(self.tag_sensor, ['N/A'])
@@ -515,3 +518,87 @@ class Battery2(Battery):
         if ntext != self.text:
             self.text = ntext
             self.bar.draw()
+
+
+class UnreadMail(base._TextBox):
+    orientations = base.ORIENTATION_HORIZONTAL
+
+    def __init__(self, **config):
+        self.unread_count = 0
+        self.last_text = ''
+        base._TextBox.__init__(self, **config)
+
+    def timer_setup(self):
+        self._update()
+
+    def button_press(self, x, y, button):
+        if button == 1:
+            self.qtile.currentScreen.setGroup(self.qtile.groupMap['m'])
+
+    def _update(self):
+        profiles_file = open(os.path.expanduser('~/.thunderbird/profiles.ini'), 'r')
+        for line in profiles_file.read().split('\n'):
+            key, _, value = line.strip().partition('=')
+            if key.lower() == 'path':
+                profile = value.strip()
+        profiles_file.close()
+
+        self.unread_count = 0
+
+        unread_file = open(os.path.expanduser('~/.thunderbird/{}/unread-counts'.format(profile)))
+        for line in unread_file.read().split('\n'):
+            count, _, box = line.strip().partition(':')
+            try:
+                self.unread_count += int(count)
+            except ValueError:
+                pass
+        unread_file.close()
+
+        self.timeout_add(0, self._ready)
+        # self.ping = str(self.layout)
+        # self._user_config['foreground'] = '#00FF00'
+
+    def _ready(self):
+        # \uf1eb
+        self.text = u'\uf003  {}'.format(self.unread_count)
+        self.foreground = '#FFFFFF' if self.unread_count == 0 else '#F05040'
+        if len(self.text) != len(self.last_text):
+            self.bar.draw()
+        else:
+            self.draw()
+        self.last_text = self.text
+        self.timeout_add(10, self._update)
+
+
+class NextEvent(base._TextBox):
+    orientations = base.ORIENTATION_HORIZONTAL
+
+    def __init__(self, **config):
+        self.last_text = ''
+        base._TextBox.__init__(self, **config)
+
+    def timer_setup(self):
+        self._update()
+
+    def button_press(self, x, y, button):
+        pass
+        # if button == 1:
+        #     self.qtile.currentScreen.setGroup(self.qtile.groupMap['m'])
+
+    def _update(self):
+        self.info = get_next_event()
+
+        self.timeout_add(0, self._ready)
+        # self.ping = str(self.layout)
+        # self._user_config['foreground'] = '#00FF00'
+
+    def _ready(self):
+        # \uf1eb
+        self.text = u'\uf073  {}'.format(self.info)
+        self.foreground = '#00FFAA'
+        if len(self.text) != len(self.last_text):
+            self.bar.draw()
+        else:
+            self.draw()
+        self.last_text = self.text
+        self.timeout_add(60, self._update)
