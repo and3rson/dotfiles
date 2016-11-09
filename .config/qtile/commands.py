@@ -12,7 +12,7 @@ class ToggleTerm(object):
         if self.prev is None:
             self.prev = qtile.currentGroup
             self.do_not_clean = True
-            qtile.currentScreen.setGroup(qtile.groupMap['term'])
+            qtile.currentScreen.setGroup(qtile.groupMap['t'])
         else:
             qtile.currentScreen.setGroup(self.prev)
             self.prev = None

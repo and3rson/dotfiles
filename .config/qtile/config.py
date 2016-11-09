@@ -127,7 +127,7 @@ GROUP_DEFS = (
 )
 
 groups = [
-    Group('{name}'.format(id=i + 1, name=g_name), spawn=g_startup, layout=g_layout, matches=[Match(**g_match_kwargs)])
+    Group('{name}'.format(id=i + 1, name=g_name[0]), spawn=g_startup, layout=g_layout, matches=[Match(**g_match_kwargs)])
     for i, (g_hotkey, g_name, g_startup, g_layout, g_match_kwargs)
     in enumerate(GROUP_DEFS)
 ]
@@ -135,7 +135,7 @@ groups = [
 #    # mod1 + shift + letter of group = switch to & move focused window to group
 for g_hotkey, g_name, g_startup, g_layout, g_match_kwargs in GROUP_DEFS:
     keys.append(
-        Key([mod], g_hotkey, lazy.group[g_name].toscreen())
+        Key([mod], g_hotkey, lazy.group[g_name[0]].toscreen())
     )
 
 layouts = [
@@ -204,20 +204,19 @@ screens = [
                 # widget.KeyboardLayout(configured_keyboards=['us', 'ru', 'ua']),
                 widgets.KBLayout(),
                 widget.Volume(),  # theme_path='/usr/share/icons/Faenza/status/64/'),
-                widget.Sep(padding=5),
+#                widget.Sep(padding=5),
                 widgets.OpenWeatherMap(appid='5041ca48d55a6669fe8b41ad1a8af753', location='Lviv, Ukraine'),
-                widget.Sep(padding=5),
+#                widget.Sep(padding=5),
                 widgets.NowPlayingWidget(foreground='#F0F040'),
                 #widget.KeyboardKbdd(),
                 # widget.Mpris(),
-                widget.Sep(padding=5),
+#                widget.Sep(padding=5),
                 # widgets.RSS(),
                 widgets.Ping(),
                 # widget.Sep(padding=5),
                 # widgets.TestWidget(),
-                widget.Sep(padding=5),
-                widget.CurrentLayout(),
-                widget.Sep(padding=5),
+#                widget.Sep(padding=5),
+                widget.CurrentLayoutIcon(scale=0.8),
                 widget.Clock(format='%Y-%m-%d %H:%M'),
             ],
             28

@@ -1,6 +1,6 @@
 from libqtile.widget import base
 from libqtile.log_utils import logger
-from libqtile import bar
+from libqtile import bar, hook
 import feedparser
 from urllib import urlencode
 import urllib2
@@ -17,7 +17,9 @@ from select import select
 # from gi.repository import GObject
 # import gobject
 from weakref import proxy
-from truck import BusObject
+from redtruck import RedObject
+import os
+import cairocffi
 
 
 class RSS(base.ThreadedPollText):
@@ -114,13 +116,18 @@ class Ping(base._TextBox):
                 factor = float(ping - 50) / 50
                 self.foreground = '#%02x%02x00' % (factor * 255, (1 - factor) * 255)
             ping = str(ping).rjust(3, ' ')
-        except Exception as e:
-            logger.exception(e.message)
+        except:
+            # logger.exception(e.message)
             ping = '???'
 
         self.ping = ping
         iwconfig = iwlib.get_iwconfig('wlp3s0')
-        self.wlan_name = iwconfig['ESSID'] if iwconfig['Access Point'] != '00:00:00:00:00:00' else 'Offline'
+        is_connected = iwconfig['Access Point'] != '00:00:00:00:00:00'
+        if is_connected:
+            self.wlan_name = iwconfig['ESSID']
+        else:
+            self.wlan_name = 'Offline'
+            self.foreground = '#FF0000'
         self.timeout_add(0, self._ready)
         # self.ping = str(self.layout)
         # self._user_config['foreground'] = '#00FF00'
@@ -213,22 +220,66 @@ class NowPlayingWidget(base._TextBox):
     #     def send(self, cmd):
     #         self.sock.send(cmd + '\n')
 
-    class VKPlayer(BusObject):
+    class VKPlayer(RedObject):
         def __init__(self, widget):
             self.widget = proxy(widget)
-            super(NowPlayingWidget.VKPlayer, self).__init__('org.dunai.vkplayer')
+            super(NowPlayingWidget.VKPlayer, self).__init__('org.dunai.vkplayer', logger)
 
-        def on_state_changed_handler(self, data):
-            self.widget._update_text(*data)
+        # def on_state_changed_handler(self, data):
+        #     logger.error('INIT')
+        #     self.widget._update_text(*data)
 
     def __init__(self, **config):
-        config['font'] = 'DejaVu Sans Mono Bold'
-        self.max_len = 28
-        base._TextBox.__init__(self, **config)
+        self.is_downloading = False
+        self.is_playing = False
+        self.current_icon = '?'
+        self.current_song = 'Empty'
+        try:
+            config['font'] = 'DejaVu Sans Mono Bold'
+            self.max_len = 28
+            self.prev_len = 0
+            self.shifted = 0
+            self.sep = '  ***  '
+            base._TextBox.__init__(self, **config)
 
-        self.vkplayer = NowPlayingWidget.VKPlayer(self)
-        self.vkplayer.start()
-        self.vkplayer.broadcast('request_state')
+            self.vkplayer = NowPlayingWidget.VKPlayer(self)
+            # self.vkplayer.start()
+            self.vkplayer.broadcast('request_state')
+        except Exception as e:
+            logger.exception(e.message)
+
+    def _configure(self, *args):
+        super(NowPlayingWidget, self)._configure(*args)
+        self.timeout_add(0.2, self._shift)
+
+    def timer_setup(self):
+        def on_done(future):
+            try:
+                event = future.result()
+            except Exception:
+                self._update_state(False, False, 'Player is offline')
+                logger.exception('next_event() raised exceptions')
+            else:
+                if event is not None:
+                    if event.name == 'state_changed':
+                        self._update_state(*event.data)
+                    else:
+                        logger.error('Unknown event received: {}'.format(event))
+            self.timer_setup()
+
+        future = self.qtile.run_in_executor(self.vkplayer.next_event)
+        future.add_done_callback(on_done)
+
+    def _shift(self, *args):
+        self.timeout_add(0.2, self._shift)
+
+        # self.text = u'{} {}'.format(self.current_icon, self.current_song)
+#        self.current_song = self.current_song[1:] + self.current_song[:1]
+        self._draw()
+#        if self.prev_len == len(self.current_song):
+        self.shifted += 1
+        if self.shifted >= len(self.current_song) + len(self.sep):
+            self.shifted = 0
 
         # self.bus = dbus.SessionBus()
 
@@ -250,23 +301,53 @@ class NowPlayingWidget(base._TextBox):
     #     except Exception as e:
     #         logger.exception(e.message)
 
-    def _update_text(self, is_playing, current_song):
-        current_song = current_song.decode('utf-8')
-        logger.error(u'UPDATE {} {}'.format(is_playing, current_song))
+    def _update_state(self, is_downloading, is_playing, current_song):
         try:
-            s = u'{} {}'.format(u'\uF04B' if is_playing else u'\uF04C', current_song)
-            if len(current_song) > self.max_len:
-                self.text = s[:self.max_len]
-            else:
-                self.text = s.ljust(self.max_len, ' ')
-            if is_playing:
-                self.foreground = '#55CC55'
-            else:
-                self.foreground = '#AAAA55'
-        except:
-            self.text = 'N/A'
+            self.is_downloading = is_downloading
+            self.is_playing = is_playing
 
-        self.timeout_add(0, self.draw)
+            self.current_icon = u'\uF019' if is_downloading else u'\uF04B' if is_playing else u'\uF04C'
+
+            current_song = current_song.decode('utf-8')
+            self.current_song = current_song
+            """
+            try:
+                # s = u'{} {}'.format(u'\uF019' if is_downloading else u'\uF04B' if is_playing else u'\uF04C', current_song)
+                self.current_icon = u'\uF019' if is_downloading else u'\uF04B' if is_playing else u'\uF04C'
+                self.is_downloading = is_downloading
+                self.is_playing = is_playing
+                if len(current_song) > self.max_len:
+                    self.current_song = s[:self.max_len]
+                else:
+                    self.current_song = s.ljust(self.max_len, ' ')
+                # if is_playing:
+                #     self.foreground = '#55CC55'
+                # else:
+                #     self.foreground = '#AAAA55'
+            except:
+                self.current_icon = '!'
+                self.is_downloading = False
+                self.is_playing = False
+                self.current_song = 'N/A'
+            """
+
+            self._draw()
+        except Exception as e:
+            logger.exception(e.message)
+
+    def _draw(self, redraw=False):
+        shifted_title = self.sep.join([self.current_song] * 10)[self.shifted:self.shifted + self.max_len + 3]
+        self.text = u'{} {}'.format(self.current_icon, shifted_title)
+        if self.is_downloading:
+            self.foreground = '#5555CC'
+        elif self.is_playing:
+            self.foreground = '#55CC55'
+        else:
+            self.foreground = '#AAAA55'
+#        if redraw:
+#            self.bar.draw()
+#        else:
+        self.draw()
 
     def button_press(self, x, y, button):
         if button == 1:
@@ -276,3 +357,99 @@ class NowPlayingWidget(base._TextBox):
         elif button == 2:
             # Middle: random next
             self.vkplayer.broadcast('play_random')
+
+
+class CurrentLayoutIcon(base._TextBox):
+    """
+    Display the name of the current layout of the current group of the screen,
+    the bar containing the widget, is on.
+    """
+    orientations = base.ORIENTATION_HORIZONTAL
+
+    defaults = [
+        ('scale', 1, 'Scale factor, defaults to 1'),
+    ]
+
+    def __init__(self, **config):
+        base._TextBox.__init__(self, "", **config)
+        self.add_defaults(CurrentLayoutIcon.defaults)
+        self.scale = 1.0 / self.scale
+
+        self.length_type = bar.STATIC
+        self.length = 0
+
+    def _configure(self, qtile, bar):
+        base._TextBox._configure(self, qtile, bar)
+        self.text = self.bar.screen.group.layouts[0].name
+        self.icons = {
+            'max': os.path.expanduser('~/.icons/layout_max.png'),
+            'treetab': os.path.expanduser('~/.icons/layout_treetab.png'),
+            'columns': os.path.expanduser('~/.icons/layout_columns.png'),
+        }
+        self.surfaces = {}
+        self.setup_images()
+        self.setup_hooks()
+
+    def setup_hooks(self):
+        def hook_response(layout, group):
+            if group.screen is not None and group.screen == self.bar.screen:
+                self.current_layout = layout.name
+                # self.text = layout.name
+                self.bar.draw()
+        hook.subscribe.layout_change(hook_response)
+
+    def button_press(self, x, y, button):
+        if button == 1:
+            self.qtile.cmd_next_layout()
+        elif button == 2:
+            self.qtile.cmd_prev_layout()
+
+    def draw(self):
+        self.drawer.clear(self.background or self.bar.background)
+        self.drawer.ctx.set_source(self.surfaces[self.current_layout])
+        self.drawer.ctx.paint()
+        self.drawer.draw(offsetx=self.offset, width=self.length)
+
+    def setup_images(self):
+        for key, path in self.icons.items():
+            img = cairocffi.ImageSurface.create_from_png(path)
+            # try:
+            #     path = os.path.join(self.theme_path, name)
+            #     img = cairocffi.ImageSurface.create_from_png(path)
+            # except cairocffi.Error:
+            #     self.theme_path = None
+            #     logger.warning('Battery Icon switching to text mode')
+            #     return
+            input_width = img.get_width()
+            input_height = img.get_height()
+
+            sp = float(input_height) / (self.bar.height - 1)
+
+            logger.error('x ' + str(sp))
+
+            logger.error('{} {}'.format(input_height, self.bar.height))
+
+            width = float(input_width) / sp
+            if width > self.length:
+                self.length = int(width) + self.actual_padding * 2
+
+            # print 'W', width
+            # self.length = width
+            # print 'W2', width
+            # print 'L', self.length
+
+            imgpat = cairocffi.SurfacePattern(img)
+
+            scaler = cairocffi.Matrix()
+
+            scaler.scale(sp, sp)
+            scaler.scale(self.scale, self.scale)
+            # diff = self.scale - 1
+            factor = (1 - 1 / self.scale) / 2
+            # if diff != 0:
+            scaler.translate(-width * factor, -width * factor)
+            scaler.translate(self.actual_padding * -1, 0)
+            imgpat.set_matrix(scaler)
+
+            imgpat.set_filter(cairocffi.FILTER_BEST)
+            self.surfaces[key] = imgpat
