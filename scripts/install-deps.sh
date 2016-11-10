@@ -30,6 +30,7 @@ fi
 
 pacman --noconfirm -S \
     powerline-common \
+    powerline-fonts \
     python2-powerline \
     python2-cairocffi \
     python2-virtualenv \
