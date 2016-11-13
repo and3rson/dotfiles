@@ -46,3 +46,15 @@ class FixGroups(object):
                     else:
                         logger.error('                WTF WITH {}'.format(str(client)))
 
+
+class SwitchScreen(object):
+    def __call__(self, qtile):
+        screens = qtile.cmd_screens()
+        index = qtile.currentScreen.cmd_info()['index']
+        if len(screens) - index > 1:
+            next_index = index + 1
+        else:
+            next_index = 0
+        qtile.cmd_to_screen(next_index)
+        # if index == 0:
+        # logger.error(str())

@@ -81,6 +81,15 @@ keys = [
         lazy.screen.next_group()
     ),
 
+    Key(
+        [mod], "space",
+        lazy.function(commands.SwitchScreen())
+    ),
+    Key(
+        [alt], "Tab",
+        lazy.function(commands.SwitchScreen())
+    ),
+
     # Toggle between split and unsplit sides of stack.
     # Split = all windows displayed
     # Unsplit = 1 window displayed, like Max layout, but still with
@@ -118,7 +127,9 @@ keys = [
 GROUP_DEFS = (
     ('t', 'term', ['sakura -e stmux'], 'max', dict(wm_class=['Sakura'])),
     ('w', 'web', ['chromium', 'firefox'], 'max', dict(wm_class=['chromium', 'Firefox'])),
-    ('i', 'im', ['telegram-desktop', 'slack', 'messengerfordesktop'], 'treetab', dict(wm_class=['telegram-desktop', 'TelegramDesktop', 'Slack'], title=['Messenger'])),
+    ('i', 'im', ['telegram-desktop', 'slack'], 'treetab', dict(wm_class=[
+        'telegram-desktop', 'TelegramDesktop', 'Slack', 'www.flowdock.com__app_redeapp_main'
+    ], title=['Messenger', 'Flowdock'])),
     ('m', 'mail', ['thunderbird'], 'columns', dict(wm_class=['Thunderbird'])),
     ('d', 'dev', ['subl3'], 'columns', dict(wm_class=['Subl3'])),
     ('a', 'audio', ['vkplayer'], 'columns', dict(title=['VK audio player'])),
@@ -167,38 +178,59 @@ widget_defaults = dict(
     # font='FuraCode Nerd Font Medium',
     font='Roboto Medium',
     fontsize=12,
-    padding=5
+    padding=6
+)
+
+group_box_config = dict(
+    background='#000000',
+    borderwidth=2, disable_drag=True,
+    inactive='#888888', highlight_method='block',
+    rounded=False,
+    # highlight_color=['#FF1177', '#FF1177'],
+    this_screen_border='#F05040', this_current_screen_border='#703020',
+    other_screen_border='#703020', other_current_screen_border='#F05040',
+    urgent_border='#0077FF',
+    current_highlight_method='block',
+    other_highlight_method='border',
+    font='Roboto Sans Bold',
+#    padding=7,
+#    margin=0
 )
 
 screens = [
     Screen(
         top=bar.Bar(
             [
-                widget.GroupBox(
-                    background='#000000',
-                    borderwidth=0, disable_drag=True,
-                    inactive='#888888', highlight_method='block',
-                    rounded=False, highlight_color=['#FF1177', '#FF1177'],
-                    this_screen_border='#00FF00', this_current_screen_border='#F05040',
-                    font='Roboto Sans Bold'
-                ),
-                widget.Sep(padding=5),
+                widgets.ArchLogo(scale=0.8),
+                widgets.GroupBox2(**group_box_config),
+                widget.Sep(padding=10),
                 widget.Prompt(background='#F05040', font='DejaVu Sans Mono Bold', fontsize=12),
                 # PowerlineTextBox(),
-                widget.TaskList(rounded=False, max_title_width=120, highlight_method='block', border='#F05040'),
+                widgets.TaskList2(rounded=False, max_title_width=120, highlight_method='block', border='#F05040'),
                 # widget.TextBox("default config", name="default"),
                 widget.Systray(),
                 # widget.LaunchBar([('firefox', 'firefox')]),
-                widget.Sep(padding=5),
-                widgets.UnreadMail(font='DejaVu Sans Mono'),  # {hour:d}:{min:02d}'),
-                widgets.NextEvent(font='DejaVu Sans Mono'),  # {hour:d}:{min:02d}'),
-                widget.Sep(padding=5),
+                widget.Sep(padding=10),
                 widgets.Battery2(charge_char='+', discharge_char='-', foreground='#5090F0', format=u'{char} {percent:2.0%}'),  # {hour:d}:{min:02d}'),
-                widget.Sep(padding=5),
-                # widget.CPUGraph(border_color='#000000', samples=50, frequency=0.1, line_width=2, type='line'),
+                widget.Sep(padding=10),
                 # widget.BatteryIcon(),
                 # widget.Backlight(),
                 # widget.Clipboard(),
+                # widget.Sep(padding=5),
+                # widgets.TestWidget(),
+#                widget.Sep(padding=5),
+                widget.CurrentLayoutIcon(scale=0.8),
+                widget.Clock(format='%Y-%m-%d %H:%M'),
+            ],
+            30
+            # background='#222222'
+        ),
+        bottom=bar.Bar(
+            [
+                widget.Spacer(),
+                widgets.UnreadMail(font='DejaVu Sans Mono'),  # {hour:d}:{min:02d}'),
+#                widgets.NextEvent(font='DejaVu Sans Mono'),  # {hour:d}:{min:02d}'),
+                widget.Sep(padding=10),
                 widgets.ThermalSensor2(font='DejaVu Sans Mono', foreground='#FFFFAA'),
                 # widget.Notify(),
                 # widget.Pacman(),
@@ -206,26 +238,33 @@ screens = [
                 # widget.Sep(padding=5),
                 # widget.KeyboardLayout(configured_keyboards=['us', 'ru', 'ua']),
                 widgets.KBLayout(font='DejaVu Sans Mono', foreground='#AAFFAA'),
-                widgets.Volume2(font='DejaVu Sans Mono', foreground='#FFAAAA'),  # theme_path='/usr/share/icons/Faenza/status/64/'),
+#                widgets.Volume2(font='DejaVu Sans Mono', foreground='#FFAAAA'),  # theme_path='/usr/share/icons/Faenza/status/64/'),
 #                widget.Sep(padding=5),
                 widgets.OpenWeatherMap(appid='5041ca48d55a6669fe8b41ad1a8af753', location='Lviv, Ukraine', font='DejaVu Sans Mono', foreground='#77CCFF'),
-                widget.Sep(padding=2),
+                widget.Sep(padding=10),
+                widget.CPUGraph(border_color='#000000', samples=50, frequency=0.1, line_width=2, type='line'),
+                widget.Sep(padding=10),
                 widgets.NowPlayingWidget(foreground='#F0F040', font='DejaVu Sans Mono'),
-                widget.Sep(padding=2),
+                widget.Sep(padding=10),
                 #widget.KeyboardKbdd(),
                 # widget.Mpris(),
 #                widget.Sep(padding=5),
                 # widgets.RSS(),
                 widgets.Ping(font='DejaVu Sans Mono'),
-                # widget.Sep(padding=5),
-                # widgets.TestWidget(),
-#                widget.Sep(padding=5),
-                widget.CurrentLayoutIcon(scale=0.8),
-                widget.Clock(format='%Y-%m-%d %H:%M'),
             ],
-            24
-            # background='#222222'
-        ),
+            30
+        )
+    )
+]
+
+screens += [
+    Screen(
+        top=bar.Bar(
+            [
+                widgets.GroupBox2(**group_box_config),
+            ],
+            30
+        )
     ),
 ]
 
@@ -258,16 +297,31 @@ def floating_dialogs(window):
 #        )
 
 
+@hook.subscribe.client_killed
+def respawn_sakura(window):
+    if window.group.name == 't':
+        terminals = [
+            w
+            for w
+            in window.qtile.cmd_windows()
+            if w['group'] == 't' and w['id'] != window.cmd_info()['id']
+        ]
+        if len(terminals) == 0:
+            window.qtile.cmd_spawn('sakura -e stmux')
+
+
 @hook.subscribe.startup_once
 def autostart():
     home = os.path.expanduser('~/.config/qtile/autostart.sh')
     subprocess.call([home])
+    subprocess.call('xrandr --output VGA1 --auto --output HDMI1 --auto --right-of eDP1'.split(' '))
 
 
 # look for new monitor
 @hook.subscribe.screen_change
 def restart_on_randr(qtile, ev):
 #    call("setup_screens")
+    qtile.cmd_spawn('xrandr --output VGA1 --auto --output HDMI1 --auto --right-of eDP1')
     qtile.cmd_restart()
 
 
