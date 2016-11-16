@@ -21,6 +21,7 @@ from select import select
 from weakref import proxy
 from redobject import RedObject
 from cal import get_next_event
+from utils import nonblocking, NonBlockingSpawn
 import os
 import cairocffi
 
@@ -73,7 +74,7 @@ class KBLayout(base.ThreadedPollText):
 #    ]
 
     def __init__(self, **config):
-        config['update_interval'] = 0.5
+        config['update_interval'] = 1
         base.ThreadedPollText.__init__(self, **config)
 #        self.add_defaults(Canto.defaults)
 
@@ -81,15 +82,15 @@ class KBLayout(base.ThreadedPollText):
         pass
 
     def poll(self):
+        # f0ac
         out, err = Popen(['xkblayout-state', 'print', '%s'], stdout=PIPE, stderr=PIPE).communicate()
-        return u'\uf0ac {}'.format(out.strip().upper())
+        return u'\uf11d {}'.format(out.strip().upper())
 
 
-class Ping(base._TextBox):
+class Ping(base._TextBox, NonBlockingSpawn):
     orientations = base.ORIENTATION_HORIZONTAL
 
     def __init__(self, **config):
-        config['update_interval'] = 3
         # config['foreground'] = '#F05040'
         # config['font'] = 'DejaVu Sans Medium'
         # self.text = '???'
@@ -99,52 +100,64 @@ class Ping(base._TextBox):
         # self.foreground = '#FFFFFF'
         base._TextBox.__init__(self, **config)
 
-    def timer_setup(self):
-        self._update()
+    def _configure(self, *args, **kwargs):
+        base._TextBox._configure(self, *args, **kwargs)
+        self.do_ping()
 
-    def button_press(self, x, y, button):
-        pass
+    def do_ping(self):
+        self.spawn(self._do_ping, self.on_ping_result)
 
-    def _update(self):
+    def _do_ping(self):
+        iwconfig = iwlib.get_iwconfig('wlp3s0')
+        is_connected = iwconfig['Access Point'] != '00:00:00:00:00:00'
+        if is_connected:
+            wlan_name = iwconfig['ESSID']
+        else:
+            wlan_name = 'Offline'
+
         out, err = Popen(['ping', '-c', '1', '8.8.8.8'], stdout=PIPE, stderr=PIPE).communicate()
         try:
             ping = int(float(findall('icmp_seq=[\d]+ ttl=[\d]+ time=([\d\.]+)', out)[0]))
             if ping > 999:
                 ping = 999
+        except:
+            ping = None
+
+        return (wlan_name, ping)
+
+    def on_ping_result(self, result):
+        wlan_name, ping = result
+
+        self.update(wlan_name, ping)
+
+        self.timeout_add(2, self.do_ping)
+
+    def button_press(self, x, y, button):
+        pass
+
+    def update(self, wlan_name, ping):
+        # \uf1eb
+        if ping is None:
+            ping_str = '???'
+            self.foreground = '#FF0000'
+        else:
             if ping > 100:
                 self.foreground = '#FF0000'
             elif ping < 50:
                 self.foreground = '#00FF00'
             else:
                 factor = float(ping - 50) / 50
-                self.foreground = '#%02x%02x00' % (factor * 255, (1 - factor) * 255)
-            ping = str(ping).rjust(3, ' ')
-        except:
-            # logger.exception(e.message)
-            ping = '???'
+                self.foreground = '#%02x%02x00' % (factor * 127 + 128, (1 - factor) * 127 + 128)
 
-        self.ping = ping
-        iwconfig = iwlib.get_iwconfig('wlp3s0')
-        is_connected = iwconfig['Access Point'] != '00:00:00:00:00:00'
-        if is_connected:
-            self.wlan_name = iwconfig['ESSID']
-        else:
-            self.wlan_name = 'Offline'
-            self.foreground = '#FF0000'
-        self.timeout_add(0, self._ready)
-        # self.ping = str(self.layout)
-        # self._user_config['foreground'] = '#00FF00'
+            ping_str = str(ping).rjust(3, ' ')
 
-    def _ready(self):
-        # \uf1eb
-        self.text = u'\uf072  {}: {}ms'.format(self.wlan_name, self.ping)
+        self.text = u'\uf072  {}: {}ms'.format(wlan_name, ping_str)
+
         if len(self.text) != len(self.last_text):
             self.bar.draw()
         else:
             self.draw()
         self.last_text = self.text
-        # self.timeout_add(2, lambda: Thread(target=self._update).start())
-        self.timeout_add(2, self._update)
 
 
 class OpenWeatherMap(base.ThreadedPollText):
@@ -245,9 +258,10 @@ class NowPlayingWidget(base._TextBox):
         self.is_playing = False
         self.current_icon = '?'
         self.current_song = 'Empty'
+        self.last_scroll = 0
         try:
             # config['font'] = 'DejaVu Sans Mono Bold'
-            self.max_len = 40
+            self.max_len = 70
             self.prev_len = 0
             self.shifted = 0
             self.sep = '  ***  '
@@ -349,18 +363,30 @@ class NowPlayingWidget(base._TextBox):
             logger.exception(e.message)
 
     def _draw(self, redraw=False):
-        shifted_title = self.sep.join([self.current_song] * 10)[self.shifted:self.shifted + self.max_len + 3]
+        if len(self.current_song) > self.max_len:
+            shifted_title = self.sep.join([self.current_song] * 10)[self.shifted:self.shifted + self.max_len + 3]
+        else:
+            shifted_title = self.current_song.ljust(self.max_len + 3)
         self.text = u'{} {}'.format(self.current_icon, shifted_title)
         if self.is_downloading:
-            self.foreground = '#5555CC'
+            self.foreground = '#9999EE'
         elif self.is_playing:
-            self.foreground = '#55CC55'
+            self.foreground = '#99EE99'
         else:
-            self.foreground = '#AAAA55'
+            self.foreground = '#EEEE99'
 #        if redraw:
 #            self.bar.draw()
 #        else:
         self.draw()
+
+    def _debounce(self):
+        last_scroll = self.last_scroll
+        self.last_scroll = time.time()
+
+        if time.time() - last_scroll > 0.35:
+            return True
+        else:
+            return False
 
     def button_press(self, x, y, button):
         if button == 1:
@@ -370,6 +396,16 @@ class NowPlayingWidget(base._TextBox):
         elif button == 2:
             # Middle: random next
             self.vkplayer.broadcast('play_random')
+
+        elif button == 4:
+            # Scroll up
+            if self._debounce():
+                self.vkplayer.broadcast('play_prev')
+
+        elif button == 5:
+            # Scroll down
+            if self._debounce():
+                self.vkplayer.broadcast('play_next')
 
 
 class CurrentLayoutIcon(base._TextBox):
@@ -501,6 +537,7 @@ class Volume2(Volume):
 
 class ThermalSensor2(ThermalSensor):
     def poll(self):
+        # logger.error('{} {}'.format(self.foreground_normal, self.foreground_alert))
         temp_values = self.get_temp_sensors()
         if temp_values is None:
             return False
@@ -567,47 +604,44 @@ class UnreadMail(base._TextBox):
     def _ready(self):
         # \uf1eb
         self.text = u'\uf003  {}'.format(self.unread_count)
-        self.foreground = '#FFFFFF' if self.unread_count == 0 else '#F05040'
+        self.foreground = '#AAAAAA' if self.unread_count == 0 else '#F05040'
         if len(self.text) != len(self.last_text):
             self.bar.draw()
         else:
             self.draw()
         self.last_text = self.text
-        self.timeout_add(10, self._update)
+        self.timeout_add(15, self._update)
 
 
-class NextEvent(base._TextBox):
+class NextEvent(base._TextBox, NonBlockingSpawn):
     orientations = base.ORIENTATION_HORIZONTAL
 
     def __init__(self, **config):
         self.last_text = ''
         base._TextBox.__init__(self, **config)
 
-    def timer_setup(self):
-        self._update()
+    def _configure(self, qtile, bar):
+        base._TextBox._configure(self, qtile, bar)
+        self.do_update()
 
     def button_press(self, x, y, button):
         pass
         # if button == 1:
         #     self.qtile.currentScreen.setGroup(self.qtile.groupMap['m'])
 
-    def _update(self):
-        self.info = get_next_event()
+    def do_update(self):
+        self.spawn(get_next_event, self.on_update_result)
+        self.timeout_add(60, self.do_update)
 
-        self.timeout_add(0, self._ready)
-        # self.ping = str(self.layout)
-        # self._user_config['foreground'] = '#00FF00'
-
-    def _ready(self):
+    def on_update_result(self, result):
         # \uf1eb
-        self.text = u'\uf073  {}'.format(self.info)
-        self.foreground = '#00FFAA'
+        self.text = u'\uf073  {}'.format(result)
+        self.foreground = '#00FFDD'
         if len(self.text) != len(self.last_text):
             self.bar.draw()
         else:
             self.draw()
         self.last_text = self.text
-        self.timeout_add(60, self._update)
 
 
 class GroupBox2(GroupBox):
@@ -618,6 +652,49 @@ class GroupBox2(GroupBox):
             "Border or line colour for current group on other screen."
         ),
     ]
+
+    NUMBERS = {
+        1: u'\u0323',
+        2: u'\u0324',
+        # 1: u'\u0329',
+        # 2: u'\u0348',
+        # 1: u'\u2071',
+        # 2: u'\u00B2',
+        3: u'\u00B3',
+        4: u'\u2074',
+        5: u'\u2075',
+        6: u'\u2076',
+        7: u'\u2077',
+        8: u'\u2078',
+        9: u'\u2079',
+    }
+
+    def get_group_text(self, group):
+        window_count = len(group.windows)
+
+        # group_name = group.name.upper()
+        group_name = group.name
+
+        if window_count:
+            return u'{} {}'.format(
+                group_name,
+                u'\u2071' * window_count
+                # GroupBox2.NUMBERS.get(window_count)
+                # '+' * window_count
+                # self.NUMBERS.get(window_count, self.NUMBERS.get(9) + '+')
+            )
+        else:
+            return group_name
+
+    def box_width(self, groups):
+        width, height = self.drawer.max_layout_size(
+            [self.get_group_text(i) for i in groups],
+            self.font,
+            self.fontsize
+        )
+        width += 6
+        return width + self.padding_x * 2 + self.margin_x * 2 + \
+            self.borderwidth * 2
 
     def draw(self):
         self.drawer.clear(self.background or self.bar.background)
@@ -679,7 +756,7 @@ class GroupBox2(GroupBox):
 
             self.drawbox(
                 self.margin_x + offset,
-                g.name,
+                self.get_group_text(g),
                 border,
                 text_color,
                 highlight_color=self.highlight_color,
@@ -1003,3 +1080,22 @@ class ArchLogo(base._TextBox):
 
         imgpat.set_filter(cairocffi.FILTER_BEST)
         self.surface = imgpat
+
+
+# class Test(base._TextBox):
+#     orientations = base.ORIENTATION_HORIZONTAL
+
+#     def __init__(self, **config):
+#         base._TextBox.__init__(self, **config)
+
+#     def timer_setup(self):
+#         self._update()
+
+#     def button_press(self, x, y, button):
+#         pass
+
+#     def _update(self):
+#         logger.error('start')
+#         time.sleep(2)
+#         logger.error('end')
+#         self.timeout_add(5, self._update)

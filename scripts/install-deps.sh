@@ -35,6 +35,7 @@ pacman --noconfirm -S \
     python2-cairocffi \
     python2-virtualenv \
     git \
+    compton \
     redis \
 && \
 sudo systemctl daemon-reload \
@@ -47,6 +48,7 @@ sudo -u ${USERNAME} yaourt --noconfirm -S \
     nerd-fonts-complete \
     qtile-git \
     xkblayout-state \
+    hsetroot \
 && \
 pip2.7 install \
     google-api-python-client \

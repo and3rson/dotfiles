@@ -1,5 +1,6 @@
 from libqtile import hook
 from libqtile.log_utils import logger
+from redtruck import RedObject
 
 
 class ToggleTerm(object):
@@ -48,6 +49,9 @@ class FixGroups(object):
 
 
 class SwitchScreen(object):
+#    def __init__(self):
+#        self.bus = RedObject('ord.dunai.desktop')
+
     def __call__(self, qtile):
         screens = qtile.cmd_screens()
         index = qtile.currentScreen.cmd_info()['index']
@@ -56,5 +60,7 @@ class SwitchScreen(object):
         else:
             next_index = 0
         qtile.cmd_to_screen(next_index)
+#        print self.bus
+#        self.bus.broadcast('flicker')
         # if index == 0:
         # logger.error(str())
