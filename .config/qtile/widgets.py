@@ -662,9 +662,21 @@ class GroupBox2(GroupBox):
         9: u'\u2079',
     }
 
+    def get_group_text(self, group):
+        window_count = len(group.windows)
+
+        if window_count:
+            return u'{} {}'.format(
+                group.name,
+                u'\u2071' * window_count
+                # self.NUMBERS.get(window_count, self.NUMBERS.get(9) + '+')
+            )
+        else:
+            return group.name
+
     def box_width(self, groups):
         width, height = self.drawer.max_layout_size(
-            [i.name + 'XX' for i in groups],
+            [self.get_group_text(i) for i in groups],
             self.font,
             self.fontsize
         )
@@ -729,20 +741,9 @@ class GroupBox2(GroupBox):
             else:
                 border = self.background or self.bar.background
 
-            window_count = len(g.windows)
-
-            if window_count:
-                text = u'{} {}'.format(
-                    g.name,
-                    u'\u2071' * window_count
-                    # self.NUMBERS.get(window_count, self.NUMBERS.get(9) + '+')
-                )
-            else:
-                text = g.name
-
             self.drawbox(
                 self.margin_x + offset,
-                text,
+                self.get_group_text(g),
                 border,
                 text_color,
                 highlight_color=self.highlight_color,
