@@ -74,11 +74,16 @@ def get_next_event():
         return 'No events'
     for event in events:
         start = event['start'].get('dateTime', event['start'].get('date'))
+        delta = parser.parse(start) - datetime.datetime.now().replace(tzinfo=pytz.timezone('Europe/Kiev'))
+        if delta.seconds < 0:
+            continue
 #        return u'через {}: {}'.format(
 #            format_timedelta(parser.parse(start) - datetime.datetime.now().replace(tzinfo=pytz.timezone('Europe/Kiev'))),
 #            event['summary']
 #        )
-        return format_timedelta(parser.parse(start) - datetime.datetime.now().replace(tzinfo=pytz.timezone('Europe/Kiev')), format='short')
+        return format_timedelta(delta, format='short')
+    return 'No events'
+
 
 def main():
     print get_next_event()
@@ -86,4 +91,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

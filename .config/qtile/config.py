@@ -127,7 +127,7 @@ keys = [
 GROUP_DEFS = (
     ('t', 'term', ['sakura -e stmux'], 'max', dict(wm_class=['Sakura'])),
     ('w', 'web', ['chromium', 'firefox'], 'max', dict(wm_class=['chromium', 'Firefox'])),
-    ('i', 'im', ['telegram-desktop', 'slack'], 'treetab', dict(wm_class=[
+    ('i', 'im', ['telegram-desktop', 'slack'], 'zoomy', dict(wm_class=[
         'telegram-desktop', 'TelegramDesktop', 'Slack', 'www.flowdock.com__app_redeapp_main'
     ], title=['Messenger', 'Flowdock'])),
     ('m', 'mail', ['thunderbird'], 'columns', dict(wm_class=['Thunderbird'])),
@@ -150,28 +150,36 @@ for g_hotkey, g_name, g_startup, g_layout, g_match_kwargs in GROUP_DEFS:
     )
 
 layouts = [
-    Columns(),
+    Columns(
+        border_normal='#000000',
+        border_focus='#F05040',
+        border_width=2,
+        grow_amount=0
+    ),
     # layout.Stack(num_stacks=2),
     layout.Max(),
-    TreeTab(
-        bg_color='#000000',
-        active_bg='#F05040',
-        active_fg='#FFFFFF',
-        font='DejaVu Sans',
-        inactive_bg='#000000',
-        inactive_fg='#FFFFFF',
-        fontsize=12,
-        panel_width=160,
-        margin_left=0,
-        padding_left=0,
-        border_width=0,
-        padding_x=5,
-        padding_y=5,
-        sections=['Default'],
-        section_fontsize=0,
-        section_top=0,
-        section_padding=0
+    layout.Zoomy(
+        columnwidth=300
     )
+    # TreeTab(
+    #     bg_color='#000000',
+    #     active_bg='#F05040',
+    #     active_fg='#FFFFFF',
+    #     font='DejaVu Sans',
+    #     inactive_bg='#000000',
+    #     inactive_fg='#FFFFFF',
+    #     fontsize=12,
+    #     panel_width=160,
+    #     margin_left=0,
+    #     padding_left=0,
+    #     border_width=0,
+    #     padding_x=5,
+    #     padding_y=5,
+    #     sections=['Default'],
+    #     section_fontsize=0,
+    #     section_top=0,
+    #     section_padding=0
+    # )
 ]
 
 widget_defaults = dict(
@@ -201,17 +209,14 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                widgets.ArchLogo(scale=0.8),
                 widgets.GroupBox2(**group_box_config),
                 widget.Sep(padding=10),
                 widget.Prompt(background='#F05040', font='DejaVu Sans Mono Bold', fontsize=12),
                 # PowerlineTextBox(),
-                widgets.TaskList2(rounded=False, max_title_width=120, highlight_method='block', border='#F05040'),
+                widgets.TaskList2(rounded=False, max_title_width=200, highlight_method='block', border='#F05040'),
                 # widget.TextBox("default config", name="default"),
                 widget.Systray(),
                 # widget.LaunchBar([('firefox', 'firefox')]),
-                widget.Sep(padding=10),
-                widgets.Battery2(charge_char='+', discharge_char='-', foreground='#5090F0', format=u'{char} {percent:2.0%}'),  # {hour:d}:{min:02d}'),
                 widget.Sep(padding=10),
                 # widget.BatteryIcon(),
                 # widget.Backlight(),
@@ -227,30 +232,35 @@ screens = [
         ),
         bottom=bar.Bar(
             [
-                widget.Spacer(),
+                # widget.Spacer(),
+                widgets.ArchLogo(scale=0.8),
                 widgets.UnreadMail(font='DejaVu Sans Mono'),  # {hour:d}:{min:02d}'),
-#                widgets.NextEvent(font='DejaVu Sans Mono'),  # {hour:d}:{min:02d}'),
+                widgets.NextEvent(font='DejaVu Sans Mono'),  # {hour:d}:{min:02d}'),
                 widget.Sep(padding=10),
-                widgets.ThermalSensor2(font='DejaVu Sans Mono', foreground='#FFFFAA'),
+                widgets.Battery2(charge_char='+', discharge_char='-', foreground='#5090F0', format=u'{char} {percent:2.0%}'),  # {hour:d}:{min:02d}'),
+                widgets.ThermalSensor2(font='DejaVu Sans Mono', foreground='#FFFFCC', foreground_alert='#FF0000'),
+                widget.Sep(padding=10),
                 # widget.Notify(),
                 # widget.Pacman(),
                 # widget.DF(),
                 # widget.Sep(padding=5),
                 # widget.KeyboardLayout(configured_keyboards=['us', 'ru', 'ua']),
-                widgets.KBLayout(font='DejaVu Sans Mono', foreground='#AAFFAA'),
-#                widgets.Volume2(font='DejaVu Sans Mono', foreground='#FFAAAA'),  # theme_path='/usr/share/icons/Faenza/status/64/'),
+                widgets.KBLayout(font='DejaVu Sans Mono', foreground='#CCFFCC'),
+                widgets.Volume2(font='DejaVu Sans Mono', foreground='#CCFFFF', update_interval=0.5),  # theme_path='/usr/share/icons/Faenza/status/64/'),
 #                widget.Sep(padding=5),
                 widgets.OpenWeatherMap(appid='5041ca48d55a6669fe8b41ad1a8af753', location='Lviv, Ukraine', font='DejaVu Sans Mono', foreground='#77CCFF'),
                 widget.Sep(padding=10),
                 widget.CPUGraph(border_color='#000000', samples=50, frequency=0.1, line_width=2, type='line'),
                 widget.Sep(padding=10),
                 widgets.NowPlayingWidget(foreground='#F0F040', font='DejaVu Sans Mono'),
+                widget.Spacer(),
                 widget.Sep(padding=10),
                 #widget.KeyboardKbdd(),
                 # widget.Mpris(),
 #                widget.Sep(padding=5),
                 # widgets.RSS(),
                 widgets.Ping(font='DejaVu Sans Mono'),
+                # widgets.Test(),
             ],
             30
         )
@@ -262,6 +272,7 @@ screens += [
         top=bar.Bar(
             [
                 widgets.GroupBox2(**group_box_config),
+                widget.CurrentLayoutIcon(scale=0.8),
             ],
             30
         )
@@ -344,4 +355,3 @@ focus_on_window_activation = "smart"
 # We choose LG3D to maximize irony: it is a 3D non-reparenting WM written in
 # java that happens to be on java's whitelist.
 wmname = "LG3D"
-

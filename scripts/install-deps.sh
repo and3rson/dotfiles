@@ -35,10 +35,12 @@ pacman --noconfirm -S \
     python2-cairocffi \
     python2-virtualenv \
     git \
+    compton \
 &&
 sudo -u ${USERNAME} yaourt --noconfirm -S \
     nerd-fonts-complete \
     qtile-git \
+    hsetroot \
 &&
 pip2.7 install \
     google-api-python-client \
