@@ -201,6 +201,8 @@ group_box_config = dict(
     current_highlight_method='block',
     other_highlight_method='border',
     font='Roboto Sans Bold',
+    padding_x=1,
+    margin_x=0
 #    padding=7,
 #    margin=0
 )
@@ -209,8 +211,10 @@ screens = [
     Screen(
         top=bar.Bar(
             [
+                widget.CurrentLayoutIcon(scale=0.8),
                 widgets.GroupBox2(**group_box_config),
-                widget.Sep(padding=10),
+                # widget.Sep(padding=2),
+                # widget.Sep(padding=2),
                 widget.Prompt(background='#F05040', font='DejaVu Sans Mono Bold', fontsize=12),
                 # PowerlineTextBox(),
                 widgets.TaskList2(rounded=False, max_title_width=200, highlight_method='block', border='#F05040'),
@@ -224,7 +228,6 @@ screens = [
                 # widget.Sep(padding=5),
                 # widgets.TestWidget(),
 #                widget.Sep(padding=5),
-                widget.CurrentLayoutIcon(scale=0.8),
                 widget.Clock(format='%Y-%m-%d %H:%M'),
             ],
             30

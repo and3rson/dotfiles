@@ -651,8 +651,12 @@ class GroupBox2(GroupBox):
     ]
 
     NUMBERS = {
-        1: u'\u2071',
-        2: u'\u00B2',
+        1: u'\u0323',
+        2: u'\u0324',
+        # 1: u'\u0329',
+        # 2: u'\u0348',
+        # 1: u'\u2071',
+        # 2: u'\u00B2',
         3: u'\u00B3',
         4: u'\u2074',
         5: u'\u2075',
@@ -665,14 +669,19 @@ class GroupBox2(GroupBox):
     def get_group_text(self, group):
         window_count = len(group.windows)
 
+        # group_name = group.name.upper()
+        group_name = group.name
+
         if window_count:
             return u'{} {}'.format(
-                group.name,
+                group_name,
                 u'\u2071' * window_count
+                # GroupBox2.NUMBERS.get(window_count)
+                # '+' * window_count
                 # self.NUMBERS.get(window_count, self.NUMBERS.get(9) + '+')
             )
         else:
-            return group.name
+            return group_name
 
     def box_width(self, groups):
         width, height = self.drawer.max_layout_size(
@@ -680,6 +689,7 @@ class GroupBox2(GroupBox):
             self.font,
             self.fontsize
         )
+        width += 6
         return width + self.padding_x * 2 + self.margin_x * 2 + \
             self.borderwidth * 2
 
