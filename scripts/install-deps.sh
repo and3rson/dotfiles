@@ -35,16 +35,26 @@ pacman --noconfirm -S \
     python2-cairocffi \
     python2-virtualenv \
     git \
-&&
+    redis \
+&& \
+sudo systemctl daemon-reload \
+&& \
+sudo systemctl enable redis \
+&& \
+sudo systemctl start redis \
+&& \
 sudo -u ${USERNAME} yaourt --noconfirm -S \
     nerd-fonts-complete \
     qtile-git \
-&&
+    xkblayout-state \
+&& \
 pip2.7 install \
     google-api-python-client \
     Babel \
     pytz \
     feedparser \
     iwlib \
-&&
+    redis>=2.10.5 \
+    -U \
+&& \
 echo "All done!"

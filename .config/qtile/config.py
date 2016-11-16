@@ -219,7 +219,7 @@ screens = [
                 # widget.Sep(padding=5),
                 # widgets.TestWidget(),
 #                widget.Sep(padding=5),
-                widget.CurrentLayoutIcon(scale=0.8),
+#                widget.CurrentLayoutIcon(scale=0.8),
                 widget.Clock(format='%Y-%m-%d %H:%M'),
             ],
             30
