@@ -19,7 +19,7 @@ from select import select
 # from gi.repository import GObject
 # import gobject
 from weakref import proxy
-from redobject import RedObject
+from redtruck import RedObject
 from cal import get_next_event
 from utils import nonblocking, NonBlockingSpawn
 import os
