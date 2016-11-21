@@ -1,16 +1,16 @@
 #!/bin/bash
 
-txtblk='\e[0;30m' # Black - Regular
-txtred='\e[0;31m' # Red
-txtgrn='\e[0;32m' # Green
+txtblk='\e[30m'   # Black - Regular
+txtred='\e[31m'   # Red
+txtgrn='\e[32m'   # Green
 txt22='\e[38;5;22m'
 txt106='\e[38;5;106m'
-txtylw='\e[0;33m' # Yellow
-txtblu='\e[0;34m' # Blue
+txtylw='\e[33m'   # Yellow
+txtblu='\e[34m'   # Blue
 txt56='\e[38;5;56m'
-txtpur='\e[0;35m' # Purple
-txtcyn='\e[0;36m' # Cyan
-txtwht='\e[0;37m' # White
+txtpur='\e[35m'   # Purple
+txtcyn='\e[36m'   # Cyan
+txtwht='\e[37m'   # White
 bldblk='\e[1;30m' # Black - Bold
 bldred='\e[1;31m' # Red
 bldgrn='\e[1;32m' # Green
