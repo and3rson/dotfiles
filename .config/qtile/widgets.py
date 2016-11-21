@@ -278,7 +278,6 @@ class NowPlayingWidget(base._TextBox):
 
     def timer_setup(self):
         def on_done(future):
-            logger.error('VKPlayer.on_done()')
             try:
                 event = future.result()
             except Exception:
