@@ -7,6 +7,9 @@ export PATH="/usr/share/perl5/vendor_perl/auto/share/dist/Cope:/home/anderson/.n
 export TERM=screen-256color
 # export COPE=1
 
+export IDEA_JDK="/usr/lib/jvm/java-8-openjdk/"
+export ANDROID_EMULATOR_USE_SYSTEM_LIBS=1
+
 case $(tty) in /dev/tty[0-9]*)
     export TERM=linux ;;
 esac

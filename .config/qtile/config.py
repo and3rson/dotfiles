@@ -135,6 +135,7 @@ GROUP_DEFS = (
     ('a', 'audio', ['vkplayer'], 'columns', dict(title=['VK audio player'])),
     ('g', 'games', [], 'columns', dict()),
     ('v', 'var', [], 'columns', dict()),
+    ('n', 'notes', ['peek-desktop'], 'max', dict(title=['Peek App']))
 )
 
 groups = [
@@ -253,10 +254,12 @@ screens = [
 #                widget.Sep(padding=5),
                 widgets.OpenWeatherMap(appid='5041ca48d55a6669fe8b41ad1a8af753', location='Lviv, Ukraine', font='DejaVu Sans Mono', foreground='#77CCFF'),
                 widget.Sep(padding=10),
-                widget.CPUGraph(border_color='#000000', samples=50, frequency=0.1, line_width=2, type='line'),
+                widget.CPUGraph(border_color='#11BBEE.3', border_width=1, graph_color='#11BBEE', fill_color='#11BBEE.3', samples=60, frequency=0.25, line_width=2, type='linefill'),
+                widget.MemoryGraph(border_color='#22CC77.3', border_width=1, graph_color='#22CC77', fill_color='#22CC77.3', samples=60, frequency=0.25, line_width=2, type='linefill'),
                 widget.Sep(padding=10),
                 widgets.NowPlayingWidget(foreground='#F0F040', font='DejaVu Sans Mono'),
                 widget.Spacer(),
+                widgets.DiskUsage(root='/', font='DejaVu Sans Mono'),
                 widget.Sep(padding=10),
                 #widget.KeyboardKbdd(),
                 # widget.Mpris(),

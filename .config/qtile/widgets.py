@@ -259,7 +259,7 @@ class NowPlayingWidget(base._TextBox):
         self.last_scroll = 0
         try:
             # config['font'] = 'DejaVu Sans Mono Bold'
-            self.max_len = 70
+            self.max_len = 40
             self.prev_len = 0
             self.shifted = 0
             self.sep = '  ***  '
@@ -1013,7 +1013,6 @@ class TaskList2(base._Widget, base.PaddingMixin, base.MarginMixin):
         self.drawer.draw(offsetx=self.offset, width=self.width)
 
 
-
 class ArchLogo(base._TextBox):
     """
     Display the name of the current layout of the current group of the screen,
@@ -1078,7 +1077,6 @@ class ArchLogo(base._TextBox):
         imgpat.set_filter(cairocffi.FILTER_BEST)
         self.surface = imgpat
 
-
 # class Test(base._TextBox):
 #     orientations = base.ORIENTATION_HORIZONTAL
 
@@ -1096,3 +1094,54 @@ class ArchLogo(base._TextBox):
 #         time.sleep(2)
 #         logger.error('end')
 #         self.timeout_add(5, self._update)
+
+
+class DiskUsage(base._TextBox, NonBlockingSpawn):
+    orientations = base.ORIENTATION_HORIZONTAL
+
+    def __init__(self, **config):
+        # config['foreground'] = '#F05040'
+        # config['font'] = 'DejaVu Sans Medium'
+        # self.text = '???'
+        # self.text = '?'
+        # self.foreground = '#FFFFFF'
+        base._TextBox.__init__(self, **config)
+
+    def _configure(self, *args, **kwargs):
+        base._TextBox._configure(self, *args, **kwargs)
+        self.do_process()
+
+    def do_process(self):
+        self.spawn(self._do_process, self.on_process_result)
+
+    def _do_process(self):
+        statvfs = os.statvfs(self.root)
+
+        return (
+            statvfs.f_frsize * statvfs.f_blocks,  # Size of filesystem in bytes
+            statvfs.f_frsize * statvfs.f_bfree,  # Actual number of free bytes
+            statvfs.f_frsize * statvfs.f_bavail  # Number of free bytes that ordinary users
+        )
+
+    def on_process_result(self, result):
+        size, _, free = result
+        self.update(size, free)
+
+        self.timeout_add(5, self.do_process)
+
+    def button_press(self, x, y, button):
+        pass
+
+    def sizeof_fmt(self, num, suffix='B'):
+        for unit in ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi']:
+            if abs(num) < 1024.0:
+                return "%3.1f%s%s" % (num, unit, suffix)
+            num /= 1024.0
+        return "%.1f%s%s" % (num, 'Yi', suffix)
+
+    def update(self, size, free):
+        # \uf1eb
+        free_factor = 1 - free / size
+        self.foreground = '#%02x%02x00' % (free_factor * 127 + 128, (1 - free_factor) * 127 + 128)
+        self.text = u'{}: {}/{} free'.format(self.root, self.sizeof_fmt(free), self.sizeof_fmt(size))
+        self.bar.draw()
