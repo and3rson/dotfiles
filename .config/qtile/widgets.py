@@ -19,7 +19,7 @@ from select import select
 # from gi.repository import GObject
 # import gobject
 from weakref import proxy
-from redtruck import RedObject
+from redobject import RedObject
 from cal import get_next_event
 from utils import nonblocking, NonBlockingSpawn
 import os
@@ -241,10 +241,12 @@ class NowPlayingWidget(base._TextBox):
 
     class VKPlayer(RedObject):
         def __init__(self, widget):
+            logger.error('VKPlayer.__init__()')
             self.widget = proxy(widget)
             super(NowPlayingWidget.VKPlayer, self).__init__('org.dunai.vkplayer', logger)
 
         def on_connected_handler(self):
+            logger.error('VKPlayer.on_connected_handler()')
             self.broadcast('request_state')
 
         # def on_state_changed_handler(self, data):
@@ -276,6 +278,7 @@ class NowPlayingWidget(base._TextBox):
 
     def timer_setup(self):
         def on_done(future):
+            logger.error('VKPlayer.on_done()')
             try:
                 event = future.result()
             except Exception:

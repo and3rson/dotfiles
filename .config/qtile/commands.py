@@ -1,6 +1,6 @@
 from libqtile import hook
 from libqtile.log_utils import logger
-from redtruck import RedObject
+from redobject import RedObject
 
 
 class ToggleTerm(object):

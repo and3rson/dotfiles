@@ -60,8 +60,10 @@ class RedObject(Thread):
                 event_name, event_data = loads(item['data'])
                 return RedEvent(event_name, event_data)
             return
-        except:
+        except Exception as e:
+            self.logger.exception('Error! Will reconnect: {}'.format(e.message))
             self.disconnect()
+            sleep(1)
             self.connect()
 
     def dispatch_event(self, event):
