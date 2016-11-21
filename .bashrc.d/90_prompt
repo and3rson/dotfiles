@@ -20,14 +20,14 @@ function info() {
         then
             echo -en "\[$bld\]\[$bldwht\]\[$bak22\] "
             echo -n $VIRTUAL_ENV | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
-            echo -en " \[$txt22\]"
+            echo -en " \[$txtrst\]\[$txt22\]"
             printf -v "FIRST" 0
         elif [[ -f ".env/bin/activate" ]]
         then
             VIRTUAL_ENV=$( . .env/bin/activate; echo $VIRTUAL_ENV )
             echo -en "\[$bld\]\[$bldwht\]\[$bakred\] ! "
             echo -n $VIRTUAL_ENV | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
-            echo -en " \[$txtred\]"
+            echo -en " \[$txtrst\]\[$txtred\]"
             printf -v "FIRST" 0
         else
             echo -en "\[$txtgrn\]"
@@ -43,9 +43,9 @@ function info() {
         fi
         if [[ "$UID" -eq "0" ]]
         then
-            echo -en "\[$bakred\]$arrow\[$bldwht\] $USER \[$txtred\]"
+            echo -en "\[$bakred\]$arrow\[$bldwht\] $USER \[$txtrst\]\[$txtred\]"
         else
-            echo -en "\[$bakgrn\]$arrow\[$bldwht\] $USER \[$txtgrn\]"
+            echo -en "\[$bakgrn\]$arrow\[$bldwht\] $USER \[$txtrst\]\[$txtgrn\]"
         fi
     }
 
