@@ -71,6 +71,17 @@ keys = [
         lazy.layout.rotate()
     ),
 
+    # Grow columns
+    Key(
+        [mod], "bracketleft",
+        lazy.layout.grow(),
+    ),
+    Key(
+        [mod], "bracketright",
+        lazy.layout.shrink(),
+    ),
+    Key([mod, ctrl], "Return", lazy.layout.toggle_split()),
+
     # Move between groups
     Key(
         [mod], "Page_Up",
@@ -187,7 +198,8 @@ widget_defaults = dict(
     # font='FuraCode Nerd Font Medium',
     font='Roboto Medium',
     fontsize=12,
-    padding=6
+    padding=6,
+    margin_y=0
 )
 
 group_box_config = dict(
@@ -231,7 +243,7 @@ screens = [
 #                widget.Sep(padding=5),
                 widget.Clock(format='%Y-%m-%d %H:%M'),
             ],
-            30
+            26
             # background='#222222'
         ),
         bottom=bar.Bar(
@@ -254,8 +266,8 @@ screens = [
 #                widget.Sep(padding=5),
                 widgets.OpenWeatherMap(appid='5041ca48d55a6669fe8b41ad1a8af753', location='Lviv, Ukraine', font='DejaVu Sans Mono', foreground='#77CCFF'),
                 widget.Sep(padding=10),
-                widget.CPUGraph(border_color='#11BBEE.3', border_width=1, graph_color='#11BBEE', fill_color='#11BBEE.3', samples=60, frequency=0.25, line_width=2, type='linefill'),
-                widget.MemoryGraph(border_color='#22CC77.3', border_width=1, graph_color='#22CC77', fill_color='#22CC77.3', samples=60, frequency=0.25, line_width=2, type='linefill'),
+                widget.CPUGraph(border_color='#11BBEE.3', border_width=1, graph_color='#11BBEE', fill_color='#11BBEE.3', samples=60, frequency=0.25, line_width=2, type='linefill', width=50),
+                widget.MemoryGraph(border_color='#22CC77.3', border_width=1, graph_color='#22CC77', fill_color='#22CC77.3', samples=60, frequency=0.25, line_width=2, type='linefill', width=50),
                 widget.Sep(padding=10),
                 widgets.NowPlayingWidget(foreground='#F0F040', font='DejaVu Sans Mono'),
                 widget.Spacer(),
@@ -268,7 +280,7 @@ screens = [
                 widgets.Ping(font='DejaVu Sans Mono'),
                 # widgets.Test(),
             ],
-            30
+            22
         )
     )
 ]

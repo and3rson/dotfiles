@@ -332,8 +332,8 @@ class NowPlayingWidget(base._TextBox):
             self.is_downloading = is_downloading
             self.is_playing = is_playing
 
-            # self.current_icon = u'\uF019' if is_downloading else u'\uF04B' if is_playing else u'\uF04C'
-            self.current_icon = u'v' if is_downloading else u'>' if is_playing else u'x'
+            self.current_icon = u'\uF019' if is_downloading else u'\uF04B' if is_playing else u'\uF04C'
+            # self.current_icon = u'v' if is_downloading else u'>' if is_playing else u'x'
 
             current_song = current_song.decode('utf-8')
             self.current_song = current_song
@@ -367,7 +367,7 @@ class NowPlayingWidget(base._TextBox):
             shifted_title = self.sep.join([self.current_song] * 10)[self.shifted:self.shifted + self.max_len + 3]
         else:
             shifted_title = self.current_song.ljust(self.max_len + 3)
-        self.text = u'{} {}'.format(self.current_icon, shifted_title)
+        self.text = u'{}  {}'.format(self.current_icon, shifted_title)
         if self.is_downloading:
             self.foreground = '#9999EE'
         elif self.is_playing:
