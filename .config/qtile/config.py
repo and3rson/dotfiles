@@ -117,7 +117,9 @@ keys = [
 
     Key([mod, "control"], "r", lazy.restart()),
     Key([mod, "control"], "q", lazy.shutdown()),
-    Key([mod], "r", lazy.spawncmd()),
+    Key([mod], "p", lazy.function(commands.WindowSelector())),
+    # Key([mod], "r", lazy.spawncmd()),
+    Key([mod], "r", lazy.spawn("dmenu_run -fn 'DejaVu Sans Mono-10' -sb '#F05040' -sf '#000' -nb black -dim 0.5 -p '>' -l 10")),
 
     Key([mod], "c", lazy.spawn('sakura -e "nano /home/anderson/.config/qtile/config.py"')),
     Key([mod], "Print", lazy.spawn('/sh/sshot.py')),

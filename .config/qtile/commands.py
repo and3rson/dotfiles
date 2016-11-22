@@ -1,6 +1,11 @@
 from libqtile import hook
 from libqtile.log_utils import logger
 from redobject import RedObject
+from libqtile.command import Client
+import subprocess
+import re
+from threading import Thread
+from utils import NonBlockingSpawn
 
 
 class ToggleTerm(object):
@@ -23,12 +28,7 @@ class ToggleTerm(object):
             self.do_not_clean = False
             return
         self.prev = None
-#        logger.error('clean')
 
-
-#@hook.subscribe.setgroup
-#def foo(*args):
-#    logger.error(str(args))
 
 class FixGroups(object):
     def __init__(self):
@@ -49,8 +49,8 @@ class FixGroups(object):
 
 
 class SwitchScreen(object):
-#    def __init__(self):
-#        self.bus = RedObject('ord.dunai.desktop')
+    # def __init__(self):
+    #     self.bus = RedObject('ord.dunai.desktop')
 
     def __call__(self, qtile):
         screens = qtile.cmd_screens()
@@ -60,7 +60,70 @@ class SwitchScreen(object):
         else:
             next_index = 0
         qtile.cmd_to_screen(next_index)
-#        print self.bus
-#        self.bus.broadcast('flicker')
+        # print self.bus
+        # self.bus.broadcast('flicker')
         # if index == 0:
         # logger.error(str())
+
+
+class WindowSelector(NonBlockingSpawn):
+    # Kind credits to zordsdavini
+    # https://github.com/qtile/qtile-examples/tree/master/zordsdavini/bin
+    def __init__(self):
+        pass
+
+    def __call__(self, qtile):
+        self.qtile = qtile
+
+        # get info of windows
+        self.wins = []
+        self.id_map = {}
+        id = 0
+        for win in qtile.cmd_windows():
+            if win["group"]:
+                self.wins.append(u"%i: %s (%s)" % (id, win["name"], win["group"]))
+                self.id_map[id] = {
+                    'id': win['id'],
+                    'group': win['group']
+                }
+                id = id + 1
+
+        self.qtile = qtile
+        self.spawn(self.execute, self.on_execute_result)
+
+    def execute(self):
+        try:
+            # call dmenu
+            DMENU = [
+                'dmenu',
+                '-i', '-nb', '#000', '-nf', '#fff', '-sb', '#F05040', '-sf', '#000',
+                '-l', '30', '-fn', 'DejaVu Sans Mono-10', '-dim', '0.5', '-p', 'window?'
+            ]
+            p = subprocess.Popen(DMENU, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+            out = p.communicate(u"\n".join(self.wins).encode('utf-8'))[0]
+            return out
+        except Exception as e:
+            logger.exception(e.message)
+
+    def on_execute_result(self, out):
+        # get selected window info
+        match = re.match(b"^\d+", out)
+        if match:
+            id = int(match.group())
+            win = self.id_map[id]
+
+            # focusing selected window
+            print self.id_map
+            for window in self.qtile.cmd_windows():
+                if window['id'] == win['id']:
+                    self.qtile.groupMap[window['group']].cmd_toscreen()
+
+            # TODO(dunai): Finish this :)
+
+            # w = g.window[win["id"]]
+            # for i in range(len(g.info()["windows"])):
+            #     insp = w.inspect()
+            #     if insp['attributes']['map_state']:
+            #         break
+
+            #     g.next_window()
