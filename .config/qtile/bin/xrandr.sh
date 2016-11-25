@@ -17,7 +17,7 @@ function setup_2_screens {
 # MON_COUNT=$(xrandr --listactivemonitors | grep Monitors --color=never | egrep -o "([0-9]+)")
 MON_COUNT=$(xrandr | grep 'HDMI1 conn' > /dev/null && echo 2 || echo 1)
 
-echo "Monitors: ${MON_COUNT}"
+echo "Monitors: ${MON_COUNT}" >> /tmp/xrandr.log
 
 case $MON_COUNT in
     "1")

@@ -354,14 +354,14 @@ def respawn_sakura(window):
 def autostart():
     home = os.path.expanduser('~/.config/qtile/autostart.sh')
     subprocess.call([home])
-    qtile.cmd_spawn('~/.config/qtile/bin/xrandr.sh')
+    subprocess.call(os.path.expanduser('~/.config/qtile/bin/xrandr.sh'))
 
 
 # look for new monitor
 @hook.subscribe.screen_change
 def restart_on_randr(qtile, ev):
 #    call("setup_screens")
-    qtile.cmd_spawn('~/.config/qtile/bin/xrandr.sh')
+    subprocess.call(os.path.expanduser('~/.config/qtile/bin/xrandr.sh'))
     qtile.cmd_restart()
 
 
