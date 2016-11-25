@@ -37,6 +37,7 @@ pacman --noconfirm -S \
     git \
     compton \
     redis \
+    feh \
 && \
 sudo systemctl daemon-reload \
 && \

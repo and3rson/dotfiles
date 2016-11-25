@@ -292,10 +292,11 @@ screens += [
     Screen(
         top=bar.Bar(
             [
-                widgets.GroupBox2(**group_box_config),
                 widget.CurrentLayoutIcon(scale=0.8),
+                widgets.GroupBox2(**group_box_config),
+                widgets.TaskList2(rounded=False, max_title_width=200, highlight_method='block', border='#F05040'),
             ],
-            30
+            22
         )
     ),
 ]
