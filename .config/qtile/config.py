@@ -25,6 +25,7 @@
 # SOFTWARE.
 
 import os
+import re
 import subprocess
 from libqtile.config import Key, Screen, Group, Drag, Click, Match
 from libqtile.command import lazy
@@ -142,11 +143,11 @@ GROUP_DEFS = (
     ('w', 'web', ['chromium', 'firefox'], 'max', dict(wm_class=['chromium', 'Firefox'])),
     ('i', 'im', ['telegram-desktop', 'slack'], 'zoomy', dict(wm_class=[
         'telegram-desktop', 'TelegramDesktop', 'Slack', 'www.flowdock.com__app_redeapp_main'
-    ], title=['Messenger', 'Flowdock'])),
+    ], title=['Messenger', 'Flowdock', re.compile(r'^.* - Chat$')])),
     ('m', 'mail', ['thunderbird'], 'columns', dict(wm_class=['Thunderbird'])),
     ('d', 'dev', ['subl3'], 'columns', dict(wm_class=['Subl3'])),
     ('a', 'audio', ['vkplayer'], 'columns', dict(title=['VK audio player'])),
-    ('g', 'games', [], 'columns', dict()),
+    ('g', 'games', [], 'max', dict()),
     ('v', 'var', [], 'columns', dict()),
     ('n', 'notes', ['peek-desktop'], 'max', dict(title=['Peek App']))
 )
@@ -345,14 +346,14 @@ def respawn_sakura(window):
 def autostart():
     home = os.path.expanduser('~/.config/qtile/autostart.sh')
     subprocess.call([home])
-    subprocess.call('xrandr --output VGA1 --auto --output HDMI1 --auto --right-of eDP1'.split(' '))
+    qtile.cmd_spawn('~/.config/qtile/bin/xrandr.sh')
 
 
 # look for new monitor
 @hook.subscribe.screen_change
 def restart_on_randr(qtile, ev):
 #    call("setup_screens")
-    qtile.cmd_spawn('xrandr --output VGA1 --auto --output HDMI1 --auto --right-of eDP1')
+    qtile.cmd_spawn('~/.config/qtile/bin/xrandr.sh')
     qtile.cmd_restart()
 
 
