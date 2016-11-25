@@ -39,7 +39,8 @@ import widgets
 
 ctrl = 'control'
 alt = 'mod1'
-mod = "mod4"
+lock = 'mod3'
+mod = 'mod4'
 
 keys = [
     # Switch between windows in current stack pane
@@ -135,7 +136,9 @@ keys = [
     Key([], 'XF86MonBrightnessDown', lazy.spawn('xbacklight -dec 10')),
 
     Key([ctrl, alt], "l", lazy.spawn("/sh/i3lock.sh")),
-    Key([ctrl, mod], "g", lazy.function(commands.FixGroups()))
+    Key([ctrl, mod], "g", lazy.function(commands.FixGroups())),
+
+    Key([lock], 'space', lazy.function(commands.WindowSelector())),
 ]
 
 GROUP_DEFS = (
@@ -147,9 +150,13 @@ GROUP_DEFS = (
     ('m', 'mail', ['thunderbird'], 'columns', dict(wm_class=['Thunderbird'])),
     ('d', 'dev', ['subl3'], 'columns', dict(wm_class=['Subl3'])),
     ('a', 'audio', ['vkplayer'], 'columns', dict(title=['VK audio player'])),
-    ('g', 'games', [], 'max', dict()),
+    ('g', 'games', ['steam'], 'max', dict(wm_class=[
+        re.compile('^Steam|csgo_linux64$')
+    ], title=[
+        re.compile('^Steam$')
+    ])),
     ('v', 'var', [], 'columns', dict()),
-    ('n', 'notes', ['peek-desktop'], 'max', dict(title=['Peek App']))
+    ('n', 'notes', ['peek-desktop'], 'max', dict(title=['Peek App'])),
 )
 
 groups = [
