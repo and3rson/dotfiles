@@ -14,7 +14,10 @@ function setup_2_screens {
     synclient AccelFactor=0.03
 }
 
-MON_COUNT=$(xrandr --listactivemonitors | grep Monitors --color=never | egrep -o "([0-9]+)")
+# MON_COUNT=$(xrandr --listactivemonitors | grep Monitors --color=never | egrep -o "([0-9]+)")
+MON_COUNT=$(xrandr | grep 'HDMI1 conn' > /dev/null && echo 2 || echo 1)
+
+echo "Monitors: ${MON_COUNT}"
 
 case $MON_COUNT in
     "1")
