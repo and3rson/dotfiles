@@ -27,8 +27,10 @@ from libqtile import layout, bar, widget, hook
 import commands
 import widgets
 
+BIN_DIR = os.path.expanduser('~/.config/qtile/bin')
+
 TERM_APP = 'roxterm'
-HOME_TERM_CMD = 'roxterm -e stmux'
+HOME_TERM_CMD = 'roxterm -e {}'.format(os.path.join(BIN_DIR, 'stmux.sh'))
 
 ctrl = 'control'
 alt = 'mod1'
