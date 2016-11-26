@@ -38,6 +38,7 @@ pacman --noconfirm -S \
     compton \
     redis \
     feh \
+    roxterm \
 && \
 sudo systemctl daemon-reload \
 && \
@@ -50,6 +51,8 @@ sudo -u ${USERNAME} yaourt --noconfirm -S \
     qtile-git \
     xkblayout-state \
     hsetroot \
+    xlogin-git \
+    dmenu2 \
 && \
 pip2.7 install \
     google-api-python-client \
