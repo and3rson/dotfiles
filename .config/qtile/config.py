@@ -197,12 +197,12 @@ for g_hotkey, g_name, g_startup, g_layout, g_match_kwargs in GROUP_DEFS:
         Key([mod, shift], g_hotkey, lazy.window.togroup(g_name[0]))
     )
 
-# I have three layouts here: Columns, Max & Zoomy
+# I have three layouts here: MonadTall, Max & Zoomy
 layouts = [
     layout.MonadTall(
         border_normal='#000000',
         border_focus=WidgetOpts.HIGHLIGHT_COLOR,
-        border_width=2,
+        border_width=0,
         grow_amount=0
     ),
     layout.Max(),
