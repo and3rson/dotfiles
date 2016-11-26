@@ -24,7 +24,6 @@ import subprocess
 from libqtile.config import Key, Screen, Group, Drag, Click, Match
 from libqtile.command import lazy
 from libqtile import layout, bar, widget, hook
-from libqtile.layout.columns import Columns
 import commands
 import widgets
 
@@ -63,6 +62,16 @@ keys = [
     Key(
         [mod], "Right",
         lazy.layout.right()
+    ),
+
+    # Grow/shrink MonadTall layout items
+    Key(
+        [mod], 'plus',
+        lazy.layout.grow()
+    ),
+    Key(
+        [mod], 'minus',
+        lazy.layout.shrink()
     ),
 
     # Grow columns
@@ -156,15 +165,15 @@ GROUP_DEFS = (
     ('i', 'im', ['telegram-desktop', 'slack'], 'zoomy', dict(wm_class=[
         'telegram-desktop', 'TelegramDesktop', 'Slack', 'www.flowdock.com__app_redeapp_main'
     ], title=['Messenger', 'Flowdock', re.compile(r'^.* - Chat$')])),
-    ('m', 'mail', ['thunderbird'], 'columns', dict(wm_class=['Thunderbird'])),
-    ('d', 'dev', ['subl3'], 'columns', dict(wm_class=['Subl3'])),
-    ('a', 'audio', ['vkplayer'], 'columns', dict(title=['VK audio player'])),
+    ('m', 'mail', ['thunderbird'], 'monadtall', dict(wm_class=['Thunderbird'])),
+    ('d', 'dev', ['subl3'], 'monadtall', dict(wm_class=['Subl3'])),
+    ('a', 'audio', ['vkplayer'], 'monadtall', dict(title=['VK audio player'])),
     ('g', 'games', ['steam'], 'max', dict(wm_class=[
         re.compile('^Steam|csgo_linux64$')
     ], title=[
         re.compile('^Steam$')
     ])),
-    ('v', 'var', [], 'columns', dict()),
+    ('v', 'var', [], 'monadtall', dict()),
     ('n', 'notes', ['peek-desktop'], 'max', dict(title=['Peek App'])),
 )
 
@@ -184,7 +193,7 @@ for g_hotkey, g_name, g_startup, g_layout, g_match_kwargs in GROUP_DEFS:
 
 # I have three layouts here: Columns, Max & Zoomy
 layouts = [
-    Columns(
+    layout.MonadTall(
         border_normal='#000000',
         border_focus=WidgetOpts.HIGHLIGHT_COLOR,
         border_width=2,
