@@ -1,9 +1,12 @@
 from threading import Thread
 import redis
-# from weakref import proxy
 from json import loads, dumps
 import logging
 from time import sleep
+
+
+# This is my own IPC implementation that I use because DBus does some
+# real weird shit within Qtile. "So I've decided to make my own." - Me.
 
 
 class RedEvent(object):

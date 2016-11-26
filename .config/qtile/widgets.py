@@ -8,33 +8,23 @@ from urllib import urlencode
 import urllib2
 import json
 from subprocess import Popen, PIPE
-from threading import Thread, current_thread
 from re import findall
 # import dbus
 import time
-import socket
 import iwlib
-from select import select
-# from dbus.mainloop.glib import DBusGMainLoop
-# from gi.repository import GObject
-# import gobject
 from weakref import proxy
 from redobject import RedObject
 from cal import get_next_event
-from utils import nonblocking, NonBlockingSpawn
+from utils import NonBlockingSpawn
 import os
 import cairocffi
 
 
 class RSS(base.ThreadedPollText):
-    """Display RSS feeds updates using the canto console reader"""
+    """
+    Displays newest article from pravda.com.ua
+    """
     orientations = base.ORIENTATION_HORIZONTAL
-#    defaults = [
-#        ("fetch", False, "Whether to fetch new items on update"),
-#        ("feeds", [], "List of feeds to display, empty for all"),
-#        ("one_format", "{name}: {number}", "One feed display format"),
-#        ("all_format", "{number}", "All feeds display format"),
-#    ]
 
     def __init__(self, **config):
         config['update_interval'] = 0.25
@@ -42,18 +32,15 @@ class RSS(base.ThreadedPollText):
         self.last_entry = None
         self.pos = -1
         base.ThreadedPollText.__init__(self, **config)
-#        self.add_defaults(Canto.defaults)
 
     def button_press(self, x, y, button):
         if self.last_entry is not None:
             pass
-#            subprocess.Popen([])
 
     def _update(self):
         feed = feedparser.parse('http://www.pravda.com.ua/rss/view_mainnews/')
         entry = feed.entries[0]
         self.last_entry = entry
-        # self.pos = -1
 
     def poll(self):
         if self.last_entry is None or self.pos >= len(self.last_entry.title) + 2:
@@ -64,19 +51,14 @@ class RSS(base.ThreadedPollText):
 
 
 class KBLayout(base.ThreadedPollText):
-    """Display RSS feeds updates using the canto console reader"""
+    """
+    Shows current keyboard layout.
+    """
     orientations = base.ORIENTATION_HORIZONTAL
-#    defaults = [
-#        ("fetch", False, "Whether to fetch new items on update"),
-#        ("feeds", [], "List of feeds to display, empty for all"),
-#        ("one_format", "{name}: {number}", "One feed display format"),
-#        ("all_format", "{number}", "All feeds display format"),
-#    ]
 
     def __init__(self, **config):
         config['update_interval'] = 1
         base.ThreadedPollText.__init__(self, **config)
-#        self.add_defaults(Canto.defaults)
 
     def button_press(self, x, y, button):
         pass
@@ -88,16 +70,15 @@ class KBLayout(base.ThreadedPollText):
 
 
 class Ping(base._TextBox, NonBlockingSpawn):
+    """
+    Displays current Wi-Fi ESSID & ICMP latency.
+    """
     orientations = base.ORIENTATION_HORIZONTAL
 
     def __init__(self, **config):
-        # config['foreground'] = '#F05040'
-        # config['font'] = 'DejaVu Sans Medium'
-        # self.text = '???'
         self.ping = '?'
         self.last_text = ''
         self.wlan_name = '-'
-        # self.foreground = '#FFFFFF'
         base._TextBox.__init__(self, **config)
 
     def _configure(self, *args, **kwargs):
@@ -161,6 +142,9 @@ class Ping(base._TextBox, NonBlockingSpawn):
 
 
 class OpenWeatherMap(base.ThreadedPollText):
+    """
+    Displays weather from openweathermap.org
+    """
     orientations = base.ORIENTATION_HORIZONTAL
 
     ABS_ZERO = 273.15
@@ -195,49 +179,13 @@ class OpenWeatherMap(base.ThreadedPollText):
 
 
 class NowPlayingWidget(base._TextBox):
+    """
+    Displays current song from VKPlayer.
+    https://github.com/and3rson/vkplayer
+
+    Also uses my own IPC implementation.
+    """
     orientations = base.ORIENTATION_HORIZONTAL
-
-    # class Poller(Thread):
-    #     def __init__(self, on_song_changed):
-    #         Thread.__init__(self)
-    #         self.on_song_changed = on_song_changed
-
-    #     def run(self):
-    #         self.sock = None
-    #         self._connect()
-    #         while True:
-    #             try:
-    #                 i, o, e = select([self.sock], [], [], 1)
-    #                 if self.sock in i:
-    #                     data = self.sock.recv(1024).strip()
-    #                     if not data:
-    #                         print 'Connection dropped, reconnecting...'
-    #                         self._connect()
-    #                         continue
-    #                     else:
-    #                         for line in data.split('\n'):
-    #                             args = line.split(':::')
-    #                             if args[0] == 'current_song':
-    #                                 self.on_song_changed(bool(int(args[1])), args[2])
-    #             except Exception as e:
-    #                 logger.exception(e.message)
-    #                 self._connect()
-
-    #     def _connect(self):
-    #         connected = False
-    #         while not connected:
-    #             try:
-    #                 self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    #                 self.sock.connect('/tmp/vkplayer.sock')
-    #                 self.sock.send('get_current_song\n\n')
-    #             except:
-    #                 logger.error('Failed to connect to VKPlayer, reconnecting in 1s...')
-    #                 time.sleep(1)
-    #             else:
-    #                 connected = True
-
-    #     def send(self, cmd):
-    #         self.sock.send(cmd + '\n')
 
     class VKPlayer(RedObject):
         def __init__(self, widget):
@@ -249,10 +197,6 @@ class NowPlayingWidget(base._TextBox):
             logger.error('VKPlayer.on_connected_handler()')
             self.broadcast('request_state')
 
-        # def on_state_changed_handler(self, data):
-        #     logger.error('INIT')
-        #     self.widget._update_text(*data)
-
     def __init__(self, **config):
         self.is_downloading = False
         self.is_playing = False
@@ -260,7 +204,6 @@ class NowPlayingWidget(base._TextBox):
         self.current_song = 'Empty'
         self.last_scroll = 0
         try:
-            # config['font'] = 'DejaVu Sans Mono Bold'
             self.max_len = 40
             self.prev_len = 0
             self.shifted = 0
@@ -268,7 +211,6 @@ class NowPlayingWidget(base._TextBox):
             base._TextBox.__init__(self, **config)
 
             self.vkplayer = NowPlayingWidget.VKPlayer(self)
-            # self.vkplayer.start()
         except Exception as e:
             logger.exception(e.message)
 
@@ -296,35 +238,11 @@ class NowPlayingWidget(base._TextBox):
 
     def _shift(self, *args):
         self.timeout_add(0.2, self._shift)
-
-        # self.text = u'{} {}'.format(self.current_icon, self.current_song)
-#        self.current_song = self.current_song[1:] + self.current_song[:1]
         self._draw()
-#        if self.prev_len == len(self.current_song):
         self.shifted += 1
         if (self.shifted >= len(self.current_song) + len(self.sep)) or (len(self.current_song) != self.prev_len):
             self.shifted = 0
         self.prev_len = len(self.current_song)
-
-        # self.bus = dbus.SessionBus()
-
-    # def _on_song_changed(self, is_playing, current_song):
-    #     self._update_text()
-        # logger.error('INFO: {} {}'.format(is_playing, current_song))
-
-    # def timer_setup(self):
-    #     self._get_current_song()
-    #     self.timeout_add(5, self.timer_setup)
-
-    # def _get_current_song(self):
-    #     try:
-    #         # logger.error('GET CURRENT')
-    #         vkplayer = self.bus.get_object('org.dunai.vkplayer', '/org/dunai/vkplayer')
-    #         get_current_song = vkplayer.get_dbus_method('get_current_song', 'org.dunai.vkplayer')
-    #         is_playing, current_song = get_current_song()
-    #         self._update_text(is_playing, current_song)
-    #     except Exception as e:
-    #         logger.exception(e.message)
 
     def _update_state(self, is_downloading, is_playing, current_song):
         try:
@@ -336,26 +254,6 @@ class NowPlayingWidget(base._TextBox):
 
             current_song = current_song.decode('utf-8')
             self.current_song = current_song
-            """
-            try:
-                # s = u'{} {}'.format(u'\uF019' if is_downloading else u'\uF04B' if is_playing else u'\uF04C', current_song)
-                self.current_icon = u'\uF019' if is_downloading else u'\uF04B' if is_playing else u'\uF04C'
-                self.is_downloading = is_downloading
-                self.is_playing = is_playing
-                if len(current_song) > self.max_len:
-                    self.current_song = s[:self.max_len]
-                else:
-                    self.current_song = s.ljust(self.max_len, ' ')
-                # if is_playing:
-                #     self.foreground = '#55CC55'
-                # else:
-                #     self.foreground = '#AAAA55'
-            except:
-                self.current_icon = '!'
-                self.is_downloading = False
-                self.is_playing = False
-                self.current_song = 'N/A'
-            """
 
             self._draw()
         except Exception as e:
@@ -373,9 +271,7 @@ class NowPlayingWidget(base._TextBox):
             self.foreground = '#99EE99'
         else:
             self.foreground = '#EEEE99'
-#        if redraw:
-#            self.bar.draw()
-#        else:
+
         self.draw()
 
     def _debounce(self):
@@ -407,103 +303,11 @@ class NowPlayingWidget(base._TextBox):
                 self.vkplayer.broadcast('play_next')
 
 
-class CurrentLayoutIcon(base._TextBox):
-    """
-    Display the name of the current layout of the current group of the screen,
-    the bar containing the widget, is on.
-    """
-    orientations = base.ORIENTATION_HORIZONTAL
-
-    defaults = [
-        ('scale', 1, 'Scale factor, defaults to 1'),
-    ]
-
-    def __init__(self, **config):
-        base._TextBox.__init__(self, "", **config)
-        self.add_defaults(CurrentLayoutIcon.defaults)
-        self.scale = 1.0 / self.scale
-
-        self.length_type = bar.STATIC
-        self.length = 0
-
-    def _configure(self, qtile, bar):
-        base._TextBox._configure(self, qtile, bar)
-        self.text = self.bar.screen.group.layouts[0].name
-        self.icons = {
-            'max': os.path.expanduser('~/.icons/layout_max.png'),
-            'treetab': os.path.expanduser('~/.icons/layout_treetab.png'),
-            'columns': os.path.expanduser('~/.icons/layout_columns.png'),
-        }
-        self.surfaces = {}
-        self.setup_images()
-        self.setup_hooks()
-
-    def setup_hooks(self):
-        def hook_response(layout, group):
-            if group.screen is not None and group.screen == self.bar.screen:
-                self.current_layout = layout.name
-                # self.text = layout.name
-                self.bar.draw()
-        hook.subscribe.layout_change(hook_response)
-
-    def button_press(self, x, y, button):
-        if button == 1:
-            self.qtile.cmd_next_layout()
-        elif button == 2:
-            self.qtile.cmd_prev_layout()
-
-    def draw(self):
-        self.drawer.clear(self.background or self.bar.background)
-        self.drawer.ctx.set_source(self.surfaces[self.current_layout])
-        self.drawer.ctx.paint()
-        self.drawer.draw(offsetx=self.offset, width=self.length)
-
-    def setup_images(self):
-        for key, path in self.icons.items():
-            img = cairocffi.ImageSurface.create_from_png(path)
-            # try:
-            #     path = os.path.join(self.theme_path, name)
-            #     img = cairocffi.ImageSurface.create_from_png(path)
-            # except cairocffi.Error:
-            #     self.theme_path = None
-            #     logger.warning('Battery Icon switching to text mode')
-            #     return
-            input_width = img.get_width()
-            input_height = img.get_height()
-
-            sp = float(input_height) / (self.bar.height - 1)
-
-            logger.error('x ' + str(sp))
-
-            logger.error('{} {}'.format(input_height, self.bar.height))
-
-            width = float(input_width) / sp
-            if width > self.length:
-                self.length = int(width) + self.actual_padding * 2
-
-            # print 'W', width
-            # self.length = width
-            # print 'W2', width
-            # print 'L', self.length
-
-            imgpat = cairocffi.SurfacePattern(img)
-
-            scaler = cairocffi.Matrix()
-
-            scaler.scale(sp, sp)
-            scaler.scale(self.scale, self.scale)
-            # diff = self.scale - 1
-            factor = (1 - 1 / self.scale) / 2
-            # if diff != 0:
-            scaler.translate(-width * factor, -width * factor)
-            scaler.translate(self.actual_padding * -1, 0)
-            imgpat.set_matrix(scaler)
-
-            imgpat.set_filter(cairocffi.FILTER_BEST)
-            self.surfaces[key] = imgpat
-
-
 class Volume2(Volume):
+    """
+    Patched version of Volume widget that shows icon font chars.
+    Psst: I use nerd-fonts package for this.
+    """
     def _update_drawer(self):
         if self.theme_path:
             self.drawer.clear(self.background or self.bar.background)
@@ -535,6 +339,10 @@ class Volume2(Volume):
 
 
 class ThermalSensor2(ThermalSensor):
+    """
+    Patched version of ThermalSensor widget that shows icon font chars.
+    Psst: I use nerd-fonts package for this.
+    """
     def poll(self):
         # logger.error('{} {}'.format(self.foreground_normal, self.foreground_alert))
         temp_values = self.get_temp_sensors()
@@ -555,6 +363,10 @@ class ThermalSensor2(ThermalSensor):
 
 
 class Battery2(Battery):
+    """
+    Patched version of Battery widget that shows icon font chars.
+    Psst: I use nerd-fonts package for this.
+    """
     def update(self):
         ntext = u'\uf0e7 {}'.format(self._get_text())
         if ntext != self.text:
@@ -563,6 +375,14 @@ class Battery2(Battery):
 
 
 class UnreadMail(base._TextBox):
+    """
+    Displays count of unread messages in ThunderBird.
+    Requires "Unread Count" plugin.
+
+    https://addons.mozilla.org/en-US/thunderbird/addon/unread-count/?src=api
+
+    Psst: I use nerd-fonts package for this.
+    """
     orientations = base.ORIENTATION_HORIZONTAL
 
     def __init__(self, **config):
@@ -597,8 +417,6 @@ class UnreadMail(base._TextBox):
         unread_file.close()
 
         self.timeout_add(0, self._ready)
-        # self.ping = str(self.layout)
-        # self._user_config['foreground'] = '#00FF00'
 
     def _ready(self):
         # \uf1eb
@@ -613,6 +431,10 @@ class UnreadMail(base._TextBox):
 
 
 class NextEvent(base._TextBox, NonBlockingSpawn):
+    """
+    Displays time to next event in Google Calendar.
+    Psst: I use nerd-fonts package for this.
+    """
     orientations = base.ORIENTATION_HORIZONTAL
 
     def __init__(self, **config):
@@ -644,6 +466,10 @@ class NextEvent(base._TextBox, NonBlockingSpawn):
 
 
 class GroupBox2(GroupBox):
+    """
+    A patched version of GroupBox that shows info
+    # about active groups of each monitor.
+    """
     defaults = GroupBox.defaults + [
         (
             "other_current_screen_border",
@@ -701,8 +527,6 @@ class GroupBox2(GroupBox):
         offset = 0
         for i, g in enumerate(self.groups):
             to_highlight = False
-            # is_block = (self.highlight_method == 'block')
-            # is_line = (self.highlight_method == 'line')
 
             is_block = False
             is_line = False
@@ -770,10 +594,8 @@ class GroupBox2(GroupBox):
 
 
 class TaskList2(base._Widget, base.PaddingMixin, base.MarginMixin):
-    """Displays the icon and name of each window in the current group
-
-    Contrary to WindowTabs this is an interactive widget.  The window that
-    currently has focus is highlighted.
+    """
+    A patch version of TaskList widget that fixes icon positions.
     """
     orientations = base.ORIENTATION_HORIZONTAL
     defaults = [
@@ -1017,8 +839,7 @@ class TaskList2(base._Widget, base.PaddingMixin, base.MarginMixin):
 
 class ArchLogo(base._TextBox):
     """
-    Display the name of the current layout of the current group of the screen,
-    the bar containing the widget, is on.
+    Displays a cute Arch Linux icon.
     """
     orientations = base.ORIENTATION_HORIZONTAL
 
@@ -1028,7 +849,7 @@ class ArchLogo(base._TextBox):
 
     def __init__(self, **config):
         base._TextBox.__init__(self, "", **config)
-        self.add_defaults(CurrentLayoutIcon.defaults)
+        self.add_defaults(ArchLogo.defaults)
         self.scale = 1.0 / self.scale
 
         self.length_type = bar.STATIC
@@ -1058,20 +879,13 @@ class ArchLogo(base._TextBox):
         if width > self.length:
             self.length = int(width) + self.actual_padding * 2
 
-        # print 'W', width
-        # self.length = width
-        # print 'W2', width
-        # print 'L', self.length
-
         imgpat = cairocffi.SurfacePattern(img)
 
         scaler = cairocffi.Matrix()
 
         scaler.scale(sp, sp)
         scaler.scale(self.scale, self.scale)
-        # diff = self.scale - 1
         factor = (1 - 1 / self.scale) / 2
-        # if diff != 0:
         scaler.translate(-width * factor, -width * factor)
         scaler.translate(self.actual_padding * -1, 0)
         imgpat.set_matrix(scaler)
@@ -1079,34 +893,14 @@ class ArchLogo(base._TextBox):
         imgpat.set_filter(cairocffi.FILTER_BEST)
         self.surface = imgpat
 
-# class Test(base._TextBox):
-#     orientations = base.ORIENTATION_HORIZONTAL
-
-#     def __init__(self, **config):
-#         base._TextBox.__init__(self, **config)
-
-#     def timer_setup(self):
-#         self._update()
-
-#     def button_press(self, x, y, button):
-#         pass
-
-#     def _update(self):
-#         logger.error('start')
-#         time.sleep(2)
-#         logger.error('end')
-#         self.timeout_add(5, self._update)
-
 
 class DiskUsage(base._TextBox, NonBlockingSpawn):
+    """
+    Displays dist usage info.
+    """
     orientations = base.ORIENTATION_HORIZONTAL
 
     def __init__(self, **config):
-        # config['foreground'] = '#F05040'
-        # config['font'] = 'DejaVu Sans Medium'
-        # self.text = '???'
-        # self.text = '?'
-        # self.foreground = '#FFFFFF'
         base._TextBox.__init__(self, **config)
 
     def _configure(self, *args, **kwargs):

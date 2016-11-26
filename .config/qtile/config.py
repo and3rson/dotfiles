@@ -1,10 +1,4 @@
-# Copyright (c) 2010 Aldo Cortesi
-# Copyright (c) 2010, 2014 dequis
-# Copyright (c) 2012 Randall Ma
-# Copyright (c) 2012-2014 Tycho Andersen
-# Copyright (c) 2012 Craig Barnes
-# Copyright (c) 2013 horsik
-# Copyright (c) 2013 Tao Sauvage
+# Copyright (c) 2016 Andrew Dunai
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -31,19 +25,29 @@ from libqtile.config import Key, Screen, Group, Drag, Click, Match
 from libqtile.command import lazy
 from libqtile import layout, bar, widget, hook
 from libqtile.layout.columns import Columns
-from libqtile.layout.tree import TreeTab
-from libqtile.log_utils import logger
 import commands
 import widgets
-# from powerline.bindings.qtile.widget import PowerlineTextBox
+
+TERM_APP = 'roxterm'
+HOME_TERM_CMD = 'roxterm -e stmux'
 
 ctrl = 'control'
 alt = 'mod1'
-lock = 'mod3'
+lock = 'mod3'  # I have CapsLock remapped to mod3. Didn't use it much yet.
 mod = 'mod4'
+shift = 'shift'
+
+# Psst: I use nerd-fonts package for icons.
+
+
+class WidgetOpts:
+    LOCATION = 'Lviv, Ukraine'
+    MONOSPACE_FONT = 'DejaVu Sans Mono'
+    HIGHLIGHT_COLOR = '#F05040'
+
 
 keys = [
-    # Switch between windows in current stack pane
+    # Switch between windows in current group
     Key(
         [mod], "Down",
         lazy.layout.down()
@@ -61,18 +65,6 @@ keys = [
         lazy.layout.right()
     ),
 
-    # Switch window focus to other pane(s) of stack
-    Key(
-        [mod], "space",
-        lazy.layout.next()
-    ),
-
-    # Swap panes of split stack
-    Key(
-        [mod, "shift"], "space",
-        lazy.layout.rotate()
-    ),
-
     # Grow columns
     Key(
         [mod], "bracketleft",
@@ -82,7 +74,6 @@ keys = [
         [mod], "bracketright",
         lazy.layout.shrink(),
     ),
-    Key([mod, ctrl], "Return", lazy.layout.toggle_split()),
 
     # Move between groups
     Key(
@@ -94,6 +85,7 @@ keys = [
         lazy.screen.next_group()
     ),
 
+    # Switch to other screen (when using two monitors)
     Key(
         [mod], "space",
         lazy.function(commands.SwitchScreen())
@@ -103,46 +95,63 @@ keys = [
         lazy.function(commands.SwitchScreen())
     ),
 
-    # Toggle between split and unsplit sides of stack.
-    # Split = all windows displayed
-    # Unsplit = 1 window displayed, like Max layout, but still with
-    # multiple stack panes
-#    Key(
-#        [mod, "shift"], "Return",
-#        lazy.layout.toggle_split()
-#    ),
-    Key([mod], "Return", lazy.spawn("sakura -e stmux")),
+    Key([mod], "Return", lazy.spawn(TERM_APP)),
 
-    # Toggle between different layouts as defined below
+    # Switch to next layout
     Key([mod], "z", lazy.next_layout()),
+
+    # Kill window
     Key([alt], "F4", lazy.window.kill()),
 
+    # Restart Qtile
     Key([mod, "control"], "r", lazy.restart()),
+    # Quit Qtile
     Key([mod, "control"], "q", lazy.shutdown()),
+
+    # Run window selector script
     Key([mod], "p", lazy.function(commands.WindowSelector())),
-    # Key([mod], "r", lazy.spawncmd()),
-    Key([mod], "r", lazy.spawn("dmenu_run -fn 'DejaVu Sans Mono-10' -sb '#F05040' -sf '#000' -nb black -dim 0.5 -p '>' -l 10")),
 
-    Key([mod], "c", lazy.spawn('sakura -e "nano /home/anderson/.config/qtile/config.py"')),
-    Key([mod], "Print", lazy.spawn('/sh/sshot.py')),
+    # Run dmenu launcher for apps
+    Key([mod], "r", lazy.spawn("dmenu_run -fn 'DejaVu Sans Mono-10' -sb {} -sf '#000' -nb black -dim 0.5 -p '>' -l 10".format(
+        WidgetOpts.HIGHLIGHT_COLOR
+    ))),
 
+    # Open config editor
+    Key([mod], "c", lazy.spawn('{} -e "nano /home/anderson/.config/qtile/config.py"'.format(TERM_APP))),
+
+    # Capture screenshot
+    Key([mod], "Print", lazy.spawn(os.path.expanduser('~/.config/qtile/bin/sshot.py'))),
+
+    # Toggle to terminal pane and back. Yeah, I cannot stop using the F12 hotkey since Guake times. Good old Guake.
     Key([], 'F12', lazy.function(commands.ToggleTerm())),
 
+    # Volume management
     Key([], 'XF86AudioRaiseVolume', lazy.spawn('amixer -q sset Master 4%+')),
     Key([], 'XF86AudioLowerVolume', lazy.spawn('amixer -q sset Master 4%-')),
     Key([], 'XF86AudioMute', lazy.spawn('amixer -q sset Master toggle')),
 
+    # Brightness management
     Key([], 'XF86MonBrightnessUp', lazy.spawn('xbacklight -inc 10')),
     Key([], 'XF86MonBrightnessDown', lazy.spawn('xbacklight -dec 10')),
 
+    # Run screen locker
     Key([ctrl, alt], "l", lazy.spawn("/sh/i3lock.sh")),
+
+    # I hit this when a window gets to a wrong group despite filters. Happens to some apps.
     Key([ctrl, mod], "g", lazy.function(commands.FixGroups())),
 
+    # Just a test for my custom mod3 key (I have CapsLock remapped for this, set by xmodman in autorun.sh)
     Key([lock], 'space', lazy.function(commands.WindowSelector())),
 ]
 
+# Definitions of groups. The parts are:
+# - name & activation key
+# - full name (not sure if it's still used somewhere)
+# - commands to spawn here initially
+# - default layout
+# - arguments for `Match`es
 GROUP_DEFS = (
-    ('t', 'term', ['sakura -e stmux'], 'max', dict(wm_class=['Sakura'])),
+    ('t', 'term', [HOME_TERM_CMD], 'max', dict(wm_class=['Sakura', 'Roxterm'])),
     ('w', 'web', ['chromium', 'firefox'], 'max', dict(wm_class=['chromium', 'Firefox'])),
     ('i', 'im', ['telegram-desktop', 'slack'], 'zoomy', dict(wm_class=[
         'telegram-desktop', 'TelegramDesktop', 'Slack', 'www.flowdock.com__app_redeapp_main'
@@ -165,150 +174,179 @@ groups = [
     in enumerate(GROUP_DEFS)
 ]
 
-#    # mod1 + shift + letter of group = switch to & move focused window to group
 for g_hotkey, g_name, g_startup, g_layout, g_match_kwargs in GROUP_DEFS:
     keys.append(
         Key([mod], g_hotkey, lazy.group[g_name[0]].toscreen())
     )
+    keys.append(
+        Key([mod, shift], g_hotkey, lazy.window.togroup(g_name[0]))
+    )
 
+# I have three layouts here: Columns, Max & Zoomy
 layouts = [
     Columns(
         border_normal='#000000',
-        border_focus='#F05040',
+        border_focus=WidgetOpts.HIGHLIGHT_COLOR,
         border_width=2,
         grow_amount=0
     ),
-    # layout.Stack(num_stacks=2),
     layout.Max(),
     layout.Zoomy(
         columnwidth=300
     )
-    # TreeTab(
-    #     bg_color='#000000',
-    #     active_bg='#F05040',
-    #     active_fg='#FFFFFF',
-    #     font='DejaVu Sans',
-    #     inactive_bg='#000000',
-    #     inactive_fg='#FFFFFF',
-    #     fontsize=12,
-    #     panel_width=160,
-    #     margin_left=0,
-    #     padding_left=0,
-    #     border_width=0,
-    #     padding_x=5,
-    #     padding_y=5,
-    #     sections=['Default'],
-    #     section_fontsize=0,
-    #     section_top=0,
-    #     section_padding=0
-    # )
 ]
 
+# Default args for widgets
 widget_defaults = dict(
-    # font='FuraCode Nerd Font Medium',
     font='Roboto Medium',
     fontsize=12,
     padding=6,
     margin_y=0
 )
 
+# Config for group box to avoid duplication.
 group_box_config = dict(
     background='#000000',
     borderwidth=2, disable_drag=True,
     inactive='#888888', highlight_method='block',
     rounded=False,
-    # highlight_color=['#FF1177', '#FF1177'],
-    this_screen_border='#F05040', this_current_screen_border='#703020',
-    other_screen_border='#703020', other_current_screen_border='#F05040',
+    this_screen_border=WidgetOpts.HIGHLIGHT_COLOR, this_current_screen_border='#703020',
+    other_screen_border='#703020', other_current_screen_border=WidgetOpts.HIGHLIGHT_COLOR,
     urgent_border='#0077FF',
     current_highlight_method='block',
     other_highlight_method='border',
     font='Roboto Sans Bold',
     padding_x=1,
     margin_x=0
-#    padding=7,
-#    margin=0
 )
 
+# Screens config
+# You will see a lot of widget classes that end with "2".
+# These are the classes that I overrided in my `widgets.py` file
+# to tweak their behavior to what I want. Most of them include adding
+# custom icon font characters and colors, but some of them (e. g. GroupBox2)
+# have more things changed. See my `widgets.py` file for more info.
 screens = [
     Screen(
         top=bar.Bar(
             [
                 widget.CurrentLayoutIcon(scale=0.8),
                 widgets.GroupBox2(**group_box_config),
-                # widget.Sep(padding=2),
-                # widget.Sep(padding=2),
-                widget.Prompt(background='#F05040', font='DejaVu Sans Mono Bold', fontsize=12),
-                # PowerlineTextBox(),
-                widgets.TaskList2(rounded=False, max_title_width=200, highlight_method='block', border='#F05040'),
-                # widget.TextBox("default config", name="default"),
+                widget.Prompt(
+                    background=WidgetOpts.HIGHLIGHT_COLOR,
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    fontsize=12
+                ),
+                widgets.TaskList2(
+                    rounded=False,
+                    max_title_width=200,
+                    highlight_method='block',
+                    border=WidgetOpts.HIGHLIGHT_COLOR
+                ),
                 widget.Systray(),
-                # widget.LaunchBar([('firefox', 'firefox')]),
                 widget.Sep(padding=10),
-                # widget.BatteryIcon(),
-                # widget.Backlight(),
-                # widget.Clipboard(),
-                # widget.Sep(padding=5),
-                # widgets.TestWidget(),
-#                widget.Sep(padding=5),
                 widget.Clock(format='%Y-%m-%d %H:%M'),
             ],
             26
-            # background='#222222'
         ),
         bottom=bar.Bar(
             [
-                # widget.Spacer(),
                 widgets.ArchLogo(scale=0.8),
-                widgets.UnreadMail(font='DejaVu Sans Mono'),  # {hour:d}:{min:02d}'),
-                widgets.NextEvent(font='DejaVu Sans Mono'),  # {hour:d}:{min:02d}'),
+                widgets.UnreadMail(
+                    font=WidgetOpts.MONOSPACE_FONT
+                ),
+                widgets.NextEvent(
+                    font=WidgetOpts.MONOSPACE_FONT
+                ),
                 widget.Sep(padding=10),
-                widgets.Battery2(charge_char='+', discharge_char='-', foreground='#5090F0', format=u'{char} {percent:2.0%}'),  # {hour:d}:{min:02d}'),
-                widgets.ThermalSensor2(font='DejaVu Sans Mono', foreground='#FFFFCC', foreground_alert='#FF0000'),
+                widgets.Battery2(
+                    charge_char='+',
+                    discharge_char='-',
+                    foreground='#5090F0',
+                    format=u'{char} {percent:2.0%}'
+                ),
+                widgets.ThermalSensor2(
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    foreground='#FFFFCC',
+                    foreground_alert='#FF0000'
+                ),
                 widget.Sep(padding=10),
-                # widget.Notify(),
-                # widget.Pacman(),
-                # widget.DF(),
-                # widget.Sep(padding=5),
-                # widget.KeyboardLayout(configured_keyboards=['us', 'ru', 'ua']),
-                widgets.KBLayout(font='DejaVu Sans Mono', foreground='#CCFFCC'),
-                widgets.Volume2(font='DejaVu Sans Mono', foreground='#CCFFFF', update_interval=0.5),  # theme_path='/usr/share/icons/Faenza/status/64/'),
-#                widget.Sep(padding=5),
-                widgets.OpenWeatherMap(appid='5041ca48d55a6669fe8b41ad1a8af753', location='Lviv, Ukraine', font='DejaVu Sans Mono', foreground='#77CCFF'),
+                widgets.KBLayout(
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    foreground='#CCFFCC'
+                ),
+                widgets.Volume2(
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    foreground='#CCFFFF',
+                    update_interval=0.5
+                ),
+                widgets.OpenWeatherMap(
+                    appid='5041ca48d55a6669fe8b41ad1a8af753',
+                    # I hereby disclose my OpenWeatherMap API token.
+                    # Please show me some respect and do not abuse it. <3
+                    location=WidgetOpts.LOCATION,
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    foreground='#77CCFF'
+                ),
                 widget.Sep(padding=10),
-                widget.CPUGraph(border_color='#11BBEE.3', border_width=1, graph_color='#11BBEE', fill_color='#11BBEE.3', samples=60, frequency=0.25, line_width=2, type='linefill', width=50),
-                widget.MemoryGraph(border_color='#22CC77.3', border_width=1, graph_color='#22CC77', fill_color='#22CC77.3', samples=60, frequency=0.25, line_width=2, type='linefill', width=50),
-                widget.Sep(padding=10),
-                widgets.NowPlayingWidget(foreground='#F0F040', font='DejaVu Sans Mono'),
+                widget.CPUGraph(
+                    border_color='#11BBEE.3',
+                    border_width=1,
+                    graph_color='#11BBEE',
+                    fill_color='#11BBEE.3',
+                    samples=60,
+                    frequency=0.25,
+                    line_width=2,
+                    type='linefill',
+                    width=50
+                ),
+                widget.MemoryGraph(
+                    border_color='#22CC77.3',
+                    border_width=1,
+                    graph_color='#22CC77',
+                    fill_color='#22CC77.3',
+                    samples=60,
+                    frequency=0.25,
+                    line_width=2,
+                    type='linefill',
+                    width=50
+                ),
+                widget.Sep(
+                    padding=10
+                ),
+                widgets.NowPlayingWidget(
+                    foreground='#F0F040',
+                    font=WidgetOpts.MONOSPACE_FONT
+                ),
                 widget.Spacer(),
-                widgets.DiskUsage(root='/', font='DejaVu Sans Mono'),
+                widgets.DiskUsage(
+                    root='/',
+                    font=WidgetOpts.MONOSPACE_FONT
+                ),
                 widget.Sep(padding=10),
-                #widget.KeyboardKbdd(),
-                # widget.Mpris(),
-#                widget.Sep(padding=5),
-                # widgets.RSS(),
-                widgets.Ping(font='DejaVu Sans Mono'),
-                # widgets.Test(),
+                widgets.Ping(font=WidgetOpts.MONOSPACE_FONT),
             ],
             22
         )
-    )
-]
-
-screens += [
+    ),
     Screen(
         top=bar.Bar(
             [
                 widget.CurrentLayoutIcon(scale=0.8),
                 widgets.GroupBox2(**group_box_config),
-                widgets.TaskList2(rounded=False, max_title_width=200, highlight_method='block', border='#F05040'),
+                widgets.TaskList2(
+                    rounded=False,
+                    max_title_width=600,
+                    highlight_method='block',
+                    border=WidgetOpts.HIGHLIGHT_COLOR
+                ),
             ],
             22
         )
     ),
 ]
 
-# Drag floating layouts.
+# Make floating layouts draggable
 mouse = [
     Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
     Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
@@ -316,6 +354,7 @@ mouse = [
 ]
 
 
+# Make dialogs float & appear at the middle of the screen
 @hook.subscribe.client_new
 def floating_dialogs(window):
     dialog = window.window.get_wm_type() == 'dialog'
@@ -324,21 +363,11 @@ def floating_dialogs(window):
         window.floating = True
         window.float_x = 0
         window.float_y = 0
-#        raise Exception(str(window.group))
-#        window.tweak_float(w=500, h=600, x=700, y=800, dw=500, dh=500, dx=700, dy=800)
-#        window.tweak_float(x=300, y=400)
-#        window.cmd_set_size_floating(1000, 1000, 0, 0)
-#        window.cmd_set_position_floating(100, 200, 0, 0)
-#        raise Exception(str(window.get_position()))
-#        window.place(
-#            100, 200,
-#            window.width, window.height,
-#            window.borderwidth, window.bordercolor
-#        )
 
 
+# Always keep at least one terminal app instance running on the first tab
 @hook.subscribe.client_killed
-def respawn_sakura(window):
+def respawn_term(window):
     if window.group.name == 't':
         terminals = [
             w
@@ -347,20 +376,19 @@ def respawn_sakura(window):
             if w['group'] == 't' and w['id'] != window.cmd_info()['id']
         ]
         if len(terminals) == 0:
-            window.qtile.cmd_spawn('sakura -e stmux')
+            window.qtile.cmd_spawn('{}'.format(HOME_TERM_CMD))
 
 
+# Run autostart.sh & xrandr.sh
 @hook.subscribe.startup_once
 def autostart():
-    home = os.path.expanduser('~/.config/qtile/autostart.sh')
-    subprocess.call([home])
+    subprocess.call(os.path.expanduser('~/.config/qtile/autostart.sh'))
     subprocess.call(os.path.expanduser('~/.config/qtile/bin/xrandr.sh'))
 
 
-# look for new monitor
+# Look for new monitor and call xrandr.sh to reconfigure stuff once screen config changes
 @hook.subscribe.screen_change
 def restart_on_randr(qtile, ev):
-#    call("setup_screens")
     subprocess.call(os.path.expanduser('~/.config/qtile/bin/xrandr.sh'))
     qtile.cmd_restart()
 
@@ -383,4 +411,6 @@ focus_on_window_activation = "smart"
 #
 # We choose LG3D to maximize irony: it is a 3D non-reparenting WM written in
 # java that happens to be on java's whitelist.
-wmname = "LG3D"
+# wmname = "LG3D"
+# Nope, I want everyone know I use Qtile :>
+wmname = 'QTile'

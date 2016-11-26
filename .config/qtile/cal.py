@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 # from __future__ import print_function
+# This file is just a stolen example from Google Calendar API example.
+# I was too lazy to reimplement it. It does what I want already.
+
 import httplib2
 import os
 
@@ -13,14 +16,6 @@ import pytz
 
 import datetime
 
-# try:
-#     import argparse
-#     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
-# except ImportError:
-#     flags = None
-
-# If modifying these scopes, delete your previously saved credentials
-# at ~/.credentials/calendar-python-quickstart.json
 SCOPES = 'https://www.googleapis.com/auth/calendar.readonly'
 CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Google Calendar API Python Quickstart'
@@ -47,6 +42,7 @@ def get_credentials():
     if not credentials or credentials.invalid:
         flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
         flow.user_agent = APPLICATION_NAME
+        # This is some weird shit, so I just commented it out.
         # if flags:
         #     credentials = tools.run_flow(flow, store, flags)
         # else: # Needed only for compatibility with Python 2.6
@@ -77,10 +73,6 @@ def get_next_event():
         delta = parser.parse(start) - datetime.datetime.now().replace(tzinfo=pytz.timezone('Europe/Kiev'))
         if delta.seconds < 0:
             continue
-#        return u'через {}: {}'.format(
-#            format_timedelta(parser.parse(start) - datetime.datetime.now().replace(tzinfo=pytz.timezone('Europe/Kiev'))),
-#            event['summary']
-#        )
         return format_timedelta(delta, format='short')
     return 'No events'
 
