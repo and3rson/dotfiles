@@ -166,7 +166,7 @@ keys = [
 # - default layout
 # - arguments for `Match`es
 GROUP_DEFS = (
-    ('t', 'term', [HOME_TERM_CMD], 'max', dict(wm_class=['Sakura', 'Roxterm'])),
+    ('t', 'term', [HOME_TERM_CMD], 'max', dict()),
     ('w', 'web', ['chromium', 'firefox'], 'max', dict(wm_class=['chromium', 'Firefox'])),
     ('i', 'im', ['telegram-desktop', 'slack'], 'zoomy', dict(wm_class=[
         'telegram-desktop', 'TelegramDesktop', 'Slack', 'www.flowdock.com__app_redeapp_main'
@@ -241,11 +241,19 @@ group_box_config = dict(
 # to tweak their behavior to what I want. Most of them include adding
 # custom icon font characters and colors, but some of them (e. g. GroupBox2)
 # have more things changed. See my `widgets.py` file for more info.
+def make_current_layout_widget():
+    w = widget.CurrentLayoutIcon(scale=0.8)
+    w._update_icon_paths()
+    if w.find_icon_file_path('max'):
+        return w
+    else:
+        return widget.CurrentLayout()
+
 screens = [
     Screen(
         top=bar.Bar(
             [
-                widget.CurrentLayoutIcon(scale=0.8),
+                make_current_layout_widget(),
                 widgets.GroupBox2(**group_box_config),
                 widget.Prompt(
                     background=WidgetOpts.HIGHLIGHT_COLOR,
@@ -347,7 +355,7 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                widget.CurrentLayoutIcon(scale=0.8),
+                make_current_layout_widget(),
                 widgets.GroupBox2(**group_box_config),
                 widgets.TaskList2(
                     rounded=False,
