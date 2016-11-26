@@ -70,6 +70,10 @@ keys = [
         lazy.layout.grow()
     ),
     Key(
+        [mod], 'equal',
+        lazy.layout.grow()
+    ),
+    Key(
         [mod], 'minus',
         lazy.layout.shrink()
     ),
