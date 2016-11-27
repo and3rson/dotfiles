@@ -1,4 +1,5 @@
 from libqtile.log_utils import logger
+from subprocess import Popen, PIPE
 
 
 def nonblocking(on_result):
@@ -36,3 +37,16 @@ class NonBlockingSpawn(object):
 
         future = self.qtile.run_in_executor(fn)
         future.add_done_callback(on_done)
+
+
+class DMenu(NonBlockingSpawn, object):
+    def __init__(self, run=False, **kwargs):
+        self.kwargs = kwargs
+        self.app = 'dmenu_run' if run else 'dmenu'
+
+    def run(self, items, callback):
+        self.spawn(lambda: self._run(items), callback)
+
+    def _run(self, items):
+        args = [self.app] + map(str, sum(map(list, self.kwargs.items()), []))
+        return Popen(args, stdout=PIPE, stderr=PIPE).communicate('\n'.join(items))[0]
