@@ -10,6 +10,7 @@ nm-applet &
 # hsetroot -solid "#000000" &
 # hsetroot -center 86ffb87572d657f335cd7cd828c70de3.jpg &
 # hsetroot -fill ~/.wallpapers/new/can2.jpg &
-feh --bg-fill ~/.wallpapers/new/can2.jpg &
+# feh --bg-fill ~/.wallpapers/new/can2.jpg &
+feh --bg-fill ~/.wallpapers/new/zbFCJbj.jpg &
 # compton -I 0.04 -O 0.04 -f --unredir-if-possible -b
 compton --config ~/.compton.conf -b -f
