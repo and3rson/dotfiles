@@ -1,5 +1,6 @@
 from libqtile import hook
 from libqtile.log_utils import logger
+import os
 import subprocess
 import re
 from utils import NonBlockingSpawn
@@ -59,10 +60,6 @@ class SwitchScreen(object):
         else:
             next_index = 0
         qtile.cmd_to_screen(next_index)
-        # print self.bus
-        # self.bus.broadcast('flicker')
-        # if index == 0:
-        # logger.error(str())
 
 
 class WindowSelector(NonBlockingSpawn):
@@ -92,15 +89,17 @@ class WindowSelector(NonBlockingSpawn):
                 id = id + 1
 
         self.qtile = qtile
-        self.spawn(self.execute, self.on_execute_result)
+        screen = qtile.currentScreen.cmd_info()
+        self.spawn(lambda: self.execute(screen), self.on_execute_result)
 
-    def execute(self):
+    def execute(self, screen):
         try:
             # call dmenu
             DMENU = [
                 'dmenu',
                 '-i', '-nb', '#000', '-nf', '#fff', '-sb', '#F05040', '-sf', '#000',
-                '-l', '30', '-fn', 'DejaVu Sans Mono-10', '-dim', '0.5', '-p', 'window?'
+                '-l', '30', '-fn', 'DejaVu Sans Mono-10', '-dim', '0.5', '-p', 'window?',
+                '-x', str(screen['width'] / 2 - 200), '-y', str(screen['height'] / 2 - 120), '-w', '400', '-h', '22'
             ]
             p = subprocess.Popen(DMENU, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
             out = p.communicate(u"\n".join(self.wins).encode('utf-8'))[0]
@@ -116,18 +115,28 @@ class WindowSelector(NonBlockingSpawn):
             win = self.id_map[id]
 
             # focusing selected window
-            print self.id_map
             for window in self.qtile.cmd_windows():
                 if window['id'] == win['id']:
                     self.qtile.groupMap[window['group']].cmd_toscreen()
 
-            # TODO(dunai): Finish this :) Currenty it just activates a group,
-            # not actual selected window.
+                    g = [group for group in self.qtile.groups if group.name == window['group']][0]
+                    w = [x for x in g.windows if x.window.wid == window['id']][0]
 
-            # w = g.window[win["id"]]
-            # for i in range(len(g.info()["windows"])):
-            #     insp = w.inspect()
-            #     if insp['attributes']['map_state']:
-            #         break
+                    for i in range(len(g.info()['windows'])):
+                        g.layout.cmd_next()
+                        if w.cmd_inspect()['attributes']['map_state']:
+                            break
 
-            #     g.next_window()
+
+class DMenu(object):
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+
+    def __call__(self, qtile):
+        screen = qtile.currentScreen.cmd_info()
+        os.system('''dmenu_run -fn 'DejaVu Sans Mono-10' -sb '#F05040' -sf '#000' -nb black -dim 0.5 -p '>' -l 10 -x {x} -y {y} -w {w} -h 22'''.format(
+            x=(screen['width'] - self.width) / 2,
+            y=(screen['height'] - self.height) / 2,
+            w=self.width
+        ))

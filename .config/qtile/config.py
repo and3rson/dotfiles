@@ -127,9 +127,7 @@ keys = [
     Key([mod], "p", lazy.function(commands.WindowSelector())),
 
     # Run dmenu launcher for apps
-    Key([mod], "r", lazy.spawn("dmenu_run -fn 'DejaVu Sans Mono-10' -sb {} -sf '#000' -nb black -dim 0.5 -p '>' -l 10".format(
-        WidgetOpts.HIGHLIGHT_COLOR
-    ))),
+    Key([mod], "r", lazy.function(commands.DMenu(400, 240))),
     Key([lock], 'r', lazy.spawn(os.path.join(BIN_DIR, 'menu.py'))),
 
     # Open config editor
