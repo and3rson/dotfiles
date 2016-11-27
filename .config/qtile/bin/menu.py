@@ -18,7 +18,7 @@ def get_menu():
     f = open(os.path.expanduser('~/.config/qtile/menu.conf'), 'r')
     data = f.read()
     f.close()
-    items = [map(lambda x: x.strip(), line.split(':')) for line in filter(None, data.split('\n'))]
+    items = [map(lambda x: x.strip(), (line.partition(':')[0], line.partition(':')[2])) for line in filter(None, data.split('\n'))]
     return [MenuItemType(id, title, cmd) for (id, (title, cmd)) in enumerate(items)]
 
 
@@ -26,7 +26,7 @@ if __name__ == '__main__':
     menu = get_menu()
     p = Popen(DMENU, stdin=PIPE, stdout=PIPE)
     out = p.communicate(u'\n'.join([u'{}: {}'.format(item.id, item.title) for item in menu]).encode('utf-8'))[0]
-    id = out.strip().split(':')[0]
+    id = out.strip().partition(':')[0]
     if id:
         id = int(id)
         selected_item = [item for item in menu if item.id == id][0]

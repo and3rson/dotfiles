@@ -11,6 +11,8 @@ export IDEA_JDK="/usr/lib/jvm/java-8-openjdk/"
 export ANDROID_EMULATOR_USE_SYSTEM_LIBS=1
 export STEAM_RUNTIME=0
 
+export DMENU_STYLE="-fn 'DejaVu Sans Mono-10' -sb '#F05040' -sf '#000' -nb black -dim 0.5"
+
 case $(tty) in /dev/tty[0-9]*)
     export TERM=linux ;;
 esac
