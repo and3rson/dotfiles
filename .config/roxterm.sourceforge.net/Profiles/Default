@@ -1,5 +1,5 @@
 [roxterm profile]
-saturation=0,716837
+saturation=0,650510
 always_show_tabs=0
 hide_menubar=1
 height=24
@@ -13,4 +13,11 @@ mailer=thunderbird
 scrollbar_pos=0
 tab_close_btn=0
 tab_pos=4
-cursor_blink_mode=2
+cursor_blink_mode=0
+width=80
+cursor_shape=0
+dir_spawn_type=1
+ssh_spawn_type=1
+disable_menu_access=1
+disable_menu_shortcuts=1
+disable_tab_menu_shortcuts=1
