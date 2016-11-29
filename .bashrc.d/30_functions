@@ -1,0 +1,18 @@
+#!/bin/bash
+
+function get_display_width {
+    xrandr --current | grep '*' | uniq | awk '{print $1}' | cut -d 'x' -f1
+}
+
+function get_display_height {
+    xrandr --current | grep '*' | uniq | awk '{print $1}' | cut -d 'x' -f2
+}
+
+function get_dmenu_pos {
+    s=`xrandr --current | grep '*' | uniq | awk '{print $1}'`
+    w=`echo $s | cut -d 'x' -f1`
+    h=`echo $s | cut -d 'x' -f2`
+    # w=`get_display_width`
+    # h=`get_display_height`
+    echo "-x $(($w/2-200)) -y $(($h/2-100)) -w 400 -h 200"
+}

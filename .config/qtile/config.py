@@ -31,6 +31,15 @@ BIN_DIR = os.path.expanduser('~/.config/qtile/bin')
 
 TERM_APP = 'roxterm'
 HOME_TERM_CMD = 'roxterm -e {}'.format(os.path.join(BIN_DIR, 'stmux.sh'))
+DMENU_STYLE = dict(
+    nb='#000',
+    nf='#FFF',
+    sb='#F05040',
+    sf='#000',
+    l=10,
+    fn='DejaVu Sans Mono-10',
+    dim=0.5
+)
 
 ctrl = 'control'
 alt = 'mod1'
@@ -124,11 +133,11 @@ keys = [
     Key([mod, "control"], "q", lazy.shutdown()),
 
     # Run window selector script
-    Key([mod], "p", lazy.function(commands.WindowSelector())),
+    Key([mod], "p", lazy.function(commands.DMenuWindowSelector(**DMENU_STYLE))),
 
     # Run dmenu launcher for apps
-    Key([mod], "r", lazy.function(commands.DMenu(400, 240))),
-    Key([lock], 'r', lazy.spawn(os.path.join(BIN_DIR, 'menu.py'))),
+    Key([mod], "r", lazy.function(commands.DMenuAppLauncher(**DMENU_STYLE))),
+    Key([lock], 'r', lazy.function(commands.DMenuCustomMenu(**DMENU_STYLE))),
 
     # Open config editor
     Key([mod], "c", lazy.spawn('{} -e "nano /home/anderson/.config/qtile/config.py"'.format(TERM_APP))),
@@ -154,8 +163,8 @@ keys = [
     # I hit this when a window gets to a wrong group despite filters. Happens to some apps.
     Key([ctrl, mod], "g", lazy.function(commands.FixGroups())),
 
-    # Just a test for my custom mod3 key (I have CapsLock remapped for this, set by xmodman in autorun.sh)
-    Key([lock], 'space', lazy.function(commands.WindowSelector())),
+    # Just a test for my custom mod3 key (I have CapsLock remapped for this, set by xmodmap in autorun.sh)
+    Key([lock], 'space', lazy.function(commands.DMenuWindowSelector(**DMENU_STYLE))),
 ]
 
 # Definitions of groups. The parts are:

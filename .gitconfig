@@ -1,0 +1,8 @@
+[user]
+	email = andunai@gmail.com
+	name = Andrew Dunai
+
+[alias]
+	st = status
+	co = checkout
+	br = branch

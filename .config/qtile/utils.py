@@ -1,5 +1,6 @@
 from libqtile.log_utils import logger
 from subprocess import Popen, PIPE
+import re
 
 
 def nonblocking(on_result):
@@ -39,14 +40,24 @@ class NonBlockingSpawn(object):
         future.add_done_callback(on_done)
 
 
-class DMenu(NonBlockingSpawn, object):
-    def __init__(self, run=False, **kwargs):
+class DMenu(object):
+    def __init__(self, run=False, width=400, height=240, **kwargs):
         self.kwargs = kwargs
         self.app = 'dmenu_run' if run else 'dmenu'
+        self.width = width
+        self.height = height
 
-    def run(self, items, callback):
-        self.spawn(lambda: self._run(items), callback)
-
-    def _run(self, items):
-        args = [self.app] + map(str, sum(map(list, self.kwargs.items()), []))
-        return Popen(args, stdout=PIPE, stderr=PIPE).communicate('\n'.join(items))[0]
+    def run_menu(self, items=None):
+        if not items:
+            items = []
+        out = Popen(['xrandr', '--current'], stdout=PIPE, stderr=PIPE).communicate()[0]
+        w, h = re.findall(r'(\d+)x(\d+)\s*[\d\.]+\*', out)[0]
+        w = int(w)
+        h = int(h)
+        self.kwargs['x'] = (w - self.width) / 2
+        self.kwargs['y'] = (h - self.height) / 2
+        self.kwargs['w'] = self.width
+        args = [self.app]
+        args.extend(map(str, sum(map(list, (('-' + k, v) for k, v in self.kwargs.items())), [])))
+        stdin = u'\n'.join(items).encode('utf-8')
+        return Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE).communicate(stdin)[0]
