@@ -195,7 +195,7 @@ GROUP_DEFS = (
         re.compile('^Steam$')
     ])),
     ('v', 'var', [], 'monadtall', dict()),
-    ('n', 'notes', ['peek-desktop'], 'max', dict(title=['Peek App'])),
+    ('n', 'notes', ['simplenote'], 'max', dict(wm_class=['Simplenote'], title=['Peek App'])),
 )
 
 groups = [

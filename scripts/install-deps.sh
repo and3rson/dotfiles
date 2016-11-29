@@ -53,6 +53,7 @@ sudo -u ${USERNAME} yaourt --noconfirm -S \
     hsetroot \
     xlogin-git \
     dmenu2 \
+    simplenote-electron-bin \
 && \
 pip2.7 install \
     google-api-python-client \
