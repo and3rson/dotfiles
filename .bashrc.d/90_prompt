@@ -15,6 +15,18 @@ function info() {
     CODE=$?
     FIRST=1
 
+    function print_tag() {
+        if [[ ! -z "$TAG" ]]
+        then
+            echo -en "\[$bld\]\[$bldwht\]\[$bakpur\] "
+            echo -n $TAG
+            echo -en " \[$txtrst\]\[$txtpur\]"
+            printf -v "FIRST" 0
+        else
+            echo -en "\[$txtgrn\]"
+        fi
+    }
+
     function print_virtualenv() {
         if [[ ! -z "$VIRTUAL_ENV" ]]
         then
@@ -81,6 +93,7 @@ function info() {
         fi
     }
 
+    print_tag
     print_virtualenv
     print_hostname
     print_pwd
@@ -98,3 +111,7 @@ function set_prompt() {
 }
 
 PROMPT_COMMAND=set_prompt
+
+function tag() {
+    export TAG=$1
+}
