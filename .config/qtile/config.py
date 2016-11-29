@@ -53,7 +53,11 @@ shift = 'shift'
 class WidgetOpts:
     LOCATION = 'Lviv, Ukraine'
     MONOSPACE_FONT = 'DejaVu Sans Mono'
+    DEFAULT_COLOR = '#000000'
+    GREY_COLOR = '#444444'
     HIGHLIGHT_COLOR = '#F05040'
+    HIGHLIGHT_SHADED_COLOR = '#703020'
+    URGENT_COLOR = '#0077FF'
 
 
 keys = [
@@ -211,7 +215,7 @@ for g_hotkey, g_name, g_startup, g_layout, g_match_kwargs in GROUP_DEFS:
 # I have three layouts here: MonadTall, Max & Zoomy
 layouts = [
     layout.MonadTall(
-        border_normal='#000000',
+        border_normal=WidgetOpts.DEFAULT_COLOR,
         border_focus=WidgetOpts.HIGHLIGHT_COLOR,
         border_width=0,
         grow_amount=0
@@ -221,6 +225,13 @@ layouts = [
         columnwidth=300
     )
 ]
+
+# Configuration for floating layout
+floating_layout = layout.Floating(
+    border_normal=WidgetOpts.GREY_COLOR,
+    border_focus=WidgetOpts.HIGHLIGHT_COLOR,
+    border_width=5
+)
 
 # Default args for widgets
 widget_defaults = dict(
@@ -232,13 +243,13 @@ widget_defaults = dict(
 
 # Config for group box to avoid duplication.
 group_box_config = dict(
-    background='#000000',
+    background=WidgetOpts.DEFAULT_COLOR,
     borderwidth=2, disable_drag=True,
-    inactive='#888888', highlight_method='block',
+    inactive=WidgetOpts.GREY_COLOR, highlight_method='block',
     rounded=False,
-    this_screen_border=WidgetOpts.HIGHLIGHT_COLOR, this_current_screen_border='#703020',
-    other_screen_border='#703020', other_current_screen_border=WidgetOpts.HIGHLIGHT_COLOR,
-    urgent_border='#0077FF',
+    this_screen_border=WidgetOpts.HIGHLIGHT_COLOR, this_current_screen_border=WidgetOpts.HIGHLIGHT_SHADED_COLOR,
+    other_screen_border=WidgetOpts.HIGHLIGHT_SHADED_COLOR, other_current_screen_border=WidgetOpts.HIGHLIGHT_COLOR,
+    urgent_border=WidgetOpts.URGENT_COLOR,
     current_highlight_method='block',
     other_highlight_method='border',
     font='Roboto Sans Bold',
@@ -433,7 +444,6 @@ main = None
 follow_mouse_focus = False
 bring_front_click = False
 cursor_warp = False
-floating_layout = layout.Floating()
 auto_fullscreen = True
 focus_on_window_activation = "smart"
 
