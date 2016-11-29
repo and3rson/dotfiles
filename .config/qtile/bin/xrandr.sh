@@ -27,3 +27,5 @@ case $MON_COUNT in
         setup_2_screens
         ;;
 esac
+
+./set_bg.sh

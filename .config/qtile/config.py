@@ -127,6 +127,9 @@ keys = [
     # Kill window
     Key([alt], "F4", lazy.window.kill()),
 
+    # Float/unfloat window
+    Key([mod], "f", lazy.window.toggle_floating()),
+
     # Restart Qtile
     Key([mod, "control"], "r", lazy.restart()),
     # Quit Qtile
@@ -182,8 +185,8 @@ GROUP_DEFS = (
     ('m', 'mail', ['thunderbird'], 'monadtall', dict(wm_class=['Thunderbird'])),
     ('d', 'dev', ['subl3'], 'monadtall', dict(wm_class=['Subl3'])),
     ('a', 'audio', ['vkplayer'], 'monadtall', dict(title=['VK audio player'])),
-    ('g', 'games', ['steam'], 'max', dict(wm_class=[
-        re.compile('^Steam|csgo_linux64$')
+    ('g', 'games', ['steam', 'deluge'], 'max', dict(wm_class=[
+        re.compile('^Steam|csgo_linux64|Deluge$')
     ], title=[
         re.compile('^Steam$')
     ])),
