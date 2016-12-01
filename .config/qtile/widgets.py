@@ -337,6 +337,12 @@ class Volume2(Volume):
             else:
                 self.text = u'\uf028 %s%%' % self.volume
 
+    def button_press(self, x, y, button):
+        if button == 3:
+            os.system('pavucontrol &')
+        else:
+            super(Volume2, self).button_press(x, y, button)
+
 
 class ThermalSensor2(ThermalSensor):
     """

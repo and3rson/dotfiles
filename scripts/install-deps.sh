@@ -39,6 +39,8 @@ pacman --noconfirm -S \
     redis \
     feh \
     roxterm \
+    bluez bluez-firmware bluez-libs bluez-plugins bluez-utils bluez-utils \
+    pulseaudio-bluetooth \
 && \
 sudo systemctl daemon-reload \
 && \
@@ -54,6 +56,8 @@ sudo -u ${USERNAME} yaourt --noconfirm -S \
     xlogin-git \
     dmenu2 \
     simplenote-electron-bin \
+    notify-osd-customizable \
+    notifyconf \
 && \
 pip2.7 install \
     google-api-python-client \

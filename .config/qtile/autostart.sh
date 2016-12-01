@@ -6,6 +6,7 @@ xmodmap ~/.Xmodmap
 xset r rate 200 25
 # xss-lock -- /sh/i3lock.sh &
 nm-applet &
+blueman-applet &
 # deluged -l /tmp/deluged.log &
 
 sudo pritunl-client-gtk &

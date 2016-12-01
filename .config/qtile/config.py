@@ -183,8 +183,8 @@ keys = [
 GROUP_DEFS = (
     ('t', 'term', [HOME_TERM_CMD], 'max', dict()),
     ('w', 'web', ['chromium', 'firefox'], 'max', dict(wm_class=['chromium', 'Firefox'])),
-    ('i', 'im', ['telegram-desktop', 'slack'], 'zoomy', dict(wm_class=[
-        'telegram-desktop', 'TelegramDesktop', 'Slack', 'www.flowdock.com__app_redeapp_main'
+    ('i', 'im', ['telegram-desktop', 'slack', 'hexchat'], 'zoomy', dict(wm_class=[
+        'telegram-desktop', 'TelegramDesktop', 'Slack', 'www.flowdock.com__app_redeapp_main', 'Hexchat'
     ], title=['Messenger', 'Flowdock', re.compile(r'^.* - Chat$')])),
     ('m', 'mail', ['thunderbird'], 'monadtall', dict(wm_class=['Thunderbird'])),
     ('d', 'dev', ['subl3'], 'monadtall', dict(wm_class=['Subl3'])),
@@ -284,7 +284,7 @@ screens = [
                 ),
                 widgets.TaskList2(
                     rounded=False,
-                    max_title_width=200,
+                    max_title_width=100,
                     highlight_method='block',
                     border=WidgetOpts.HIGHLIGHT_COLOR
                 ),
