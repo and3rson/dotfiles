@@ -41,6 +41,7 @@ pacman --noconfirm -S \
     roxterm \
     bluez bluez-firmware bluez-libs bluez-plugins bluez-utils bluez-utils \
     pulseaudio-bluetooth \
+    hexchat \
 && \
 sudo systemctl daemon-reload \
 && \
