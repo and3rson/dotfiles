@@ -16,6 +16,6 @@ sudo pritunl-client-gtk &
 # hsetroot -fill ~/.wallpapers/new/can2.jpg &
 # feh --bg-fill ~/.wallpapers/new/can2.jpg &
 # feh --bg-fill ~/.wallpapers/new/zbFCJbj.jpg &
-./bin/set_bg.sh
+(sleep 3 && ./bin/set_bg.sh) &
 # compton -I 0.04 -O 0.04 -f --unredir-if-possible -b
 compton --config ~/.compton.conf -b -f

@@ -109,8 +109,8 @@ function info() {
     # retry
 
     echo -en "\[\e[49m\]$ARROW\[$txtrst\] "
-    PLAIN="[$PWD]"
-    echo -ne "\[\033]0;$PLAIN\007\]"
+    # PLAIN="[$PWD]"
+    # echo -ne "\[\033]0;$PLAIN\007\]"
 }
 
 function set_prompt() {
