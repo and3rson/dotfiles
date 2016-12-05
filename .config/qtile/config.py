@@ -24,6 +24,7 @@ import subprocess
 from libqtile.config import Key, Screen, Group, Drag, Click, Match
 from libqtile.command import lazy
 from libqtile import layout, bar, widget, hook
+from libqtile.log_utils import logger
 import commands
 import widgets
 
@@ -250,6 +251,7 @@ group_box_config = dict(
     this_screen_border=WidgetOpts.HIGHLIGHT_COLOR, this_current_screen_border=WidgetOpts.HIGHLIGHT_SHADED_COLOR,
     other_screen_border=WidgetOpts.HIGHLIGHT_SHADED_COLOR, other_current_screen_border=WidgetOpts.HIGHLIGHT_COLOR,
     urgent_border=WidgetOpts.URGENT_COLOR,
+    urgent_alert_method='border',
     current_highlight_method='block',
     other_highlight_method='border',
     font='Roboto Sans Bold',
@@ -257,12 +259,6 @@ group_box_config = dict(
     margin_x=0
 )
 
-# Screens config
-# You will see a lot of widget classes that end with "2".
-# These are the classes that I overrided in my `widgets.py` file
-# to tweak their behavior to what I want. Most of them include adding
-# custom icon font characters and colors, but some of them (e. g. GroupBox2)
-# have more things changed. See my `widgets.py` file for more info.
 def make_current_layout_widget():
     w = widget.CurrentLayoutIcon(scale=0.8)
     w._update_icon_paths()
@@ -271,6 +267,12 @@ def make_current_layout_widget():
     else:
         return widget.CurrentLayout()
 
+# Screens config
+# You will see a lot of widget classes that end with "2".
+# These are the classes that I overrided in my `widgets.py` file
+# to tweak their behavior to what I want. Most of them include adding
+# custom icon font characters and colors, but some of them (e. g. GroupBox2)
+# have more things changed. See my `widgets.py` file for more info.
 screens = [
     Screen(
         top=bar.Bar(
@@ -320,10 +322,14 @@ screens = [
                     font=WidgetOpts.MONOSPACE_FONT,
                     foreground='#CCFFCC'
                 ),
-                widgets.Volume2(
+                # widgets.Volume2(
+                #     font=WidgetOpts.MONOSPACE_FONT,
+                #     foreground='#CCFFFF',
+                #     update_interval=0.5
+                # ),
+                widgets.PAControl(
                     font=WidgetOpts.MONOSPACE_FONT,
-                    foreground='#CCFFFF',
-                    update_interval=0.5
+                    foreground='#CCFFFF'
                 ),
                 widgets.OpenWeatherMap(
                     appid='5041ca48d55a6669fe8b41ad1a8af753',
@@ -385,8 +391,11 @@ screens = [
                     highlight_method='block',
                     border=WidgetOpts.HIGHLIGHT_COLOR
                 ),
+                # widget.Spacer(),
+                # widget.Sep(padding=10),
+                # widget.Clock(format='%Y-%m-%d %H:%M'),
             ],
-            22
+            26
         )
     ),
 ]
@@ -427,14 +436,15 @@ def respawn_term(window):
 # Run autostart.sh & xrandr.sh
 @hook.subscribe.startup_once
 def autostart():
-    subprocess.call(os.path.expanduser('~/.config/qtile/autostart.sh'))
-    subprocess.call(os.path.expanduser('~/.config/qtile/bin/xrandr.sh'))
+    os.system(os.path.expanduser('~/.config/qtile/autostart.sh > /tmp/autostart.log'))
+    os.system(os.path.expanduser('~/.config/qtile/bin/xrandr.sh'))
 
 
 # Look for new monitor and call xrandr.sh to reconfigure stuff once screen config changes
 @hook.subscribe.screen_change
 def restart_on_randr(qtile, ev):
-    subprocess.call(os.path.expanduser('~/.config/qtile/bin/xrandr.sh'))
+    logger.error('Screen config changed, spawning ./bin/randr.sh')
+    os.system(os.path.expanduser('~/.config/qtile/bin/xrandr.sh'))
     qtile.cmd_restart()
 
 

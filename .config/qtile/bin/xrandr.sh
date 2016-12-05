@@ -1,5 +1,7 @@
 #!/bin/bash
 
+PWD=`basename $0`
+
 function do_xrandr {
     xrandr --output VGA1 --auto --output HDMI1 --auto --right-of eDP1
 }
@@ -28,4 +30,4 @@ case $MON_COUNT in
         ;;
 esac
 
-./set_bg.sh
+$PWD/set_bg.sh

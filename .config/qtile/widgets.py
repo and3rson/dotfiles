@@ -8,7 +8,7 @@ from urllib import urlencode
 import urllib2
 import json
 from subprocess import Popen, PIPE
-from re import findall
+from re import findall, compile
 # import dbus
 import time
 import iwlib
@@ -18,6 +18,8 @@ from cal import get_next_event
 from utils import NonBlockingSpawn
 import os
 import cairocffi
+from pulsectl import Pulse
+from threading import Lock
 
 
 class RSS(base.ThreadedPollText):
@@ -66,7 +68,7 @@ class KBLayout(base.ThreadedPollText):
     def poll(self):
         # f0ac
         out, err = Popen(['xkblayout-state', 'print', '%s'], stdout=PIPE, stderr=PIPE).communicate()
-        return u'\uf11d {}'.format(out.strip().upper())
+        return u'\uf11c {}'.format(out.strip().upper())
 
 
 class Ping(base._TextBox, NonBlockingSpawn):
@@ -168,7 +170,8 @@ class OpenWeatherMap(base.ThreadedPollText):
             return 'N/A'
         try:
             response = json.loads(urllib2.urlopen(self.url).read())
-            return u'\uF0C2  {name} {temp}\u00B0C'.format(
+            # F0C2
+            return u'\uF0E9  {name} {temp}\u00B0C'.format(
                 city=response['name'],
                 temp=int(response['main']['temp'] - OpenWeatherMap.ABS_ZERO),
                 name=response['weather'][0]['main']
@@ -354,7 +357,8 @@ class ThermalSensor2(ThermalSensor):
         temp_values = self.get_temp_sensors()
         if temp_values is None:
             return False
-        text = u"\uf069 "
+        # F069
+        text = u"\uf0E4 "
         if self.show_tag and self.tag_sensor is not None:
             text = self.tag_sensor + u": "
         parts = temp_values.get(self.tag_sensor, ['N/A'])
@@ -947,3 +951,83 @@ class DiskUsage(base._TextBox, NonBlockingSpawn):
         self.foreground = '#%02x%02x00' % (free_factor * 127 + 128, (1 - free_factor) * 127 + 128)
         self.text = u'{}: {}/{} free'.format(self.root, self.sizeof_fmt(free), self.sizeof_fmt(size))
         self.bar.draw()
+
+
+class PAControl(base._TextBox, NonBlockingSpawn):
+    orientations = base.ORIENTATION_HORIZONTAL
+
+    def __init__(self, **config):
+        self.order = [
+            (compile(r'^bluez(.*)'), u'\uf025'),
+            (compile(r'(.*)analog-stereo$'), u'\uf028')
+        ]
+        self.sink = None
+        self.busy = Lock()
+        self.p = Pulse()
+        base._TextBox.__init__(self, **config)
+
+    def _configure(self, *args, **kwargs):
+        base._TextBox._configure(self, *args, **kwargs)
+        self.do_process()
+
+    def do_process(self):
+        self.spawn(self._do_process, lambda result: (self.timeout_add(1, self.do_process), self.on_process_result(result)))
+
+    def _do_process(self):
+        if self.busy.locked():
+            return
+        self.busy.acquire()
+        try:
+            sinks = self.p.sink_list()
+            for pattern, name in self.order:
+                for sink in sinks:
+                    if pattern.match(sink.name):
+                        return sink, name
+        except Exception as e:
+            self.busy.release()
+            logger.exception(e.message)
+            return None
+        return sinks[0], 'Default'
+
+    def on_process_result(self, result):
+        if not result:
+            return
+        sink, name = result
+        self.text = u'{} {}%'.format(
+            name,
+            int(round(sink.volume.value_flat * 100)) if not sink.mute else 'M'
+        )
+        self.sink = sink
+        self.draw()
+        self.busy.release()
+
+    def button_press(self, x, y, button):
+        if button in (1, 2):
+            self.toggle_mute()
+            self.spawn(self._do_process, self.on_process_result)
+        elif button == 3:
+            os.system('pavucontrol &')
+        elif button == 4:
+            self.modify_volume(0.04)
+        elif button == 5:
+            self.modify_volume(-0.04)
+
+    def modify_volume(self, change):
+        if not self.sink:
+            return
+        if self.busy.locked():
+            return
+        self.busy.acquire()
+        self.p.volume_change_all_chans(self.sink, change)
+        self.busy.release()
+        self.spawn(self._do_process, self.on_process_result)
+
+    def toggle_mute(self):
+        if not self.sink:
+            return
+        if self.busy.locked():
+            return
+        self.busy.acquire()
+        self.p.mute(self.sink, not self.sink.mute)
+        self.busy.release()
+        self.spawn(self._do_process, self.on_process_result)
