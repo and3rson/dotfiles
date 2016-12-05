@@ -237,7 +237,8 @@ widget_defaults = dict(
     font='Roboto Medium',
     fontsize=12,
     padding=6,
-    margin_y=0
+    margin_y=0,
+    margin_x=2
 )
 
 # Config for group box to avoid duplication.
@@ -316,21 +317,9 @@ screens = [
                 widgets.UnreadMail(
                     font=WidgetOpts.MONOSPACE_FONT
                 ),
-                widgets.NextEvent(
-                    font=WidgetOpts.MONOSPACE_FONT
-                ),
-                widget.Sep(padding=10),
-                widgets.Battery2(
-                    charge_char='+',
-                    discharge_char='-',
-                    foreground='#77CCFF',
-                    format=u'{char} {percent:2.0%}'
-                ),
-                widgets.ThermalSensor2(
-                    font=WidgetOpts.MONOSPACE_FONT,
-                    foreground='#77CCFF',
-                    foreground_alert='#FF0000'
-                ),
+                # widgets.NextEvent(
+                #     font=WidgetOpts.MONOSPACE_FONT
+                # ),
                 widget.Sep(padding=10),
                 widgets.KBLayout(
                     font=WidgetOpts.MONOSPACE_FONT,
@@ -351,6 +340,19 @@ screens = [
                     foreground='#77CCFF'
                 ),
                 widget.Sep(padding=10),
+                widgets.Battery2(
+                    charge_char=u'\uf0de',
+                    discharge_char=u'\uf0dd',
+                    foreground='#11BBEE',
+                    low_foreground='#F05040',
+                    format=u'{percent:2.0%} {char}',
+                    font=WidgetOpts.MONOSPACE_FONT
+                ),
+                widgets.ThermalSensor2(
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    foreground='#11BBEE',
+                    foreground_alert='#F05040'
+                ),
                 widget.CPUGraph(
                     border_color='#11BBEE.3',
                     border_width=1,

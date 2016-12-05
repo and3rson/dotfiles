@@ -379,7 +379,8 @@ class Battery2(Battery):
     Psst: I use nerd-fonts package for this.
     """
     def update(self):
-        ntext = u'\uf0e7 {}'.format(self._get_text())
+        # f037
+        ntext = u'\uf011 {}'.format(self._get_text())
         if ntext != self.text:
             self.text = ntext
             self.bar.draw()
