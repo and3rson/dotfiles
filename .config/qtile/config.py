@@ -415,9 +415,9 @@ screens = [
 
 # Make floating layouts draggable
 mouse = [
-    Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
-    Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
-    Click([mod], "Button2", lazy.window.bring_to_front())
+    Drag([alt], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
+    Drag([alt], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
+    Click([alt], "Button2", lazy.window.bring_to_front())
 ]
 
 
@@ -449,15 +449,15 @@ def respawn_term(window):
 # Run autostart.sh & xrandr.sh
 @hook.subscribe.startup_once
 def autostart():
-    os.system(os.path.expanduser('~/.config/qtile/autostart.sh > /tmp/autostart.log'))
-    os.system(os.path.expanduser('~/.config/qtile/bin/xrandr.sh'))
+    os.system(os.path.expanduser('~/.config/qtile/autostart.sh 2>&1 > /tmp/autostart.log'))
+    os.system(os.path.expanduser('~/.config/qtile/bin/xrandr.sh 2>&1 > /tmp/xrandr.log'))
 
 
 # Look for new monitor and call xrandr.sh to reconfigure stuff once screen config changes
 @hook.subscribe.screen_change
 def restart_on_randr(qtile, ev):
     logger.error('Screen config changed, spawning ./bin/randr.sh')
-    qtile.cmd_spawn(os.path.expanduser('~/.config/qtile/bin/xrandr.sh'))
+    os.system(os.path.expanduser('~/.config/qtile/bin/xrandr.sh 2>&1 > /tmp/xrandr.log'))
     qtile.cmd_restart()
 
 
@@ -481,3 +481,7 @@ focus_on_window_activation = "smart"
 # wmname = "LG3D"
 # Nope, I want everyone know I use Qtile :>
 wmname = 'QTile'
+
+
+# def main(qtile):
+#     detect_screens(qtile)

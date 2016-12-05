@@ -43,6 +43,7 @@ pacman --noconfirm -S \
     pulseaudio-bluetooth \
     hexchat \
     xorg-xbacklight \
+    python2-pyudev \
 && \
 sudo systemctl daemon-reload \
 && \
