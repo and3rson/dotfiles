@@ -4,6 +4,7 @@ from collections import namedtuple
 import os
 import subprocess
 import re
+from glob import glob
 from utils import NonBlockingSpawn, DMenu
 
 
@@ -163,3 +164,56 @@ class DMenuCustomMenu(NonBlockingSpawn, DMenu, object):
             id = int(id)
             selected_item = [item for item in self.menu if item.id == id][0]
             self.spawn(lambda: os.system(selected_item.cmd), lambda *args: None)
+
+
+class DMenuAppsCollectorMenu(NonBlockingSpawn, DMenu, object):
+    PATHS = [
+        '/usr/share/applications/*.desktop',
+        os.path.expanduser('~/.local/share/applications/*.desktop')
+    ]
+
+    def __init__(self, **style):
+        super(DMenuAppsCollectorMenu, self).__init__(run=False, p='desktop?', **style)
+
+    def __call__(self, qtile):
+        self.qtile = qtile
+        self.spawn(self.collect_apps, self.on_result)
+
+    def collect_apps(self):
+        apps = list(self._build_menu_items())
+
+        # for app in apps:
+        return apps, self.run_menu(['{}: {}'.format(i, name) for (i, (name, cmd)) in enumerate(apps)])
+
+    def on_result(self, result):
+        apps, output = result
+        id = output.strip().partition(':')[0]
+        if id:
+            id = int(id)
+            self.qtile.cmd_spawn(apps[id][1])
+
+    def _get_desktop_files(self):
+        for path in DMenuAppsCollectorMenu.PATHS:
+            for file in glob(path):
+                yield file
+
+    def _read_desktop_file(self, file):
+        f = open(file, 'r')
+        content = f.read()
+        f.close()
+        name = None
+        cmd = None
+        for line in filter(None, content.split('\n')):
+            key, _, value = line.partition('=')
+            if key.lower() == 'name':
+                name = value.strip()
+            elif key.lower() == 'exec':
+                cmd = value.strip()
+
+        return name, cmd
+
+    def _build_menu_items(self):
+        for path in self._get_desktop_files():
+            name, cmd = self._read_desktop_file(path)
+            if name and cmd:
+                yield name, cmd

@@ -42,6 +42,7 @@ pacman --noconfirm -S \
     bluez bluez-firmware bluez-libs bluez-plugins bluez-utils bluez-utils \
     pulseaudio-bluetooth \
     hexchat \
+    xorg-xbacklight \
 && \
 sudo systemctl daemon-reload \
 && \
@@ -67,6 +68,7 @@ pip2.7 install \
     feedparser \
     iwlib \
     redis>=2.10.5 \
+    pulsectl \
     -U \
 && \
 echo "All done!"

@@ -363,6 +363,7 @@ class ThermalSensor2(ThermalSensor):
             text = self.tag_sensor + u": "
         parts = temp_values.get(self.tag_sensor, ['N/A'])
         parts = [x.decode('utf-8') for x in parts]
+        parts[0] = str(int(float(parts[0])))
         text += u"".join(parts)
         temp_value = float(temp_values.get(self.tag_sensor, [0])[0])
         if temp_value > self.threshold:
@@ -1031,3 +1032,12 @@ class PAControl(base._TextBox, NonBlockingSpawn):
         self.p.mute(self.sink, not self.sink.mute)
         self.busy.release()
         self.spawn(self._do_process, self.on_process_result)
+
+    def cmd_increase_volume(self):
+        self.modify_volume(0.04)
+
+    def cmd_decrease_volume(self):
+        self.modify_volume(-0.04)
+
+    def cmd_toggle_mute(self):
+        self.toggle_mute()

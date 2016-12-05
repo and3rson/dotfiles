@@ -39,7 +39,8 @@ DMENU_STYLE = dict(
     sf='#000',
     l=10,
     fn='DejaVu Sans Mono-10',
-    dim=0.5
+    dim=0.5,
+    i=None
 )
 
 ctrl = 'control'
@@ -156,14 +157,11 @@ keys = [
     # Toggle to terminal pane and back. Yeah, I cannot stop using the F12 hotkey since Guake times. Good old Guake.
     Key([], 'F12', lazy.function(commands.ToggleTerm())),
 
-    # Volume management
-    Key([], 'XF86AudioRaiseVolume', lazy.spawn('amixer -q sset Master 4%+')),
-    Key([], 'XF86AudioLowerVolume', lazy.spawn('amixer -q sset Master 4%-')),
-    Key([], 'XF86AudioMute', lazy.spawn('amixer -q sset Master toggle')),
-
     # Brightness management
     Key([], 'XF86MonBrightnessUp', lazy.spawn('xbacklight -inc 10')),
     Key([], 'XF86MonBrightnessDown', lazy.spawn('xbacklight -dec 10')),
+
+    Key([], 'XF86Search', lazy.function(commands.DMenuAppsCollectorMenu(**DMENU_STYLE))),
 
     # Run screen locker
     Key([ctrl, alt], "l", lazy.spawn("/sh/i3lock.sh")),
@@ -259,6 +257,7 @@ group_box_config = dict(
     margin_x=0
 )
 
+
 def make_current_layout_widget():
     w = widget.CurrentLayoutIcon(scale=0.8)
     w._update_icon_paths()
@@ -266,6 +265,21 @@ def make_current_layout_widget():
         return w
     else:
         return widget.CurrentLayout()
+
+
+pacontrol = widgets.PAControl(
+    font=WidgetOpts.MONOSPACE_FONT,
+    foreground='#77CCFF'
+)
+
+
+keys.extend([
+    # Volume management
+    Key([], 'XF86AudioRaiseVolume', lazy.function(lambda *args: pacontrol.cmd_increase_volume())),
+    Key([], 'XF86AudioLowerVolume', lazy.function(lambda *args: pacontrol.cmd_decrease_volume())),
+    Key([], 'XF86AudioMute', lazy.function(lambda *args: pacontrol.cmd_toggle_mute())),
+])
+
 
 # Screens config
 # You will see a lot of widget classes that end with "2".
@@ -309,28 +323,25 @@ screens = [
                 widgets.Battery2(
                     charge_char='+',
                     discharge_char='-',
-                    foreground='#5090F0',
+                    foreground='#77CCFF',
                     format=u'{char} {percent:2.0%}'
                 ),
                 widgets.ThermalSensor2(
                     font=WidgetOpts.MONOSPACE_FONT,
-                    foreground='#FFFFCC',
+                    foreground='#77CCFF',
                     foreground_alert='#FF0000'
                 ),
                 widget.Sep(padding=10),
                 widgets.KBLayout(
                     font=WidgetOpts.MONOSPACE_FONT,
-                    foreground='#CCFFCC'
+                    foreground='#77CCFF'
                 ),
                 # widgets.Volume2(
                 #     font=WidgetOpts.MONOSPACE_FONT,
                 #     foreground='#CCFFFF',
                 #     update_interval=0.5
                 # ),
-                widgets.PAControl(
-                    font=WidgetOpts.MONOSPACE_FONT,
-                    foreground='#CCFFFF'
-                ),
+                pacontrol,
                 widgets.OpenWeatherMap(
                     appid='5041ca48d55a6669fe8b41ad1a8af753',
                     # I hereby disclose my OpenWeatherMap API token.
@@ -444,7 +455,7 @@ def autostart():
 @hook.subscribe.screen_change
 def restart_on_randr(qtile, ev):
     logger.error('Screen config changed, spawning ./bin/randr.sh')
-    os.system(os.path.expanduser('~/.config/qtile/bin/xrandr.sh'))
+    qtile.cmd_spawn(os.path.expanduser('~/.config/qtile/bin/xrandr.sh'))
     qtile.cmd_restart()
 
 

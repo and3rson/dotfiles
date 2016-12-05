@@ -58,6 +58,6 @@ class DMenu(object):
         self.kwargs['y'] = (h - self.height) / 2
         self.kwargs['w'] = self.width
         args = [self.app]
-        args.extend(map(str, sum(map(list, (('-' + k, v) for k, v in self.kwargs.items())), [])))
+        args.extend(map(str, sum(map(list, (filter(None, ('-' + k, v)) for k, v in self.kwargs.items())), [])))
         stdin = u'\n'.join(items).encode('utf-8')
         return Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE).communicate(stdin)[0]
