@@ -217,3 +217,25 @@ class DMenuAppsCollectorMenu(NonBlockingSpawn, DMenu, object):
             name, cmd = self._read_desktop_file(path)
             if name and cmd:
                 yield name, cmd
+
+
+class ToWindow(object):
+    def __init__(self, id):
+        self.id = id
+
+    def __call__(self, qtile):
+        # print self.id
+        try:
+            logger.error(list(qtile.currentGroup.windows))
+            window = list(qtile.currentGroup.windows)[self.id - 1]
+            window.group.focus(window, False)
+        except IndexError:
+            logger.error('dafuq')
+            pass
+        # for w in qtile.cmd_windows():
+        #     if w['group'] == qtile.currentGroup.name:
+        #         logger.error(str(w))
+        #     # logger.error(u'w: {}'.format(str(w)))
+        #     # logger.error(str(w['group']))
+        #     # if w['group'] == qtile.currentGroup.name:
+        #     #     logger.error(u'w: {}'.format(str(w)))

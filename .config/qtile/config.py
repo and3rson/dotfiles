@@ -54,6 +54,7 @@ shift = 'shift'
 
 class WidgetOpts:
     LOCATION = 'Lviv, Ukraine'
+    DEFAULT_FONT = 'Roboto Sans Bold'
     MONOSPACE_FONT = 'DejaVu Sans Mono'
     DEFAULT_COLOR = '#000000'
     GREY_COLOR = '#444444'
@@ -173,6 +174,9 @@ keys = [
     Key([lock], 'space', lazy.function(commands.DMenuWindowSelector(**DMENU_STYLE))),
 ]
 
+for i in xrange(1, 9):
+    keys.append(Key([mod], str(i), lazy.function(commands.ToWindow(i))))
+
 # Definitions of groups. The parts are:
 # - name & activation key
 # - full name (not sure if it's still used somewhere)
@@ -183,7 +187,7 @@ GROUP_DEFS = (
     ('t', 'term', [HOME_TERM_CMD], 'max', dict()),
     ('w', 'web', ['chromium', 'firefox'], 'max', dict(wm_class=['chromium', 'Firefox'])),
     ('i', 'im', ['telegram-desktop', 'slack', 'hexchat'], 'zoomy', dict(wm_class=[
-        'telegram-desktop', 'TelegramDesktop', 'Slack', 'www.flowdock.com__app_redeapp_main', 'Hexchat'
+        'telegram-desktop', 'TelegramDesktop', 'Slack', 'www.flowdock.com__app_redeapp_main', 'Hexchat', 'Skype'
     ], title=['Messenger', 'Flowdock', re.compile(r'^.* - Chat$')])),
     ('m', 'mail', ['thunderbird'], 'monadtall', dict(wm_class=['Thunderbird'])),
     ('d', 'dev', ['subl3'], 'monadtall', dict(wm_class=['Subl3'])),
@@ -193,7 +197,7 @@ GROUP_DEFS = (
     ], title=[
         re.compile('^Steam$')
     ])),
-    ('v', 'var', [], 'monadtall', dict()),
+    ('v', 'var', [], 'monadtall', dict(wm_class=['Pitivi', 'Audacity'])),
     ('n', 'notes', ['simplenote'], 'max', dict(wm_class=['Simplenote'], title=['Peek App'])),
 )
 
@@ -234,7 +238,8 @@ floating_layout = layout.Floating(
 
 # Default args for widgets
 widget_defaults = dict(
-    font='Roboto Medium',
+    font=WidgetOpts.DEFAULT_FONT,
+    # font='DejaVu Sans Mono',
     fontsize=12,
     padding=6,
     margin_y=0,
@@ -253,8 +258,8 @@ group_box_config = dict(
     urgent_alert_method='border',
     current_highlight_method='block',
     other_highlight_method='border',
-    font='Roboto Sans Bold',
-    padding_x=1,
+    font='Nimbus Sans Bold',  # Terminus, Nimbus Sans
+    padding_x=2,
     margin_x=0
 )
 
@@ -300,10 +305,16 @@ screens = [
                     fontsize=12
                 ),
                 widgets.TaskList2(
+                    # font=WidgetOpts.MONOSPACE_FONT,
                     rounded=False,
-                    max_title_width=100,
+                    max_title_width=140,
                     highlight_method='block',
-                    border=WidgetOpts.HIGHLIGHT_COLOR
+                    border=WidgetOpts.HIGHLIGHT_COLOR,
+                    fontsize=10,
+                    # padding_x=0,
+                    padding_y=8,
+                    padding_x_extra=-4,
+                    padding_y_extra=-6
                 ),
                 widget.Systray(),
                 widget.Sep(padding=10),
@@ -399,10 +410,16 @@ screens = [
                 make_current_layout_widget(),
                 widgets.GroupBox2(**group_box_config),
                 widgets.TaskList2(
+                    # font=WidgetOpts.MONOSPACE_FONT,
                     rounded=False,
-                    max_title_width=600,
+                    max_title_width=140,
                     highlight_method='block',
-                    border=WidgetOpts.HIGHLIGHT_COLOR
+                    border=WidgetOpts.HIGHLIGHT_COLOR,
+                    fontsize=10,
+                    # padding_x=0,
+                    padding_y=8,
+                    padding_x_extra=-4,
+                    padding_y_extra=-6
                 ),
                 # widget.Spacer(),
                 # widget.Sep(padding=10),
@@ -449,15 +466,14 @@ def respawn_term(window):
 # Run autostart.sh & xrandr.sh
 @hook.subscribe.startup_once
 def autostart():
-    os.system(os.path.expanduser('~/.config/qtile/autostart.sh 2>&1 > /tmp/autostart.log'))
-    os.system(os.path.expanduser('~/.config/qtile/bin/xrandr.sh 2>&1 > /tmp/xrandr.log'))
+    subprocess.Popen([os.path.expanduser('~/.config/qtile/autostart.sh')])
+    subprocess.Popen([os.path.expanduser('~/.config/qtile/bin/xrandr.sh')])
 
 
 # Look for new monitor and call xrandr.sh to reconfigure stuff once screen config changes
 @hook.subscribe.screen_change
 def restart_on_randr(qtile, ev):
-    logger.error('Screen config changed, spawning ./bin/randr.sh')
-    os.system(os.path.expanduser('~/.config/qtile/bin/xrandr.sh 2>&1 > /tmp/xrandr.log'))
+    subprocess.Popen([os.path.expanduser('~/.config/qtile/bin/xrandr.sh')])
     qtile.cmd_restart()
 
 
