@@ -21,3 +21,4 @@ ssh_spawn_type=1
 disable_menu_access=1
 disable_menu_shortcuts=1
 disable_tab_menu_shortcuts=1
+dir_filer=mc
