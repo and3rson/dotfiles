@@ -364,6 +364,10 @@ screens = [
                     foreground='#11BBEE',
                     foreground_alert='#F05040'
                 ),
+                widgets.FanControl(
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    fan_input='/sys/devices/virtual/hwmon/hwmon1/fan1_input'
+                ),
                 widget.CPUGraph(
                     border_color='#11BBEE.3',
                     border_width=1,

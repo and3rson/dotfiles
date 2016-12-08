@@ -373,6 +373,50 @@ class ThermalSensor2(ThermalSensor):
         return text
 
 
+class FanControl(base._TextBox, NonBlockingSpawn):
+    """
+    Displays time to next event in Google Calendar.
+    Psst: I use nerd-fonts package for this.
+    """
+    orientations = base.ORIENTATION_HORIZONTAL
+
+    def __init__(self, **config):
+        self.last_text = ''
+        base._TextBox.__init__(self, **config)
+
+    def _configure(self, qtile, bar):
+        base._TextBox._configure(self, qtile, bar)
+        self.do_update()
+
+    def button_press(self, x, y, button):
+        pass
+        # if button == 1:
+        #     self.qtile.currentScreen.setGroup(self.qtile.groupMap['m'])
+
+    def do_update(self):
+        self.spawn(self.get_speed, self.on_update_result)
+
+    def get_speed(self):
+        f = open(self.fan_input, 'r')
+        value = int(f.read().strip())
+        f.close()
+        return value
+
+    def on_update_result(self, result):
+        # \uf1eb
+        self.text = u'\uf0E4  {}'.format(result)
+        if result > 1000:
+            self.foreground = '#F05040'
+        else:
+            self.foreground = '#11BBEE'
+        if len(self.text) != len(self.last_text):
+            self.bar.draw()
+        else:
+            self.draw()
+        self.last_text = self.text
+        self.timeout_add(0.5, self.do_update)
+
+
 class Battery2(Battery):
     """
     Patched version of Battery widget that shows icon font chars.
