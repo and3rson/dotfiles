@@ -55,9 +55,9 @@ function info() {
         fi
         if [[ "$UID" -eq "0" ]]
         then
-            echo -en "\[$bakred\]$arrow\[$bldwht\] $USER \[$txtrst\]\[$txtred\]"
+            echo -en "\[$bakred\]$arrow\[$bldwht\] $HOSTNAME \[$txtrst\]\[$txtred\]"
         else
-            echo -en "\[$bakgrn\]$arrow\[$bldwht\] $USER \[$txtrst\]\[$txtgrn\]"
+            echo -en "\[$bakgrn\]$arrow\[$bldwht\] $HOSTNAME \[$txtrst\]\[$txtgrn\]"
         fi
     }
 
