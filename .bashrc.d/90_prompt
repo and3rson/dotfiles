@@ -11,6 +11,9 @@ esac
 #     [ "$(awk '$5=="/" {print $1}' </proc/1/mountinfo)" != "$(awk '$5=="/" {print $1}' </proc/$$/mountinfo)" ] && return 0 || return 1
 # }
 
+HOSTNAME_BG_COLOR=$bakgrn
+HOSTNAME_FG_COLOR=$txtgrn
+
 function info() {
     CODE=$?
     FIRST=1
@@ -55,9 +58,9 @@ function info() {
         fi
         if [[ "$UID" -eq "0" ]]
         then
-            echo -en "\[$bakred\]$arrow\[$bldwht\] $HOSTNAME \[$txtrst\]\[$txtred\]"
+            echo -en "\[$bakred\]$arrow\[$bldwht\] ${HOSTNAME} \[$txtrst\]\[$txtred\]"
         else
-            echo -en "\[$bakgrn\]$arrow\[$bldwht\] $HOSTNAME \[$txtrst\]\[$txtgrn\]"
+            echo -en "\[$HOSTNAME_BG_COLOR\]$arrow\[$bldwht\] ${HOSTNAME} \[$txtrst\]\[$HOSTNAME_FG_COLOR\]"
         fi
     }
 
