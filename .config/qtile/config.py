@@ -324,7 +324,7 @@ screens = [
         ),
         bottom=bar.Bar(
             [
-                widgets.ArchLogo(scale=0.8),
+                widgets.ArchLogo(scale=0.9),
                 widgets.UnreadMail(
                     font=WidgetOpts.MONOSPACE_FONT
                 ),
@@ -401,7 +401,7 @@ screens = [
                 widget.Sep(padding=10),
                 widgets.Ping(font=WidgetOpts.MONOSPACE_FONT),
             ],
-            22
+            20
         )
     ),
     Screen(
