@@ -212,7 +212,7 @@ for g_hotkey, g_name, g_startup, g_layout, g_match_kwargs in GROUP_DEFS:
         Key([mod], g_hotkey, lazy.group[g_name[0]].toscreen())
     )
     keys.append(
-        Key([lock], g_hotkey, lazy.window.togroup(g_name[0]))
+        Key([lock], g_hotkey, lazy.window.togroup(g_name[0]), lazy.group[g_name[0]].toscreen())
     )
 
 # I have three layouts here: MonadTall, Max & Zoomy
