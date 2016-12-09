@@ -25,7 +25,7 @@ set match-hidden-files off
 set page-completions off
 
 # If there are more than 200 possible completions for a word, ask to show them all
-set completion-query-items 200
+set completion-query-items 2000
 
 # Show extra file information when completing, like `ls -F` does
 set visible-stats on
@@ -48,3 +48,13 @@ set convert-meta off
 set bell-style none
 
 set colored-stats on
+set colored-completion-prefix on
+
+# set completion-prefix-display-length 4
+set blink-matching-paren on
+
+# set mark-modified-lines on
+
+# set menu-complete-display-prefix on
+# set print-completions-horizontally on
+# set show-mode-in-prompt on
