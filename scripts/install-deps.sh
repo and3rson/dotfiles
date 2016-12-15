@@ -70,8 +70,9 @@ pip2.7 install \
     pytz \
     feedparser \
     iwlib \
-    redis>=2.10.5 \
+    redis==2.10.5 \
     pulsectl \
+    python-dateutil==2.6.0 \
     -U \
 && \
 echo "All done!"
