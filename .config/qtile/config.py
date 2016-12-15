@@ -143,11 +143,14 @@ keys = [
     Key([mod, "control"], "q", lazy.shutdown()),
 
     # Run window selector script
-    Key([mod], "p", lazy.function(commands.DMenuWindowSelector(**DMENU_STYLE))),
+    # Key([mod], "p", lazy.function(commands.DMenuWindowSelector(**DMENU_STYLE))),
+    Key([mod], "p", lazy.spawn('rofi -show window')),
 
     # Run dmenu launcher for apps
-    Key([mod], "r", lazy.function(commands.DMenuAppLauncher(**DMENU_STYLE))),
+    # Key([mod], "r", lazy.function(commands.DMenuAppLauncher(**DMENU_STYLE))),
+    Key([mod], "r", lazy.spawn('rofi -show run')),
     Key([lock], 'r', lazy.function(commands.DMenuCustomMenu(**DMENU_STYLE))),
+    # Key([lock], 'r', lazy.spawn('cat ~/.config/qtile/menu.conf | rofi -dmenu | sed -e \'s/.*:\s*//g\'')),
 
     # Open config editor
     Key([mod], "c", lazy.spawn('{} -e "nano /home/anderson/.config/qtile/config.py"'.format(TERM_APP))),
@@ -165,13 +168,16 @@ keys = [
     Key([], 'XF86Search', lazy.function(commands.DMenuAppsCollectorMenu(**DMENU_STYLE))),
 
     # Run screen locker
-    Key([ctrl, alt], "l", lazy.spawn("/sh/i3lock.sh")),
+    # Key([ctrl, alt], "l", lazy.spawn("/sh/i3lock.sh")),
+    Key([ctrl, alt], "l", lazy.spawn("xscreensaver-command --lock")),
 
     # I hit this when a window gets to a wrong group despite filters. Happens to some apps.
     Key([ctrl, mod], "g", lazy.function(commands.FixGroups())),
 
+    Key([mod], 'q', lazy.group['t'].toscreen()),
+
     # Just a test for my custom mod3 key (I have CapsLock remapped for this, set by xmodmap in autorun.sh)
-    Key([lock], 'space', lazy.function(commands.DMenuWindowSelector(**DMENU_STYLE))),
+    # Key([lock], 'space', lazy.function(commands.DMenuWindowSelector(**DMENU_STYLE))),
 ]
 
 for i in xrange(1, 9):
@@ -212,7 +218,7 @@ for g_hotkey, g_name, g_startup, g_layout, g_match_kwargs in GROUP_DEFS:
         Key([mod], g_hotkey, lazy.group[g_name[0]].toscreen())
     )
     keys.append(
-        Key([lock], g_hotkey, lazy.window.togroup(g_name[0]), lazy.group[g_name[0]].toscreen())
+        Key([mod, lock], g_hotkey, lazy.window.togroup(g_name[0]), lazy.group[g_name[0]].toscreen())
     )
 
 # I have three layouts here: MonadTall, Max & Zoomy

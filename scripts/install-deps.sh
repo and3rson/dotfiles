@@ -44,6 +44,7 @@ pacman --noconfirm -S \
     hexchat \
     xorg-xbacklight \
     python2-pyudev \
+    xscreensaver-arch-logo \
 && \
 sudo systemctl daemon-reload \
 && \
@@ -61,6 +62,7 @@ sudo -u ${USERNAME} yaourt --noconfirm -S \
     simplenote-electron-bin \
     notify-osd-customizable \
     notifyconf \
+    rofi-git \
 && \
 pip2.7 install \
     google-api-python-client \
