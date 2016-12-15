@@ -22,5 +22,8 @@ xscreensaver &
 # feh --bg-fill ~/.wallpapers/new/zbFCJbj.jpg &
 # compton -I 0.04 -O 0.04 -f --unredir-if-possible -b
 compton --config ~/.compton.conf -b -f
+xwinwrap -b -fs -sp -fs -nf -ov  -- /usr/lib/xscreensaver/colorfire -root -window-id WID &
+
+# colorfire, euphoria, flux, lockward, pixelcity
 
 $PWD/bin/set_bg.sh

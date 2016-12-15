@@ -374,6 +374,9 @@ screens = [
                     font=WidgetOpts.MONOSPACE_FONT,
                     fan_input='/sys/devices/virtual/hwmon/hwmon1/fan1_input'
                 ),
+                widget.Sep(padding=10),
+                widgets.Ping(font=WidgetOpts.MONOSPACE_FONT),
+                widget.Sep(padding=10),
                 widget.CPUGraph(
                     border_color='#11BBEE.3',
                     border_width=1,
@@ -409,7 +412,6 @@ screens = [
                     font=WidgetOpts.MONOSPACE_FONT
                 ),
                 widget.Sep(padding=10),
-                widgets.Ping(font=WidgetOpts.MONOSPACE_FONT),
             ],
             20
         )
@@ -504,9 +506,9 @@ focus_on_window_activation = "smart"
 #
 # We choose LG3D to maximize irony: it is a 3D non-reparenting WM written in
 # java that happens to be on java's whitelist.
-# wmname = "LG3D"
+wmname = "LG3D"
 # Nope, I want everyone know I use Qtile :>
-wmname = 'QTile'
+# wmname = 'QTile'
 
 
 # def main(qtile):

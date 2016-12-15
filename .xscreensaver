@@ -1,11 +1,11 @@
 # XScreenSaver Preferences File
-# Written by xscreensaver-demo 5.36 for anderson on Tue Dec 13 17:04:25 2016.
+# Written by xscreensaver-demo 5.36 for anderson on Thu Dec 15 16:34:53 2016.
 # https://www.jwz.org/xscreensaver/
 
 timeout:	0:10:00
 cycle:		0:10:00
-lock:		False
-lockTimeout:	0:00:00
+lock:		True
+lockTimeout:	0:10:00
 passwdTimeout:	0:00:01
 visualID:	default
 installColormap:    True
@@ -29,13 +29,13 @@ dpmsQuickOff:	False
 dpmsStandby:	2:00:00
 dpmsSuspend:	2:00:00
 dpmsOff:	4:00:00
-grabDesktopImages:  True
+grabDesktopImages:  False
 grabVideoFrames:    False
 chooseRandomImages: False
 imageDirectory:	
 
 mode:		one
-selected:	228
+selected:	218
 
 textMode:	file
 textLiteral:	XScreenSaver
@@ -262,7 +262,7 @@ programs:								      \
   GL: 		  "MatrixView" 	matrixview --root			    \n\
   GL: 				lattice --root				    \n\
   GL: 				hyperspace --root			    \n\
-  GL: 		  "Pixel City" 	pixelcity --root			    \n\
+  GL: 		  "Pixel City" 	pixelcity -r -B				    \n\
   GL: 				helios --root				    \n\
   GL: 				flux --root				    \n\
   GL: 				fieldlines --root			    \n\
