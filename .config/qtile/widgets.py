@@ -421,7 +421,10 @@ class ThermalSensor2(ThermalSensor):
         return text
 
     def get_nvidia_temp(self):
-        ps = Popen(['nvidia-smi', '-q', '-d', 'temperature'], stdout=PIPE, stderr=PIPE)
+        try:
+            ps = Popen(['nvidia-smi', '-q', '-d', 'temperature'], stdout=PIPE, stderr=PIPE)
+        except:
+            return u''
         out, err = ps.communicate()
         if ps.returncode == 0:
             try:
