@@ -368,7 +368,8 @@ screens = [
                 widgets.ThermalSensor2(
                     font=WidgetOpts.MONOSPACE_FONT,
                     foreground='#11BBEE',
-                    foreground_alert='#F05040'
+                    foreground_alert='#F05040',
+                    threshold=65
                 ),
                 widgets.FanControl(
                     font=WidgetOpts.MONOSPACE_FONT,

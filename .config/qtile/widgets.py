@@ -417,7 +417,22 @@ class ThermalSensor2(ThermalSensor):
             self.layout.colour = self.foreground_alert
         else:
             self.layout.colour = self.foreground_normal
+	text += self.get_nvidia_temp()
         return text
+
+    def get_nvidia_temp(self):
+        ps = Popen(['nvidia-smi', '-q', '-d', 'temperature'], stdout=PIPE, stderr=PIPE)
+        out, err = ps.communicate()
+        if ps.returncode == 0:
+            try:
+                temp = int(findall('GPU Current Temp\s*:\s*([\d]+)\s*C', out)[0])
+                if temp > self.threshold:
+                    self.layout.colour = self.foreground_alert
+            except IndexError:
+                return u''
+            return u' / {}\u00B0C'.format(temp)
+        else:
+            return u''
 
 
 class FanControl(base._TextBox, NonBlockingSpawn):
