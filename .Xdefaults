@@ -30,3 +30,23 @@ xterm*scrollBar: false
 xterm*background: black
 xterm*foreground: gray
 xterm*cursorBlink: false
+
+UXTerm*faceName: DejaVuSansMono Nerd Font
+UXTerm*faceSize: 9
+
+UXTerm*color0: #2e3436
+UXterm*color1: #cc0000
+UXterm*color2: #4e9a06
+UXterm*color3: #c4a000
+UXterm*color4: #3465a4
+UXterm*color5: #75507b
+UXterm*color6: #06989a
+UXterm*color7: #d3d7cf
+UXterm*color8: #555753
+UXterm*color9: #ef2929
+UXterm*color10: #8ae234
+UXterm*color11: #fce94f
+UXterm*color12: #729fcf
+UXterm*color13: #ad7fa8
+UXterm*color14: #34e2e2
+UXterm*color15: #eeeeec

@@ -9,7 +9,7 @@ lockTimeout:	0:10:00
 passwdTimeout:	0:00:01
 visualID:	default
 installColormap:    True
-verbose:	False
+verbose:	True
 timestamp:	True
 splash:		False
 splashDuration:	0:00:00

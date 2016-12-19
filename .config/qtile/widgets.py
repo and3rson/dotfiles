@@ -226,7 +226,6 @@ class OpenWeatherMap(base._TextBox, NonBlockingSpawn):
             self.draw()
 
 
-
 class NowPlayingWidget(base._TextBox):
     """
     Displays current song from VKPlayer.
@@ -298,7 +297,8 @@ class NowPlayingWidget(base._TextBox):
             self.is_downloading = is_downloading
             self.is_playing = is_playing
 
-            self.current_icon = u'\uF019' if is_downloading else u'\uF04B' if is_playing else u'\uF04C'
+            # self.current_icon = u'\uF019' if is_downloading else u'\uF04B' if is_playing else u'\uF04C'
+            self.current_icon = u'\uF04B' if is_playing else u'\uF04C'
             # self.current_icon = u'v' if is_downloading else u'>' if is_playing else u'x'
 
             # current_song = current_song

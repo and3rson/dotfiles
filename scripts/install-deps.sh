@@ -45,6 +45,9 @@ pacman --noconfirm -S \
     xorg-xbacklight \
     python2-pyudev \
     xscreensaver-arch-logo \
+    faenza-icon-theme \
+    adwaita-icon-theme \
+    dunst \
 && \
 sudo systemctl daemon-reload \
 && \
@@ -63,6 +66,7 @@ sudo -u ${USERNAME} yaourt --noconfirm -S \
     notify-osd-customizable \
     notifyconf \
     rofi-git \
+    numix-circle-icon-theme-git \
 && \
 pip2.7 install \
     google-api-python-client \

@@ -27,7 +27,17 @@ dbus-update-activation-environment --all
 
 export LANG=uk_UA.UTF8
 
-qtile > ~/.qtile.log
+if [[ -z "$1" ]]
+then
+    echo Starting qTile
+    qtile > ~/.qtile.log
+else
+    ${@}
+    echo Starting ${@}
+fi
+
+exit
+
 
 # Old commands - just in case...
 # xrandr --output VGA1 --right-of LVDS-1-0 --pos 1366x432
