@@ -1,0 +1,16 @@
+# -- THEME AUTO-WRITTEN DO NOT EDIT
+include "/usr/share/themes/Numix/gtk-2.0/gtkrc"
+
+style "user-font" {
+	font_name = "DejaVu Sans 10"
+}
+
+widget_class "*" style "user-font"
+
+gtk-font-name="DejaVu Sans 10"
+
+include "/home/anderson/.gtkrc.mine"
+
+gtk-icon-theme-name = "elementary"
+
+# -- THEME AUTO-WRITTEN DO NOT EDIT

@@ -44,6 +44,10 @@ pacman --noconfirm -S \
     hexchat \
     xorg-xbacklight \
     python2-pyudev \
+    xscreensaver-arch-logo \
+    faenza-icon-theme \
+    adwaita-icon-theme \
+    dunst \
 && \
 sudo systemctl daemon-reload \
 && \
@@ -61,6 +65,8 @@ sudo -u ${USERNAME} yaourt --noconfirm -S \
     simplenote-electron-bin \
     notify-osd-customizable \
     notifyconf \
+    rofi-git \
+    numix-circle-icon-theme-git \
 && \
 pip2.7 install \
     google-api-python-client \
@@ -68,8 +74,9 @@ pip2.7 install \
     pytz \
     feedparser \
     iwlib \
-    redis>=2.10.5 \
+    redis==2.10.5 \
     pulsectl \
+    python-dateutil==2.6.0 \
     -U \
 && \
 echo "All done!"

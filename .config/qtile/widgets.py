@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import division
 
 from libqtile.widget import base, Volume, ThermalSensor, Battery, GroupBox, TaskList
@@ -90,7 +92,7 @@ class Ping(base._TextBox, NonBlockingSpawn):
     def do_ping(self):
         self.spawn(self._do_ping, self.on_ping_result)
 
-    def _do_ping(self):
+    def _do_ping_old(self):
         iwconfig = iwlib.get_iwconfig('wlp3s0')
         is_connected = iwconfig['Access Point'] != '00:00:00:00:00:00'
         if is_connected:
@@ -108,17 +110,31 @@ class Ping(base._TextBox, NonBlockingSpawn):
 
         return (wlan_name, ping)
 
-    def on_ping_result(self, result):
-        wlan_name, ping = result
+    def _do_ping(self):
+        out, err = Popen(['ping', '-c', '1', '8.8.8.8'], stdout=PIPE, stderr=PIPE).communicate()
 
-        self.update(wlan_name, ping)
+        try:
+            ping = int(float(findall('icmp_seq=[\d]+ ttl=[\d]+ time=([\d\.]+)', out)[0]))
+            if ping > 999:
+                ping = 999
+        except:
+            ping = None
+
+        return ping
+
+    def on_ping_result(self, result):
+        # wlan_name, ping = result
+        ping = result
+
+        # self.update(wlan_name, ping)
+        self.update(ping)
 
         self.timeout_add(2, self.do_ping)
 
     def button_press(self, x, y, button):
         pass
 
-    def update(self, wlan_name, ping):
+    def update(self, ping):
         # \uf1eb
         if ping is None:
             ping_str = '???'
@@ -134,7 +150,9 @@ class Ping(base._TextBox, NonBlockingSpawn):
 
             ping_str = str(ping).rjust(3, ' ')
 
-        self.text = u'\uf072  {}: {}ms'.format(wlan_name, ping_str)
+        # f072
+        # \u2098\u209B
+        self.text = u'\uf1eb {}ms'.format(ping_str)
 
         if len(self.text) != len(self.last_text):
             self.bar.draw()
@@ -143,7 +161,7 @@ class Ping(base._TextBox, NonBlockingSpawn):
         self.last_text = self.text
 
 
-class OpenWeatherMap(base.ThreadedPollText):
+class OpenWeatherMap(base._TextBox, NonBlockingSpawn):
     """
     Displays weather from openweathermap.org
     """
@@ -153,19 +171,33 @@ class OpenWeatherMap(base.ThreadedPollText):
     URL = 'http://api.openweathermap.org/data/2.5/weather'
 
     def __init__(self, **config):
+        print os.getcwd()
+        f = open(os.path.expanduser('~/.config/qtile/weather_i18n.ini'), 'r')
+        self.i18n = {k: v.decode('utf-8') for k, v in [[p.strip() for p in line.split('=')] for line in filter(None, f.read().split('\n'))]}
+        f.close()
+
         self.url = None
         for key in ('appid', 'location'):
             if key not in config:
                 logger.error('Missing "{}" config parameter!'.format(key))
                 return
-        config['update_interval'] = 300
+        # config['update_interval'] = 60
         self.url = OpenWeatherMap.URL + '?' + urlencode(dict(
             q=config.pop('location'),
             appid=config.pop('appid')
         ))
-        base.ThreadedPollText.__init__(self, **config)
+        self.last_text = ''
+        base._TextBox.__init__(self, **config)
 
-    def poll(self):
+    def _configure(self, *args, **kwargs):
+        base._TextBox._configure(self, *args, **kwargs)
+        self.do_fetch()
+
+    def do_fetch(self):
+        self.spawn(self._do_fetch, self.on_fetch_result)
+
+    def _do_fetch(self):
+        logger.error('Fetch')
         if self.url is None:
             return 'N/A'
         try:
@@ -174,11 +206,24 @@ class OpenWeatherMap(base.ThreadedPollText):
             return u'\uF0E9  {name} {temp}\u00B0C'.format(
                 city=response['name'],
                 temp=int(response['main']['temp'] - OpenWeatherMap.ABS_ZERO),
-                name=response['weather'][0]['main']
+                # name=response['weather'][0]['main']
+                name=self.i18n.get(str(response['weather'][0]['id']), response['weather'][0]['main'])
             )
         except Exception as e:
             logger.exception(e.message)
             return 'ERROR'
+
+    def on_fetch_result(self, result):
+        if result == 'ERROR':
+            self.timeout_add(10, self.do_fetch)
+        else:
+            self.timeout_add(300, self.do_fetch)
+
+        self.text = result
+        if len(self.last_text) != len(self.text):
+            self.bar.draw()
+        else:
+            self.draw()
 
 
 class NowPlayingWidget(base._TextBox):
@@ -252,10 +297,11 @@ class NowPlayingWidget(base._TextBox):
             self.is_downloading = is_downloading
             self.is_playing = is_playing
 
-            self.current_icon = u'\uF019' if is_downloading else u'\uF04B' if is_playing else u'\uF04C'
+            # self.current_icon = u'\uF019' if is_downloading else u'\uF04B' if is_playing else u'\uF04C'
+            self.current_icon = u'\uF04B' if is_playing else u'\uF04C'
             # self.current_icon = u'v' if is_downloading else u'>' if is_playing else u'x'
 
-            current_song = current_song.decode('utf-8')
+            # current_song = current_song
             self.current_song = current_song
 
             self._draw()
@@ -358,7 +404,8 @@ class ThermalSensor2(ThermalSensor):
         if temp_values is None:
             return False
         # F069
-        text = u"\uf0E4 "
+        # F135
+        text = u"\uF0E4 "
         if self.show_tag and self.tag_sensor is not None:
             text = self.tag_sensor + u": "
         parts = temp_values.get(self.tag_sensor, ['N/A'])
@@ -370,7 +417,70 @@ class ThermalSensor2(ThermalSensor):
             self.layout.colour = self.foreground_alert
         else:
             self.layout.colour = self.foreground_normal
+	text += self.get_nvidia_temp()
         return text
+
+    def get_nvidia_temp(self):
+        try:
+            ps = Popen(['nvidia-smi', '-q', '-d', 'temperature'], stdout=PIPE, stderr=PIPE)
+        except:
+            return u''
+        out, err = ps.communicate()
+        if ps.returncode == 0:
+            try:
+                temp = int(findall('GPU Current Temp\s*:\s*([\d]+)\s*C', out)[0])
+                if temp > self.threshold:
+                    self.layout.colour = self.foreground_alert
+            except IndexError:
+                return u''
+            return u' / {}\u00B0C'.format(temp)
+        else:
+            return u''
+
+
+class FanControl(base._TextBox, NonBlockingSpawn):
+    """
+    Displays time to next event in Google Calendar.
+    Psst: I use nerd-fonts package for this.
+    """
+    orientations = base.ORIENTATION_HORIZONTAL
+
+    def __init__(self, **config):
+        self.last_text = ''
+        base._TextBox.__init__(self, **config)
+
+    def _configure(self, qtile, bar):
+        base._TextBox._configure(self, qtile, bar)
+        self.do_update()
+
+    def button_press(self, x, y, button):
+        pass
+        # if button == 1:
+        #     self.qtile.currentScreen.setGroup(self.qtile.groupMap['m'])
+
+    def do_update(self):
+        self.spawn(self.get_speed, self.on_update_result)
+
+    def get_speed(self):
+        f = open(self.fan_input, 'r')
+        value = int(f.read().strip())
+        f.close()
+        return value
+
+    def on_update_result(self, result):
+        # \uf1eb
+        # F0E4
+        self.text = u'\uF135  {} RPM'.format(result)
+        if result > 1000:
+            self.foreground = '#F05040'
+        else:
+            self.foreground = '#11BBEE'
+        if len(self.text) != len(self.last_text):
+            self.bar.draw()
+        else:
+            self.draw()
+        self.last_text = self.text
+        self.timeout_add(0.5, self.do_update)
 
 
 class Battery2(Battery):
@@ -380,7 +490,22 @@ class Battery2(Battery):
     """
     def update(self):
         # f037
-        ntext = u'\uf011 {}'.format(self._get_text())
+        # f011
+        start = 0xF244
+        info = self._get_info()
+        if info['stat'] == 'Charging':
+            icon_id = 0xF1E6
+        else:
+            value = int(info['now'] / info['full'] * 100)
+            if value > 100:
+                value = 100
+            if value < 0:
+                value = 0
+            if value == 100:  # full
+                icon_id = start - 4
+            else:
+                icon_id = start - int(value / 20)
+        ntext = u'{} {}'.format(unichr(icon_id), self._get_text())
         if ntext != self.text:
             self.text = ntext
             self.bar.draw()
