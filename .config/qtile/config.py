@@ -190,13 +190,13 @@ for i in xrange(1, 9):
 # - default layout
 # - arguments for `Match`es
 GROUP_DEFS = (
-    ('t', 'term', [HOME_TERM_CMD], 'max', dict()),
+    ('t', 'term', [HOME_TERM_CMD], 'monadtall', dict()),
     ('w', 'web', ['chromium', 'firefox'], 'max', dict(wm_class=['chromium', 'Firefox'])),
-    ('i', 'im', ['telegram-desktop', 'slack', 'hexchat'], 'zoomy', dict(wm_class=[
+    ('i', 'im', ['telegram-desktop', 'slack', 'hexchat'], 'monadtall', dict(wm_class=[
         'telegram-desktop', 'TelegramDesktop', 'Slack', 'www.flowdock.com__app_redeapp_main', 'Hexchat', 'Skype', 'skypeforlinux'
     ], title=['Messenger', 'Flowdock', re.compile(r'^.* - Chat$')])),
     ('m', 'mail', ['thunderbird'], 'monadtall', dict(wm_class=['Thunderbird'])),
-    ('d', 'dev', ['subl3'], 'monadtall', dict(wm_class=['Subl3'])),
+    ('d', 'dev', ['subl3'], 'max', dict(wm_class=['Subl3'])),
     ('a', 'audio', ['vkplayer'], 'monadtall', dict(title=['VK audio player'])),
     ('g', 'games', ['steam', 'deluge'], 'max', dict(wm_class=[
         re.compile('^Steam|csgo_linux64|Deluge$')
@@ -226,13 +226,15 @@ layouts = [
     layout.MonadTall(
         border_normal=WidgetOpts.DEFAULT_COLOR,
         border_focus=WidgetOpts.HIGHLIGHT_COLOR,
-        border_width=0,
-        grow_amount=0
+        border_width=2,
+        grow_amount=0,
+        margin=14
     ),
     layout.Max(),
-    layout.Zoomy(
-        columnwidth=300
-    )
+    # layout.Zoomy(
+    #     columnwidth=300
+    # ),
+    # layout.Columns(margin=24)
 ]
 
 # Configuration for floating layout
