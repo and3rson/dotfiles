@@ -22,3 +22,6 @@ function cd() {
     ls
 }
 
+function feh() {
+    /usr/bin/feh --scale-down --auto-zoom "${@}"
+}
