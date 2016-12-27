@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if ! [[ -z "$SSH_TTY" || -z "$TELEGRAM_BOT_TOKEN" || -z "$TELEGRAM_CHAT_ID" ]]
+then
+    SSHVARS=($SSH_CLIENT)
+    URL="https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage"
+    MSG=`echo -e "New SSH login to dun.ai\n\nUser: ${USER}\nHost: ${SSHVARS[0]}:${SSHVARS[1]} -> ${HOSTNAME}:${SSHVARS[2]}\nTTY:${SSH_TTY}"`
+    curl $URL -H "Content-Type: application/json" -d "{\"text\": \"${MSG}\", \"chat_id\":\"${TELEGRAM_CHAT_ID}\"}" > /dev/null 2>&1
+fi
