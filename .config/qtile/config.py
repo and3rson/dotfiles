@@ -131,6 +131,17 @@ keys = [
         lazy.function(commands.SwitchScreen())
     ),
 
+    # Move window between groups
+    Key(
+        [mod], "comma",
+        lazy.function(commands.ShiftWindow(False))
+    ),
+    Key(
+        [mod], "period",
+        lazy.function(commands.ShiftWindow(True))
+    ),
+
+    # Spawn terminal
     Key([mod], "Return", lazy.spawn(TERM_APP)),
 
     # Switch to next layout
@@ -299,6 +310,11 @@ keys.extend([
     Key([], 'XF86AudioMute', lazy.function(lambda *args: pacontrol.cmd_toggle_mute())),
 ])
 
+# Fetch backlight file name
+try:
+    backlight_name = os.listdir('/sys/class/backlight')[0]
+except:
+    backlight_name = None
 
 # Screens config
 # You will see a lot of widget classes that end with "2".
@@ -338,52 +354,18 @@ screens = [
         bottom=bar.Bar(
             [
                 widgets.ArchLogo(scale=0.9),
+                widgets.Hostname(
+                    font=WidgetOpts.DEFAULT_FONT,
+                    fontsize=10,
+                    # background='#FFFFFF',
+                    # foreground='#222222'
+                ),
                 widgets.UnreadMail(
                     font=WidgetOpts.MONOSPACE_FONT
                 ),
                 # widgets.NextEvent(
                 #     font=WidgetOpts.MONOSPACE_FONT
                 # ),
-                widget.Sep(padding=10),
-                widgets.KBLayout(
-                    font=WidgetOpts.MONOSPACE_FONT,
-                    foreground='#77CCFF'
-                ),
-                # widgets.Volume2(
-                #     font=WidgetOpts.MONOSPACE_FONT,
-                #     foreground='#CCFFFF',
-                #     update_interval=0.5
-                # ),
-                pacontrol,
-                widgets.OpenWeatherMap(
-                    appid='5041ca48d55a6669fe8b41ad1a8af753',
-                    # I hereby disclose my OpenWeatherMap API token.
-                    # Please show me some respect and do not abuse it. <3
-                    location=WidgetOpts.LOCATION,
-                    font=WidgetOpts.MONOSPACE_FONT,
-                    foreground='#77CCFF'
-                ),
-                widget.Sep(padding=10),
-                widgets.Battery2(
-                    charge_char=u'\uf0de',
-                    discharge_char=u'\uf0dd',
-                    foreground='#11BBEE',
-                    low_foreground='#F05040',
-                    format=u'{percent:2.0%} {char}',
-                    font=WidgetOpts.MONOSPACE_FONT
-                ),
-                widgets.ThermalSensor2(
-                    font=WidgetOpts.MONOSPACE_FONT,
-                    foreground='#11BBEE',
-                    foreground_alert='#F05040',
-                    threshold=65
-                ),
-                widgets.FanControl(
-                    font=WidgetOpts.MONOSPACE_FONT,
-                    fan_input='/sys/devices/virtual/hwmon/hwmon1/fan1_input'
-                ),
-                widget.Sep(padding=10),
-                widgets.Ping(font=WidgetOpts.MONOSPACE_FONT),
                 widget.Sep(padding=10),
                 widget.CPUGraph(
                     border_color='#11BBEE.3',
@@ -420,6 +402,51 @@ screens = [
                     font=WidgetOpts.MONOSPACE_FONT
                 ),
                 widget.Sep(padding=10),
+                widgets.KBLayout(
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    foreground='#77CCFF'
+                ),
+                # widgets.Volume2(
+                #     font=WidgetOpts.MONOSPACE_FONT,
+                #     foreground='#CCFFFF',
+                #     update_interval=0.5
+                # ),
+                pacontrol,
+            ] + ([
+                widgets.Backlight2(
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    foreground='#11BBEE',
+                    backlight_name=backlight_name
+                )
+            ] if backlight_name else []) + [
+                widgets.OpenWeatherMap(
+                    appid='5041ca48d55a6669fe8b41ad1a8af753',
+                    # I hereby disclose my OpenWeatherMap API token.
+                    # Please show me some respect and do not abuse it. <3
+                    location=WidgetOpts.LOCATION,
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    foreground='#77CCFF'
+                ),
+                widget.Sep(padding=10),
+                widgets.Ping(font=WidgetOpts.MONOSPACE_FONT),
+                widgets.ThermalSensor2(
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    foreground='#11BBEE',
+                    foreground_alert='#F05040',
+                    threshold=65
+                ),
+                widgets.FanControl(
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    fan_input='/sys/devices/virtual/hwmon/hwmon1/fan1_input'
+                ),
+                widgets.Battery2(
+                    charge_char=u'\uf0de',
+                    discharge_char=u'\uf0dd',
+                    foreground='#11BBEE',
+                    low_foreground='#F05040',
+                    format=u'{percent:2.0%} {char}',
+                    font=WidgetOpts.MONOSPACE_FONT
+                ),
             ],
             20
         )
@@ -477,7 +504,7 @@ def custom_icons(window):
             wid = window.cmd_info()['id']
             subprocess.Popen(['/usr/bin/xseticon', '-id', '0x%X' % wid, icon])
             logger.error('Setting icon {} for window {}'.format(icon, wid))
-            print ' '.join(['/usr/bin/xseticon', '-id', '0x%X' % wid, icon])
+            # print ' '.join(['/usr/bin/xseticon', '-id', '0x%X' % wid, icon])
     except Exception as e:
         logger.exception('Error in custom_icons method: {}'.format(e.message))
 

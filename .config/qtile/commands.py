@@ -2,7 +2,6 @@ from libqtile import hook
 from libqtile.log_utils import logger
 from collections import namedtuple
 import os
-import subprocess
 import re
 from glob import glob
 from utils import NonBlockingSpawn, DMenu
@@ -239,3 +238,18 @@ class ToWindow(object):
         #     # logger.error(str(w['group']))
         #     # if w['group'] == qtile.currentGroup.name:
         #     #     logger.error(u'w: {}'.format(str(w)))
+
+
+class ShiftWindow(object):
+    def __init__(self, to_next):
+        self.to_next = to_next
+
+    def __call__(self, qtile):
+        print qtile.currentGroup.name
+        new_group = (qtile.currentGroup.nextGroup if self.to_next else qtile.currentGroup.prevGroup)(False, False)
+        # print [group['name'] for group in qtile.cmd_groups()]
+        filter(
+            lambda w: w.cmd_inspect()['attributes']['map_state'],
+            qtile.currentGroup.windows
+        )[0].cmd_togroup(new_group.name)
+        new_group.cmd_toscreen()

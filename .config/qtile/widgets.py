@@ -2,7 +2,7 @@
 
 from __future__ import division
 
-from libqtile.widget import base, Volume, ThermalSensor, Battery, GroupBox, TaskList
+from libqtile.widget import base, Volume, ThermalSensor, Battery, GroupBox, TaskList, Backlight
 from libqtile.log_utils import logger
 from libqtile import bar, hook
 import feedparser
@@ -22,6 +22,7 @@ import os
 import cairocffi
 from pulsectl import Pulse
 from threading import Lock
+import socket
 
 
 class RSS(base.ThreadedPollText):
@@ -785,7 +786,7 @@ class TaskList2(TaskList):
             else:
                 text_color = self.foreground
 
-            logger.error(u'WIN: {}, {}, {}'.format(w.name, len(w.icons), self.get_window_icon(w)))
+            # logger.error(u'WIN: {}, {}, {}'.format(w.name, len(w.icons), self.get_window_icon(w)))
 
             bw = self.box_width(task)
             self.drawbox(
@@ -897,7 +898,8 @@ class DiskUsage(base._TextBox, NonBlockingSpawn):
     def sizeof_fmt(self, num, suffix='B'):
         for unit in ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi']:
             if abs(num) < 1024.0:
-                return "%3.1f%s%s" % (num, unit, suffix)
+                # return "%3.1f%s%s" % (num, unit, suffix)
+                return "%3d %s%s" % (num, unit, suffix)
             num /= 1024.0
         return "%.1f%s%s" % (num, 'Yi', suffix)
 
@@ -905,7 +907,7 @@ class DiskUsage(base._TextBox, NonBlockingSpawn):
         # \uf1eb
         free_factor = 1 - free / size
         self.foreground = '#%02x%02x00' % (free_factor * 127 + 128, (1 - free_factor) * 127 + 128)
-        self.text = u'{}: {}/{} free'.format(self.root, self.sizeof_fmt(free), self.sizeof_fmt(size))
+        self.text = u'{}: {} free'.format(self.root, self.sizeof_fmt(free), self.sizeof_fmt(size))
         self.bar.draw()
 
 
@@ -996,3 +998,26 @@ class PAControl(base._TextBox, NonBlockingSpawn):
 
     def cmd_toggle_mute(self):
         self.toggle_mute()
+
+
+class Backlight2(Backlight):
+    def poll(self):
+        return u'\uf0eb {}'.format(super(Backlight2, self).poll().strip())
+
+
+class Hostname(base.ThreadedPollText):
+    """
+    Shows current keyboard layout.
+    """
+    orientations = base.ORIENTATION_HORIZONTAL
+
+    def __init__(self, **config):
+        config['update_interval'] = 60
+        base.ThreadedPollText.__init__(self, **config)
+
+    def button_press(self, x, y, button):
+        pass
+
+    def poll(self):
+        # f0ac
+        return socket.gethostname().upper()
