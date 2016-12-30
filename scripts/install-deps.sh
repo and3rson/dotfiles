@@ -67,6 +67,8 @@ sudo -u ${USERNAME} yaourt --noconfirm -S \
     notifyconf \
     rofi-git \
     numix-circle-icon-theme-git \
+    xseticon \
+    paper-icon-theme-git \
 && \
 pip2.7 install \
     google-api-python-client \

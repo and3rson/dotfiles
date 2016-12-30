@@ -762,7 +762,13 @@ class TaskList2(TaskList):
             elif w.floating:
                 state = '[F] '
 
-            task = "[%d] %s%s" % (i + 1, state, w.name if w and w.name else " ")
+            if w:
+                # name = w.name
+                name = w.cmd_inspect()['wm_class'][1]
+            else:
+                name = '?'
+
+            task = "[%d] %s%s" % (i + 1, state, name)
 
             if w.urgent:
                 border = self.urgent_border
@@ -778,6 +784,8 @@ class TaskList2(TaskList):
                 border = self.bar.background
             else:
                 text_color = self.foreground
+
+            logger.error(u'WIN: {}, {}, {}'.format(w.name, len(w.icons), self.get_window_icon(w)))
 
             bw = self.box_width(task)
             self.drawbox(
