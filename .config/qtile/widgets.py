@@ -2,7 +2,7 @@
 
 from __future__ import division
 
-from libqtile.widget import base, Volume, ThermalSensor, Battery, GroupBox, TaskList
+from libqtile.widget import base, Volume, ThermalSensor, Battery, GroupBox, TaskList, Backlight
 from libqtile.log_utils import logger
 from libqtile import bar, hook
 import feedparser
@@ -22,6 +22,7 @@ import os
 import cairocffi
 from pulsectl import Pulse
 from threading import Lock
+import socket
 
 
 class RSS(base.ThreadedPollText):
@@ -751,7 +752,10 @@ class TaskList2(TaskList):
         self.drawer.clear(self.background or self.bar.background)
         offset = 0
 
+        # logger.error('C: {}'.format(self.qtile.currentLayout.clients))
+
         for i, w in enumerate(self.bar.screen.group.windows):
+        # for i, w in enumerate(self.qtile.currentLayout.clients):
             state = ''
             if w is None:
                 pass
@@ -762,7 +766,13 @@ class TaskList2(TaskList):
             elif w.floating:
                 state = '[F] '
 
-            task = "[%d] %s%s" % (i + 1, state, w.name if w and w.name else " ")
+            if w:
+                # name = w.name
+                name = w.cmd_inspect()['wm_class'][1]
+            else:
+                name = '?'
+
+            task = "[%d] %s%s" % (i + 1, state, name)
 
             if w.urgent:
                 border = self.urgent_border
@@ -779,6 +789,8 @@ class TaskList2(TaskList):
             else:
                 text_color = self.foreground
 
+            # logger.error(u'WIN: {}, {}, {}'.format(w.name, len(w.icons), self.get_window_icon(w)))
+
             bw = self.box_width(task)
             self.drawbox(
                 self.margin_x + offset,
@@ -793,6 +805,22 @@ class TaskList2(TaskList):
 
             offset += bw + self.icon_size
         self.drawer.draw(offsetx=self.offset, width=self.width)
+
+    def get_clicked(self, x, y):
+        window = None
+        new_width = width = 0
+        for w in self.bar.screen.group.windows:
+            if w:
+                # name = w.name
+                name = w.cmd_inspect()['wm_class'][1]
+            else:
+                name = '?'
+            new_width += self.icon_size + self.box_width("[%d] %s%s" % (0, '?', name))
+            if width <= x <= new_width:
+                window = w
+                break
+            width = new_width
+        return window
 
 
 class ArchLogo(base._TextBox):
@@ -889,7 +917,8 @@ class DiskUsage(base._TextBox, NonBlockingSpawn):
     def sizeof_fmt(self, num, suffix='B'):
         for unit in ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi']:
             if abs(num) < 1024.0:
-                return "%3.1f%s%s" % (num, unit, suffix)
+                # return "%3.1f%s%s" % (num, unit, suffix)
+                return "%3d %s%s" % (num, unit, suffix)
             num /= 1024.0
         return "%.1f%s%s" % (num, 'Yi', suffix)
 
@@ -897,7 +926,7 @@ class DiskUsage(base._TextBox, NonBlockingSpawn):
         # \uf1eb
         free_factor = 1 - free / size
         self.foreground = '#%02x%02x00' % (free_factor * 127 + 128, (1 - free_factor) * 127 + 128)
-        self.text = u'{}: {}/{} free'.format(self.root, self.sizeof_fmt(free), self.sizeof_fmt(size))
+        self.text = u'{}: {} free'.format(self.root, self.sizeof_fmt(free), self.sizeof_fmt(size))
         self.bar.draw()
 
 
@@ -988,3 +1017,26 @@ class PAControl(base._TextBox, NonBlockingSpawn):
 
     def cmd_toggle_mute(self):
         self.toggle_mute()
+
+
+class Backlight2(Backlight):
+    def poll(self):
+        return u'\uf0eb {}'.format(super(Backlight2, self).poll().strip())
+
+
+class Hostname(base.ThreadedPollText):
+    """
+    Shows current keyboard layout.
+    """
+    orientations = base.ORIENTATION_HORIZONTAL
+
+    def __init__(self, **config):
+        config['update_interval'] = 60
+        base.ThreadedPollText.__init__(self, **config)
+
+    def button_press(self, x, y, button):
+        pass
+
+    def poll(self):
+        # f0ac
+        return socket.gethostname().upper()

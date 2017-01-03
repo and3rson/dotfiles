@@ -23,5 +23,5 @@ function cd() {
 }
 
 function feh() {
-    /usr/bin/feh --scale-down --auto-zoom "${@}"
+    /usr/bin/feh --scale-down --auto-zoom --magick-timeout 5 "${@}"
 }
