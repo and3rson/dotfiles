@@ -752,7 +752,10 @@ class TaskList2(TaskList):
         self.drawer.clear(self.background or self.bar.background)
         offset = 0
 
+        # logger.error('C: {}'.format(self.qtile.currentLayout.clients))
+
         for i, w in enumerate(self.bar.screen.group.windows):
+        # for i, w in enumerate(self.qtile.currentLayout.clients):
             state = ''
             if w is None:
                 pass
@@ -802,6 +805,22 @@ class TaskList2(TaskList):
 
             offset += bw + self.icon_size
         self.drawer.draw(offsetx=self.offset, width=self.width)
+
+    def get_clicked(self, x, y):
+        window = None
+        new_width = width = 0
+        for w in self.bar.screen.group.windows:
+            if w:
+                # name = w.name
+                name = w.cmd_inspect()['wm_class'][1]
+            else:
+                name = '?'
+            new_width += self.icon_size + self.box_width("[%d] %s%s" % (0, '?', name))
+            if width <= x <= new_width:
+                window = w
+                break
+            width = new_width
+        return window
 
 
 class ArchLogo(base._TextBox):
