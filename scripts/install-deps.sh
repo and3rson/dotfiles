@@ -63,8 +63,6 @@ sudo -u ${USERNAME} yaourt --noconfirm -S \
     xlogin-git \
     dmenu2 \
     simplenote-electron-bin \
-    notify-osd-customizable \
-    notifyconf \
     rofi-git \
     numix-circle-icon-theme-git \
 && \
