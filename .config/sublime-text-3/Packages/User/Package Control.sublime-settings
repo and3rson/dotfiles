@@ -1,0 +1,34 @@
+{
+	"bootstrapped": true,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"Anaconda",
+		"Babel",
+		"Behave Toolkit",
+		"Dockerfile Syntax Highlighting",
+		"Emmet",
+		"Git Conflict Resolver",
+		"INI",
+		"Jade",
+		"JSONLint",
+		"JSX",
+		"LESS",
+		"MarkdownEditing",
+		"MoveTab",
+		"Numix Theme",
+		"Package Control",
+		"SCSS",
+		"Seti_UI",
+		"SideBarEnhancements",
+		"SublimeLinter",
+		"SublimeLinter-html-tidy",
+		"SublimeLinter-jshint",
+		"SublimeLinter-json",
+		"SublimeLinter-pydocstyle",
+		"Theme - Solarized Flat",
+		"Themes Menu Switcher"
+	]
+}

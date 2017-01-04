@@ -227,7 +227,7 @@ class OpenWeatherMap(base._TextBox, NonBlockingSpawn):
             self.draw()
 
 
-class NowPlayingWidget(base._TextBox):
+class NowPlayingWidget(base._TextBox, NonBlockingSpawn):
     """
     Displays current song from VKPlayer.
     https://github.com/and3rson/vkplayer
@@ -253,11 +253,13 @@ class NowPlayingWidget(base._TextBox):
         self.current_song = 'Empty'
         self.last_scroll = 0
         try:
-            self.max_len = 40
+            self.max_len = 1000
             self.prev_len = 0
             self.shifted = 0
-            self.sep = '  ***  '
-            base._TextBox.__init__(self, **config)
+            # self.sep = u'  \uf105\uf105\uf105   '
+            self.sep = u'  \uf069    '
+            # self.length = bar.STRETCH
+            base._TextBox.__init__(self, width=bar.STRETCH, **config)
 
             self.vkplayer = NowPlayingWidget.VKPlayer(self)
         except Exception as e:
@@ -266,24 +268,36 @@ class NowPlayingWidget(base._TextBox):
     def _configure(self, *args):
         super(NowPlayingWidget, self)._configure(*args)
         self.timeout_add(0.2, self._shift)
+        self.poll()
 
-    def timer_setup(self):
-        def on_done(future):
-            try:
-                event = future.result()
-            except Exception:
-                self._update_state(False, False, 'Player is offline')
-                logger.exception('next_event() raised exceptions')
+    def poll(self):
+        self.spawn(self.vkplayer.next_event, self.on_new_event)
+
+    def on_new_event(self, event):
+        if event is not None:
+            if event.name == 'state_changed':
+                self._update_state(*event.data)
             else:
-                if event is not None:
-                    if event.name == 'state_changed':
-                        self._update_state(*event.data)
-                    else:
-                        logger.error('Unknown event received: {}'.format(event))
-            self.timer_setup()
+                logger.error('Unknown event received: {}'.format(event))
+        self.poll()
 
-        future = self.qtile.run_in_executor(self.vkplayer.next_event)
-        future.add_done_callback(on_done)
+    # def timer_setup(self):
+    #     def on_done(future):
+    #         try:
+    #             event = future.result()
+    #         except Exception:
+    #             self._update_state(False, False, 'Player is offline')
+    #             logger.exception('next_event() raised exceptions')
+    #         else:
+    #             if event is not None:
+    #                 if event.name == 'state_changed':
+    #                     self._update_state(*event.data)
+    #                 else:
+    #                     logger.error('Unknown event received: {}'.format(event))
+    #         self.timer_setup()
+
+    #     future = self.qtile.run_in_executor(self.vkplayer.next_event)
+    #     future.add_done_callback(on_done)
 
     def _shift(self, *args):
         self.timeout_add(0.2, self._shift)
@@ -310,10 +324,11 @@ class NowPlayingWidget(base._TextBox):
             logger.exception(e.message)
 
     def _draw(self, redraw=False):
-        if len(self.current_song) > self.max_len:
-            shifted_title = self.sep.join([self.current_song] * 10)[self.shifted:self.shifted + self.max_len + 3]
-        else:
-            shifted_title = self.current_song.ljust(self.max_len + 3)
+        # if len(self.current_song) > self.max_len:
+        #     shifted_title = self.sep.join([self.current_song] * 10)[self.shifted:self.shifted + self.max_len + 3]
+        # else:
+        #     shifted_title = self.current_song.ljust(self.max_len + 3)
+        shifted_title = self.sep.join([self.current_song] * 10)[self.shifted:128]
         self.text = u'{}  {}'.format(self.current_icon, shifted_title)
         if self.is_downloading:
             self.foreground = '#9999EE'

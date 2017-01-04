@@ -24,9 +24,14 @@ import subprocess
 from libqtile.config import Key, Screen, Group, Drag, Click, Match
 from libqtile.command import lazy
 from libqtile import layout, bar, widget, hook
+import logging
 from libqtile.log_utils import logger
+from systemd.journal import JournalHandler
 import commands
 import widgets
+
+logger.addHandler(JournalHandler())
+# logger.setLevel(logging.INFO)
 
 BIN_DIR = os.path.expanduser('~/.config/qtile/bin')
 
@@ -143,6 +148,9 @@ keys = [
 
     # Spawn terminal
     Key([mod], "Return", lazy.spawn(TERM_APP)),
+
+    # View logs
+    Key([mod], "j", lazy.spawn('{} -e "journalctl -xfe"'.format(TERM_APP))),
 
     # Switch to next layout
     Key([mod], "z", lazy.next_layout()),
@@ -396,7 +404,7 @@ screens = [
                     foreground='#F0F040',
                     font=WidgetOpts.MONOSPACE_FONT
                 ),
-                widget.Spacer(),
+                # widget.Spacer(),
                 widgets.DiskUsage(
                     root='/',
                     font=WidgetOpts.MONOSPACE_FONT

@@ -1,0 +1,6 @@
+{
+    "python_interpreter": "/usr/bin/python2.7",
+    "pep8_ignore": [
+        "E501"
+    ]
+}

@@ -60,5 +60,5 @@ set mark-modified-lines on
 # set show-mode-in-prompt on
 
 #Use [Tab] and [Shift]+[Tab] to cycle through all the possible completions:
-"\t": menu-complete
-"\e[Z": menu-complete-backward
+# "\t": menu-complete
+# "\e[Z": menu-complete-backward

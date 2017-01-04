@@ -11,7 +11,7 @@ nm-applet &
 blueman-applet &
 # deluged -l /tmp/deluged.log &
 
-sudo pritunl-client-gtk &
+# sudo pritunl-client-gtk &
 
 xscreensaver &
 
