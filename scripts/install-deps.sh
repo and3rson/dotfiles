@@ -56,7 +56,7 @@ sudo systemctl enable redis \
 sudo systemctl start redis \
 && \
 sudo -u ${USERNAME} yaourt --noconfirm -S \
-    nerd-fonts-complete \
+    nerd-fonts-git \
     qtile-git \
     xkblayout-state \
     hsetroot \
