@@ -4,6 +4,7 @@ ARROW=`echo -e "\ue0b0"`
 case $(tty) in /dev/tty[0-9]*)
     ARROW='' ;;
 esac
+ARROW=''
 
 
 # function is_chroot()
