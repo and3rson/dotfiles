@@ -4,6 +4,7 @@ ARROW=`echo -e "\ue0b0"`
 case $(tty) in /dev/tty[0-9]*)
     ARROW='' ;;
 esac
+ARROW=""
 
 
 # function is_chroot()
@@ -14,9 +15,22 @@ esac
 HOSTNAME_BG_COLOR=$bakgrn
 HOSTNAME_FG_COLOR=$txtgrn
 
+function retype_command() {
+    which tmux > /dev/null
+    if [[ "$TMUX_PANE" != "0" ]]
+    then
+        tmux send-keys -t $TMUX_PANE "$1"
+    fi
+}
+
 function info() {
     CODE=$?
+    CMD=`fc -ln -0 | sed -re 's/^\s+//g' -e 's/\s+$//g'`
     FIRST=1
+
+    function print_shell_simple() {
+        echo "[${USER}@${HOSTNAME} ${PWD/$HOME/\~}]$ "
+    }
 
     function print_tag() {
         if [[ ! -z "$TAG" ]]
@@ -96,22 +110,26 @@ function info() {
         fi
     }
 
-    function retry() {
-        if [[ "$CODE" != "0" ]]
+    if [[ "$MC_SID" != "" ]]
+    then
+        print_shell_simple
+    else
+        print_tag
+        print_virtualenv
+        print_hostname
+        print_pwd
+        git_info
+        ret_info
+        # retry
+
+        echo -en "\[\e[49m\]$ARROW\[$txtrst\] "
+
+        if [[ "$CODE" != "0" && "$CODE" != "130" ]]
         then
-            tmux send-keys -t $TMUX_PANE `fc -ln 0`
+            retype_command "$CMD"
         fi
-    }
+    fi
 
-    print_tag
-    print_virtualenv
-    print_hostname
-    print_pwd
-    git_info
-    ret_info
-    # retry
-
-    echo -en "\[\e[49m\]$ARROW\[$txtrst\] "
     # PLAIN="[$PWD]"
     # echo -ne "\[\033]0;$PLAIN\007\]"
 }
