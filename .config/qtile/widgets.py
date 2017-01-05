@@ -521,7 +521,11 @@ class Battery2(Battery):
                 icon_id = start - 4
             else:
                 icon_id = start - int(value / 20)
-        ntext = u'{} {}'.format(unichr(icon_id), self._get_text())
+
+        icon = unichr(icon_id)  # I could comment that out, but then linter
+        icon = progress(0, 100, value, 5, style=5)
+
+        ntext = u'{} {}'.format(icon, self._get_text())
         if ntext != self.text:
             self.text = ntext
             self.bar.draw()

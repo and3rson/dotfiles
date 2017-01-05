@@ -380,22 +380,22 @@ screens = [
                     border_width=1,
                     graph_color='#11BBEE',
                     fill_color='#11BBEE.3',
-                    samples=60,
+                    samples=25,
                     frequency=0.25,
                     line_width=2,
                     type='linefill',
-                    width=50
+                    width=25
                 ),
                 widget.MemoryGraph(
                     border_color='#22CC77.3',
                     border_width=1,
                     graph_color='#22CC77',
                     fill_color='#22CC77.3',
-                    samples=60,
+                    samples=25,
                     frequency=0.25,
                     line_width=2,
                     type='linefill',
-                    width=50
+                    width=25
                 ),
                 widget.Sep(
                     padding=10
