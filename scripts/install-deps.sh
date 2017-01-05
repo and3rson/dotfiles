@@ -47,7 +47,6 @@ pacman --noconfirm -S \
     xscreensaver-arch-logo \
     faenza-icon-theme \
     adwaita-icon-theme \
-    dunst \
 && \
 sudo systemctl daemon-reload \
 && \
@@ -67,6 +66,7 @@ sudo -u ${USERNAME} yaourt --noconfirm -S \
     numix-circle-icon-theme-git \
     xseticon \
     paper-icon-theme-git \
+    dunst-git \
 && \
 pip2.7 install \
     google-api-python-client \

@@ -23,6 +23,8 @@
     # Markup is allowed
     format = "<span font-family="Roboto" size="20000" font-weight="300">%s %p</span>\n<small></small>\n<span letter-spacing="0">%b</span>\n\n<small>@ %a</small>"
     
+    plain_text = yes
+
     # Sort messages by urgency.
     sort = yes
     
