@@ -17,7 +17,7 @@ import iwlib
 from weakref import proxy
 from redobject import RedObject
 from cal import get_next_event
-from utils import NonBlockingSpawn
+from utils import NonBlockingSpawn, progress
 import os
 import cairocffi
 from pulsectl import Pulse
@@ -941,7 +941,7 @@ class DiskUsage(base._TextBox, NonBlockingSpawn):
         # \uf1eb
         free_factor = 1 - free / size
         self.foreground = '#%02x%02x00' % (free_factor * 127 + 128, (1 - free_factor) * 127 + 128)
-        self.text = u'{}: {} free'.format(self.root, self.sizeof_fmt(free), self.sizeof_fmt(size))
+        self.text = u'{}: {} {}'.format(self.root, progress(0, size, size - free, 10, style=5), self.sizeof_fmt(free))
         self.bar.draw()
 
 

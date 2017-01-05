@@ -1,6 +1,10 @@
+# -*- coding: utf-8 -*-
+
 from libqtile.log_utils import logger
 from subprocess import Popen, PIPE
 import re
+from time import sleep
+import sys
 
 
 def nonblocking(on_result):
@@ -61,3 +65,46 @@ class DMenu(object):
         args.extend(map(str, sum(map(list, (filter(None, ('-' + k, v)) for k, v in self.kwargs.items())), [])))
         stdin = u'\n'.join(items).encode('utf-8')
         return Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE).communicate(stdin)[0]
+
+
+bar_styles = [
+    u'▁▂▃▄▅▆▇█',
+    u'⣀⣄⣤⣦⣶⣷⣿',
+    u'⣀⣄⣆⣇⣧⣷⣿',
+    u'○◔◐◕⬤',
+    u'□◱◧▣■',
+    u'□◱▨▩■',
+    u'□◱▥▦■',
+    u'░▒▓█',
+    u'░█',
+    u'⬜⬛',
+    u'▱▰',
+    u'▭◼',
+    u'▯▮',
+    u'◯⬤',
+    u'⚪⚫',
+]
+
+
+def progress(min, max, current, width, style=0):
+    style = bar_styles[style]
+    q_max = len(style) * width
+    ratio = float(current - min) / (max - min)
+    q_current = int(ratio * q_max)
+    return ''.join([
+        style[-1]
+        if x <= q_current
+        else style[q_current - x]
+        if x - q_current < len(style)
+        else style[0]
+        for x
+        in [y * len(style) for y in xrange(1, width + 1)]
+    ])
+
+
+if __name__ == '__main__':
+    for i in xrange(0, 101):
+        sys.stdout.write(progress(0, 100, i, 10, style=5) + ' ' + str(i))
+        sys.stdout.flush()
+        sleep(0.05)
+        sys.stdout.write('\r')
