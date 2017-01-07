@@ -124,10 +124,10 @@ function info() {
 
         echo -en "\[\e[49m\]$ARROW\[$txtrst\] "
 
-        if [[ "$CODE" != "0" && "$CODE" != "130" ]]
-        then
-            retype_command "$CMD"
-        fi
+        # if [[ "$CODE" != "0" && "$CODE" != "130" ]]
+        # then
+        #     retype_command "$CMD"
+        # fi
     fi
 
     # PLAIN="[$PWD]"
