@@ -433,7 +433,7 @@ class ThermalSensor2(ThermalSensor):
             self.layout.colour = self.foreground_alert
         else:
             self.layout.colour = self.foreground_normal
-	text += self.get_nvidia_temp()
+        text += self.get_nvidia_temp()
         return text
 
     def get_nvidia_temp(self):
@@ -478,19 +478,25 @@ class FanControl(base._TextBox, NonBlockingSpawn):
         self.spawn(self.get_speed, self.on_update_result)
 
     def get_speed(self):
-        f = open(self.fan_input, 'r')
-        value = int(f.read().strip())
-        f.close()
+        if socket.gethostname() == 'spawn':
+            out, err = Popen(['nvidia-settings', '-q', 'GPUCurrentFanSpeedRPM'], stdout=PIPE, stderr=PIPE).communicate()
+            value = int(findall(r'Attribute .*: ([\d]+)\.', out)[0])
+        else:
+            f = open(self.fan_input, 'r')
+            value = int(f.read().strip())
+            f.close()
+
+        if value > 1000:
+            self.foreground = '#F05040'
+        else:
+            self.foreground = '#11BBEE'
+
         return value
 
     def on_update_result(self, result):
         # \uf1eb
         # F0E4
         self.text = u'\uF135  {} RPM'.format(result)
-        if result > 1000:
-            self.foreground = '#F05040'
-        else:
-            self.foreground = '#11BBEE'
         if len(self.text) != len(self.last_text):
             self.bar.draw()
         else:
@@ -509,23 +515,30 @@ class Battery2(Battery):
         # f011
         start = 0xF244
         info = self._get_info()
-        if info['stat'] == 'Charging':
-            icon_id = 0xF1E6
-        else:
-            value = int(info['now'] / info['full'] * 100)
-            if value > 100:
-                value = 100
-            if value < 0:
-                value = 0
-            if value == 100:  # full
-                icon_id = start - 4
+        if info:
+            if info['stat'] == 'Charging':
+                icon_id = 0xF1E6
             else:
-                icon_id = start - int(value / 20)
+                value = int(info['now'] / info['full'] * 100)
+                if value > 100:
+                    value = 100
+                if value < 0:
+                    value = 0
+                if value == 100:  # full
+                    icon_id = start - 4
+                else:
+                    icon_id = start - int(value / 20)
 
-        icon = unichr(icon_id)  # I could comment that out, but then linter
-        icon = progress(0, 100, value, 5, style=5)
+            icon = progress(0, 100, value, 5, style=6)
+            text = self._get_text()
+        else:
+            icon = unichr(0xF1E6)
+            text = 'No battery'
 
-        ntext = u'{} {}'.format(icon, self._get_text())
+        # icon = unichr(icon_id)  # I could comment that out,
+        # but then the linter gets mad.
+
+        ntext = u'{} {}'.format(icon, text)
         if ntext != self.text:
             self.text = ntext
             self.bar.draw()
@@ -945,7 +958,7 @@ class DiskUsage(base._TextBox, NonBlockingSpawn):
         # \uf1eb
         free_factor = 1 - free / size
         self.foreground = '#%02x%02x00' % (free_factor * 127 + 128, (1 - free_factor) * 127 + 128)
-        self.text = u'{}: {} {}'.format(self.root, progress(0, size, size - free, 10, style=5), self.sizeof_fmt(free))
+        self.text = u'{}: {} {}'.format(self.root, progress(0, size, size - free, 10, style=6), self.sizeof_fmt(free))
         self.bar.draw()
 
 
