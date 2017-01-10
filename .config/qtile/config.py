@@ -214,9 +214,9 @@ for i in xrange(1, 9):
 # - default layout
 # - arguments for `Match`es
 GROUP_DEFS = (
-    ('t', 'term', [HOME_TERM_CMD], 'monadtall', dict()),
+    ('t', 'term', [HOME_TERM_CMD], 'max', dict()),
     ('w', 'web', ['chromium', 'firefox'], 'max', dict(wm_class=['chromium', 'Firefox'])),
-    ('i', 'im', ['telegram-desktop', 'slack', 'hexchat'], 'monadtall', dict(wm_class=[
+    ('i', 'im', ['telegram-desktop', 'hexchat'], 'max', dict(wm_class=[
         'telegram-desktop', 'TelegramDesktop', 'Slack', 'www.flowdock.com__app_redeapp_main', 'Hexchat', 'Skype', 'skypeforlinux'
     ], title=['Messenger', 'Flowdock', re.compile(r'^.* - Chat$')])),
     ('m', 'mail', ['thunderbird'], 'max', dict(wm_class=['Thunderbird'])),
@@ -227,7 +227,7 @@ GROUP_DEFS = (
     ], title=[
         re.compile('^Steam$')
     ])),
-    ('v', 'var', [], 'monadtall', dict(wm_class=['Pitivi', 'Audacity'])),
+    ('v', 'var', [], 'max', dict(wm_class=['Pitivi', 'Audacity'])),
     ('n', 'notes', ['simplenote'], 'max', dict(wm_class=['Simplenote'], title=['Peek App'])),
 )
 
@@ -245,8 +245,8 @@ for g_hotkey, g_name, g_startup, g_layout, g_match_kwargs in GROUP_DEFS:
         Key([mod, lock], g_hotkey, lazy.window.togroup(g_name[0]), lazy.group[g_name[0]].toscreen())
     )
 
-# I have three layouts here: MonadTall, Max & Zoomy
-layouts = [
+# I have two layouts here: MonadTall & Max
+layouts =
     layout.MonadTall(
         border_normal=WidgetOpts.DEFAULT_COLOR,
         border_focus=WidgetOpts.HIGHLIGHT_COLOR,
