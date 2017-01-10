@@ -216,8 +216,10 @@ for i in xrange(1, 9):
 GROUP_DEFS = (
     ('t', 'term', [HOME_TERM_CMD], 'max', dict()),
     ('w', 'web', ['chromium', 'firefox'], 'max', dict(wm_class=['chromium', 'Firefox'])),
-    ('i', 'im', ['telegram-desktop', 'hexchat'], 'max', dict(wm_class=[
-        'telegram-desktop', 'TelegramDesktop', 'Slack', 'www.flowdock.com__app_redeapp_main', 'Hexchat', 'Skype', 'skypeforlinux'
+    ('i', 'im', ['telegram-desktop', 'hexchat', 'irccloud'], 'max', dict(wm_class=[
+        'telegram-desktop', 'TelegramDesktop', 'Slack',
+        'www.flowdock.com__app_redeapp_main', 'Hexchat', 'Skype',
+        'skypeforlinux', 'IRCCloud'
     ], title=['Messenger', 'Flowdock', re.compile(r'^.* - Chat$')])),
     ('m', 'mail', ['thunderbird'], 'max', dict(wm_class=['Thunderbird'])),
     ('d', 'dev', ['subl3'], 'max', dict(wm_class=['Subl3'])),
