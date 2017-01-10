@@ -246,7 +246,7 @@ for g_hotkey, g_name, g_startup, g_layout, g_match_kwargs in GROUP_DEFS:
     )
 
 # I have two layouts here: MonadTall & Max
-layouts =
+layouts = [
     layout.MonadTall(
         border_normal=WidgetOpts.DEFAULT_COLOR,
         border_focus=WidgetOpts.HIGHLIGHT_COLOR,
