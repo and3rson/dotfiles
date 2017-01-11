@@ -618,7 +618,7 @@ class Battery2(Battery):
         info = self._get_info()
         if info:
             if info['stat'] == 'Charging':
-                icon_id = 0xF1E6
+                icon = unichr(0xF1E6)
             else:
                 value = int(info['now'] / info['full'] * 100)
                 if value > 100:
