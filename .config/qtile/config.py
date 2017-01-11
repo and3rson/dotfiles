@@ -216,7 +216,7 @@ for i in xrange(1, 9):
 GROUP_DEFS = (
     ('t', 'term', [HOME_TERM_CMD], 'max', dict()),
     ('w', 'web', ['chromium', 'firefox'], 'max', dict(wm_class=['chromium', 'Firefox'])),
-    ('i', 'im', ['telegram-desktop', 'hexchat', 'irccloud'], 'max', dict(wm_class=[
+    ('i', 'im', ['telegram-desktop', 'irccloud'], 'max', dict(wm_class=[
         'telegram-desktop', 'TelegramDesktop', 'Slack',
         'www.flowdock.com__app_redeapp_main', 'Hexchat', 'Skype',
         'skypeforlinux', 'IRCCloud'
@@ -402,7 +402,7 @@ screens = [
                 widget.Sep(
                     padding=10
                 ),
-                widgets.NowPlayingWidget(
+                widgets.NowPlayingWidget2(
                     foreground='#F0F040',
                     font=WidgetOpts.MONOSPACE_FONT
                 ),

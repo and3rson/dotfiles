@@ -368,6 +368,107 @@ class NowPlayingWidget(base._TextBox, NonBlockingSpawn):
                 self.vkplayer.broadcast('play_next')
 
 
+class NowPlayingWidget2(base._TextBox, NonBlockingSpawn):
+    """
+    Displays current song from VKPlayer.
+    https://github.com/and3rson/vkplayer
+
+    Also uses my own IPC implementation.
+    """
+    orientations = base.ORIENTATION_HORIZONTAL
+
+    class VKPlayer(RedObject):
+        def __init__(self, widget):
+            logger.error('VKPlayer.__init__()')
+            self.widget = proxy(widget)
+            super(NowPlayingWidget2.VKPlayer, self).__init__('org.dunai.vkplayer', logger)
+
+        def on_connected_handler(self):
+            logger.error('VKPlayer.on_connected_handler()')
+            self.broadcast('request_state')
+
+    def __init__(self, **config):
+        self.is_downloading = False
+        self.is_playing = False
+        self.current_icon = '?'
+        self.current_song = 'Empty'
+
+        base._TextBox.__init__(self, width=bar.STRETCH, **config)
+
+        self.vkplayer = NowPlayingWidget2.VKPlayer(self)
+
+    def _configure(self, *args):
+        super(NowPlayingWidget2, self)._configure(*args)
+        # self.timeout_add(0.2, self._shift)
+        self.poll()
+
+    def poll(self):
+        self.spawn(self.vkplayer.next_event, self.on_new_event)
+
+    def on_new_event(self, event):
+        if event is not None:
+            if event.name == 'state_changed':
+                self._update_state(*event.data)
+            else:
+                logger.error('Unknown event received: {}'.format(event))
+        self.poll()
+
+    def _update_state(self, is_downloading, is_playing, current_song):
+        try:
+            self.is_downloading = is_downloading
+            self.is_playing = is_playing
+
+            # self.current_icon = u'\uF019' if is_downloading else u'\uF04B' if is_playing else u'\uF04C'
+            self.current_icon = u'\uF04B' if is_playing else u'\uF04C'
+            # self.current_icon = u'v' if is_downloading else u'>' if is_playing else u'x'
+
+            # current_song = current_song
+            self.current_song = current_song
+
+            self._draw()
+        except Exception as e:
+            logger.exception(e.message)
+
+    def _draw(self, redraw=False):
+        self.text = u'{}  {}'.format(self.current_icon, self.current_song)
+        if self.is_downloading:
+            self.foreground = '#9999EE'
+        elif self.is_playing:
+            self.foreground = '#99EE99'
+        else:
+            self.foreground = '#EEEE99'
+
+        self.draw()
+
+    def _debounce(self):
+        last_scroll = self.last_scroll
+        self.last_scroll = time.time()
+
+        if time.time() - last_scroll > 0.35:
+            return True
+        else:
+            return False
+
+    def button_press(self, x, y, button):
+        if button == 1:
+            # Left: play/pause
+            self.vkplayer.broadcast('play_pause')
+
+        elif button == 2:
+            # Middle: random next
+            self.vkplayer.broadcast('play_random')
+
+        elif button == 4:
+            # Scroll up
+            if self._debounce():
+                self.vkplayer.broadcast('play_prev')
+
+        elif button == 5:
+            # Scroll down
+            if self._debounce():
+                self.vkplayer.broadcast('play_next')
+
+
 class Volume2(Volume):
     """
     Patched version of Volume widget that shows icon font chars.
@@ -529,7 +630,7 @@ class Battery2(Battery):
                 else:
                     icon_id = start - int(value / 20)
 
-            icon = progress(0, 100, value, 5, style=6)
+                icon = progress(0, 100, value, 5, style=6)
             text = self._get_text()
         else:
             icon = unichr(0xF1E6)
