@@ -142,12 +142,17 @@ class Ping(base._TextBox, NonBlockingSpawn):
             self.foreground = '#FF0000'
         else:
             if ping > 100:
-                self.foreground = '#FF0000'
-            elif ping < 50:
-                self.foreground = '#00FF00'
+                # self.foreground = '#FF0000'
+                self.foreground = self.foreground_alert
+            # elif ping < 50:
+            #     # self.foreground = '#00FF00'
+            #     self.foreground = self.foreground_normal
+            # else:
+            #     # factor = float(ping - 50) / 50
+            #     # self.foreground = '#%02x%02x00' % (factor * 127 + 128, (1 - factor) * 127 + 128)
+            #     self.foreground = self.foreground_normal
             else:
-                factor = float(ping - 50) / 50
-                self.foreground = '#%02x%02x00' % (factor * 127 + 128, (1 - factor) * 127 + 128)
+                self.foreground = self.foreground_normal
 
             ping_str = str(ping).rjust(3, ' ')
 
@@ -392,6 +397,7 @@ class NowPlayingWidget2(base._TextBox, NonBlockingSpawn):
         self.is_playing = False
         self.current_icon = '?'
         self.current_song = 'Empty'
+        self.last_scroll = 0
 
         base._TextBox.__init__(self, width=bar.STRETCH, **config)
 
@@ -588,9 +594,9 @@ class FanControl(base._TextBox, NonBlockingSpawn):
             f.close()
 
         if value > 1000:
-            self.foreground = '#F05040'
+            self.foreground = self.foreground_alert
         else:
-            self.foreground = '#11BBEE'
+            self.foreground = self.foreground_normal
 
         return value
 

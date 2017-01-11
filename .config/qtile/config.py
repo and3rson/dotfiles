@@ -224,7 +224,7 @@ GROUP_DEFS = (
     ('m', 'mail', ['thunderbird'], 'max', dict(wm_class=['Thunderbird'])),
     ('d', 'dev', ['subl3'], 'max', dict(wm_class=['Subl3'])),
     ('a', 'audio', ['vkplayer'], 'max', dict(title=['VK audio player'])),
-    ('g', 'games', ['steam', 'deluge'], 'max', dict(wm_class=[
+    ('g', 'games', ['steam'], 'max', dict(wm_class=[
         re.compile('^Steam|csgo_linux64|Deluge$')
     ], title=[
         re.compile('^Steam$')
@@ -288,12 +288,14 @@ group_box_config = dict(
     rounded=False,
     this_screen_border=WidgetOpts.HIGHLIGHT_COLOR, this_current_screen_border=WidgetOpts.HIGHLIGHT_SHADED_COLOR,
     other_screen_border=WidgetOpts.HIGHLIGHT_SHADED_COLOR, other_current_screen_border=WidgetOpts.HIGHLIGHT_COLOR,
-    urgent_border=WidgetOpts.URGENT_COLOR,
-    urgent_alert_method='border',
+    # urgent_border=WidgetOpts.URGENT_COLOR,
+    urgent_border=WidgetOpts.HIGHLIGHT_COLOR,
+    urgent_alert_method='line',
+    # urgent_alert_method='border',
     current_highlight_method='block',
     other_highlight_method='border',
     font='Nimbus Sans Bold',  # Terminus, Nimbus Sans
-    padding_x=2,
+    padding_x=4,
     margin_x=0
 )
 
@@ -305,6 +307,10 @@ def make_current_layout_widget():
         return w
     else:
         return widget.CurrentLayout()
+
+
+def sep():
+    return widget.Sep(padding=4, foreground='#11BBEE.3', size_percent=100)
 
 
 pacontrol = widgets.PAControl(
@@ -376,7 +382,7 @@ screens = [
                 # widgets.NextEvent(
                 #     font=WidgetOpts.MONOSPACE_FONT
                 # ),
-                widget.Sep(padding=10),
+                sep(),
                 widget.CPUGraph(
                     border_color='#11BBEE.3',
                     border_width=1,
@@ -399,9 +405,7 @@ screens = [
                     type='linefill',
                     width=25
                 ),
-                widget.Sep(
-                    padding=10
-                ),
+                sep(),
                 widgets.NowPlayingWidget2(
                     foreground='#F0F040',
                     font=WidgetOpts.MONOSPACE_FONT
@@ -411,7 +415,7 @@ screens = [
                     root='/',
                     font=WidgetOpts.MONOSPACE_FONT
                 ),
-                widget.Sep(padding=10),
+                sep(),
                 widgets.KBLayout(
                     font=WidgetOpts.MONOSPACE_FONT,
                     foreground='#77CCFF'
@@ -421,14 +425,17 @@ screens = [
                 #     foreground='#CCFFFF',
                 #     update_interval=0.5
                 # ),
+                sep(),
                 pacontrol,
             ] + ([
+                sep(),
                 widgets.Backlight2(
                     font=WidgetOpts.MONOSPACE_FONT,
                     foreground='#11BBEE',
                     backlight_name=backlight_name
                 )
             ] if backlight_name else []) + [
+                sep(),
                 widgets.OpenWeatherMap(
                     appid='5041ca48d55a6669fe8b41ad1a8af753',
                     # I hereby disclose my OpenWeatherMap API token.
@@ -437,18 +444,27 @@ screens = [
                     font=WidgetOpts.MONOSPACE_FONT,
                     foreground='#77CCFF'
                 ),
-                widget.Sep(padding=10),
-                widgets.Ping(font=WidgetOpts.MONOSPACE_FONT),
+                sep(),
+                widgets.Ping(
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    foreground_normal='#11BBEE',
+                    foreground_alert='#F05040'
+                ),
+                sep(),
                 widgets.ThermalSensor2(
                     font=WidgetOpts.MONOSPACE_FONT,
                     foreground='#11BBEE',
                     foreground_alert='#F05040',
                     threshold=65
                 ),
+                sep(),
                 widgets.FanControl(
                     font=WidgetOpts.MONOSPACE_FONT,
-                    fan_input='/sys/devices/virtual/hwmon/hwmon1/fan1_input'
+                    fan_input='/sys/devices/virtual/hwmon/hwmon1/fan1_input',
+                    foreground_normal='#11BBEE',
+                    foreground_alert='#F05040'
                 ),
+                sep(),
                 widgets.Battery2(
                     charge_char=u'\uf0de',
                     discharge_char=u'\uf0dd',
