@@ -315,7 +315,7 @@ def sep():
 
 pacontrol = widgets.PAControl(
     font=WidgetOpts.MONOSPACE_FONT,
-    foreground='#77CCFF'
+    foreground='#11BBEE'
 )
 
 
@@ -363,7 +363,7 @@ screens = [
                 ),
                 widget.Systray(),
                 widget.Sep(padding=10),
-                widget.Clock(format='%Y-%m-%d %H:%M'),
+                widget.Clock(format='%Y-%m-%d %H:%M', font=WidgetOpts.MONOSPACE_FONT),
             ],
             26
         ),
@@ -413,12 +413,14 @@ screens = [
                 # widget.Spacer(),
                 widgets.DiskUsage(
                     root='/',
-                    font=WidgetOpts.MONOSPACE_FONT
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    foreground_normal='#11BBEE',
+                    foreground_alert='#F05040'
                 ),
                 sep(),
                 widgets.KBLayout(
                     font=WidgetOpts.MONOSPACE_FONT,
-                    foreground='#77CCFF'
+                    foreground='#11BBEE'
                 ),
                 # widgets.Volume2(
                 #     font=WidgetOpts.MONOSPACE_FONT,
@@ -442,7 +444,7 @@ screens = [
                     # Please show me some respect and do not abuse it. <3
                     location=WidgetOpts.LOCATION,
                     font=WidgetOpts.MONOSPACE_FONT,
-                    foreground='#77CCFF'
+                    foreground='#11BBEE'
                 ),
                 sep(),
                 widgets.Ping(

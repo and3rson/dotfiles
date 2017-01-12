@@ -6,7 +6,7 @@ then
     exit 1
 fi
 
-if ! [[ `id -u` -eq "0x" ]]
+if ! [[ `id -u` -eq "0" ]]
 then
    echo "I am not root!"
    exit 1
@@ -80,4 +80,5 @@ pip2.7 install \
     python-dateutil==2.6.0 \
     -U \
 && \
+./patch.sh ${USERNAME} \
 echo "All done!"

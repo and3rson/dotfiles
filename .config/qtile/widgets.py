@@ -1063,9 +1063,13 @@ class DiskUsage(base._TextBox, NonBlockingSpawn):
 
     def update(self, size, free):
         # \uf1eb
-        free_factor = 1 - free / size
-        self.foreground = '#%02x%02x00' % (free_factor * 127 + 128, (1 - free_factor) * 127 + 128)
-        self.text = u'{}: {} {}'.format(self.root, progress(0, size, size - free, 10, style=6), self.sizeof_fmt(free))
+        # free_factor = 1 - free / size
+        # self.foreground = '#%02x%02x00' % (free_factor * 127 + 128, (1 - free_factor) * 127 + 128)
+        if 1 - free / size < 0.1:
+            self.foreground = self.foreground_alert
+        else:
+            self.foreground = self.foreground_normal
+        self.text = u'{} {}'.format(progress(0, size, size - free, 5, style=6), self.sizeof_fmt(free))
         self.bar.draw()
 
 
