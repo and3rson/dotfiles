@@ -47,6 +47,7 @@ pacman --noconfirm -S \
     xscreensaver-arch-logo \
     faenza-icon-theme \
     adwaita-icon-theme \
+    libappindicator-gtk3 \
 && \
 sudo systemctl daemon-reload \
 && \
