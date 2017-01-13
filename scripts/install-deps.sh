@@ -48,6 +48,7 @@ pacman --noconfirm -S \
     faenza-icon-theme \
     adwaita-icon-theme \
     libappindicator-gtk3 \
+    python2-beautifulsoup4 \
 && \
 sudo systemctl daemon-reload \
 && \
