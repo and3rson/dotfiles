@@ -68,6 +68,7 @@ sudo -u ${USERNAME} yaourt --noconfirm -S \
     xseticon \
     paper-icon-theme-git \
     dunst-git \
+    irccloud \
 && \
 pip2.7 install \
     google-api-python-client \

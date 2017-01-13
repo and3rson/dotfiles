@@ -66,6 +66,7 @@ class WidgetOpts:
     LOCATION = 'Lviv, Ukraine'
     DEFAULT_FONT = 'Roboto Sans Bold'
     MONOSPACE_FONT = 'DejaVu Sans Mono'
+    # MONOSPACE_FONT = 'Roboto Sans'
     DEFAULT_COLOR = '#000000'
     GREY_COLOR = '#444444'
     HIGHLIGHT_COLOR = '#F05040'
