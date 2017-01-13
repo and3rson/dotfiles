@@ -362,8 +362,11 @@ screens = [
                     padding_y_extra=-6
                 ),
                 widget.Systray(),
-                widget.Sep(padding=10),
-                widget.Clock(format='%Y-%m-%d %H:%M', font=WidgetOpts.MONOSPACE_FONT),
+                widget.Sep(padding=8, foreground='#000000.0'),
+                widget.Sep(padding=2),
+                widgets.DoomsdayClock(),
+                widget.Sep(padding=2),
+                widget.Clock(format='%Y-%m-%d %H:%M'),
             ],
             26
         ),

@@ -23,6 +23,7 @@ import cairocffi
 from pulsectl import Pulse
 from threading import Lock
 import socket
+from bs4 import BeautifulSoup as BS
 
 
 class RSS(base.ThreadedPollText):
@@ -1183,3 +1184,40 @@ class Hostname(base.ThreadedPollText):
     def poll(self):
         # f0ac
         return socket.gethostname().upper()
+
+
+class DoomsdayClock(base._TextBox, NonBlockingSpawn):
+    """
+    Shows current keyboard layout.
+    """
+    orientations = base.ORIENTATION_HORIZONTAL
+
+    def __init__(self, **config):
+        base._TextBox.__init__(self, **config)
+
+    def _configure(self, *args, **kwargs):
+        base._TextBox._configure(self, *args, **kwargs)
+        self.do_fetch()
+
+    def do_fetch(self):
+        self.spawn(self._fetch, self._on_fetch)
+
+    def _fetch(self):
+        opener = urllib2.build_opener()
+        opener.addheaders = [('User-Agent', 'Mozilla/5.0')]
+        try:
+            response = opener.open('http://thebulletin.org/timeline')
+            doc = BS(response.read())
+            match = findall('(\d+)\s*minutes', doc.select_one('.view-doomsday-clock .views-row-first .node-title').text.lower())
+            return match[0]
+        except:
+            return '?'
+
+    def _on_fetch(self, result):
+        # logger.error('Fetched: %s', result)
+        self.text = u'\u2622 {} m.t.m.'.format(result)
+        self.bar.draw()
+        self.timeout_add(300, self.do_fetch)
+
+    def button_press(self, x, y, button):
+        pass
