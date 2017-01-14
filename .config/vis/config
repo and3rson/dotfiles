@@ -1,3 +1,5 @@
+audio.sources=pulse
+audio.pulse.source=4
 audio.stereo.enabled=true
 
 #Configures what character the spectrum visualizer will use. Specifying a space (e.g " ") means the

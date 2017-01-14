@@ -4,7 +4,7 @@ from __future__ import division
 
 from libqtile.widget import base, Volume, ThermalSensor, Battery, GroupBox, TaskList, Backlight
 from libqtile.log_utils import logger
-from libqtile import bar, hook
+from libqtile import bar
 import feedparser
 from urllib import urlencode
 import urllib2
@@ -1211,13 +1211,17 @@ class DoomsdayClock(base._TextBox, NonBlockingSpawn):
             match = findall('(\d+)\s*minutes', doc.select_one('.view-doomsday-clock .views-row-first .node-title').text.lower())
             return match[0]
         except:
-            return '?'
+            return None
 
     def _on_fetch(self, result):
-        # logger.error('Fetched: %s', result)
-        self.text = u'\u2622 {} m.t.m.'.format(result)
+        if result:
+            # logger.error('Fetched: %s', result)
+            self.text = u'\u2622 {} m.t.m.'.format(result)
+            self.timeout_add(300, self.do_fetch)
+        else:
+            self.text = u'...'.format(result)
+            self.timeout_add(5, self.do_fetch)
         self.bar.draw()
-        self.timeout_add(300, self.do_fetch)
 
     def button_press(self, x, y, button):
         pass
