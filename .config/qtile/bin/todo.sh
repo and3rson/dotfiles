@@ -10,4 +10,4 @@ perl -i -p -e 's/\\n/\n/g' /tmp/todo
 # perl -i -p -e 's/\n+$/\n/g' /tmp/todo
 nano /tmp/todo
 perl -i -p -e 's/\n/\\n/g' /tmp/todo
-curl -X POST $API/docs/todo?password=$PASSWORD --data value=`cat /tmp/todo | head -c -2`
+curl -X POST $API/docs/todo?password=$PASSWORD --data-urlencode "value=`cat /tmp/todo`"
