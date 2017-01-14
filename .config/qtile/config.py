@@ -180,6 +180,9 @@ keys = [
     # Open config editor
     Key([mod], "c", lazy.spawn('{} -e "nano /home/anderson/.config/qtile/config.py"'.format(TERM_APP))),
 
+    # Open remote "todo"
+    Key([mod], "x", lazy.spawn('{} -e {}'.format(TERM_APP, os.path.join(BIN_DIR, 'todo.sh')))),
+
     # Capture screenshot
     Key([mod], "Print", lazy.spawn(os.path.expanduser('~/.config/qtile/bin/sshot.py'))),
 

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+. ~/.bashrc.d/91_secure
+
 API=http://kv.dun.ai
 PASSWORD=${TODO_PASS}
 
