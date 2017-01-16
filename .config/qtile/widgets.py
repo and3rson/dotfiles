@@ -204,7 +204,7 @@ class OpenWeatherMap(base._TextBox, NonBlockingSpawn):
         self.spawn(self._do_fetch, self.on_fetch_result)
 
     def _do_fetch(self):
-        logger.error('Fetch')
+        # logger.error('Fetch')
         if self.url is None:
             return 'N/A'
         try:
@@ -284,7 +284,7 @@ class NowPlayingWidget(base._TextBox, NonBlockingSpawn):
             if event.name == 'state_changed':
                 self._update_state(*event.data)
             else:
-                logger.error('Unknown event received: {}'.format(event))
+                logger.error('Unknown event received: {}'.format(event.name))
         self.poll()
 
     # def timer_setup(self):
@@ -908,7 +908,10 @@ class TaskList2(TaskList):
 
             if w:
                 # name = w.name
-                name = w.cmd_inspect()['wm_class'][1]
+                try:
+                    name = w.cmd_inspect()['wm_class'][1]
+                except Exception:
+                    name = w.name
             else:
                 name = '?'
 
