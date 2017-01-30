@@ -84,15 +84,16 @@ bar_styles = [
     u'▯▮',
     u'◯⬤',
     u'⚪⚫',
+    u' ▏▎▍▌▋▊▉█'
 ]
 
 
-def progress(min, max, current, width, style=0):
+def progress(min, max, current, width, style=0, before=u'⎹', after=u'⎸'):
     style = bar_styles[style]
     q_max = len(style) * width
     ratio = float(current - min) / (max - min)
     q_current = int(ratio * q_max)
-    return ''.join([
+    return before + ''.join([
         style[-1]
         if x <= q_current
         else style[q_current - x]
@@ -100,12 +101,13 @@ def progress(min, max, current, width, style=0):
         else style[0]
         for x
         in [y * len(style) for y in xrange(1, width + 1)]
-    ])
+    ]) + after
 
 
 if __name__ == '__main__':
-    for i in xrange(0, 101):
-        sys.stdout.write(progress(0, 100, i, 10, style=5) + ' ' + str(i))
-        sys.stdout.flush()
-        sleep(0.05)
-        sys.stdout.write('\r')
+    for style in (16, 0, 1, 6, 8):
+        for i in xrange(0, 101):
+            sys.stdout.write('\r' + progress(0, 100, i, 6, style=style) + ' %3d%% ' % i)
+            sys.stdout.flush()
+            sleep(0.01)
+        sys.stdout.write('\n\n')

@@ -621,32 +621,65 @@ class Battery2(Battery):
     def update(self):
         # f037
         # f011
-        start = 0xF244
+        # self.update_delay = 1
         info = self._get_info()
+
         if info:
-            if info['stat'] == 'Charging':
-                icon = unichr(0xF1E6)
-            else:
-                value = int(info['now'] / info['full'] * 100)
-                if value > 100:
-                    value = 100
-                if value < 0:
-                    value = 0
-                if value == 100:  # full
-                    icon_id = start - 4
+            value = int(info['now'] / info['full'] * 100)
+
+            if value > 100:
+                value = 100
+            if value < 0:
+                value = 0
+
+            if info['stat'] in ('Charging', 'Full'):
+                self.foreground = self.foreground_charging
+                style = 8
+                if info['stat'] == 'Charging':
+                    char = '+'
                 else:
-                    icon_id = start - int(value / 20)
+                    char = '='
+            else:
+                if value < 10:
+                    self.foreground = self.foreground_low
+                else:
+                    self.foreground = self.foreground_normal
+                style = 16
+                char = '-'
 
-                icon = progress(0, 100, value, 5, style=6)
-            text = self._get_text()
+            progress_bar = progress(0, 100, value, 5, style=style)
+            ntext = u'{}{}{}%'.format(progress_bar, char, value)
         else:
-            icon = unichr(0xF1E6)
-            text = 'No battery'
+            self.foreground = self.foreground_normal
+            ntext = u'\uF1E6'
 
-        # icon = unichr(icon_id)  # I could comment that out,
-        # but then the linter gets mad.
+        # start = 0xF244
+        # info = self._get_info()
 
-        ntext = u'{} {}'.format(icon, text)
+        # if info:
+        #     if info['stat'] == 'Charging':
+        #         icon = unichr(0xF1E6)
+        #     else:
+        #         value = int(info['now'] / info['full'] * 100)
+        #         if value > 100:
+        #             value = 100
+        #         if value < 0:
+        #             value = 0
+        #         if value == 100:  # full
+        #             icon_id = start - 4
+        #         else:
+        #             icon_id = start - int(value / 20)
+
+        #         icon = progress(0, 100, value, 5, style=16)
+        #     text = self._get_text()
+        # else:
+        #     icon = unichr(0xF1E6)
+        #     text = 'No battery'
+
+        # # icon = unichr(icon_id)  # I could comment that out,
+        # # but then the linter gets mad.
+
+        # ntext = u'{} {}'.format(icon, text)
         if ntext != self.text:
             self.text = ntext
             self.bar.draw()
@@ -884,6 +917,7 @@ class TaskList2(TaskList):
 
         self.drawer.ctx.save()
         self.drawer.ctx.translate(x, y)
+        self.drawer.ctx.scale(0.95, 0.95)
         self.drawer.ctx.set_source(surface)
         self.drawer.ctx.paint()
         self.drawer.ctx.restore()
@@ -909,13 +943,13 @@ class TaskList2(TaskList):
             if w:
                 # name = w.name
                 try:
-                    name = w.cmd_inspect()['wm_class'][1]
+                    name = w.cmd_inspect()['wm_class'][1][:8]
                 except Exception:
                     name = w.name
             else:
                 name = '?'
 
-            task = "[%d] %s%s" % (i + 1, state, name)
+            task = "%d %s%s" % (i + 1, state, name)
 
             if w.urgent:
                 border = self.urgent_border
@@ -1073,7 +1107,7 @@ class DiskUsage(base._TextBox, NonBlockingSpawn):
             self.foreground = self.foreground_alert
         else:
             self.foreground = self.foreground_normal
-        self.text = u'{} {}'.format(progress(0, size, size - free, 5, style=6), self.sizeof_fmt(free))
+        self.text = u'{} {}'.format(progress(0, size, size - free, 5, style=8, before='', after=''), self.sizeof_fmt(free))
         self.bar.draw()
 
 
@@ -1211,9 +1245,32 @@ class DoomsdayClock(base._TextBox, NonBlockingSpawn):
         try:
             response = opener.open('http://thebulletin.org/timeline')
             doc = BS(response.read())
-            match = findall('(\d+)\s*minutes', doc.select_one('.view-doomsday-clock .views-row-first .node-title').text.lower())
-            return match[0]
-        except:
+            match = findall('it is( still)? ([\w\s]+) minutes', doc.select_one('.view-doomsday-clock .views-row-first .node-title').text.lower())
+            # logger.error('M: %s', str(match))
+            msg = match[0][1]
+
+            replaces = {
+                'one': '1',
+                'two': '2',
+                'three': '3',
+                'four': '4',
+                'five': '5',
+                'six': '6',
+                'seven': '7',
+                'eight': '8',
+                'nine': '9',
+                'ten': '10',
+                'eleven': '11',
+                'twelve': '12',
+                ' and a half': ',5'
+            }
+
+            for k, v in replaces.items():
+                msg = msg.replace(k, v)
+
+            return msg
+        except Exception as e:
+            logger.exception(e.message)
             return None
 
     def _on_fetch(self, result):

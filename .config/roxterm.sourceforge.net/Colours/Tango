@@ -1,20 +1,20 @@
 [roxterm colour scheme]
-foreground=#eeeeeeeeecec
-background=#000000000000
+foreground=
+background=
 0=#2e2e34343636
 1=#cccc00000000
 2=#4e4e9a9a0606
 3=#c4c4a0a00000
-4=#34346565a4a4
-5=#757550507b7b
+4=#00009999bbbb
+5=#ffff0000c7ad
 6=#060698989a9a
 7=#d3d3d7d7cfcf
 8=#555557575353
 9=#efef29292929
 10=#8a8ae2e23434
 11=#fcfce9e94f4f
-12=#72729f9fcfcf
-13=#adad7f7fa8a8
+12=#00009999bbbb
+13=#ffff0000c7c6
 14=#3434e2e2e2e2
 15=#eeeeeeeeecec
 16=#4c4c4c4c4c4c

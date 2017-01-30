@@ -477,8 +477,9 @@ screens = [
                 widgets.Battery2(
                     charge_char=u'\uf0de',
                     discharge_char=u'\uf0dd',
-                    foreground='#11BBEE',
-                    low_foreground='#F05040',
+                    foreground_normal='#11BBEE',
+                    foreground_charging='#11BB11',
+                    foreground_low='#F05040',
                     format=u'{percent:2.0%} {char}',
                     font=WidgetOpts.MONOSPACE_FONT
                 ),
@@ -514,9 +515,9 @@ screens = [
 
 # Make floating layouts draggable
 mouse = [
-    Drag([alt], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
-    Drag([alt], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
-    Click([alt], "Button2", lazy.window.bring_to_front())
+    Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
+    Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
+    Click([mod], "Button2", lazy.window.bring_to_front())
 ]
 
 
