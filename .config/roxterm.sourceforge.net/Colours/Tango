@@ -1,6 +1,6 @@
 [roxterm colour scheme]
-foreground=
-background=
+foreground=#cccccccccccc
+background=#000000000000
 0=#2e2e34343636
 1=#cccc00000000
 2=#4e4e9a9a0606

@@ -24,6 +24,7 @@ from pulsectl import Pulse
 from threading import Lock
 import socket
 from bs4 import BeautifulSoup as BS
+import bt
 
 
 class RSS(base.ThreadedPollText):
@@ -644,7 +645,7 @@ class Battery2(Battery):
                     self.foreground = self.foreground_low
                 else:
                     self.foreground = self.foreground_normal
-                style = 16
+                style = 8
                 char = '-'
 
             progress_bar = progress(0, 100, value, 5, style=style)
@@ -805,16 +806,24 @@ class GroupBox2(GroupBox):
         9: u'\u2079',
     }
 
+    CHARS = {
+        1: u'\u0307',
+        2: u'\u0308',
+        3: u'\u20DB',
+        'DEFAULT': u'\u0303'
+    }
+
     def get_group_text(self, group):
         window_count = len(group.windows)
 
         # group_name = group.name.upper()
         group_name = group.name
 
-        if window_count:
-            return u'{} {}'.format(
+        if window_count and False:
+            return u'{}{}'.format(
                 group_name,
-                u'\u2071' * window_count
+                # u'\u2071' * window_count
+                GroupBox2.CHARS.get(window_count, GroupBox2.CHARS.get('DEFAULT'))
                 # GroupBox2.NUMBERS.get(window_count)
                 # '+' * window_count
                 # self.NUMBERS.get(window_count, self.NUMBERS.get(9) + '+')
@@ -1285,3 +1294,46 @@ class DoomsdayClock(base._TextBox, NonBlockingSpawn):
 
     def button_press(self, x, y, button):
         pass
+
+
+class BluetoothInfo(base._TextBox, NonBlockingSpawn):
+    """
+    Shows current keyboard layout.
+    """
+    orientations = base.ORIENTATION_HORIZONTAL
+
+    def __init__(self, **config):
+        base._TextBox.__init__(self, **config)
+
+    def _configure(self, *args, **kwargs):
+        base._TextBox._configure(self, *args, **kwargs)
+        self.adapter = bt.get_adapter()
+        self.do_fetch()
+
+    def do_fetch(self):
+        self.spawn(self._fetch, self._on_fetch)
+
+    def _fetch(self):
+        try:
+            return ', '.join(bt.get_connected_devices(self.adapter))
+        except Exception as e:
+            logger.exception(e.message)
+            return None
+
+    def _on_fetch(self, result):
+        if result:
+            # logger.error('Fetched: %s', result)
+            ntext = u'\uf294  {}'.format(result)
+            self.timeout_add(5, self.do_fetch)
+        else:
+            ntext = u'\uf294'.format(result)
+            self.timeout_add(2, self.do_fetch)
+
+        if self.text != ntext:
+            self.text = ntext
+            self.bar.draw()
+        self.text = ntext
+
+    def button_press(self, x, y, button):
+        if button == 3:
+            os.system('blueman-manager &')

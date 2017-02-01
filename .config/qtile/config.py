@@ -66,6 +66,7 @@ class WidgetOpts:
     LOCATION = 'Lviv, Ukraine'
     DEFAULT_FONT = 'Roboto Sans Bold'
     MONOSPACE_FONT = 'DejaVu Sans Mono'
+    MONOSPACE_FONT_BOLD = 'DejaVu Sans Mono Bold'
     # MONOSPACE_FONT = 'Roboto Sans'
     DEFAULT_COLOR = '#000000'
     GREY_COLOR = '#444444'
@@ -298,9 +299,12 @@ group_box_config = dict(
     # urgent_alert_method='border',
     current_highlight_method='block',
     other_highlight_method='border',
-    font='Nimbus Sans Bold',  # Terminus, Nimbus Sans
-    padding_x=4,
-    margin_x=0
+    # font='Nimbus Sans Bold',  # Terminus, Nimbus Sans
+    font=WidgetOpts.MONOSPACE_FONT_BOLD,
+    padding_x=1,
+    padding_y=5,
+    fontsize=12,
+    margin_x=0,
 )
 
 
@@ -351,7 +355,7 @@ screens = [
                 widget.Prompt(
                     background=WidgetOpts.HIGHLIGHT_COLOR,
                     font=WidgetOpts.MONOSPACE_FONT,
-                    fontsize=12
+                    fontsize=12,
                 ),
                 widgets.TaskList2(
                     # font=WidgetOpts.MONOSPACE_FONT,
@@ -361,9 +365,9 @@ screens = [
                     border=WidgetOpts.HIGHLIGHT_COLOR,
                     fontsize=10,
                     # padding_x=0,
-                    padding_y=8,
+                    padding_y=7,
                     padding_x_extra=-4,
-                    padding_y_extra=-6
+                    padding_y_extra=-5
                 ),
                 widget.Systray(),
                 widget.Sep(padding=8, foreground='#000000.0'),
@@ -372,7 +376,7 @@ screens = [
                 widget.Sep(padding=2),
                 widget.Clock(format='%Y-%m-%d %H:%M'),
             ],
-            26
+            24
         ),
         bottom=bar.Bar(
             [
@@ -460,6 +464,11 @@ screens = [
                     foreground_alert='#F05040'
                 ),
                 sep(),
+                widgets.BluetoothInfo(
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    foreground='#11BBEE',
+                ),
+                sep(),
                 widgets.ThermalSensor2(
                     font=WidgetOpts.MONOSPACE_FONT,
                     foreground='#11BBEE',
@@ -484,7 +493,7 @@ screens = [
                     font=WidgetOpts.MONOSPACE_FONT
                 ),
             ],
-            20
+            16
         )
     ),
     Screen(
