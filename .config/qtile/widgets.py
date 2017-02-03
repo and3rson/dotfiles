@@ -156,11 +156,14 @@ class Ping(base._TextBox, NonBlockingSpawn):
             else:
                 self.foreground = self.foreground_normal
 
-            ping_str = str(ping).rjust(3, ' ')
+            ping_str = str(ping).rjust(3, '~')
+            # ping_str = str(ping)
+            # if len(ping_str) < 3:
+            #     ping_str = u'\u00a0' * (3 - len(ping_str)) + ping_str
 
         # f072
         # \u2098\u209B
-        self.text = u'\uf1eb {}ms'.format(ping_str)
+        self.text = u'\uf1eb {}'.format(ping_str)
 
         if len(self.text) != len(self.last_text):
             self.bar.draw()
@@ -530,7 +533,8 @@ class ThermalSensor2(ThermalSensor):
             return False
         # F069
         # F135
-        text = u"\uF0E4 "
+        # text = u"\uF0E4 "
+        text = ''
         if self.show_tag and self.tag_sensor is not None:
             text = self.tag_sensor + u": "
         parts = temp_values.get(self.tag_sensor, ['N/A'])
@@ -605,7 +609,8 @@ class FanControl(base._TextBox, NonBlockingSpawn):
     def on_update_result(self, result):
         # \uf1eb
         # F0E4
-        self.text = u'\uF135  {} RPM'.format(result)
+        # self.text = u'\uF135  {} RPM'.format(result)
+        self.text = u'{} RPM'.format(result)
         if len(self.text) != len(self.last_text):
             self.bar.draw()
         else:
@@ -1326,7 +1331,7 @@ class BluetoothInfo(base._TextBox, NonBlockingSpawn):
             ntext = u'\uf294  {}'.format(result)
             self.timeout_add(5, self.do_fetch)
         else:
-            ntext = u'\uf294'.format(result)
+            ntext = u'\uf294  No devices'.format(result)
             self.timeout_add(2, self.do_fetch)
 
         if self.text != ntext:
