@@ -402,15 +402,23 @@ class NowPlayingWidget2(base._TextBox, NonBlockingSpawn):
         self.is_playing = False
         self.current_icon = '?'
         self.current_song = 'Empty'
+
         self.last_scroll = 0
 
-        base._TextBox.__init__(self, width=bar.STRETCH, **config)
+        self.sep = ' ::: '
+        self.max_len = 12
+        self.shift = 0
+        self.do_scroll = True
+        self.last_song = None
+
+        # base._TextBox.__init__(self, width=bar.STRETCH, **config)
+        base._TextBox.__init__(self, **config)
 
         self.vkplayer = NowPlayingWidget2.VKPlayer(self)
 
     def _configure(self, *args):
         super(NowPlayingWidget2, self)._configure(*args)
-        # self.timeout_add(0.2, self._shift)
+        self.timeout_add(0.15, self._shift)
         self.poll()
 
     def poll(self):
@@ -431,6 +439,7 @@ class NowPlayingWidget2(base._TextBox, NonBlockingSpawn):
 
             # self.current_icon = u'\uF019' if is_downloading else u'\uF04B' if is_playing else u'\uF04C'
             self.current_icon = u'\uF04B' if is_playing else u'\uF04C'
+            self.current_icon = u'\u25b6' if is_playing else u'\u25a0'
             # self.current_icon = u'v' if is_downloading else u'>' if is_playing else u'x'
 
             # current_song = current_song
@@ -440,8 +449,30 @@ class NowPlayingWidget2(base._TextBox, NonBlockingSpawn):
         except Exception as e:
             logger.exception(e.message)
 
+    def _shift(self):
+        self.shift += 1
+        if self.last_song != self.current_song:
+            self.shift = 0
+            self.last_song = self.current_song
+            self._draw(True)
+        elif self.shift > len(self.current_song) + len(self.sep):
+            self.shift = 0
+            self._draw(True)
+        else:
+            self._draw()
+        self.timeout_add(0.15, self._shift)
+
     def _draw(self, redraw=False):
-        self.text = u'{}  {}'.format(self.current_icon, self.current_song)
+        # shifted_song = (self.current_song + self.sep) * 5
+
+        if len(self.current_song) < self.max_len:
+            shifted_song = self.current_song
+        else:
+            filled_song = (self.current_song + self.sep) * 5
+            shifted_song = filled_song[self.shift:self.shift + self.max_len]
+
+        self.text = u'{} {}'.format(self.current_icon, shifted_song.ljust(self.max_len))
+
         if self.is_downloading:
             self.foreground = '#9999EE'
         elif self.is_playing:
@@ -449,7 +480,10 @@ class NowPlayingWidget2(base._TextBox, NonBlockingSpawn):
         else:
             self.foreground = '#EEEE99'
 
-        self.draw()
+        if redraw:
+            self.bar.draw()
+        else:
+            self.draw()
 
     def _debounce(self):
         last_scroll = self.last_scroll
@@ -630,62 +664,79 @@ class Battery2(Battery):
         # self.update_delay = 1
         info = self._get_info()
 
+        # if info:
+        #     value = int(info['now'] / info['full'] * 100)
+
+        #     if value > 100:
+        #         value = 100
+        #     if value < 0:
+        #         value = 0
+
+        #     if info['stat'] in ('Charging', 'Full'):
+        #         self.foreground = self.foreground_charging
+        #         style = 8
+        #         if info['stat'] == 'Charging':
+        #             char = '+'
+        #         else:
+        #             char = '='
+        #     else:
+        #         if value < 10:
+        #             self.foreground = self.foreground_low
+        #         else:
+        #             self.foreground = self.foreground_normal
+        #         style = 8
+        #         char = '-'
+
+        #     progress_bar = progress(0, 100, value, 5, style=style)
+        #     ntext = u'{}{}{}%'.format(progress_bar, char, value)
+        # else:
+        #     self.foreground = self.foreground_normal
+        #     ntext = u'\uF1E6'
+
+        start = 0xF244
+        info = self._get_info()
+
         if info:
             value = int(info['now'] / info['full'] * 100)
 
-            if value > 100:
-                value = 100
-            if value < 0:
-                value = 0
-
             if info['stat'] in ('Charging', 'Full'):
+                icon = unichr(0xF1E6)
+
                 self.foreground = self.foreground_charging
-                style = 8
-                if info['stat'] == 'Charging':
-                    char = '+'
-                else:
-                    char = '='
             else:
+                if value > 100:
+                    value = 100
+                if value < 0:
+                    value = 0
+
+                if value == 100:  # full
+                    icon_id = start - 4
+                else:
+                    icon_id = start - int(value / 20)
+
                 if value < 10:
                     self.foreground = self.foreground_low
                 else:
                     self.foreground = self.foreground_normal
-                style = 8
-                char = '-'
 
-            progress_bar = progress(0, 100, value, 5, style=style)
-            ntext = u'{}{}{}%'.format(progress_bar, char, value)
+            icon = unichr(icon_id)
+
+            # icon = progress(0, 100, value, 5, style=16)
+            # text = self._get_text()
+
+            text = '{}%'.format(str(value))
         else:
-            self.foreground = self.foreground_normal
-            ntext = u'\uF1E6'
+            icon = unichr(0xF1E6)
+            # text = 'No battery'
+            text = ''
 
-        # start = 0xF244
-        # info = self._get_info()
+        # icon = unichr(icon_id)  # I could comment that out,
+        # but then the linter gets mad.
 
-        # if info:
-        #     if info['stat'] == 'Charging':
-        #         icon = unichr(0xF1E6)
-        #     else:
-        #         value = int(info['now'] / info['full'] * 100)
-        #         if value > 100:
-        #             value = 100
-        #         if value < 0:
-        #             value = 0
-        #         if value == 100:  # full
-        #             icon_id = start - 4
-        #         else:
-        #             icon_id = start - int(value / 20)
-
-        #         icon = progress(0, 100, value, 5, style=16)
-        #     text = self._get_text()
-        # else:
-        #     icon = unichr(0xF1E6)
-        #     text = 'No battery'
-
-        # # icon = unichr(icon_id)  # I could comment that out,
-        # # but then the linter gets mad.
-
-        # ntext = u'{} {}'.format(icon, text)
+        if text:
+            ntext = u'{} {}'.format(icon, text)
+        else:
+            ntext = u'{}'.format(icon)
         if ntext != self.text:
             self.text = ntext
             self.bar.draw()
@@ -948,22 +999,29 @@ class TaskList2(TaskList):
             if w is None:
                 pass
             elif w.maximized:
-                state = '[X] '
+                state = '[X]'
             elif w.minimized:
-                state = '[_] '
+                state = '[_]'
             elif w.floating:
-                state = '[F] '
-
-            if w:
-                # name = w.name
-                try:
-                    name = w.cmd_inspect()['wm_class'][1][:8]
-                except Exception:
-                    name = w.name
+                state = '[F]'
             else:
-                name = '?'
+                state = '[%d]' % (i + 1)
+                # state = ''
 
-            task = "%d %s%s" % (i + 1, state, name)
+            # if w:
+            #     # name = w.name
+            #     try:
+            #         name = w.cmd_inspect()['wm_class'][1][:8]
+            #     except Exception:
+            #         name = w.name
+            # else:
+            #     name = '?'
+
+            # task = "%d %s%s" % (i + 1, state, name)
+
+            # task = "%d%s" % (i + 1, state)
+
+            task = state
 
             if w.urgent:
                 border = self.urgent_border
@@ -1006,7 +1064,8 @@ class TaskList2(TaskList):
                 name = w.cmd_inspect()['wm_class'][1]
             else:
                 name = '?'
-            new_width += self.icon_size + self.box_width("[%d] %s%s" % (0, '?', name))
+            # new_width += self.icon_size + self.box_width("[%d] %s%s" % (0, '?', name))
+            new_width += self.icon_size + self.box_width('[W]')
             if width <= x <= new_width:
                 window = w
                 break
