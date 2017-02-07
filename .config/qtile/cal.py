@@ -3,6 +3,8 @@
 # This file is just a stolen example from Google Calendar API example.
 # I was too lazy to reimplement it. It does what I want already.
 
+from __future__ import print_function
+
 import httplib2
 import os
 
@@ -78,7 +80,7 @@ def get_next_event():
 
 
 def main():
-    print get_next_event()
+    print(get_next_event())
 
 
 if __name__ == '__main__':

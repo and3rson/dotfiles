@@ -34,6 +34,8 @@ pacman --noconfirm -S \
     python2-powerline \
     python2-cairocffi \
     python2-virtualenv \
+    python-six python2-six \
+    python-xdg python-systemd python-feedparser python-keyring python-dateutil \
     git \
     compton \
     redis \
@@ -48,6 +50,7 @@ pacman --noconfirm -S \
     faenza-icon-theme \
     adwaita-icon-theme \
     libappindicator-gtk3 \
+    python-beautifulsoup4 \
     python2-beautifulsoup4 \
 && \
 sudo systemctl daemon-reload \
@@ -58,7 +61,7 @@ sudo systemctl start redis \
 && \
 sudo -u ${USERNAME} yaourt --noconfirm -S \
     nerd-fonts-git \
-    qtile-git \
+    qtile-python3-git \
     xkblayout-state \
     hsetroot \
     xlogin-git \
@@ -71,7 +74,7 @@ sudo -u ${USERNAME} yaourt --noconfirm -S \
     dunst-git \
     irccloud \
 && \
-pip2.7 install \
+pip3 install \
     google-api-python-client \
     Babel \
     pytz \
@@ -80,6 +83,8 @@ pip2.7 install \
     redis==2.10.5 \
     pulsectl \
     python-dateutil==2.6.0 \
+    python-mpd2 \
+    httplib2 \
     -U \
 && \
 ./patch.sh ${USERNAME} \
