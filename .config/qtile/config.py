@@ -66,6 +66,7 @@ class WidgetOpts:
     LOCATION = 'Lviv, Ukraine'
     DEFAULT_FONT = 'Roboto Sans Bold'
     MONOSPACE_FONT = 'DejaVu Sans Mono'
+    MONOSPACE_FONT_BOLD = 'DejaVu Sans Mono Bold'
     # MONOSPACE_FONT = 'Roboto Sans'
     DEFAULT_COLOR = '#000000'
     GREY_COLOR = '#444444'
@@ -298,9 +299,12 @@ group_box_config = dict(
     # urgent_alert_method='border',
     current_highlight_method='block',
     other_highlight_method='border',
-    font='Nimbus Sans Bold',  # Terminus, Nimbus Sans
-    padding_x=4,
-    margin_x=0
+    # font='Nimbus Sans Bold',  # Terminus, Nimbus Sans
+    font=WidgetOpts.MONOSPACE_FONT_BOLD,
+    padding_x=1,
+    padding_y=5,
+    fontsize=12,
+    margin_x=0,
 )
 
 
@@ -314,7 +318,7 @@ def make_current_layout_widget():
 
 
 def sep():
-    return widget.Sep(padding=4, foreground='#11BBEE.3', size_percent=100)
+    return widget.Sep(padding=2, foreground='#11BBEE.3', size_percent=100)
 
 
 pacontrol = widgets.PAControl(
@@ -351,8 +355,9 @@ screens = [
                 widget.Prompt(
                     background=WidgetOpts.HIGHLIGHT_COLOR,
                     font=WidgetOpts.MONOSPACE_FONT,
-                    fontsize=12
+                    fontsize=12,
                 ),
+                sep(),
                 widgets.TaskList2(
                     # font=WidgetOpts.MONOSPACE_FONT,
                     rounded=False,
@@ -361,74 +366,25 @@ screens = [
                     border=WidgetOpts.HIGHLIGHT_COLOR,
                     fontsize=10,
                     # padding_x=0,
-                    padding_y=8,
+                    padding_y=7,
                     padding_x_extra=-4,
-                    padding_y_extra=-6
+                    padding_y_extra=-5,
+                    font=WidgetOpts.MONOSPACE_FONT_BOLD
                 ),
-                widget.Systray(),
+                sep(),
+                widget.Systray(
+                    icon_size=16
+                ),
                 widget.Sep(padding=8, foreground='#000000.0'),
-                widget.Sep(padding=2),
-                widgets.DoomsdayClock(),
-                widget.Sep(padding=2),
-                widget.Clock(format='%Y-%m-%d %H:%M'),
-            ],
-            26
-        ),
-        bottom=bar.Bar(
-            [
-                widgets.ArchLogo(scale=0.9),
-                widgets.Hostname(
-                    font=WidgetOpts.DEFAULT_FONT,
-                    fontsize=10,
-                    # background='#FFFFFF',
-                    # foreground='#222222'
-                ),
-                widgets.UnreadMail(
-                    font=WidgetOpts.MONOSPACE_FONT
-                ),
-                # widgets.NextEvent(
-                #     font=WidgetOpts.MONOSPACE_FONT
+                # widget.Sep(padding=2),
+                # widgets.DoomsdayClock(),
+
+                # sep(),
+                # widgets.KBLayout(
+                #     font=WidgetOpts.MONOSPACE_FONT,
+                #     foreground='#11BBEE'
                 # ),
-                sep(),
-                widget.CPUGraph(
-                    border_color='#11BBEE.3',
-                    border_width=1,
-                    graph_color='#11BBEE',
-                    fill_color='#11BBEE.3',
-                    samples=25,
-                    frequency=0.25,
-                    line_width=2,
-                    type='linefill',
-                    width=25
-                ),
-                widget.MemoryGraph(
-                    border_color='#22CC77.3',
-                    border_width=1,
-                    graph_color='#22CC77',
-                    fill_color='#22CC77.3',
-                    samples=25,
-                    frequency=0.25,
-                    line_width=2,
-                    type='linefill',
-                    width=25
-                ),
-                sep(),
-                widgets.NowPlayingWidget2(
-                    foreground='#F0F040',
-                    font=WidgetOpts.MONOSPACE_FONT
-                ),
-                # widget.Spacer(),
-                widgets.DiskUsage(
-                    root='/',
-                    font=WidgetOpts.MONOSPACE_FONT,
-                    foreground_normal='#11BBEE',
-                    foreground_alert='#F05040'
-                ),
-                sep(),
-                widgets.KBLayout(
-                    font=WidgetOpts.MONOSPACE_FONT,
-                    foreground='#11BBEE'
-                ),
+
                 # widgets.Volume2(
                 #     font=WidgetOpts.MONOSPACE_FONT,
                 #     foreground='#CCFFFF',
@@ -445,6 +401,11 @@ screens = [
                 )
             ] if backlight_name else []) + [
                 sep(),
+                widgets.NowPlayingWidget2(
+                    foreground='#F0F040',
+                    font=WidgetOpts.MONOSPACE_FONT
+                ),
+                sep(),
                 widgets.OpenWeatherMap(
                     appid='5041ca48d55a6669fe8b41ad1a8af753',
                     # I hereby disclose my OpenWeatherMap API token.
@@ -458,6 +419,11 @@ screens = [
                     font=WidgetOpts.MONOSPACE_FONT,
                     foreground_normal='#11BBEE',
                     foreground_alert='#F05040'
+                ),
+                sep(),
+                widgets.BluetoothInfo(
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    foreground='#11BBEE',
                 ),
                 sep(),
                 widgets.ThermalSensor2(
@@ -477,14 +443,78 @@ screens = [
                 widgets.Battery2(
                     charge_char=u'\uf0de',
                     discharge_char=u'\uf0dd',
-                    foreground='#11BBEE',
-                    low_foreground='#F05040',
+                    foreground_normal='#11BBEE',
+                    foreground_charging='#11BB11',
+                    foreground_low='#F05040',
                     format=u'{percent:2.0%} {char}',
                     font=WidgetOpts.MONOSPACE_FONT
                 ),
+                # widget.Clock(format='%Y-%m-%d %H:%M'),
+                sep(),
+                widget.Clock(
+                    format='%H:%M',
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    foreground='#11BBEE',
+                ),
             ],
-            20
-        )
+            24
+        ),
+        # bottom=bar.Bar(
+        #     [
+        #         widgets.ArchLogo(scale=0.9),
+        #         widgets.Hostname(
+        #             font=WidgetOpts.DEFAULT_FONT,
+        #             fontsize=10,
+        #             # background='#FFFFFF',
+        #             # foreground='#222222'
+        #         ),
+        #         widgets.UnreadMail(
+        #             font=WidgetOpts.MONOSPACE_FONT
+        #         ),
+        #         # widgets.NextEvent(
+        #         #     font=WidgetOpts.MONOSPACE_FONT
+        #         # ),
+        #         sep(),
+        #         widget.CPUGraph(
+        #             border_color='#11BBEE.3',
+        #             border_width=1,
+        #             graph_color='#11BBEE',
+        #             fill_color='#11BBEE.3',
+        #             samples=25,
+        #             frequency=0.25,
+        #             line_width=2,
+        #             type='linefill',
+        #             width=25
+        #         ),
+        #         widget.MemoryGraph(
+        #             border_color='#22CC77.3',
+        #             border_width=1,
+        #             graph_color='#22CC77',
+        #             fill_color='#22CC77.3',
+        #             samples=25,
+        #             frequency=0.25,
+        #             line_width=2,
+        #             type='linefill',
+        #             width=25
+        #         ),
+        #         sep(),
+        #         widgets.NowPlayingWidget2(
+        #             foreground='#F0F040',
+        #             font=WidgetOpts.MONOSPACE_FONT
+        #         ),
+        #         # widget.Spacer(),
+        #         # widgets.DiskUsage(
+        #         #     root='/',
+        #         #     font=WidgetOpts.MONOSPACE_FONT,
+        #         #     foreground_normal='#11BBEE',
+        #         #     foreground_alert='#F05040'
+        #         # ),
+        #         # sep(),
+
+
+        #     ],
+        #     16
+        # )
     ),
     Screen(
         top=bar.Bar(
@@ -514,9 +544,9 @@ screens = [
 
 # Make floating layouts draggable
 mouse = [
-    Drag([alt], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
-    Drag([alt], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
-    Click([alt], "Button2", lazy.window.bring_to_front())
+    Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
+    Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
+    Click([mod], "Button2", lazy.window.bring_to_front())
 ]
 
 

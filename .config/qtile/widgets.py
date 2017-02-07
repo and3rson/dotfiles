@@ -24,6 +24,7 @@ from pulsectl import Pulse
 from threading import Lock
 import socket
 from bs4 import BeautifulSoup as BS
+import bt
 
 
 class RSS(base.ThreadedPollText):
@@ -155,11 +156,14 @@ class Ping(base._TextBox, NonBlockingSpawn):
             else:
                 self.foreground = self.foreground_normal
 
-            ping_str = str(ping).rjust(3, ' ')
+            ping_str = str(ping).rjust(3, '~')
+            # ping_str = str(ping)
+            # if len(ping_str) < 3:
+            #     ping_str = u'\u00a0' * (3 - len(ping_str)) + ping_str
 
         # f072
         # \u2098\u209B
-        self.text = u'\uf1eb {}ms'.format(ping_str)
+        self.text = u'\uf1eb {}'.format(ping_str)
 
         if len(self.text) != len(self.last_text):
             self.bar.draw()
@@ -398,15 +402,23 @@ class NowPlayingWidget2(base._TextBox, NonBlockingSpawn):
         self.is_playing = False
         self.current_icon = '?'
         self.current_song = 'Empty'
+
         self.last_scroll = 0
 
-        base._TextBox.__init__(self, width=bar.STRETCH, **config)
+        self.sep = ' ::: '
+        self.max_len = 12
+        self.shift = 0
+        self.do_scroll = True
+        self.last_song = None
+
+        # base._TextBox.__init__(self, width=bar.STRETCH, **config)
+        base._TextBox.__init__(self, **config)
 
         self.vkplayer = NowPlayingWidget2.VKPlayer(self)
 
     def _configure(self, *args):
         super(NowPlayingWidget2, self)._configure(*args)
-        # self.timeout_add(0.2, self._shift)
+        self.timeout_add(0.15, self._shift)
         self.poll()
 
     def poll(self):
@@ -427,6 +439,7 @@ class NowPlayingWidget2(base._TextBox, NonBlockingSpawn):
 
             # self.current_icon = u'\uF019' if is_downloading else u'\uF04B' if is_playing else u'\uF04C'
             self.current_icon = u'\uF04B' if is_playing else u'\uF04C'
+            self.current_icon = u'\u25b6' if is_playing else u'\u25a0'
             # self.current_icon = u'v' if is_downloading else u'>' if is_playing else u'x'
 
             # current_song = current_song
@@ -436,8 +449,30 @@ class NowPlayingWidget2(base._TextBox, NonBlockingSpawn):
         except Exception as e:
             logger.exception(e.message)
 
+    def _shift(self):
+        self.shift += 1
+        if self.last_song != self.current_song:
+            self.shift = 0
+            self.last_song = self.current_song
+            self._draw(True)
+        elif self.shift > len(self.current_song) + len(self.sep):
+            self.shift = 0
+            self._draw(True)
+        else:
+            self._draw()
+        self.timeout_add(0.15, self._shift)
+
     def _draw(self, redraw=False):
-        self.text = u'{}  {}'.format(self.current_icon, self.current_song)
+        # shifted_song = (self.current_song + self.sep) * 5
+
+        if len(self.current_song) < self.max_len:
+            shifted_song = self.current_song
+        else:
+            filled_song = (self.current_song + self.sep) * 5
+            shifted_song = filled_song[self.shift:self.shift + self.max_len]
+
+        self.text = u'{} {}'.format(self.current_icon, shifted_song.ljust(self.max_len))
+
         if self.is_downloading:
             self.foreground = '#9999EE'
         elif self.is_playing:
@@ -445,7 +480,10 @@ class NowPlayingWidget2(base._TextBox, NonBlockingSpawn):
         else:
             self.foreground = '#EEEE99'
 
-        self.draw()
+        if redraw:
+            self.bar.draw()
+        else:
+            self.draw()
 
     def _debounce(self):
         last_scroll = self.last_scroll
@@ -529,7 +567,8 @@ class ThermalSensor2(ThermalSensor):
             return False
         # F069
         # F135
-        text = u"\uF0E4 "
+        # text = u"\uF0E4 "
+        text = ''
         if self.show_tag and self.tag_sensor is not None:
             text = self.tag_sensor + u": "
         parts = temp_values.get(self.tag_sensor, ['N/A'])
@@ -604,7 +643,8 @@ class FanControl(base._TextBox, NonBlockingSpawn):
     def on_update_result(self, result):
         # \uf1eb
         # F0E4
-        self.text = u'\uF135  {} RPM'.format(result)
+        # self.text = u'\uF135  {} RPM'.format(result)
+        self.text = u'{} RPM'.format(result)
         if len(self.text) != len(self.last_text):
             self.bar.draw()
         else:
@@ -621,32 +661,82 @@ class Battery2(Battery):
     def update(self):
         # f037
         # f011
+        # self.update_delay = 1
+        info = self._get_info()
+
+        # if info:
+        #     value = int(info['now'] / info['full'] * 100)
+
+        #     if value > 100:
+        #         value = 100
+        #     if value < 0:
+        #         value = 0
+
+        #     if info['stat'] in ('Charging', 'Full'):
+        #         self.foreground = self.foreground_charging
+        #         style = 8
+        #         if info['stat'] == 'Charging':
+        #             char = '+'
+        #         else:
+        #             char = '='
+        #     else:
+        #         if value < 10:
+        #             self.foreground = self.foreground_low
+        #         else:
+        #             self.foreground = self.foreground_normal
+        #         style = 8
+        #         char = '-'
+
+        #     progress_bar = progress(0, 100, value, 5, style=style)
+        #     ntext = u'{}{}{}%'.format(progress_bar, char, value)
+        # else:
+        #     self.foreground = self.foreground_normal
+        #     ntext = u'\uF1E6'
+
         start = 0xF244
         info = self._get_info()
+
         if info:
-            if info['stat'] == 'Charging':
+            value = int(info['now'] / info['full'] * 100)
+
+            if info['stat'] in ('Charging', 'Full'):
                 icon = unichr(0xF1E6)
+
+                self.foreground = self.foreground_charging
             else:
-                value = int(info['now'] / info['full'] * 100)
                 if value > 100:
                     value = 100
                 if value < 0:
                     value = 0
+
                 if value == 100:  # full
                     icon_id = start - 4
                 else:
                     icon_id = start - int(value / 20)
 
-                icon = progress(0, 100, value, 5, style=6)
-            text = self._get_text()
+                if value < 10:
+                    self.foreground = self.foreground_low
+                else:
+                    self.foreground = self.foreground_normal
+
+            icon = unichr(icon_id)
+
+            # icon = progress(0, 100, value, 5, style=16)
+            # text = self._get_text()
+
+            text = '{}%'.format(str(value))
         else:
             icon = unichr(0xF1E6)
-            text = 'No battery'
+            # text = 'No battery'
+            text = ''
 
         # icon = unichr(icon_id)  # I could comment that out,
         # but then the linter gets mad.
 
-        ntext = u'{} {}'.format(icon, text)
+        if text:
+            ntext = u'{} {}'.format(icon, text)
+        else:
+            ntext = u'{}'.format(icon)
         if ntext != self.text:
             self.text = ntext
             self.bar.draw()
@@ -772,16 +862,24 @@ class GroupBox2(GroupBox):
         9: u'\u2079',
     }
 
+    CHARS = {
+        1: u'\u0307',
+        2: u'\u0308',
+        3: u'\u20DB',
+        'DEFAULT': u'\u0303'
+    }
+
     def get_group_text(self, group):
         window_count = len(group.windows)
 
         # group_name = group.name.upper()
         group_name = group.name
 
-        if window_count:
-            return u'{} {}'.format(
+        if window_count and False:
+            return u'{}{}'.format(
                 group_name,
-                u'\u2071' * window_count
+                # u'\u2071' * window_count
+                GroupBox2.CHARS.get(window_count, GroupBox2.CHARS.get('DEFAULT'))
                 # GroupBox2.NUMBERS.get(window_count)
                 # '+' * window_count
                 # self.NUMBERS.get(window_count, self.NUMBERS.get(9) + '+')
@@ -884,6 +982,7 @@ class TaskList2(TaskList):
 
         self.drawer.ctx.save()
         self.drawer.ctx.translate(x, y)
+        self.drawer.ctx.scale(0.95, 0.95)
         self.drawer.ctx.set_source(surface)
         self.drawer.ctx.paint()
         self.drawer.ctx.restore()
@@ -900,22 +999,29 @@ class TaskList2(TaskList):
             if w is None:
                 pass
             elif w.maximized:
-                state = '[X] '
+                state = '[X]'
             elif w.minimized:
-                state = '[_] '
+                state = '[_]'
             elif w.floating:
-                state = '[F] '
-
-            if w:
-                # name = w.name
-                try:
-                    name = w.cmd_inspect()['wm_class'][1]
-                except Exception:
-                    name = w.name
+                state = '[F]'
             else:
-                name = '?'
+                state = '[%d]' % (i + 1)
+                # state = ''
 
-            task = "[%d] %s%s" % (i + 1, state, name)
+            # if w:
+            #     # name = w.name
+            #     try:
+            #         name = w.cmd_inspect()['wm_class'][1][:8]
+            #     except Exception:
+            #         name = w.name
+            # else:
+            #     name = '?'
+
+            # task = "%d %s%s" % (i + 1, state, name)
+
+            # task = "%d%s" % (i + 1, state)
+
+            task = state
 
             if w.urgent:
                 border = self.urgent_border
@@ -958,7 +1064,8 @@ class TaskList2(TaskList):
                 name = w.cmd_inspect()['wm_class'][1]
             else:
                 name = '?'
-            new_width += self.icon_size + self.box_width("[%d] %s%s" % (0, '?', name))
+            # new_width += self.icon_size + self.box_width("[%d] %s%s" % (0, '?', name))
+            new_width += self.icon_size + self.box_width('[W]')
             if width <= x <= new_width:
                 window = w
                 break
@@ -1073,7 +1180,7 @@ class DiskUsage(base._TextBox, NonBlockingSpawn):
             self.foreground = self.foreground_alert
         else:
             self.foreground = self.foreground_normal
-        self.text = u'{} {}'.format(progress(0, size, size - free, 5, style=6), self.sizeof_fmt(free))
+        self.text = u'{} {}'.format(progress(0, size, size - free, 5, style=8, before='', after=''), self.sizeof_fmt(free))
         self.bar.draw()
 
 
@@ -1211,9 +1318,32 @@ class DoomsdayClock(base._TextBox, NonBlockingSpawn):
         try:
             response = opener.open('http://thebulletin.org/timeline')
             doc = BS(response.read())
-            match = findall('(\d+)\s*minutes', doc.select_one('.view-doomsday-clock .views-row-first .node-title').text.lower())
-            return match[0]
-        except:
+            match = findall('it is( still)? ([\w\s]+) minutes', doc.select_one('.view-doomsday-clock .views-row-first .node-title').text.lower())
+            # logger.error('M: %s', str(match))
+            msg = match[0][1]
+
+            replaces = {
+                'one': '1',
+                'two': '2',
+                'three': '3',
+                'four': '4',
+                'five': '5',
+                'six': '6',
+                'seven': '7',
+                'eight': '8',
+                'nine': '9',
+                'ten': '10',
+                'eleven': '11',
+                'twelve': '12',
+                ' and a half': ',5'
+            }
+
+            for k, v in replaces.items():
+                msg = msg.replace(k, v)
+
+            return msg
+        except Exception as e:
+            logger.exception(e.message)
             return None
 
     def _on_fetch(self, result):
@@ -1228,3 +1358,46 @@ class DoomsdayClock(base._TextBox, NonBlockingSpawn):
 
     def button_press(self, x, y, button):
         pass
+
+
+class BluetoothInfo(base._TextBox, NonBlockingSpawn):
+    """
+    Shows current keyboard layout.
+    """
+    orientations = base.ORIENTATION_HORIZONTAL
+
+    def __init__(self, **config):
+        base._TextBox.__init__(self, **config)
+
+    def _configure(self, *args, **kwargs):
+        base._TextBox._configure(self, *args, **kwargs)
+        self.adapter = bt.get_adapter()
+        self.do_fetch()
+
+    def do_fetch(self):
+        self.spawn(self._fetch, self._on_fetch)
+
+    def _fetch(self):
+        try:
+            return ', '.join(bt.get_connected_devices(self.adapter))
+        except Exception as e:
+            logger.exception(e.message)
+            return None
+
+    def _on_fetch(self, result):
+        if result:
+            # logger.error('Fetched: %s', result)
+            ntext = u'\uf294  {}'.format(result)
+            self.timeout_add(5, self.do_fetch)
+        else:
+            ntext = u'\uf294  No devices'.format(result)
+            self.timeout_add(2, self.do_fetch)
+
+        if self.text != ntext:
+            self.text = ntext
+            self.bar.draw()
+        self.text = ntext
+
+    def button_press(self, x, y, button):
+        if button == 3:
+            os.system('blueman-manager &')

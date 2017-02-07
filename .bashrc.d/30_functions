@@ -19,7 +19,7 @@ function get_dmenu_pos {
 
 function cd() {
     builtin cd "${@}"
-    ls
+    ls -l
 }
 
 function feh() {
