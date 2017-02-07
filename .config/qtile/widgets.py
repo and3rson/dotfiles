@@ -6,8 +6,12 @@ from libqtile.widget import base, Volume, ThermalSensor, Battery, GroupBox, Task
 from libqtile.log_utils import logger
 from libqtile import bar
 import feedparser
-from urllib import urlencode
-import urllib2
+# from urllib import urlencode
+from six.moves.urllib.request import urlopen
+from six.moves.urllib.parse import urlencode
+# from six.moves import xrange
+from six import unichr
+# import urllib2
 import json
 from subprocess import Popen, PIPE
 from re import findall, compile
@@ -117,7 +121,7 @@ class Ping(base._TextBox, NonBlockingSpawn):
         out, err = Popen(['ping', '-c', '1', '8.8.8.8'], stdout=PIPE, stderr=PIPE).communicate()
 
         try:
-            ping = int(float(findall('icmp_seq=[\d]+ ttl=[\d]+ time=([\d\.]+)', out)[0]))
+            ping = int(float(findall(b'icmp_seq=[\d]+ ttl=[\d]+ time=([\d\.]+)', out)[0]))
             if ping > 999:
                 ping = 999
         except:
@@ -182,9 +186,9 @@ class OpenWeatherMap(base._TextBox, NonBlockingSpawn):
     URL = 'http://api.openweathermap.org/data/2.5/weather'
 
     def __init__(self, **config):
-        print os.getcwd()
         f = open(os.path.expanduser('~/.config/qtile/weather_i18n.ini'), 'r')
-        self.i18n = {k: v.decode('utf-8') for k, v in [[p.strip() for p in line.split('=')] for line in filter(None, f.read().split('\n'))]}
+        # self.i18n = {k: v.decode('utf-8') for k, v in [[p.strip() for p in line.split('=')] for line in filter(None, f.read().split('\n'))]}
+        self.i18n = {k: v for k, v in [[p.strip() for p in line.split('=')] for line in filter(None, f.read().split('\n'))]}
         f.close()
 
         self.url = None
@@ -212,7 +216,7 @@ class OpenWeatherMap(base._TextBox, NonBlockingSpawn):
         if self.url is None:
             return 'N/A'
         try:
-            response = json.loads(urllib2.urlopen(self.url).read())
+            response = json.loads(urlopen(self.url).read())
             # F0C2
             return u'\uF0E9  {name} {temp}\u00B0C'.format(
                 city=response['name'],
@@ -572,7 +576,8 @@ class ThermalSensor2(ThermalSensor):
         if self.show_tag and self.tag_sensor is not None:
             text = self.tag_sensor + u": "
         parts = temp_values.get(self.tag_sensor, ['N/A'])
-        parts = [x.decode('utf-8') for x in parts]
+        # parts = [x.decode('utf-8') for x in parts]
+        parts = [x for x in parts]
         parts[0] = str(int(float(parts[0])))
         text += u"".join(parts)
         temp_value = float(temp_values.get(self.tag_sensor, [0])[0])
@@ -700,7 +705,7 @@ class Battery2(Battery):
             value = int(info['now'] / info['full'] * 100)
 
             if info['stat'] in ('Charging', 'Full'):
-                icon = unichr(0xF1E6)
+                icon_id = 0xF1E6
 
                 self.foreground = self.foreground_charging
             else:

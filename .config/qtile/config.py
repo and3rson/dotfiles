@@ -29,6 +29,7 @@ from libqtile.log_utils import logger
 from systemd.journal import JournalHandler
 import commands
 import widgets
+from six.moves import xrange
 
 logger.addHandler(JournalHandler())
 # logger.setLevel(logging.INFO)
@@ -376,6 +377,29 @@ screens = [
                     icon_size=16
                 ),
                 widget.Sep(padding=8, foreground='#000000.0'),
+                sep(),
+                widget.CPUGraph(
+                    border_color='#11BBEE.3',
+                    border_width=1,
+                    graph_color='#11BBEE',
+                    fill_color='#11BBEE.3',
+                    samples=25,
+                    frequency=0.25,
+                    line_width=2,
+                    type='linefill',
+                    width=25
+                ),
+                widget.MemoryGraph(
+                    border_color='#22CC77.3',
+                    border_width=1,
+                    graph_color='#22CC77',
+                    fill_color='#22CC77.3',
+                    samples=25,
+                    frequency=0.25,
+                    line_width=2,
+                    type='linefill',
+                    width=25
+                ),
                 # widget.Sep(padding=2),
                 # widgets.DoomsdayClock(),
 
@@ -439,6 +463,13 @@ screens = [
                     foreground_normal='#11BBEE',
                     foreground_alert='#F05040'
                 ),
+                # widget.Clock(format='%Y-%m-%d %H:%M'),
+                sep(),
+                widget.Clock(
+                    format='%H:%M',
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    foreground='#11BBEE',
+                ),
                 sep(),
                 widgets.Battery2(
                     charge_char=u'\uf0de',
@@ -448,13 +479,6 @@ screens = [
                     foreground_low='#F05040',
                     format=u'{percent:2.0%} {char}',
                     font=WidgetOpts.MONOSPACE_FONT
-                ),
-                # widget.Clock(format='%Y-%m-%d %H:%M'),
-                sep(),
-                widget.Clock(
-                    format='%H:%M',
-                    font=WidgetOpts.MONOSPACE_FONT,
-                    foreground='#11BBEE',
                 ),
             ],
             24

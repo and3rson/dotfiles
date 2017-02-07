@@ -5,6 +5,7 @@ from subprocess import Popen, PIPE
 import re
 from time import sleep
 import sys
+from six.moves import xrange
 
 
 def nonblocking(on_result):
@@ -55,7 +56,7 @@ class DMenu(object):
         if not items:
             items = []
         out = Popen(['xrandr', '--current'], stdout=PIPE, stderr=PIPE).communicate()[0]
-        w, h = re.findall(r'(\d+)x(\d+)\s*[\d\.]+\*', out)[0]
+        w, h = re.findall(b'(\d+)x(\d+)\s*[\d\.]+\*', out)[0]
         w = int(w)
         h = int(h)
         self.kwargs['x'] = (w - self.width) / 2
@@ -64,7 +65,11 @@ class DMenu(object):
         args = [self.app]
         args.extend(map(str, sum(map(list, (filter(None, ('-' + k, v)) for k, v in self.kwargs.items())), [])))
         stdin = u'\n'.join(items).encode('utf-8')
-        return Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE).communicate(stdin)[0]
+        proc = Popen(args, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+        out, err = proc.communicate(stdin)
+        if proc.returncode != 0:
+            logger.error('Dmenu terminated with the non-zero code {}\nSTDOUT: {}\nSTDERR: {}'.format(proc.returncode, out, err))
+        return out
 
 
 bar_styles = [

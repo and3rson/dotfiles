@@ -158,7 +158,7 @@ class DMenuCustomMenu(NonBlockingSpawn, DMenu, object):
         self.spawn(lambda: self.run_menu([u'{}: {}'.format(item.id, item.title) for item in self.menu]), self.on_result)
 
     def on_result(self, result):
-        id = result.strip().partition(':')[0]
+        id = result.strip().partition(b':')[0]
         if id:
             id = int(id)
             selected_item = [item for item in self.menu if item.id == id][0]
@@ -186,7 +186,7 @@ class DMenuAppsCollectorMenu(NonBlockingSpawn, DMenu, object):
 
     def on_result(self, result):
         apps, output = result
-        id = output.strip().partition(':')[0]
+        id = output.strip().partition(b':')[0]
         if id:
             id = int(id)
             self.qtile.cmd_spawn(apps[id][1])
@@ -225,7 +225,7 @@ class ToWindow(object):
     def __call__(self, qtile):
         # print self.id
         try:
-            logger.error(list(qtile.currentGroup.windows))
+            # logger.error(list(qtile.currentGroup.windows))
             window = list(qtile.currentGroup.windows)[self.id - 1]
             window.group.focus(window, False)
         except IndexError:
@@ -245,7 +245,7 @@ class ShiftWindow(object):
         self.to_next = to_next
 
     def __call__(self, qtile):
-        print qtile.currentGroup.name
+        # print qtile.currentGroup.name
         new_group = (qtile.currentGroup.nextGroup if self.to_next else qtile.currentGroup.prevGroup)(False, False)
         # print [group['name'] for group in qtile.cmd_groups()]
         filter(
