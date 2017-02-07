@@ -583,6 +583,9 @@ def floating_dialogs(window):
         window.floating = True
         window.float_x = 0
         window.float_y = 0
+    if window.window.get_name() == 'Friends':
+        window.width = 300
+        window.floating = True
 
 
 @hook.subscribe.client_new
