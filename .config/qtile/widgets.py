@@ -518,6 +518,139 @@ class NowPlayingWidget2(base._TextBox, NonBlockingSpawn):
                 self.vkplayer.broadcast('play_next')
 
 
+
+class GPMDP(base._TextBox):
+    """
+    Displays current song from VKPlayer.
+    https://github.com/and3rson/vkplayer
+
+    Also uses my own IPC implementation.
+    """
+    orientations = base.ORIENTATION_HORIZONTAL
+
+    def __init__(self, **config):
+        self.is_downloading = False
+        self.is_playing = False
+        self.current_icon = '?'
+        self.current_song = 'Empty'
+
+        self.last_scroll = 0
+
+        self.sep = ' ::: '
+        self.max_len = 12
+        self.shift = 0
+        self.do_scroll = True
+        self.last_song = None
+
+        self.last_data = None
+
+        self.file = os.path.expanduser('~/.config/Google Play Music Desktop Player/json_store/playback.json')
+
+        # base._TextBox.__init__(self, width=bar.STRETCH, **config)
+        base._TextBox.__init__(self, **config)
+
+        # self.vkplayer = NowPlayingWidget2.VKPlayer(self)
+
+    def _configure(self, *args):
+        super(GPMDP, self)._configure(*args)
+        self.timeout_add(0.15, self._shift)
+        self.timeout_add(1, self.poll)
+        self.poll()
+
+    def poll(self):
+        # self.spawn(self.vkplayer.next_event, self.on_new_event)
+        if os.path.exists(self.file):
+            f = open(self.file, 'r')
+            data = json.loads(f.read())
+            self._update_state(False, data['playing'], u' - '.join([data['song']['artist'], data['song']['title']]))
+            f.close()
+        else:
+            self._update_state(False, False, 'Not playing')
+
+        self.timeout_add(1, self.poll)
+
+    def _update_state(self, is_downloading, is_playing, current_song):
+        try:
+            self.is_downloading = is_downloading
+            self.is_playing = is_playing
+
+            # self.current_icon = u'\uF019' if is_downloading else u'\uF04B' if is_playing else u'\uF04C'
+            self.current_icon = u'\uF04B' if is_playing else u'\uF04C'
+            self.current_icon = u'\u25b6' if is_playing else u'\u25a0'
+            # self.current_icon = u'v' if is_downloading else u'>' if is_playing else u'x'
+
+            # current_song = current_song
+            self.current_song = current_song
+
+            self._draw()
+        except Exception as e:
+            logger.exception(e.message)
+
+    def _shift(self):
+        self.shift += 1
+        if self.last_song != self.current_song:
+            self.shift = 0
+            self.last_song = self.current_song
+            self._draw(True)
+        elif self.shift > len(self.current_song) + len(self.sep):
+            self.shift = 0
+            self._draw(True)
+        else:
+            self._draw()
+        self.timeout_add(0.15, self._shift)
+
+    def _draw(self, redraw=False):
+        # shifted_song = (self.current_song + self.sep) * 5
+
+        if len(self.current_song) < self.max_len:
+            shifted_song = self.current_song
+        else:
+            filled_song = (self.current_song + self.sep) * 5
+            shifted_song = filled_song[self.shift:self.shift + self.max_len]
+
+        self.text = u'{} {}'.format(self.current_icon, shifted_song.ljust(self.max_len))
+
+        if self.is_downloading:
+            self.foreground = '#9999EE'
+        elif self.is_playing:
+            self.foreground = '#99EE99'
+        else:
+            self.foreground = '#EEEE99'
+
+        if redraw:
+            self.bar.draw()
+        else:
+            self.draw()
+
+    def _debounce(self):
+        last_scroll = self.last_scroll
+        self.last_scroll = time.time()
+
+        if time.time() - last_scroll > 0.35:
+            return True
+        else:
+            return False
+
+    def button_press(self, x, y, button):
+        if button == 1:
+            # Left: play/pause
+            self.vkplayer.broadcast('play_pause')
+
+        elif button == 2:
+            # Middle: random next
+            self.vkplayer.broadcast('play_random')
+
+        elif button == 4:
+            # Scroll up
+            if self._debounce():
+                self.vkplayer.broadcast('play_prev')
+
+        elif button == 5:
+            # Scroll down
+            if self._debounce():
+                self.vkplayer.broadcast('play_next')
+
+
 class Volume2(Volume):
     """
     Patched version of Volume widget that shows icon font chars.

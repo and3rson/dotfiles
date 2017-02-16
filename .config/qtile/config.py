@@ -229,7 +229,7 @@ GROUP_DEFS = (
     ], title=['Messenger', 'Flowdock', re.compile(r'^.* - Chat$')])),
     ('m', 'mail', ['thunderbird'], 'max', dict(wm_class=['Thunderbird'])),
     ('d', 'dev', ['subl3'], 'max', dict(wm_class=['Subl3'])),
-    ('a', 'audio', ['vkplayer'], 'max', dict(title=['VK audio player'])),
+    ('a', 'audio', ['google-play-music-desktop-player'], 'max', dict(title=['VK audio player'], wm_class=['Google Play Music Desktop Player'])),
     ('g', 'games', ['steam'], 'max', dict(wm_class=[
         re.compile('^Steam|csgo_linux64|Deluge$')
     ], title=[
@@ -425,7 +425,11 @@ screens = [
                 )
             ] if backlight_name else []) + [
                 sep(),
-                widgets.NowPlayingWidget2(
+#                 widgets.NowPlayingWidget2(
+#                     foreground='#F0F040',
+#                     font=WidgetOpts.MONOSPACE_FONT
+#                 ),
+                widgets.GPMDP(
                     foreground='#F0F040',
                     font=WidgetOpts.MONOSPACE_FONT
                 ),

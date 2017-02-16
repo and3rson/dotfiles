@@ -29,7 +29,7 @@ function info() {
     FIRST=1
 
     function print_shell_simple() {
-        echo "[${USER}@${HOSTNAME} ${PWD/$HOME/\~}]$ "
+        echo "[${USER}@${HOSTNAME} ${PWD/$HOME/\/\~}]$ "
     }
 
     function print_tag() {
@@ -76,7 +76,7 @@ function info() {
 
     function print_pwd() {
         echo -en "\[$bldwht\]"
-        echo -en "\[$bakblu\] ${PWD/$HOME/\~} "
+        echo -en "\[$bakblu\] ${PWD/$HOME/\/\~} "
         echo -en "\[$txtrst\]"
     }
 

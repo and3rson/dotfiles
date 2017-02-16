@@ -248,8 +248,8 @@ class ShiftWindow(object):
         # print qtile.currentGroup.name
         new_group = (qtile.currentGroup.nextGroup if self.to_next else qtile.currentGroup.prevGroup)(False, False)
         # print [group['name'] for group in qtile.cmd_groups()]
-        filter(
+        list(filter(
             lambda w: w.cmd_inspect()['attributes']['map_state'],
             qtile.currentGroup.windows
-        )[0].cmd_togroup(new_group.name)
+        ))[0].cmd_togroup(new_group.name)
         new_group.cmd_toscreen()
