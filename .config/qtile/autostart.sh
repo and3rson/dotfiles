@@ -3,6 +3,7 @@
 PWD=`dirname $0`
 
 pulseaudio --start -D
+# start-pulseaudio-x11-mod
 setxkbmap -layout 'us,ru,ua' -option grp:alt_shift_toggle
 xmodmap ~/.Xmodmap
 xset r rate 200 25

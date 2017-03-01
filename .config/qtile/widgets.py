@@ -29,6 +29,7 @@ from threading import Lock
 import socket
 from bs4 import BeautifulSoup as BS
 import bt
+from notify import notify
 
 
 class RSS(base.ThreadedPollText):
@@ -518,8 +519,7 @@ class NowPlayingWidget2(base._TextBox, NonBlockingSpawn):
                 self.vkplayer.broadcast('play_next')
 
 
-
-class GPMDP(base._TextBox):
+class GPMDP(base._TextBox, NonBlockingSpawn):
     """
     Displays current song from VKPlayer.
     https://github.com/and3rson/vkplayer
@@ -554,22 +554,27 @@ class GPMDP(base._TextBox):
     def _configure(self, *args):
         super(GPMDP, self)._configure(*args)
         self.timeout_add(0.15, self._shift)
-        self.timeout_add(1, self.poll)
+        self.timeout_add(0.25, self.poll)
         self.poll()
 
     def poll(self):
         # self.spawn(self.vkplayer.next_event, self.on_new_event)
-        if os.path.exists(self.file):
-            f = open(self.file, 'r')
-            data = json.loads(f.read())
-            self._update_state(False, data['playing'], u' - '.join([data['song']['artist'], data['song']['title']]))
-            f.close()
-        else:
-            self._update_state(False, False, 'Not playing')
+        try:
+            if os.path.exists(self.file):
+                f = open(self.file, 'r')
+                data = json.loads(f.read())
+                self._update_state(False, data['playing'], u' - '.join([data['song']['artist'], data['song']['title']]), data['song'])
+                f.close()
+            else:
+                self._update_state(False, False, 'Not playing', None)
 
-        self.timeout_add(1, self.poll)
+            self.timeout_add(0.25, self.poll)
+        except Exception as e:
+            logger.exception(str(e))
+            self._update_state(False, False, 'Error')
+            self.timeout_add(5, self.poll)
 
-    def _update_state(self, is_downloading, is_playing, current_song):
+    def _update_state(self, is_downloading, is_playing, current_song, song):
         try:
             self.is_downloading = is_downloading
             self.is_playing = is_playing
@@ -580,11 +585,25 @@ class GPMDP(base._TextBox):
             # self.current_icon = u'v' if is_downloading else u'>' if is_playing else u'x'
 
             # current_song = current_song
+            if self.current_song != current_song and song:
+                self._on_song_changed(song)
             self.current_song = current_song
-
             self._draw()
         except Exception as e:
             logger.exception(e.message)
+
+    def _on_song_changed(self, song):
+        def download():
+            if 'albumArt' not in song:
+                return None
+            url = song['albumArt']
+            out, err = Popen([os.path.expanduser('~/.config/qtile/bin/aart.sh'), url], stdout=PIPE, stderr=PIPE).communicate()
+            return out.strip()
+
+        def on_complete(fname):
+            notify('GPMDP', fname or 'multimedia-audio-player', u'{}'.format(song['title']), u'by {}'.format(song['artist']))
+
+        self.spawn(download, on_complete)
 
     def _shift(self):
         self.shift += 1
@@ -632,23 +651,24 @@ class GPMDP(base._TextBox):
             return False
 
     def button_press(self, x, y, button):
-        if button == 1:
-            # Left: play/pause
-            self.vkplayer.broadcast('play_pause')
+        pass
+        # if button == 1:
+        #     # Left: play/pause
+        #     self.vkplayer.broadcast('play_pause')
 
-        elif button == 2:
-            # Middle: random next
-            self.vkplayer.broadcast('play_random')
+        # elif button == 2:
+        #     # Middle: random next
+        #     self.vkplayer.broadcast('play_random')
 
-        elif button == 4:
-            # Scroll up
-            if self._debounce():
-                self.vkplayer.broadcast('play_prev')
+        # elif button == 4:
+        #     # Scroll up
+        #     if self._debounce():
+        #         self.vkplayer.broadcast('play_prev')
 
-        elif button == 5:
-            # Scroll down
-            if self._debounce():
-                self.vkplayer.broadcast('play_next')
+        # elif button == 5:
+        #     # Scroll down
+        #     if self._debounce():
+        #         self.vkplayer.broadcast('play_next')
 
 
 class Volume2(Volume):
@@ -1001,10 +1021,13 @@ class GroupBox2(GroupBox):
     }
 
     CHARS = {
-        1: u'\u0307',
-        2: u'\u0308',
-        3: u'\u20DB',
-        'DEFAULT': u'\u0303'
+        # 1: u'\u0307',
+        # 2: u'\u0308',
+        # 3: u'\u20DB',
+        # 'DEFAULT': u'\u0303'
+        1: u'\u0323',
+        2: u'\u0324',
+        'DEFAULT': u'\u0331'
     }
 
     def get_group_text(self, group):
@@ -1013,7 +1036,7 @@ class GroupBox2(GroupBox):
         # group_name = group.name.upper()
         group_name = group.name
 
-        if window_count and False:
+        if window_count:
             return u'{}{}'.format(
                 group_name,
                 # u'\u2071' * window_count

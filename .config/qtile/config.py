@@ -1,4 +1,4 @@
-# Copyright (c) 2016 Andrew Dunai
+# Copyright (c) 2017 Andrew Dunai
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -237,6 +237,7 @@ GROUP_DEFS = (
     ])),
     ('v', 'var', [], 'max', dict(wm_class=['Pitivi', 'Audacity'])),
     ('n', 'notes', ['simplenote'], 'max', dict(wm_class=['Simplenote'], title=['Peek App'])),
+    ('s', 'status', [], 'max', dict()),
 )
 
 groups = [
@@ -590,6 +591,10 @@ def floating_dialogs(window):
     if window.window.get_name() == 'Friends':
         window.width = 300
         window.floating = True
+    if window.window.get_name().strip() == 'Error executing query':
+        window.floating = True
+        window.float_x = 0
+        window.float_y = 0
 
 
 @hook.subscribe.client_new
@@ -602,7 +607,7 @@ def custom_icons(window):
             logger.error('Setting icon {} for window {}'.format(icon, wid))
             # print ' '.join(['/usr/bin/xseticon', '-id', '0x%X' % wid, icon])
     except Exception as e:
-        logger.exception('Error in custom_icons method: {}'.format(e.message))
+        logger.exception('Error in custom_icons method: {}'.format(e))
 
 
 # Always keep at least one terminal app instance running on the first tab
