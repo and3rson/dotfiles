@@ -571,7 +571,7 @@ class GPMDP(base._TextBox, NonBlockingSpawn):
             self.timeout_add(0.25, self.poll)
         except Exception as e:
             logger.exception(str(e))
-            self._update_state(False, False, 'Error')
+            self._update_state(False, False, 'Error', None)
             self.timeout_add(5, self.poll)
 
     def _update_state(self, is_downloading, is_playing, current_song, song):
@@ -587,7 +587,7 @@ class GPMDP(base._TextBox, NonBlockingSpawn):
             # current_song = current_song
             if self.current_song != current_song and song:
                 self._on_song_changed(song)
-            self.current_song = current_song
+                self.current_song = current_song
             self._draw()
         except Exception as e:
             logger.exception(e.message)
@@ -598,10 +598,12 @@ class GPMDP(base._TextBox, NonBlockingSpawn):
                 return None
             url = song['albumArt']
             out, err = Popen([os.path.expanduser('~/.config/qtile/bin/aart.sh'), url], stdout=PIPE, stderr=PIPE).communicate()
-            return out.strip()
+            fname = out.strip()
+            notify('GPMDP', fname or 'multimedia-audio-player', u'{}'.format(song['title']), u'by {}'.format(song['artist']))
+            return fname
 
         def on_complete(fname):
-            notify('GPMDP', fname or 'multimedia-audio-player', u'{}'.format(song['title']), u'by {}'.format(song['artist']))
+            pass
 
         self.spawn(download, on_complete)
 
