@@ -615,10 +615,10 @@ class GPMDP(base._TextBox, NonBlockingSpawn):
             self._draw(True)
         elif self.shift > len(self.current_song) + len(self.sep):
             self.shift = 0
-            self._draw(True)
+            self._draw()
         else:
             self._draw()
-        self.timeout_add(0.15, self._shift)
+        self.timeout_add(0.1, self._shift)
 
     def _draw(self, redraw=False):
         # shifted_song = (self.current_song + self.sep) * 5
