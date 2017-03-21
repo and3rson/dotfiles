@@ -192,6 +192,11 @@ class OpenWeatherMap(base._TextBox, NonBlockingSpawn):
         self.i18n = {k: v for k, v in [[p.strip() for p in line.split('=')] for line in filter(None, f.read().split('\n'))]}
         f.close()
 
+        f = open(os.path.expanduser('~/.config/qtile/weather_icons.ini'), 'r')
+        # self.i18n = {k: v.decode('utf-8') for k, v in [[p.strip() for p in line.split('=')] for line in filter(None, f.read().split('\n'))]}
+        self.icons = {k: chr(int(v, 16)) for k, v in [[p.strip() for p in line.split('=')] for line in filter(None, f.read().split('\n'))]}
+        f.close()
+
         self.url = None
         for key in ('appid', 'location'):
             if key not in config:
@@ -219,11 +224,12 @@ class OpenWeatherMap(base._TextBox, NonBlockingSpawn):
         try:
             response = json.loads(urlopen(self.url).read())
             # F0C2
-            return u'\uF0E9  {name} {temp}\u00B0C'.format(
+            return u'{icon}  {temp}\u00B0C'.format(
                 city=response['name'],
                 temp=int(response['main']['temp'] - OpenWeatherMap.ABS_ZERO),
                 # name=response['weather'][0]['main']
-                name=self.i18n.get(str(response['weather'][0]['id']), response['weather'][0]['main'])
+                name=self.i18n.get(str(response['weather'][0]['id']), response['weather'][0]['main']),
+                icon=self.icons.get(str(response['weather'][0]['id']), u'\uF07B'),
             )
         except Exception as e:
             logger.exception(e.message)

@@ -69,6 +69,7 @@ class WidgetOpts:
     MONOSPACE_FONT = 'DejaVu Sans Mono'
     MONOSPACE_FONT_BOLD = 'DejaVu Sans Mono Bold'
     # MONOSPACE_FONT = 'Roboto Sans'
+    WEATHER_FONT = 'Weather Icons'
     DEFAULT_COLOR = '#000000'
     GREY_COLOR = '#444444'
     HIGHLIGHT_COLOR = '#F05040'
@@ -259,9 +260,9 @@ layouts = [
     layout.MonadTall(
         border_normal=WidgetOpts.DEFAULT_COLOR,
         border_focus=WidgetOpts.HIGHLIGHT_COLOR,
-        border_width=2,
+        border_width=1,
         grow_amount=0,
-        margin=14
+        margin=0
     ),
     layout.Max(),
     # layout.Zoomy(
@@ -352,7 +353,6 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                make_current_layout_widget(),
                 widgets.GroupBox2(**group_box_config),
                 widget.Prompt(
                     background=WidgetOpts.HIGHLIGHT_COLOR,
@@ -440,7 +440,8 @@ screens = [
                     # I hereby disclose my OpenWeatherMap API token.
                     # Please show me some respect and do not abuse it. <3
                     location=WidgetOpts.LOCATION,
-                    font=WidgetOpts.MONOSPACE_FONT,
+                    # font=WidgetOpts.MONOSPACE_FONT,
+                    font=WidgetOpts.WEATHER_FONT,
                     foreground='#11BBEE'
                 ),
                 sep(),
@@ -485,6 +486,7 @@ screens = [
                     format=u'{percent:2.0%} {char}',
                     font=WidgetOpts.MONOSPACE_FONT
                 ),
+                # make_current_layout_widget(),
             ],
             24
         ),
@@ -548,7 +550,6 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                make_current_layout_widget(),
                 widgets.GroupBox2(**group_box_config),
                 widgets.TaskList2(
                     # font=WidgetOpts.MONOSPACE_FONT,
@@ -562,6 +563,7 @@ screens = [
                     padding_x_extra=-4,
                     padding_y_extra=-6
                 ),
+                # make_current_layout_widget(),
                 # widget.Spacer(),
                 # widget.Sep(padding=10),
                 # widget.Clock(format='%Y-%m-%d %H:%M'),
