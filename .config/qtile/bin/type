@@ -1,0 +1,11 @@
+#!/bin/bash
+
+sleep 0.29
+
+case $1 in
+shrug)
+    xdotool type --delay 100 "¯\_(ツ)_/¯"
+    ;;
+*)
+    ;;
+esac

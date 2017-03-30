@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (c) 2017 Andrew Dunai
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -199,8 +200,10 @@ keys = [
     Key([], 'XF86Search', lazy.function(commands.DMenuAppsCollectorMenu(**DMENU_STYLE))),
 
     # Run screen locker
-    # Key([ctrl, alt], "l", lazy.spawn("/sh/i3lock.sh")),
-    Key([ctrl, alt], "l", lazy.spawn("xscreensaver-command --lock")),
+    Key([ctrl, alt], "l", lazy.spawn("/sh/i3lock.sh")),
+    # Key([ctrl, alt], "l", lazy.spawn("xscreensaver-command --lock")),
+
+    Key([ctrl, alt], "s", lazy.spawn(os.path.expanduser("~/.config/qtile/bin/type shrug"))),
 
     # I hit this when a window gets to a wrong group despite filters. Happens to some apps.
     Key([ctrl, mod], "g", lazy.function(commands.FixGroups())),
@@ -238,7 +241,7 @@ GROUP_DEFS = (
     ])),
     ('v', 'var', [], 'max', dict(wm_class=['Pitivi', 'Audacity'])),
     ('n', 'notes', ['simplenote'], 'max', dict(wm_class=['Simplenote'], title=['Peek App'])),
-    ('s', 'status', [], 'max', dict()),
+    ('s', 'status', [], 'max', dict(wm_class=['Conky', 'conky'])),
 )
 
 groups = [
@@ -305,7 +308,7 @@ group_box_config = dict(
     # font='Nimbus Sans Bold',  # Terminus, Nimbus Sans
     font=WidgetOpts.MONOSPACE_FONT_BOLD,
     padding_x=1,
-    padding_y=5,
+    padding_y=3,
     fontsize=12,
     margin_x=0,
 )
@@ -484,11 +487,12 @@ screens = [
                     foreground_charging='#11BB11',
                     foreground_low='#F05040',
                     format=u'{percent:2.0%} {char}',
-                    font=WidgetOpts.MONOSPACE_FONT
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    update_delay=5
                 ),
                 # make_current_layout_widget(),
             ],
-            24
+            20
         ),
         # bottom=bar.Bar(
         #     [

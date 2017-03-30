@@ -17,4 +17,4 @@ def notify(app_name, icon, title, message):
     out, err = ps.communicate()
     # sys.stdout.write(out)
     # sys.stderr.write(err)
-    sys.exit(ps.returncode)
+    # sys.exit(ps.returncode)

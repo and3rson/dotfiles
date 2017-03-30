@@ -232,12 +232,13 @@ class OpenWeatherMap(base._TextBox, NonBlockingSpawn):
                 icon=self.icons.get(str(response['weather'][0]['id']), u'\uF07B'),
             )
         except Exception as e:
-            logger.exception(e.message)
-            return 'ERROR'
+            logger.exception(str(e))
+            return None
 
     def on_fetch_result(self, result):
-        if result == 'ERROR':
-            self.timeout_add(10, self.do_fetch)
+        if result is None:
+            self.timeout_add(5, self.do_fetch)
+            result = u'\uF07B Unknown'
         else:
             self.timeout_add(300, self.do_fetch)
 
@@ -246,6 +247,7 @@ class OpenWeatherMap(base._TextBox, NonBlockingSpawn):
             self.bar.draw()
         else:
             self.draw()
+        self.last_text = self.text
 
 
 class NowPlayingWidget(base._TextBox, NonBlockingSpawn):
@@ -575,8 +577,8 @@ class GPMDP(base._TextBox, NonBlockingSpawn):
                 self._update_state(False, False, 'Not playing', None)
 
             self.timeout_add(0.25, self.poll)
-        except Exception as e:
-            logger.exception(str(e))
+        except Exception:
+            # logger.exception(str(e))
             self._update_state(False, False, 'Error', None)
             self.timeout_add(5, self.poll)
 
@@ -862,6 +864,9 @@ class Battery2(Battery):
         start = 0xF244
         info = self._get_info()
 
+        is_critical = False
+        critical_value = 0
+
         if info:
             value = int(info['now'] / info['full'] * 100)
 
@@ -882,6 +887,8 @@ class Battery2(Battery):
 
                 if value < 10:
                     self.foreground = self.foreground_low
+                    is_critical = True
+                    critical_value = value
                 else:
                     self.foreground = self.foreground_normal
 
@@ -906,6 +913,8 @@ class Battery2(Battery):
         if ntext != self.text:
             self.text = ntext
             self.bar.draw()
+            if is_critical:
+                notify('Battery Widget', 'error', 'Low battery!', 'Only {}% left.'.format(critical_value))
 
 
 class UnreadMail(base._TextBox):
