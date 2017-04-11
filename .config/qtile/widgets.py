@@ -545,7 +545,7 @@ class GPMDP(base._TextBox, NonBlockingSpawn):
         self.last_scroll = 0
 
         self.sep = ' ::: '
-        self.max_len = 12
+        self.max_len = 24
         self.shift = 0
         self.do_scroll = True
         self.last_song = None
@@ -1051,7 +1051,7 @@ class GroupBox2(GroupBox):
         window_count = len(group.windows)
 
         # group_name = group.name.upper()
-        group_name = group.name
+        group_name = group.name.upper()
 
         if window_count:
             return u'{}{}'.format(

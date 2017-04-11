@@ -14,7 +14,7 @@ blueman-applet &
 
 # sudo pritunl-client-gtk &
 
-xscreensaver &
+# xscreensaver &
 
 # hsetroot -solid "#000000" &
 # hsetroot -center 86ffb87572d657f335cd7cd828c70de3.jpg &

@@ -16,3 +16,9 @@ export DMENU_STYLE="-fn 'DejaVu Sans Mono-10' -sb '#F05040' -sf '#000' -nb black
 case $(tty) in /dev/tty[0-9]*)
     export TERM=linux ;;
 esac
+
+export TTY=0
+
+case $(tty) in /dev/tty[0-9]*)
+    export TTY=1 ;;
+esac
