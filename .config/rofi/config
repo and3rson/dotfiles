@@ -1,1 +1,23 @@
 #include "/usr/share/rofi/themes//Monokai.theme"
+
+rofi.lines:                          20
+! "Number of columns" Set from: Default
+! rofi.columns:                        1
+! "Font to use" Set from: XResources
+rofi.font:                           DejaVu Sans Mono bold 10
+! "Color scheme for normal row" Set from: File
+! rofi.color-normal:                   argb:00272822, #f8f8f2, argb:00272822, #141411, #f8f8f2
+rofi.color-normal:                   #222222, #DDDDDD, #222222, #1177AA, #FFFFFF
+! "Color scheme for urgent row" Set from: File
+! rofi.color-urgent:                   argb:00272822, #f92672, argb:00272822, #f92672, #f8f8f2
+rofi.color-urgent:                   #222222, #b1b4b3, #222222, #77003d, #b1b4b3
+! "Color scheme for active row" Set from: File
+! rofi.color-active:                   argb:00272822, #a6e22a, argb:00272822, #141411, #a6e22a
+rofi.color-active:                   #222222, #b1b4b3, #222222, #FF1177, #b1b4b3
+! "Color scheme window" Set from: File
+! rofi.color-window:                   argb:ee272822, #002b36, #e6db74
+rofi.color-window:                   #222222, #222222, #1177AA
+
+rofi.separator-style:                solid
+
+rofi.modi:                           run,window,ssh

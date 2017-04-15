@@ -3,8 +3,9 @@
 PATH="/sh:/bin:/usr/local/bin:/sbin:/usr/local/sbin:/usr/bin/core_perl"
 export EDITOR="nano"
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on'
-export PATH="/usr/share/perl5/vendor_perl/auto/share/dist/Cope:/home/anderson/.npm-packages/bin:$PATH:/home/anderson/.gem/ruby/2.2.0/bin:/home/anderson/.config/qtile/bin"
-export TERM=screen-256color
+export PATH="/home/anderson/.npm-packages/bin:$PATH:/home/anderson/.gem/ruby/2.2.0/bin:/home/anderson/.config/qtile/bin"
+# export PATH="/usr/share/perl5/vendor_perl/auto/share/dist/Cope:$PATH"
+# export TERM=screen-256color
 # export COPE=1
 
 export IDEA_JDK="/usr/lib/jvm/java-8-openjdk/"
@@ -15,4 +16,10 @@ export DMENU_STYLE="-fn 'DejaVu Sans Mono-10' -sb '#F05040' -sf '#000' -nb black
 
 case $(tty) in /dev/tty[0-9]*)
     export TERM=linux ;;
+esac
+
+export TTY=0
+
+case $(tty) in /dev/tty[0-9]*)
+    export TTY=1 ;;
 esac

@@ -66,9 +66,14 @@ shift = 'shift'
 
 class WidgetOpts:
     LOCATION = 'Lviv, Ukraine'
-    DEFAULT_FONT = 'Roboto Sans Bold'
+    DEFAULT_FONT = 'Roboto Sans'
+    DEFAULT_FONT_BOLD = 'Roboto Sans Bold'
     MONOSPACE_FONT = 'DejaVu Sans Mono'
+    # MONOSPACE_FONT = 'FuraCode Nerd Font'
+    # MONOSPACE_FONT = 'Roboto Sans'
     MONOSPACE_FONT_BOLD = 'DejaVu Sans Mono Bold'
+    # MONOSPACE_FONT_BOLD = 'Droid Sans Mono Bold'
+    # MONOSPACE_FONT_BOLD = 'Roboto Sans Bold'
     # MONOSPACE_FONT = 'Roboto Sans'
     WEATHER_FONT = 'Weather Icons'
     DEFAULT_COLOR = '#000000'
@@ -177,7 +182,7 @@ keys = [
 
     # Run dmenu launcher for apps
     # Key([mod], "r", lazy.function(commands.DMenuAppLauncher(**DMENU_STYLE))),
-    Key([mod], "r", lazy.spawn('rofi -show run')),
+    Key([mod], "r", lazy.spawn('rofi -show run -terminal roxterm')),
     Key([lock], 'r', lazy.function(commands.DMenuCustomMenu(**DMENU_STYLE))),
     # Key([lock], 'r', lazy.spawn('cat ~/.config/qtile/menu.conf | rofi -dmenu | sed -e \'s/.*:\s*//g\'')),
 
@@ -209,6 +214,8 @@ keys = [
     Key([ctrl, mod], "g", lazy.function(commands.FixGroups())),
 
     Key([mod], 'q', lazy.group['t'].toscreen()),
+
+    Key([lock], 'n', lazy.spawn('networkmanager_dmenu')),
 
     # Just a test for my custom mod3 key (I have CapsLock remapped for this, set by xmodmap in autorun.sh)
     # Key([lock], 'space', lazy.function(commands.DMenuWindowSelector(**DMENU_STYLE))),
@@ -285,8 +292,8 @@ floating_layout = layout.Floating(
 widget_defaults = dict(
     font=WidgetOpts.DEFAULT_FONT,
     # font='DejaVu Sans Mono',
-    fontsize=12,
-    padding=6,
+    fontsize=10,
+    padding=4,
     margin_y=0,
     margin_x=2
 )
@@ -306,10 +313,10 @@ group_box_config = dict(
     current_highlight_method='block',
     other_highlight_method='border',
     # font='Nimbus Sans Bold',  # Terminus, Nimbus Sans
-    font=WidgetOpts.MONOSPACE_FONT_BOLD,
+    font=WidgetOpts.DEFAULT_FONT + ' Medium',
     padding_x=1,
-    padding_y=3,
-    fontsize=12,
+    padding_y=2,
+    fontsize=10,
     margin_x=0,
 )
 
@@ -324,11 +331,11 @@ def make_current_layout_widget():
 
 
 def sep():
-    return widget.Sep(padding=2, foreground='#11BBEE.3', size_percent=100)
+    return widget.Sep(padding=2, foreground='#11BBEE.2', size_percent=80)
 
 
 pacontrol = widgets.PAControl(
-    font=WidgetOpts.MONOSPACE_FONT,
+    font=WidgetOpts.DEFAULT_FONT,
     foreground='#11BBEE'
 )
 
@@ -357,24 +364,27 @@ screens = [
         top=bar.Bar(
             [
                 widgets.GroupBox2(**group_box_config),
-                widget.Prompt(
-                    background=WidgetOpts.HIGHLIGHT_COLOR,
-                    font=WidgetOpts.MONOSPACE_FONT,
-                    fontsize=12,
-                ),
+                # widget.Prompt(
+                #     background=WidgetOpts.HIGHLIGHT_COLOR,
+                #     font=WidgetOpts.MONOSPACE_FONT,
+                #     fontsize=12,
+                # ),
                 sep(),
-                widgets.TaskList2(
-                    # font=WidgetOpts.MONOSPACE_FONT,
-                    rounded=False,
-                    max_title_width=140,
-                    highlight_method='block',
-                    border=WidgetOpts.HIGHLIGHT_COLOR,
-                    fontsize=10,
-                    # padding_x=0,
-                    padding_y=7,
-                    padding_x_extra=-4,
-                    padding_y_extra=-5,
-                    font=WidgetOpts.MONOSPACE_FONT_BOLD
+                # widgets.TaskList2(
+                #     # font=WidgetOpts.MONOSPACE_FONT,
+                #     rounded=False,
+                #     max_title_width=140,
+                #     highlight_method='block',
+                #     border=WidgetOpts.HIGHLIGHT_COLOR,
+                #     fontsize=10,
+                #     # padding_x=0,
+                #     padding_y=7,
+                #     padding_x_extra=-4,
+                #     padding_y_extra=-5,
+                #     font=WidgetOpts.DEFAULT_FONT
+                # ),
+                widgets.WindowTabs2(
+                    font=WidgetOpts.MONOSPACE_FONT
                 ),
                 sep(),
                 widget.Systray(
@@ -423,7 +433,7 @@ screens = [
             ] + ([
                 sep(),
                 widgets.Backlight2(
-                    font=WidgetOpts.MONOSPACE_FONT,
+                    font=WidgetOpts.DEFAULT_FONT,
                     foreground='#11BBEE',
                     backlight_name=backlight_name
                 )
@@ -449,13 +459,13 @@ screens = [
                 ),
                 sep(),
                 widgets.Ping(
-                    font=WidgetOpts.MONOSPACE_FONT,
+                    font=WidgetOpts.DEFAULT_FONT,
                     foreground_normal='#11BBEE',
                     foreground_alert='#F05040'
                 ),
                 sep(),
                 widgets.BluetoothInfo(
-                    font=WidgetOpts.MONOSPACE_FONT,
+                    font=WidgetOpts.DEFAULT_FONT,
                     foreground='#11BBEE',
                 ),
                 sep(),
@@ -476,7 +486,7 @@ screens = [
                 sep(),
                 widget.Clock(
                     format='%H:%M',
-                    font=WidgetOpts.MONOSPACE_FONT,
+                    font=WidgetOpts.DEFAULT_FONT,
                     foreground='#11BBEE',
                 ),
                 sep(),
@@ -487,12 +497,12 @@ screens = [
                     foreground_charging='#11BB11',
                     foreground_low='#F05040',
                     format=u'{percent:2.0%} {char}',
-                    font=WidgetOpts.MONOSPACE_FONT,
+                    font=WidgetOpts.DEFAULT_FONT,
                     update_delay=5
                 ),
                 # make_current_layout_widget(),
             ],
-            20
+            16
         ),
         # bottom=bar.Bar(
         #     [
@@ -572,7 +582,7 @@ screens = [
                 # widget.Sep(padding=10),
                 # widget.Clock(format='%Y-%m-%d %H:%M'),
             ],
-            26
+            16
         )
     ),
 ]

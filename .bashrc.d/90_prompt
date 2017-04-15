@@ -1,10 +1,10 @@
 #!/bin/bash
 
-ARROW=`echo -e "\ue0b0"`
+ARROW=`echo -e "\ue0b0 "`
 case $(tty) in /dev/tty[0-9]*)
     ARROW='' ;;
 esac
-ARROW=''
+# ARROW=''
 
 
 # function is_chroot()
@@ -67,49 +67,49 @@ function info() {
         echo -en "\[$bldwht\]"
         if [[ "$UID" -eq "0" ]]
         then
-            echo -en "\[$bakred\] ${HOSTNAME} "
+            echo -en "\[$bakred\] \uF071 ${HOSTNAME} "
         else
             echo -en "\[$HOSTNAME_BG_COLOR\] ${HOSTNAME} "
         fi
-        echo -en "\[$txtrst\]"
+        # echo -en "\[$txtrst\]"
     }
 
     function print_pwd() {
         echo -en "\[$bldwht\]"
-        echo -en "\[$bakblu\] ${PWD/$HOME/\/\~} "
-        echo -en "\[$txtrst\]"
+        echo -en "${PWD/$HOME/\~}"
+        # echo -en "\[$txtrst\]"
     }
 
     function git_info() {
         NAME=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
 
-        echo -en "\[$bldwht\]"
         if [[ "$NAME" != "" ]]
         then
+            echo -en "\[$txtrst\]\[$HOSTNAME_BG_COLOR\]\[$bldwht\][\[$txtrst\]\[$txtwht\]\[$HOSTNAME_BG_COLOR\]"
             $(git diff --quiet)
 
             if [[ "$?" != "0" ]]
             then
-                echo -en "\[$bakylw\] \u2387  $NAME \u00B1 "
+                echo -en "\[$undwht\]$NAME"
             else
-                echo -en "\[$bakgrn\] \u2387  $NAME "
+                echo -en "$NAME"
             fi
+            echo -en "\[$txtrst\]\[$HOSTNAME_BG_COLOR\]\[$bldwht]\]"
         fi
-        echo -en "\[$txtrst\]"
     }
 
     function ret_info() {
-        echo -en "\[$bldwht\]"
+        PWD=`print_pwd`
         if [[ "$CODE" != "0" ]]
         then
             if [[ "$CODE" != "130" ]]
             then
-                echo -en "\[$bakred\] \u00D7 $CODE \$ \[$txtrst$txtred\]\uE0B0"
+                echo -en "\[$bakred\] $CODE $PWD \[$txtrst$txtred\]$ARROW"
             else
-                echo -en "\[$bakred\] \u00D7 \$ \[$txtrst$txtred\]\uE0B0"
+                echo -en "\[$bakred\] $PWD \[$txtrst$txtred\]$ARROW"
             fi
         else
-            echo -en "\[$bakgrn$bldwht\] \$ \[$txtrst\]\[$txtgrn\]\uE0B0"
+            echo -en "\[$HOSTNAME_BG_COLOR$bldwht\] $PWD \[$txtrst\]\[$HOSTNAME_FG_COLOR\]$ARROW"
         fi
         echo -en "\[$txtrst\]"
     }
@@ -121,12 +121,19 @@ function info() {
         print_tag
         print_virtualenv
         print_hostname
-        print_pwd
         git_info
+        # print_pwd
         ret_info
         # retry
 
-        echo -en "\[\e[49m\]$ARROW\[$txtrst\] "
+        # echo -en " "
+
+        # if [[ "$TTY" == "0" ]]
+        # then
+        #     echo -en "\[\e[49m\]$ARROW\[$txtrst\] "
+        # else
+        #     echo -en
+        # fi
 
         # if [[ "$CODE" != "0" && "$CODE" != "130" ]]
         # then
@@ -139,12 +146,24 @@ function info() {
 }
 
 function set_prompt() {
-    PS1="`info`"
+    # PS1="`info`"
+    PS1="`ret=$? ~/.config/qtile/bin/prompt.py`"
     # PS1="$hostname_result\[$bakblu\]\[$bldwht\] \w \[$txtrst\]$info_result "
 }
+
+# if [[ "$TTY" == "0" ]]
+# then
+#     PROMPT_COMMAND=set_prompt
+# else
+#     PROMPT_COMMAND=simple_prompt
+# fi
+
+export PYTHONIOENCODING=utf-8
 
 PROMPT_COMMAND=set_prompt
 
 function tag() {
     export TAG=$1
 }
+
+# PROMPT_COMMAND="~/.config/qtile/bin/prompt.py"
