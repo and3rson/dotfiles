@@ -1549,13 +1549,18 @@ class BluetoothInfo(base._TextBox, NonBlockingSpawn):
 
     def _configure(self, *args, **kwargs):
         base._TextBox._configure(self, *args, **kwargs)
-        self.adapter = bt.get_adapter()
+        try:
+            self.adapter = bt.get_adapter()
+        except:
+            self.adapter = None
         self.do_fetch()
 
     def do_fetch(self):
         self.spawn(self._fetch, self._on_fetch)
 
     def _fetch(self):
+        if not self.adapter:
+            return None
         try:
             return ', '.join(bt.get_connected_devices(self.adapter))
         except Exception as e:
