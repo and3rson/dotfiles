@@ -69,8 +69,10 @@ class WidgetOpts:
     DEFAULT_FONT = 'Roboto Sans'
     DEFAULT_FONT_BOLD = 'Roboto Sans Bold'
     MONOSPACE_FONT = 'DejaVu Sans Mono'
+    # MONOSPACE_FONT = 'FuraCode Nerd Font'
     # MONOSPACE_FONT = 'Roboto Sans'
     MONOSPACE_FONT_BOLD = 'DejaVu Sans Mono Bold'
+    # MONOSPACE_FONT_BOLD = 'Droid Sans Mono Bold'
     # MONOSPACE_FONT_BOLD = 'Roboto Sans Bold'
     # MONOSPACE_FONT = 'Roboto Sans'
     WEATHER_FONT = 'Weather Icons'
@@ -290,8 +292,8 @@ floating_layout = layout.Floating(
 widget_defaults = dict(
     font=WidgetOpts.DEFAULT_FONT,
     # font='DejaVu Sans Mono',
-    fontsize=12,
-    padding=6,
+    fontsize=10,
+    padding=4,
     margin_y=0,
     margin_x=2
 )
@@ -313,8 +315,8 @@ group_box_config = dict(
     # font='Nimbus Sans Bold',  # Terminus, Nimbus Sans
     font=WidgetOpts.DEFAULT_FONT + ' Medium',
     padding_x=1,
-    padding_y=5,
-    fontsize=12,
+    padding_y=2,
+    fontsize=10,
     margin_x=0,
 )
 
@@ -368,18 +370,21 @@ screens = [
                 #     fontsize=12,
                 # ),
                 sep(),
-                widgets.TaskList2(
-                    # font=WidgetOpts.MONOSPACE_FONT,
-                    rounded=False,
-                    max_title_width=140,
-                    highlight_method='block',
-                    border=WidgetOpts.HIGHLIGHT_COLOR,
-                    fontsize=10,
-                    # padding_x=0,
-                    padding_y=7,
-                    padding_x_extra=-4,
-                    padding_y_extra=-5,
-                    font=WidgetOpts.DEFAULT_FONT
+                # widgets.TaskList2(
+                #     # font=WidgetOpts.MONOSPACE_FONT,
+                #     rounded=False,
+                #     max_title_width=140,
+                #     highlight_method='block',
+                #     border=WidgetOpts.HIGHLIGHT_COLOR,
+                #     fontsize=10,
+                #     # padding_x=0,
+                #     padding_y=7,
+                #     padding_x_extra=-4,
+                #     padding_y_extra=-5,
+                #     font=WidgetOpts.DEFAULT_FONT
+                # ),
+                widgets.WindowTabs2(
+                    font=WidgetOpts.MONOSPACE_FONT
                 ),
                 sep(),
                 widget.Systray(
@@ -497,7 +502,7 @@ screens = [
                 ),
                 # make_current_layout_widget(),
             ],
-            24
+            16
         ),
         # bottom=bar.Bar(
         #     [
@@ -577,7 +582,7 @@ screens = [
                 # widget.Sep(padding=10),
                 # widget.Clock(format='%Y-%m-%d %H:%M'),
             ],
-            24
+            16
         )
     ),
 ]

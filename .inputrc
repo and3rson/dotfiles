@@ -53,7 +53,7 @@ set colored-completion-prefix on
 # set completion-prefix-display-length 4
 set blink-matching-paren on
 
-set mark-modified-lines on
+# set mark-modified-lines on
 
 # set menu-complete-display-prefix on
 # set print-completions-horizontally on

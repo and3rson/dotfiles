@@ -2,7 +2,7 @@
 
 from __future__ import division
 
-from libqtile.widget import base, Volume, ThermalSensor, Battery, GroupBox, TaskList, Backlight
+from libqtile.widget import base, Volume, ThermalSensor, Battery, GroupBox, TaskList, Backlight, WindowTabs
 from libqtile.log_utils import logger
 from libqtile import bar
 import feedparser
@@ -1579,3 +1579,34 @@ class BluetoothInfo(base._TextBox, NonBlockingSpawn):
     def button_press(self, x, y, button):
         if button == 3:
             os.system('blueman-manager &')
+
+
+class WindowTabs2(WindowTabs):
+    def update(self):
+        names = []
+        for w in self.bar.screen.group.windows:
+            if w:
+                # name = w.name
+                name = w.cmd_inspect()['wm_class'][1]
+            else:
+                name = '?'
+
+            state = ''
+            if w is None:
+                pass
+            elif w.maximized:
+                state = '^ '
+            elif w.minimized:
+                state = '_ '
+            elif w.floating:
+                state = 'F '
+            task = "%s%s" % (state, name)
+            if w is self.bar.screen.group.currentWindow:
+                # task = task.join(self.selected)
+                task = task.join('[]')
+                # task = ''.join([c + '\u0332' for c in task])
+            else:
+                task = task.join('  ')
+            names.append(task)
+        self.text = self.separator.join(names)
+        self.bar.draw()
