@@ -1156,7 +1156,7 @@ class TaskList2(TaskList):
             return
 
         x = offset + self.padding_x + self.borderwidth + 2 + self.margin_x + self.padding_x_extra
-        y = self.padding_y + self.borderwidth + self.padding_y_extra
+        y = self.padding_y + self.borderwidth + self.padding_y_extra + 4
 
         self.drawer.ctx.save()
         self.drawer.ctx.translate(x, y)
@@ -1172,28 +1172,30 @@ class TaskList2(TaskList):
         # logger.error('C: {}'.format(self.qtile.currentLayout.clients))
 
         for i, w in enumerate(self.bar.screen.group.windows):
-        # for i, w in enumerate(self.qtile.currentLayout.clients):
-            state = ''
-            if w is None:
-                pass
-            elif w.maximized:
-                state = '[X]'
-            elif w.minimized:
-                state = '[_]'
-            elif w.floating:
-                state = '[F]'
+            # for i, w in enumerate(self.qtile.currentLayout.clients):
+            if w:
+                # name = w.name
+                try:
+                    name = w.cmd_inspect()['wm_class'][1][:8]
+                except Exception:
+                    name = w.name
             else:
-                state = '[%d]' % (i + 1)
+                name = '?'
+
+            state = ''
+            # if w is None:
+            #     pass
+            # elif w.maximized:
+            #     state = '[X]'
+            # elif w.minimized:
+            #     state = '[_]'
+            # elif w.floating:
+            #     state = '[F]'
+            # else:
+            #     state = '[%d] %s' % (i + 1, name)
                 # state = ''
 
-            # if w:
-            #     # name = w.name
-            #     try:
-            #         name = w.cmd_inspect()['wm_class'][1][:8]
-            #     except Exception:
-            #         name = w.name
-            # else:
-            #     name = '?'
+            state = '%d %s' % (i + 1, name)
 
             # task = "%d %s%s" % (i + 1, state, name)
 

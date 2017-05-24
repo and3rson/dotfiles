@@ -2,17 +2,13 @@
 
 PWD=`dirname $0`
 
-function do_xrandr {
-    xrandr --output VGA1 --auto --output HDMI1 --auto --right-of eDP1
-}
-
 function setup_1_screen {
-    do_xrandr
+    xrandr --output HDMI1 --off --output eDP1 --auto
     synclient AccelFactor=0.08
 }
 
 function setup_2_screens {
-    do_xrandr
+    xrandr --output HDMI1 --auto --right-of eDP1
     synclient AccelFactor=0.03
 }
 

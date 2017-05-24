@@ -37,8 +37,8 @@ logger.addHandler(JournalHandler())
 
 BIN_DIR = os.path.expanduser('~/.config/qtile/bin')
 
-TERM_APP = 'roxterm'
-HOME_TERM_CMD = 'roxterm -e {}'.format(os.path.join(BIN_DIR, 'stmux.sh'))
+TERM_APP = 'termite'
+HOME_TERM_CMD = '{} -e {}'.format(TERM_APP, os.path.join(BIN_DIR, 'stmux.sh'))
 DMENU_STYLE = dict(
     nb='#000',
     nf='#FFF',
@@ -66,12 +66,12 @@ shift = 'shift'
 
 class WidgetOpts:
     LOCATION = 'Lviv, Ukraine'
-    DEFAULT_FONT = 'Roboto Sans'
-    DEFAULT_FONT_BOLD = 'Roboto Sans Bold'
-    MONOSPACE_FONT = 'DejaVu Sans Mono'
+    DEFAULT_FONT = 'Roboto'
+    DEFAULT_FONT_BOLD = 'Roboto Bold'
+    MONOSPACE_FONT = 'Liberation Mono'
     # MONOSPACE_FONT = 'FuraCode Nerd Font'
     # MONOSPACE_FONT = 'Roboto Sans'
-    MONOSPACE_FONT_BOLD = 'DejaVu Sans Mono Bold'
+    MONOSPACE_FONT_BOLD = 'Liberation Mono Bold'
     # MONOSPACE_FONT_BOLD = 'Droid Sans Mono Bold'
     # MONOSPACE_FONT_BOLD = 'Roboto Sans Bold'
     # MONOSPACE_FONT = 'Roboto Sans'
@@ -182,7 +182,7 @@ keys = [
 
     # Run dmenu launcher for apps
     # Key([mod], "r", lazy.function(commands.DMenuAppLauncher(**DMENU_STYLE))),
-    Key([mod], "r", lazy.spawn('rofi -show run -terminal roxterm')),
+    Key([mod], "r", lazy.spawn('rofi -show run -terminal {}'.format(TERM_APP))),
     Key([lock], 'r', lazy.function(commands.DMenuCustomMenu(**DMENU_STYLE))),
     # Key([lock], 'r', lazy.spawn('cat ~/.config/qtile/menu.conf | rofi -dmenu | sed -e \'s/.*:\s*//g\'')),
 
@@ -239,7 +239,7 @@ GROUP_DEFS = (
         'skypeforlinux', 'IRCCloud'
     ], title=['Messenger', 'Flowdock', re.compile(r'^.* - Chat$')])),
     ('m', 'mail', ['thunderbird'], 'max', dict(wm_class=['Thunderbird'])),
-    ('d', 'dev', ['subl3'], 'max', dict(wm_class=['Subl3'])),
+    ('d', 'dev', ['atom'], 'max', dict(wm_class=['Subl3', 'Atom'])),
     ('a', 'audio', ['google-play-music-desktop-player'], 'max', dict(title=['VK audio player'], wm_class=['Google Play Music Desktop Player'])),
     ('g', 'games', ['steam'], 'max', dict(wm_class=[
         re.compile('^Steam|csgo_linux64|Deluge$')
@@ -292,8 +292,8 @@ floating_layout = layout.Floating(
 widget_defaults = dict(
     font=WidgetOpts.DEFAULT_FONT,
     # font='DejaVu Sans Mono',
-    fontsize=10,
-    padding=4,
+    fontsize=12,
+    padding=3,
     margin_y=0,
     margin_x=2
 )
@@ -315,8 +315,8 @@ group_box_config = dict(
     # font='Nimbus Sans Bold',  # Terminus, Nimbus Sans
     font=WidgetOpts.DEFAULT_FONT + ' Medium',
     padding_x=1,
-    padding_y=2,
-    fontsize=10,
+    padding_y=3,
+    fontsize=12,
     margin_x=0,
 )
 
@@ -370,25 +370,27 @@ screens = [
                 #     fontsize=12,
                 # ),
                 sep(),
-                # widgets.TaskList2(
-                #     # font=WidgetOpts.MONOSPACE_FONT,
-                #     rounded=False,
-                #     max_title_width=140,
-                #     highlight_method='block',
-                #     border=WidgetOpts.HIGHLIGHT_COLOR,
-                #     fontsize=10,
-                #     # padding_x=0,
-                #     padding_y=7,
-                #     padding_x_extra=-4,
-                #     padding_y_extra=-5,
-                #     font=WidgetOpts.DEFAULT_FONT
-                # ),
-                widgets.WindowTabs2(
-                    font=WidgetOpts.MONOSPACE_FONT
+                widgets.TaskList2(
+                    # font=WidgetOpts.MONOSPACE_FONT,
+                    rounded=False,
+                    max_title_width=140,
+                    highlight_method='block',
+                    border=WidgetOpts.HIGHLIGHT_COLOR,
+                    borderwidth=0,
+                    fontsize=12,
+                    # padding_x=0,
+                    padding_y=3,
+                    padding_x_extra=-4,
+                    padding_y_extra=-5,
+                    font=WidgetOpts.DEFAULT_FONT
                 ),
+                # widgets.WindowTabs2(
+                #     font=WidgetOpts.MONOSPACE_FONT
+                # ),
                 sep(),
                 widget.Systray(
-                    icon_size=16
+                    icon_size=14,
+                    # padding_y=2
                 ),
                 widget.Sep(padding=8, foreground='#000000.0'),
                 sep(),
@@ -502,7 +504,7 @@ screens = [
                 ),
                 # make_current_layout_widget(),
             ],
-            16
+            18
         ),
         # bottom=bar.Bar(
         #     [
@@ -571,9 +573,9 @@ screens = [
                     max_title_width=140,
                     highlight_method='block',
                     border=WidgetOpts.HIGHLIGHT_COLOR,
-                    fontsize=10,
+                    fontsize=12,
                     # padding_x=0,
-                    padding_y=8,
+                    padding_y=3,
                     padding_x_extra=-4,
                     padding_y_extra=-6
                 ),
@@ -582,7 +584,7 @@ screens = [
                 # widget.Sep(padding=10),
                 # widget.Clock(format='%Y-%m-%d %H:%M'),
             ],
-            16
+            18
         )
     ),
 ]
