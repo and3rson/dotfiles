@@ -8,7 +8,7 @@ function setup_1_screen {
 }
 
 function setup_2_screens {
-    xrandr --output HDMI1 --auto --right-of eDP1
+    xrandr --output HDMI1 --auto --left-of eDP1
     synclient AccelFactor=0.03
 }
 

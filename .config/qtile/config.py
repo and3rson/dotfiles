@@ -579,6 +579,23 @@ screens = [
                     padding_x_extra=-4,
                     padding_y_extra=-6
                 ),
+                sep(),
+                widget.Clock(
+                    format='%H:%M',
+                    font=WidgetOpts.DEFAULT_FONT,
+                    foreground='#11BBEE',
+                ),
+                sep(),
+                widgets.Battery2(
+                    charge_char=u'\uf0de',
+                    discharge_char=u'\uf0dd',
+                    foreground_normal='#11BBEE',
+                    foreground_charging='#11BB11',
+                    foreground_low='#F05040',
+                    format=u'{percent:2.0%} {char}',
+                    font=WidgetOpts.DEFAULT_FONT,
+                    update_delay=5
+                ),
                 # make_current_layout_widget(),
                 # widget.Spacer(),
                 # widget.Sep(padding=10),
