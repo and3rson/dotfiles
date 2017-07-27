@@ -147,7 +147,7 @@ function info() {
 
 function set_prompt() {
     # PS1="`info`"
-    PS1="`ret=$? ~/.config/qtile/bin/prompt.py`"
+    PS1="`ret=$? /home/anderson/.config/qtile/bin/prompt.py`"
     # PS1="$hostname_result\[$bakblu\]\[$bldwht\] \w \[$txtrst\]$info_result "
 }
 

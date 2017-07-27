@@ -6,3 +6,4 @@
 	st = status
 	co = checkout
 	br = branch
+    spull = submodule update --init --recursive --remote

@@ -187,7 +187,10 @@ keys = [
     # Key([lock], 'r', lazy.spawn('cat ~/.config/qtile/menu.conf | rofi -dmenu | sed -e \'s/.*:\s*//g\'')),
 
     # Open config editor
-    Key([mod], "c", lazy.spawn('{} -e "nano /home/anderson/.config/qtile/config.py"'.format(TERM_APP))),
+    Key([mod], "c", lazy.spawn('tvim NEWVIM /home/anderson/.config/qtile/config.py'.format(TERM_APP))),
+
+    # Open config editor
+    Key([mod], "e", lazy.spawn('tvim NEWVIM')),
 
     # Open remote "todo"
     Key([mod], "x", lazy.spawn('{} -e {}'.format(TERM_APP, os.path.join(BIN_DIR, 'todo.sh')))),
@@ -217,6 +220,12 @@ keys = [
 
     Key([lock], 'n', lazy.spawn('networkmanager_dmenu')),
 
+    # Key([lock], 'p', lazy.spawn('xdotool key Up')),
+    # Key([lock], 'semicolon', lazy.spawn('xdotool key Down')),
+    # Key([lock], 'l', lazy.spawn('xdotool key Left')),
+    # Key([lock], 'quotedbl', lazy.spawn('xdotool key Right')),
+    # Key([lock], 'backslash', lazy.spawn('xdotool key slash')),
+
     # Just a test for my custom mod3 key (I have CapsLock remapped for this, set by xmodmap in autorun.sh)
     # Key([lock], 'space', lazy.function(commands.DMenuWindowSelector(**DMENU_STYLE))),
 ]
@@ -232,22 +241,22 @@ for i in xrange(1, 9):
 # - arguments for `Match`es
 GROUP_DEFS = (
     ('t', 'term', [HOME_TERM_CMD], 'max', dict()),
-    ('w', 'web', ['chromium', 'firefox'], 'max', dict(wm_class=['chromium', 'Firefox'])),
+    ('w', 'web', ['chromium'], 'max', dict(wm_class=['chromium', 'Firefox'])),
     ('i', 'im', ['telegram-desktop', 'irccloud'], 'max', dict(wm_class=[
         'telegram-desktop', 'TelegramDesktop', 'Slack',
         'www.flowdock.com__app_redeapp_main', 'Hexchat', 'Skype',
         'skypeforlinux', 'IRCCloud'
     ], title=['Messenger', 'Flowdock', re.compile(r'^.* - Chat$')])),
     ('m', 'mail', ['thunderbird'], 'max', dict(wm_class=['Thunderbird'])),
-    ('d', 'dev', ['atom'], 'max', dict(wm_class=['Subl3', 'Atom'])),
+    ('d', 'dev', ['tvim', 'DEFAULTVIM'], 'max', dict(wm_class=['Subl3', 'Atom'], title=['DEFAULTVIM'])),
     ('a', 'audio', ['google-play-music-desktop-player'], 'max', dict(title=['VK audio player'], wm_class=['Google Play Music Desktop Player'])),
-    ('g', 'games', ['steam'], 'max', dict(wm_class=[
+    ('g', 'games', [], 'max', dict(wm_class=[
         re.compile('^Steam|csgo_linux64|Deluge$')
     ], title=[
         re.compile('^Steam$')
     ])),
     ('v', 'var', [], 'max', dict(wm_class=['Pitivi', 'Audacity'])),
-    ('n', 'notes', ['simplenote'], 'max', dict(wm_class=['Simplenote'], title=['Peek App'])),
+    ('n', 'notes', [], 'max', dict(wm_class=['Simplenote'], title=['Peek App'])),
     ('s', 'status', [], 'max', dict(wm_class=['Conky', 'conky'])),
 )
 
@@ -600,6 +609,43 @@ screens = [
                 # widget.Spacer(),
                 # widget.Sep(padding=10),
                 # widget.Clock(format='%Y-%m-%d %H:%M'),
+            ],
+            18
+        )
+    ),
+    Screen(
+        top=bar.Bar(
+            [
+                widgets.GroupBox2(**group_box_config),
+                widgets.TaskList2(
+                    # font=WidgetOpts.MONOSPACE_FONT,
+                    rounded=False,
+                    max_title_width=140,
+                    highlight_method='block',
+                    border=WidgetOpts.HIGHLIGHT_COLOR,
+                    fontsize=12,
+                    # padding_x=0,
+                    padding_y=3,
+                    padding_x_extra=-4,
+                    padding_y_extra=-6
+                ),
+                sep(),
+                widget.Clock(
+                    format='%H:%M',
+                    font=WidgetOpts.DEFAULT_FONT,
+                    foreground='#11BBEE',
+                ),
+                sep(),
+                widgets.Battery2(
+                    charge_char=u'\uf0de',
+                    discharge_char=u'\uf0dd',
+                    foreground_normal='#11BBEE',
+                    foreground_charging='#11BB11',
+                    foreground_low='#F05040',
+                    format=u'{percent:2.0%} {char}',
+                    font=WidgetOpts.DEFAULT_FONT,
+                    update_delay=5
+                ),
             ],
             18
         )
