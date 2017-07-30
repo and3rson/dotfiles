@@ -52,6 +52,8 @@ pacman --noconfirm -S \
     libappindicator-gtk3 \
     python-beautifulsoup4 \
     python2-beautifulsoup4 \
+    python-pip \
+    python-dbus python-gobject \
 && \
 sudo systemctl daemon-reload \
 && \
