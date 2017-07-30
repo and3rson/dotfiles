@@ -22,6 +22,16 @@ function cd() {
     ls -l
 }
 
+# function feh() {
+#     /usr/bin/feh --scale-down --auto-zoom --magick-timeout 5 "${@}"
+# }
+
 function feh() {
-    /usr/bin/feh --scale-down --auto-zoom --magick-timeout 5 "${@}"
+    if [[ -z "$1" ]]
+    then
+        path="*"
+    else
+        path="$1"
+    fi
+    sxiv $path
 }

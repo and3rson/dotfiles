@@ -6,7 +6,7 @@ PWD=`dirname $0`
 start-pulseaudio-x11-mod
 setxkbmap -layout 'us,ru,ua' -option grp:alt_shift_toggle
 xmodmap ~/.Xmodmap
-xset r rate 200 25
+xset r rate 175 25
 # xss-lock -- /sh/i3lock.sh &
 nm-applet &
 blueman-applet &

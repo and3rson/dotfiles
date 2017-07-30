@@ -7,3 +7,5 @@ remove mod4 = Hyper_L
 
 ! Set mod3 to capslock
 add mod3 = Hyper_L
+
+! keycode 33 lock = KP_Up

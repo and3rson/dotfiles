@@ -3,12 +3,12 @@
 PATH="/sh:/bin:/usr/local/bin:/sbin:/usr/local/sbin:/usr/bin/core_perl"
 export EDITOR="nano"
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on'
-export PATH="/home/anderson/.npm-packages/bin:$PATH:/home/anderson/.gem/ruby/2.2.0/bin:/home/anderson/.config/qtile/bin"
+export PATH="/home/anderson/.npm-packages/bin:$PATH:/home/anderson/.gem/ruby/2.4.0/bin:/home/anderson/.config/qtile/bin:/usr/lib/jvm/java-8-jdk/jre/bin"
 # export PATH="/usr/share/perl5/vendor_perl/auto/share/dist/Cope:$PATH"
 # export TERM=screen-256color
 # export COPE=1
 
-export IDEA_JDK="/usr/lib/jvm/java-8-openjdk/"
+# export IDEA_JDK="/usr/lib/jvm/java-8-openjdk/"
 export ANDROID_EMULATOR_USE_SYSTEM_LIBS=1
 export STEAM_RUNTIME=0
 
@@ -19,6 +19,7 @@ case $(tty) in /dev/tty[0-9]*)
 esac
 
 export TTY=0
+export TERM=screen-256color
 
 case $(tty) in /dev/tty[0-9]*)
     export TTY=1 ;;

@@ -84,15 +84,7 @@ class ReturnCode(Part):
         return Styled(os.environ['ret'], fg=255, bg=160, style='bold')
 
 
-def main():
-    parts = [
-        VirtualEnv(),
-        HostnamePart(),
-        GitBranchPart(),
-        CurrentDir(),
-        ReturnCode()
-    ]
-
+def draw(parts, lf=False):
     styled_list = filter(None, [part.render() for part in parts])
 
     for styled, next_styled in zip(styled_list, styled_list[1:] + [None]):
@@ -107,6 +99,23 @@ def main():
             sys.stdout.write(Styled(SLASH, fg=styled.bg, left='', right='').render())
             sys.stdout.write(' ')
             # sys.stdout.write(' \033[10D')
+
+    if lf:
+        sys.stdout.write('\n')
+
+
+def main():
+    parts = [
+        VirtualEnv(),
+        HostnamePart(),
+        GitBranchPart(),
+        ReturnCode()
+    ]
+    parts2 = [
+        CurrentDir(),
+    ]
+    draw(parts, lf=True)
+    draw(parts2)
 
 
 if __name__ == '__main__':
