@@ -20,7 +20,7 @@ Plugin 'scrooloose/nerdcommenter'
 
 " Plugin 'mitsuhiko/vim-python-combined'  " Combined Python 2/3 for Vim
 " Plugin 'davidhalter/jedi-vim'
-" Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-fugitive'
 
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
