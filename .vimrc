@@ -29,6 +29,10 @@ Plugin 'wincent/command-t'
 Plugin 'ryanoasis/vim-devicons'
 Plugin 'ctrlpvim/ctrlp.vim'
 
+" Plugin 'michaeljsmith/vim-indent-object'
+" Plugin 'nathanaelkane/vim-indent-guides'
+Plugin 'Yggdroot/indentLine'
+
 "Bundle 'jistr/vim-nerdtree-tabs'
 " Plugin 'jistr/vim-nerdtree-tabs'
 
@@ -103,6 +107,11 @@ nnoremap <silent> <ESC>[6;2~ :bn<CR>
 " inoremap <silent> <ESC>[6;2~ <ESC>:bn<CR>i
 inoremap <silent> <ESC>[5;2~ <ESC>:bp<CR>
 inoremap <silent> <ESC>[6;2~ <ESC>:bn<CR>
+
+nnoremap <silent> <ESC>[1;5D b
+nnoremap <silent> <ESC>[1;5C w
+inoremap <silent> <ESC>[1;5D <C-o>b
+inoremap <silent> <ESC>[1;5C <C-o>w
 
 " nnoremap <silent> <C-n>      :tabnew<CR>
 " nnoremap <silent> <C-o>      :CtrlPMixed<CR>
@@ -209,12 +218,32 @@ let g:webdevicons_enable_airline_statusline = 1
 
 " Cursor
 
-:hi CursorLine ctermbg=235
-:hi CursorColumn ctermbg=235
+:hi CursorLine ctermbg=235 " cterm=underline
+" :hi CursorColumn ctermbg=235
 
 " Molokai theme patches
 
 hi Normal guibg=NONE ctermbg=NONE
 
 filetype plugin on
+
+" Indentation
+set tabstop=4 softtabstop=4 shiftwidth=4
+set list listchars=tab:❘-,trail:·,extends:»,precedes:«,nbsp:×
+
+" let g:indent_guides_enable_on_vim_startup=1
+let g:indentLine_char = '▏'
+" let g:indentLine_char = '┊'
+let g:indentLine_first_char = '▏'
+" let g:indentLine_first_char = 'x'
+" let g:indentLine_char = 'x'
+" let g:indentLine_leadingSpaceChar = '·'
+" let g:indentLine_leadingSpaceEnabled = 1
+" let g:indentLine_setColors = 0
+let g:indentLine_concealcursor = ''
+" let g:indentLine_conceallevel = 1
+" let g:indentLine_setConceal = 0
+let g:indentLine_color_term = 239
+" let g:indentLine_bgcolor_term = 202
+let g:indentLine_showFirstIndentLevel = 1
 
