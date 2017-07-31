@@ -112,6 +112,9 @@ let g:airline#extensions#tabline#left_alt_sep = '⎸'
 
 nnoremap <silent> <ESC>[5;2~ :bp<CR>
 nnoremap <silent> <ESC>[6;2~ :bn<CR>
+nnoremap <silent> <ESC>[1;3D <C-w>h
+nnoremap <silent> <ESC>[1;3C <C-w>l
+
 " inoremap <silent> <ESC>[5;2~ <ESC>:bp<CR>i
 " inoremap <silent> <ESC>[6;2~ <ESC>:bn<CR>i
 inoremap <silent> <ESC>[5;2~ <ESC>:bp<CR>
@@ -124,7 +127,7 @@ inoremap <silent> <ESC>[1;5C <C-o>w
 
 " nnoremap <silent> <C-n>      :tabnew<CR>
 " nnoremap <silent> <C-o>      :CtrlPMixed<CR>
-nnoremap <silent> <C-o>      :CtrlPMixed<CR>
+nnoremap <silent> <C-p>      :CtrlPMixed<CR>
 nnoremap <silent> <C-x>      :bd<CR>
 nnoremap b  :buffers<CR>:b
 
@@ -184,7 +187,7 @@ let g:airline_skip_empty_sections = 1
 
 "set laststatus=0
 
-set timeoutlen=320 ttimeoutlen=0
+set timeoutlen=0 ttimeoutlen=0
 
 "let g:jedi#completions_command = "<C-Space>"
 let g:jedi#completions_command = "<Tab>"
@@ -199,6 +202,14 @@ set wildmenu
 " Smart home
 noremap <expr> <silent> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
 imap <silent> <Home> <C-O><Home>
+nmap <silent> <Esc>OH <Home>
+nmap <silent> <Esc>OF <End>
+imap <silent> <Esc>OH <C-o><Home>
+imap <silent> <Esc>OF <C-o><End>
+
+" Delete words
+inoremap <C-h> <C-W>
+
 "imap <silent> <Home> <Esc><Home>i
 
 :set cursorline
@@ -214,6 +225,7 @@ let g:webdevicons_enable_ctrlp = 1
 " let g:ctrlp_max_height = 20
 let g:ctrlp_match_window = 'bottom,order:ttb,min:16,max:16,results:16'
 let g:ctrlp_match_window_reversed = 0
+let g:ctrlp_map = '<c-k>'
 
 "let g:ctrlp_prompt_mappings = {
 "    \ 'AcceptSelection("e")': ['<2-LeftMouse>'],
@@ -283,4 +295,7 @@ let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [],'passive_
 
 nnoremap <silent> <F5> :w<CR>:SyntasticCheck<CR>
 inoremap <silent> <F5> <C-o>:w<CR><C-o>:SyntasticCheck<CR>
+
+" Fix cursor positioning on I->N mode switch
+" au InsertLeave * call cursor([getpos('.')[1], getpos('.')[2]+1])
 
