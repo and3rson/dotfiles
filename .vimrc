@@ -33,6 +33,14 @@ Plugin 'ctrlpvim/ctrlp.vim'
 " Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'Yggdroot/indentLine'
 
+" Plugin 'python-mode/python-mode'
+
+" Plugin 'kevinw/pyflakes-vim'
+
+Plugin 'vim-syntastic/syntastic'
+
+" Plugin 'nvie/vim-flake8'
+
 "Bundle 'jistr/vim-nerdtree-tabs'
 " Plugin 'jistr/vim-nerdtree-tabs'
 
@@ -85,8 +93,9 @@ set showtabline=1
 "Plugin 'vim-airline/vim-airline-themes'
 
 "let g:airline#extensions#tabline#enabled = 1
-"let g:airline#extensions#tabline#left_sep = ' '
-"let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#left_sep = ' '
+" let g:airline#extensions#tabline#left_alt_sep = '│'
+let g:airline#extensions#tabline#left_alt_sep = '⎸'
 "map <F2> :!ls<CR>:e
 
 ":verbose nnoremap <C-[> :tabprevious<CR>
@@ -115,7 +124,7 @@ inoremap <silent> <ESC>[1;5C <C-o>w
 
 " nnoremap <silent> <C-n>      :tabnew<CR>
 " nnoremap <silent> <C-o>      :CtrlPMixed<CR>
-nnoremap <silent> <C-p>      :CtrlPMixed<CR>
+nnoremap <silent> <C-o>      :CtrlPMixed<CR>
 nnoremap <silent> <C-x>      :bd<CR>
 nnoremap b  :buffers<CR>:b
 
@@ -175,7 +184,7 @@ let g:airline_skip_empty_sections = 1
 
 "set laststatus=0
 
-set timeoutlen=1000 ttimeoutlen=0
+set timeoutlen=320 ttimeoutlen=0
 
 "let g:jedi#completions_command = "<C-Space>"
 let g:jedi#completions_command = "<Tab>"
@@ -213,17 +222,20 @@ let g:ctrlp_match_window_reversed = 0
 
 " adding to vim-airline's tabline
 let g:webdevicons_enable_airline_tabline = 1
-" adding to vim-airline's statusline 
+" adding to vim-airline's statusline
 let g:webdevicons_enable_airline_statusline = 1
 
 " Cursor
 
 :hi CursorLine ctermbg=235 " cterm=underline
-" :hi CursorColumn ctermbg=235
+:hi CursorColumn ctermbg=235
 
 " Molokai theme patches
 
 hi Normal guibg=NONE ctermbg=NONE
+hi NonText ctermbg=NONE
+hi EndOfBuffer ctermfg=118
+
 
 filetype plugin on
 
@@ -246,4 +258,29 @@ let g:indentLine_concealcursor = ''
 let g:indentLine_color_term = 239
 " let g:indentLine_bgcolor_term = 202
 let g:indentLine_showFirstIndentLevel = 1
+
+" PyMode
+"
+"let g:pymode_folding = 0
+"let g:pymode_lint = 1
+"let g:pymode_python = 'python'
+
+"nnoremap <silent> <F5> :PymodeLint<CR>
+"inoremap <silent> <F5> <C-o>:PymodeLint<CR>
+
+"let g:pymode_python = 'python3'
+"let g:pymode_rope = 0
+
+" PyFlakes
+
+let g:pyflakes_use_quickfix = 0
+
+" Syntastic
+
+" let g:syntastic_check_on_open = 1
+let g:syntastic_python_checkers = ['flake8']
+let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [],'passive_filetypes': [] }
+
+nnoremap <silent> <F5> :w<CR>:SyntasticCheck<CR>
+inoremap <silent> <F5> <C-o>:w<CR><C-o>:SyntasticCheck<CR>
 

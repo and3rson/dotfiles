@@ -8,6 +8,6 @@ PASSWORD=${TODO_PASS}
 curl $API/docs/todo?password=$PASSWORD > /tmp/todo
 perl -i -p -e 's/\\n/\n/g' /tmp/todo
 # perl -i -p -e 's/\n+$/\n/g' /tmp/todo
-nano /tmp/todo
+vim /tmp/todo
 perl -i -p -e 's/\n/\\n/g' /tmp/todo
 curl -X POST $API/docs/todo?password=$PASSWORD --data-urlencode "value=`cat /tmp/todo`"
