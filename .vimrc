@@ -248,7 +248,6 @@ hi Normal guibg=NONE ctermbg=NONE
 hi NonText ctermbg=NONE
 hi EndOfBuffer ctermfg=118
 
-
 filetype plugin on
 
 " Indentation
@@ -298,4 +297,21 @@ inoremap <silent> <F5> <C-o>:w<CR><C-o>:SyntasticCheck<CR>
 
 " Fix cursor positioning on I->N mode switch
 " au InsertLeave * call cursor([getpos('.')[1], getpos('.')[2]+1])
+
+" Conceal
+
+" syn keyword Operator lambda conceal cchar=λ
+
+" Backups
+
+" set backupdir=/tmp
+" set directory=/tmp
+set noswapfile
+set nobackup
+
+" Sudo write
+:command SudoW w !sudo tee %
+
+" Clipboard fix
+set clipboard=unnamedplus
 
