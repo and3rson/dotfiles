@@ -608,6 +608,7 @@ class GPMDP(base._TextBox, NonBlockingSpawn):
             out, err = Popen([os.path.expanduser('~/.config/qtile/bin/aart.sh'), url], stdout=PIPE, stderr=PIPE).communicate()
             fname = out.strip()
             notify('GPMDP', fname or 'multimedia-audio-player', u'{}'.format(song['title']), u'by {}'.format(song['artist']))
+            print('Notified')
             return fname
 
         def on_complete(fname):

@@ -5,14 +5,23 @@
 # Automatically trim long paths in the prompt (requires Bash 4.x)
 PROMPT_DIRTRIM=2
 
+if [[ "$SH" == "zsh" ]]
+then
+    SHOPT="setopt"
+
+    $SHOPT PROMPT_SUBST
+else
+    SHOPT="shopt -s"
+
+    # Save multi-line commands as one command
+    $SHOPT cmdhist
+fi
+
 # Turn on recursive globbing (enables ** to recurse all directories)
-shopt -s globstar 2> /dev/null
+$SHOPT globstar 2> /dev/null
 
 # Append to the history file, don't overwrite it
-shopt -s histappend
-
-# Save multi-line commands as one command
-shopt -s cmdhist
+$SHOPT histappend
 
 # Record each line as it gets issued
 PROMPT_COMMAND='history -a'
@@ -33,11 +42,11 @@ export HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history:clear:tm"
 HISTTIMEFORMAT='%F %T '
 
 # Prepend cd to directory names automatically
-shopt -s autocd 2> /dev/null
+$SHOPT autocd 2> /dev/null
 
 # This allows you to bookmark your favorite places across the file system
 # Define a variable containing a path and you will be able to cd into it regardless of the directory you're in
-shopt -s cdable_vars
+$SHOPT cdable_vars
 
 # This suspend and resume feature is not needed in most modern terminals, and we can turn it off without any problems
 stty -ixon

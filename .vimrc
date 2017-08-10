@@ -226,6 +226,11 @@ let g:webdevicons_enable_ctrlp = 1
 let g:ctrlp_match_window = 'bottom,order:ttb,min:16,max:16,results:16'
 let g:ctrlp_match_window_reversed = 0
 let g:ctrlp_map = '<c-k>'
+"let g:ctrlp_custom_ignore = {
+            "\ 'dir': '\.git$|node_modules$|\.env$',
+            "\ 'file': '\.exe$|\.so$|\.pyc$|\.pyo$|__pycache__$'
+            "\ }
+let g:ctrlp_custom_ignore = '\v[\/](\.git|node_modules|\.env[236]*|\.cache|\.exe|\.so|\.pyc|\.pyo|__pycache__)'
 
 "let g:ctrlp_prompt_mappings = {
 "    \ 'AcceptSelection("e")': ['<2-LeftMouse>'],
@@ -291,9 +296,19 @@ let g:pyflakes_use_quickfix = 0
 " let g:syntastic_check_on_open = 1
 let g:syntastic_python_checkers = ['flake8']
 let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [],'passive_filetypes': [] }
+let g:syntastic_enable_signs = 1
+let g:syntastic_error_symbol = '✖︎'
+let g:syntastic_style_error_symbol = '✖︎'
+let g:syntastic_warning_symbol = '∙∙'
+let g:syntastic_style_warning_symbol = '∙∙'
+let g:syntastic_always_populate_loc_list = 1
 
 nnoremap <silent> <F5> :w<CR>:SyntasticCheck<CR>
-inoremap <silent> <F5> <C-o>:w<CR><C-o>:SyntasticCheck<CR>
+inoremap <silent> <F5> <C-o>:w<CR><C-o>:SyntasticCheck<CR>i
+nnoremap <silent> <ESC>[1;2A :lprev<CR>
+inoremap <silent> <ESC>[1;2A <C-o>:lprev<CR>i
+nnoremap <silent> <ESC>[1;2B :lnext<CR>
+inoremap <silent> <ESC>[1;2B <C-o>:lnext<CR>i
 
 " Fix cursor positioning on I->N mode switch
 " au InsertLeave * call cursor([getpos('.')[1], getpos('.')[2]+1])
@@ -314,4 +329,26 @@ set nobackup
 
 " Clipboard fix
 set clipboard=unnamedplus
+
+" Char code
+
+function! CharSegment()
+    let char = matchstr(getline('.'), '\%' . col('.') . 'c.')
+    "let g:airline_section_z .= ' ' . code
+    return printf("0x%04x (%s)", char2nr(char), char)
+endfunction
+
+function! Init()
+  "call airline#parts#define_function('cwd', 'getcwd')
+  "call airline#parts#define_minwidth('cwd', 80) "adjust as necessary, it'll check against windwidth()
+  "let g:airline_section_b = airline#section#create(['Buf #[%n] ', 'cwd'])
+  let g:airline_section_z .= '  %{CharSegment()}'
+endfunction
+
+autocmd VimEnter * call Init()
+
+" Error/warning highlights
+
+"hi SpellBad ctermbg=9
+"hi SpellCap ctermbg=11
 

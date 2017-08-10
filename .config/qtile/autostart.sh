@@ -4,9 +4,9 @@ PWD=`dirname $0`
 
 # pulseaudio --start -D
 start-pulseaudio-x11-mod
-setxkbmap -layout 'us,ru,ua' -option grp:alt_shift_toggle
-xmodmap ~/.Xmodmap
-xset r rate 175 25
+$PWD/bin/kbfix.sh
+qoverlay.py
+xbanish &
 # xss-lock -- /sh/i3lock.sh &
 nm-applet &
 blueman-applet &
@@ -29,3 +29,4 @@ compton --config ~/.compton.conf -b -f
 # colorfire, euphoria, flux, lockward, pixelcity
 
 $PWD/bin/set_bg.sh
+

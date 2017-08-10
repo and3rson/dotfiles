@@ -3,7 +3,6 @@
 import os
 import sys
 import socket
-import datetime
 import subprocess
 # from colors import color
 
@@ -24,11 +23,11 @@ class Styled(object):
         # return color(self.text, fg=self.fg, bg=self.bg)
         s = ''
         if self.fg:
-            s += '\\[\033[' + ('1;' if 'bold' in self.style else '') + '38;5;' + str(self.fg) + 'm\\]'
+            s += '\033[' + ('1;' if 'bold' in self.style else '') + '38;5;' + str(self.fg) + 'm'
         if self.bg:
-            s += '\\[\033[48;5;' + str(self.bg) + 'm\\]'
+            s += '\033[48;5;' + str(self.bg) + 'm'
         s += self.text
-        s += '\\[\033[0m\\]'
+        s += '\033[0m'
         return s
 
 
@@ -62,13 +61,11 @@ class HostnamePart(Part):
 
 class GitBranchPart(Part):
     def render(self):
-        code, branch, _ = self.call('git', 'rev-parse', '--symbolic-full-name', '--abbrev-ref', 'HEAD')
+        code, branches, _ = self.call('git', 'branch')
         if not code:
-            # branch = [branch[2:] for branch in branches.split('\n') if branch.startswith('* ')][0]
-            # code, _, _ = self.call('git', 'diff', '--quiet')
-            code, unclean, _ = self.call('git', 'status', '-s')
-            # if not code:
-            if not unclean.strip():
+            branch = [branch[2:] for branch in branches.split('\n') if branch.startswith('* ')][0]
+            code, _, _ = self.call('git', 'diff', '--quiet')
+            if not code:
                 return Styled(branch, fg=255, bg=70)
             return Styled(u'\u00B1 ' + branch, fg=255, bg=130)  # 125)
         else:
@@ -78,11 +75,6 @@ class GitBranchPart(Part):
 class CurrentDir(Part):
     def render(self):
         return Styled(os.environ['PWD'].replace(os.environ['HOME'], '~'), fg=255, bg=27, style='bold')
-
-
-class DateTimePart(Part):
-    def render(self):
-        return Styled(str(datetime.datetime.now().strftime('%H:%M:%S')), fg=255, bg=125)
 
 
 class ReturnCode(Part):
@@ -114,19 +106,18 @@ def draw(parts, lf=False):
 
 def main():
     parts = [
-        # HostnamePart(),
-        DateTimePart(),
         VirtualEnv(),
+        HostnamePart(),
         GitBranchPart(),
-        ReturnCode()
+        ReturnCode(),
+        CurrentDir()
     ]
     parts2 = [
         CurrentDir(),
     ]
     draw(parts, lf=True)
-    draw(parts2)
+    # draw(parts2)
 
 
 if __name__ == '__main__':
     main()
-

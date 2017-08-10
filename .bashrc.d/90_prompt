@@ -166,4 +166,13 @@ function tag() {
     export TAG=$1
 }
 
+function make_zprompt() {
+    ret=$? /home/anderson/.config/qtile/bin/zprompt.py
+}
+
+if [[ "$SH" == "zsh" ]]
+then
+    PS1='$(make_zprompt)'
+fi
+
 # PROMPT_COMMAND="~/.config/qtile/bin/prompt.py"

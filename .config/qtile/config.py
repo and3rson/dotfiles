@@ -247,7 +247,7 @@ GROUP_DEFS = (
         'www.flowdock.com__app_redeapp_main', 'Hexchat', 'Skype',
         'skypeforlinux', 'IRCCloud'
     ], title=['Messenger', 'Flowdock', re.compile(r'^.* - Chat$')])),
-    ('m', 'mail', ['thunderbird'], 'max', dict(wm_class=['Thunderbird'])),
+    ('m', 'mail', ['evolution'], 'max', dict(wm_class=['Thunderbird', 'Evolution'])),
     ('d', 'dev', ['tvim', 'DEFAULTVIM'], 'max', dict(wm_class=['Subl3', 'Atom'], title=['DEFAULTVIM'])),
     ('a', 'audio', ['google-play-music-desktop-player'], 'max', dict(title=['VK audio player'], wm_class=['Google Play Music Desktop Player'])),
     ('g', 'games', [], 'max', dict(wm_class=[
@@ -354,6 +354,11 @@ keys.extend([
     Key([], 'XF86AudioRaiseVolume', lazy.function(lambda *args: pacontrol.cmd_increase_volume())),
     Key([], 'XF86AudioLowerVolume', lazy.function(lambda *args: pacontrol.cmd_decrease_volume())),
     Key([], 'XF86AudioMute', lazy.function(lambda *args: pacontrol.cmd_toggle_mute())),
+])
+
+keys.extend([
+    Key([ctrl, mod], 'equal', lazy.function(lambda *args: pacontrol.cmd_increase_volume())),
+    Key([ctrl, mod], 'minus', lazy.function(lambda *args: pacontrol.cmd_decrease_volume())),
 ])
 
 # Fetch backlight file name
@@ -715,7 +720,7 @@ def autostart():
 # Look for new monitor and call xrandr.sh to reconfigure stuff once screen config changes
 @hook.subscribe.screen_change
 def restart_on_randr(qtile, ev):
-    subprocess.Popen([os.path.expanduser('~/.config/qtile/bin/xrandr.sh')])
+    # subprocess.Popen([os.path.expanduser('~/.config/qtile/bin/xrandr.sh')])
     qtile.cmd_restart()
 
 

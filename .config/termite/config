@@ -3,6 +3,7 @@ font = DejaVuSansMono Nerd Font 9
 icon_name = terminal
 
 [colors]
-background = rgba(0, 0, 0, 0.7)
+background = rgba(0, 0, 0, 0.9)
 # foreground = rgba(0, 255, 0, 1)
 # highlight=
+
