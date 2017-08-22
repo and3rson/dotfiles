@@ -9,6 +9,7 @@ filetype off
 set nowrap
 
 set rtp+=/home/anderson/.vim/bundle/Vundle.vim
+set t_Co=256
 call vundle#begin()
 
 
@@ -19,25 +20,31 @@ Plugin 'scrooloose/nerdtree' 	    	" Project and file navigation
 Plugin 'scrooloose/nerdcommenter'
 
 " Plugin 'mitsuhiko/vim-python-combined'  " Combined Python 2/3 for Vim
-" Plugin 'davidhalter/jedi-vim'
+Plugin 'davidhalter/jedi-vim'
 Plugin 'tpope/vim-fugitive'
 
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 
 Plugin 'wincent/command-t'
-Plugin 'ryanoasis/vim-devicons'
 Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'tacahiroy/ctrlp-funky'
 
 " Plugin 'michaeljsmith/vim-indent-object'
 " Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'Yggdroot/indentLine'
 
-" Plugin 'python-mode/python-mode'
+Plugin 'terryma/vim-expand-region'
+
+"Plugin 'python-mode/python-mode'
 
 " Plugin 'kevinw/pyflakes-vim'
 
 Plugin 'vim-syntastic/syntastic'
+
+Plugin 'Vimjas/vim-python-pep8-indent'
+
+Plugin 'ryanoasis/vim-devicons'
 
 " Plugin 'nvie/vim-flake8'
 
@@ -76,7 +83,7 @@ set splitright
 " g$:set ve= ve=all<CR>
 nnoremap <End> g$
 set number
-":set relativenumber
+set relativenumber
 
 set whichwrap+=<,>,h,l,[,]
 
@@ -125,11 +132,23 @@ nnoremap <silent> <ESC>[1;5C w
 inoremap <silent> <ESC>[1;5D <C-o>b
 inoremap <silent> <ESC>[1;5C <C-o>w
 
+"nnoremap <C-[> :call feedkeys( line('.')==1 ? '' : 'ddkP' )<CR>
+"nnoremap <C-]> ddp
+
+nnoremap <C-s> :w<CR>
+inoremap <C-s> <C-o>:w<CR>
+
 " nnoremap <silent> <C-n>      :tabnew<CR>
 " nnoremap <silent> <C-o>      :CtrlPMixed<CR>
 nnoremap <silent> <C-p>      :CtrlPMixed<CR>
 nnoremap <silent> <C-x>      :bd<CR>
-nnoremap b  :buffers<CR>:b
+"nnoremap b  :buffers<CR>:b
+
+nnoremap <silent> <C-l> :CtrlPFunky<CR>
+inoremap <silent> <C-l> <ESC>:CtrlPFunky<CR>
+
+let g:ctrlp_funky_syntax_highlight = 1
+let g:ctrlp_funky_matchtype = 'path'
 
 nnoremap <silent> <C-_> :call NERDComment(0, "toggle")<CR><CR>
 vnoremap <silent> <C-_> :call NERDComment(0, "toggle")<CR><CR>
@@ -151,6 +170,7 @@ map <PageDown> <C-d>
 " Airline
 """"""""""""""""""""""""""""""""
 
+"let g:airline_powerline_fonts = 1
 let g:airline_powerline_fonts = 1
 
 let g:airline_theme='kalisi'
@@ -160,18 +180,31 @@ let g:airline_theme='kalisi'
 
 let g:airline_enable_branch=1
 "let g:airline_mode_map = {
-"    \ '__': '-',
-"    \ 'n': 'N',
-"    \ 'i': 'I',
-"    \ 'R': 'R',
-"    \ 'c': 'C',
-"    \ 'v': 'V',
-"    \ 'V': 'V',
-"    \ '^V': 'V',
-"    \ 's': 'S',
-"    \ 'S': 'S',
-"    \ '^S': 'S',
-"    \ }
+    "\ '__': '-',
+    "\ 'n': 'N',
+    "\ 'i': 'I',
+    "\ 'R': 'R',
+    "\ 'c': 'C',
+    "\ 'v': 'V',
+    "\ 'V': 'V',
+    "\ '^V': 'V',
+    "\ 's': 'S',
+    "\ 'S': 'S',
+    "\ '^S': 'S',
+    "\ }
+let g:airline_mode_map = {
+    \ '__': '',
+    \ 'n': '',
+    \ 'i': '',
+    \ 'R': '',
+    \ 'c': '',
+    \ 'v': '',
+    \ 'V': '',
+    \ '^V': '',
+    \ 's': '',
+    \ 'S': '',
+    \ '^S': '',
+    \ }
 
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_buffers = 1
@@ -180,6 +213,9 @@ let g:airline#extensions#tabline#buffer_min_count = 1
 let g:airline#extensions#tabline#combined = 1
 let g:airline#extensions#tabline#tab_nr_type = 1
 let g:airline_skip_empty_sections = 1
+
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
 
 ":AirlineTheme badwolf
 ":AirlineTheme dark
@@ -190,10 +226,19 @@ let g:airline_skip_empty_sections = 1
 set timeoutlen=0 ttimeoutlen=0
 
 "let g:jedi#completions_command = "<C-Space>"
-let g:jedi#completions_command = "<Tab>"
+let g:jedi#completions_command = "<C-p>"
 let g:jedi#popup_on_dot = 0
 "let g:jedi#auto_initialization = 0
-let g:jedi#use_tabs_not_buffers = 1
+"let g:jedi#use_tabs_not_buffers = 1
+let g:jedi#smart_auto_mappings = 0
+
+let g:jedi#goto_command = "<C-M>"
+
+let g:jedi#completions_enabled = 0
+
+set noshowmode
+let g:jedi#show_call_signatures = 0
+let g:jedi#show_call_signatures_delay = 0
 
 "set wildmode=longest,list,full
 set wildmode=longest,list
@@ -209,6 +254,11 @@ imap <silent> <Esc>OF <C-o><End>
 
 " Delete words
 inoremap <C-h> <C-W>
+
+" Unindent
+
+nnoremap <S-Tab> <<
+inoremap <S-Tab> <C-d>
 
 "imap <silent> <Home> <Esc><Home>i
 
@@ -231,6 +281,16 @@ let g:ctrlp_map = '<c-k>'
             "\ 'file': '\.exe$|\.so$|\.pyc$|\.pyo$|__pycache__$'
             "\ }
 let g:ctrlp_custom_ignore = '\v[\/](\.git|node_modules|\.env[236]*|\.cache|\.exe|\.so|\.pyc|\.pyo|__pycache__)'
+
+"let g:ctrlp_buffer_func = { 'enter': 'BrightHighlightOn', 'exit':  'BrightHighlightOff', }
+
+"function BrightHighlightOn()
+  "hi CursorLine ctermbg=darkred
+"endfunction
+
+"function BrightHighlightOff()
+  "hi CursorLine ctermbg=235
+"endfunction
 
 "let g:ctrlp_prompt_mappings = {
 "    \ 'AcceptSelection("e")': ['<2-LeftMouse>'],
@@ -304,7 +364,7 @@ let g:syntastic_style_warning_symbol = '∙∙'
 let g:syntastic_always_populate_loc_list = 1
 
 nnoremap <silent> <F5> :w<CR>:SyntasticCheck<CR>
-inoremap <silent> <F5> <C-o>:w<CR><C-o>:SyntasticCheck<CR>i
+inoremap <silent> <F5> <C-o>:w<CR><C-o>:SyntasticCheck<CR>
 nnoremap <silent> <ESC>[1;2A :lprev<CR>
 inoremap <silent> <ESC>[1;2A <C-o>:lprev<CR>i
 nnoremap <silent> <ESC>[1;2B :lnext<CR>
@@ -342,7 +402,8 @@ function! Init()
   "call airline#parts#define_function('cwd', 'getcwd')
   "call airline#parts#define_minwidth('cwd', 80) "adjust as necessary, it'll check against windwidth()
   "let g:airline_section_b = airline#section#create(['Buf #[%n] ', 'cwd'])
-  let g:airline_section_z .= '  %{CharSegment()}'
+  "let g:airline_section_z .= '  %{CharSegment()}'
+  let g:airline_section_z = '%#__accent_bold#%4l%#__restore__#%#__accent_bold#/%L%#__restore__# %{CharSegment()}'
 endfunction
 
 autocmd VimEnter * call Init()
@@ -351,4 +412,53 @@ autocmd VimEnter * call Init()
 
 "hi SpellBad ctermbg=9
 "hi SpellCap ctermbg=11
+
+" Interactive bash (with .bashrc)
+":set shellcmdflag=-ic
+
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
+let g:airline#extensions#tabline#fnamemod =  ':t'
+
+" Prevent cursor from jumping left when leaving insert mode
+"inoremap <silent> <Esc> <C-O>:stopinsert<CR>
+
+" Remove trailing whitespaces
+autocmd BufWritePre * %s/\s\+$//e
+
+":set noeol
+":set nofixeol
+
+"set tabstop=4
+"set softtabstop=4
+"set shiftwidth=2
+
+" Disable jedi docstring popup
+autocmd FileType python setlocal completeopt-=preview
+
+" Allow switching to other buffer if current buffer has unsaved changes
+set hidden
+
+autocmd InsertEnter * :set norelativenumber
+autocmd InsertLeave * :set relativenumber
+
+" NERDTress File highlighting
+function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
+exec 'autocmd FileType nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
+exec 'autocmd FileType nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
+endfunction
+
+au VimEnter * call NERDTreeHighlightFile('jade', 'green', 'none', 'green', '#151515')
+au VimEnter * call NERDTreeHighlightFile('ini', 'yellow', 'none', 'yellow', '#151515')
+au VimEnter * call NERDTreeHighlightFile('md', 'blue', 'none', '#3366FF', '#151515')
+au VimEnter * call NERDTreeHighlightFile('yml', 'yellow', 'none', 'yellow', '#151515')
+au VimEnter * call NERDTreeHighlightFile('config', 'yellow', 'none', 'yellow', '#151515')
+au VimEnter * call NERDTreeHighlightFile('conf', 'yellow', 'none', 'yellow', '#151515')
+au VimEnter * call NERDTreeHighlightFile('json', 'yellow', 'none', 'yellow', '#151515')
+au VimEnter * call NERDTreeHighlightFile('html', 'yellow', 'none', 'yellow', '#151515')
+au VimEnter * call NERDTreeHighlightFile('styl', 'cyan', 'none', 'cyan', '#151515')
+au VimEnter * call NERDTreeHighlightFile('css', 'cyan', 'none', 'cyan', '#151515')
+au VimEnter * call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
+au VimEnter * call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
+au VimEnter * call NERDTreeHighlightFile('rb', 'Red', 'none', '#ffa500', '#151515')
+au VimEnter * call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
 

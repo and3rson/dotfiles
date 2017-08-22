@@ -83,6 +83,17 @@ class WidgetOpts:
     URGENT_COLOR = '#0077FF'
 
 
+def hide_show_bar(qtile):
+    bar = qtile.currentScreen.top
+    if bar.size == 0:
+        bar.size = 18
+        bar.window.unhide()
+    else:
+        bar.size = 0
+        bar.window.hide()
+    qtile.currentGroup.layoutAll()
+
+
 keys = [
     # Switch between windows in current group
     Key(
@@ -102,6 +113,9 @@ keys = [
         lazy.layout.right()
     ),
 
+    Key([lock], "a", lazy.function(hide_show_bar)),
+    Key([mod], "b", lazy.function(hide_show_bar)),
+
     # Grow/shrink MonadTall layout items
     Key(
         [mod], 'plus',
@@ -119,11 +133,13 @@ keys = [
     # Grow columns
     Key(
         [mod], "bracketleft",
-        lazy.layout.grow(),
+        lazy.function(commands.SwitchScreen(cycle=False))
+        # lazy.layout.grow(),
     ),
     Key(
         [mod], "bracketright",
-        lazy.layout.shrink(),
+        lazy.function(commands.SwitchScreen(reverse=True, cycle=False))
+        # lazy.layout.shrink(),
     ),
 
     # Move between groups
@@ -480,10 +496,10 @@ screens = [
                     foreground_alert='#F05040'
                 ),
                 sep(),
-                widgets.BluetoothInfo(
-                    font=WidgetOpts.DEFAULT_FONT,
-                    foreground='#11BBEE',
-                ),
+                # widgets.BluetoothInfo(
+                    # font=WidgetOpts.DEFAULT_FONT,
+                    # foreground='#11BBEE',
+                # ),
                 sep(),
                 widgets.ThermalSensor2(
                     font=WidgetOpts.MONOSPACE_FONT,
@@ -714,7 +730,7 @@ def respawn_term(window):
 @hook.subscribe.startup_once
 def autostart():
     subprocess.Popen([os.path.expanduser('~/.config/qtile/autostart.sh')])
-    subprocess.Popen([os.path.expanduser('~/.config/qtile/bin/xrandr.sh')])
+    # subprocess.Popen([os.path.expanduser('~/.config/qtile/bin/xrandr.sh')])
 
 
 # Look for new monitor and call xrandr.sh to reconfigure stuff once screen config changes

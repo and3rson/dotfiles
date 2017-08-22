@@ -5,7 +5,7 @@ PWD=`dirname $0`
 # pulseaudio --start -D
 start-pulseaudio-x11-mod
 $PWD/bin/kbfix.sh
-qoverlay.py
+$PWD/bin/qoverlay.py -d
 xbanish &
 # xss-lock -- /sh/i3lock.sh &
 nm-applet &

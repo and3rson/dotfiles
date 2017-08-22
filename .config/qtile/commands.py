@@ -53,14 +53,31 @@ class SwitchScreen(object):
     Switches to a group on the next monitor.
     """
 
-    def __call__(self, qtile):
+    def __init__(self, reverse=False, cycle=True):
+        self.reverse = reverse
+        self.cycle = cycle
+
+    def get_next(self, qtile, cycle=False):
         screens = qtile.cmd_screens()
         index = qtile.currentScreen.cmd_info()['index']
         if len(screens) - index > 1:
-            next_index = index + 1
-        else:
-            next_index = 0
-        qtile.cmd_to_screen(next_index)
+            return index + 1
+        elif cycle:
+            return 0
+        return index
+
+    def get_prev(self, qtile, cycle=False):
+        screens = qtile.cmd_screens()
+        index = qtile.currentScreen.cmd_info()['index']
+        if index > 0:
+            return index - 1
+        elif cycle:
+            return len(screens) - 1
+        return index
+
+    def __call__(self, qtile):
+        index = self.get_prev(qtile, self.cycle) if self.reverse else self.get_next(qtile, self.cycle)
+        qtile.cmd_to_screen(index)
 
 
 class DMenuWindowSelector(NonBlockingSpawn, DMenu, object):
