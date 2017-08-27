@@ -30,6 +30,7 @@ import socket
 from bs4 import BeautifulSoup as BS
 import bt
 from notify import notify
+import NetworkManager
 
 
 class RSS(base.ThreadedPollText):
@@ -119,6 +120,15 @@ class Ping(base._TextBox, NonBlockingSpawn):
         return (wlan_name, ping)
 
     def _do_ping(self):
+        try:
+            network_names = [
+                conn.Id
+                for conn
+                in NetworkManager.NetworkManager.ActiveConnections
+                if not conn.Ip4Config.Addresses[0][0].startswith('172.')
+            ]
+        except:
+            network_names = []
         out, err = Popen(['ping', '-c', '1', '8.8.8.8'], stdout=PIPE, stderr=PIPE).communicate()
 
         try:
@@ -128,21 +138,21 @@ class Ping(base._TextBox, NonBlockingSpawn):
         except:
             ping = None
 
-        return ping
+        return network_names, ping
 
     def on_ping_result(self, result):
         # wlan_name, ping = result
-        ping = result
+        network_names, ping = result
 
         # self.update(wlan_name, ping)
-        self.update(ping)
+        self.update(network_names, ping)
 
         self.timeout_add(2, self.do_ping)
 
     def button_press(self, x, y, button):
         pass
 
-    def update(self, ping):
+    def update(self, network_names, ping):
         # \uf1eb
         if ping is None:
             ping_str = '???'
@@ -168,7 +178,15 @@ class Ping(base._TextBox, NonBlockingSpawn):
 
         # f072
         # \u2098\u209B
-        self.text = u'\uf1eb {}'.format(ping_str)
+        if network_names:
+            network_names = ', '.join(network_names)
+        else:
+            network_names = '*Offline*'
+
+        self.text = u'\uf1eb {} {}'.format(
+            network_names,
+            ping_str
+        )
 
         if len(self.text) != len(self.last_text):
             self.bar.draw()

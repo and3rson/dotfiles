@@ -46,6 +46,10 @@ Plugin 'Vimjas/vim-python-pep8-indent'
 
 Plugin 'ryanoasis/vim-devicons'
 
+"Plugin 'ervandew/supertab'
+
+"Plugin 'Valloric/YouCompleteMe'
+
 " Plugin 'nvie/vim-flake8'
 
 "Bundle 'jistr/vim-nerdtree-tabs'
@@ -199,7 +203,7 @@ let g:airline_mode_map = {
     \ 'R': '',
     \ 'c': '',
     \ 'v': '',
-    \ 'V': '',
+    \ 'V': '',
     \ '^V': '',
     \ 's': '',
     \ 'S': '',
@@ -214,8 +218,10 @@ let g:airline#extensions#tabline#combined = 1
 let g:airline#extensions#tabline#tab_nr_type = 1
 let g:airline_skip_empty_sections = 1
 
-let g:airline_left_sep = ''
-let g:airline_right_sep = ''
+"let g:airline_left_sep = ''
+"let g:airline_right_sep = ''
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
 
 ":AirlineTheme badwolf
 ":AirlineTheme dark
@@ -306,7 +312,8 @@ let g:webdevicons_enable_airline_statusline = 1
 
 :hi CursorLine ctermbg=235 " cterm=underline
 :hi CursorColumn ctermbg=235
-
+:hi StatusLine ctermfg=233
+:hi StatusLineNC ctermfg=233 ctermbg=7
 " Molokai theme patches
 
 hi Normal guibg=NONE ctermbg=NONE

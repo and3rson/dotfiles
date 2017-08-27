@@ -10,6 +10,7 @@ xbanish &
 # xss-lock -- /sh/i3lock.sh &
 nm-applet &
 blueman-applet &
+$PWD/bin/gpmdp_bg.sh &
 # deluged -l /tmp/deluged.log &
 
 # sudo pritunl-client-gtk &
