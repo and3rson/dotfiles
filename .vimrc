@@ -125,6 +125,8 @@ nnoremap <silent> <ESC>[5;2~ :bp<CR>
 nnoremap <silent> <ESC>[6;2~ :bn<CR>
 nnoremap <silent> <ESC>[1;3D <C-w>h
 nnoremap <silent> <ESC>[1;3C <C-w>l
+nnoremap <silent> o <C-w>w
+
 
 " inoremap <silent> <ESC>[5;2~ <ESC>:bp<CR>i
 " inoremap <silent> <ESC>[6;2~ <ESC>:bn<CR>i

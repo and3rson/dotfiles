@@ -265,7 +265,7 @@ GROUP_DEFS = (
     ], title=['Messenger', 'Flowdock', re.compile(r'^.* - Chat$')])),
     ('m', 'mail', ['evolution'], 'max', dict(wm_class=['Thunderbird', 'Evolution'])),
     ('d', 'dev', ['tvim', 'DEFAULTVIM'], 'max', dict(wm_class=['Subl3', 'Atom'], title=['DEFAULTVIM'])),
-    ('a', 'audio', ['google-play-music-desktop-player'], 'max', dict(title=['VK audio player'], wm_class=['Google Play Music Desktop Player'])),
+    ('a', 'audio', ['gpmdp'], 'max', dict(title=['VK audio player'], wm_class=['Google Play Music Desktop Player'])),
     ('g', 'games', [], 'max', dict(wm_class=[
         re.compile('^Steam|csgo_linux64|Deluge$')
     ], title=[
