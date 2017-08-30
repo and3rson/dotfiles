@@ -230,6 +230,13 @@ function make_prompt() {
         echo -en " ${PWD/$HOME/\~} $RST"
     }
 
+    function fs_part() {
+        fb 255 92
+        FILES=$(find . -maxdepth 1 -type f | wc -l)
+        DIRS=$(find . -maxdepth 1 -type d | wc -l)
+        echo -en " $FILES \uF15B $DIRS \uE5FF $RST"
+    }
+
     function end_part() {
         fb 255
     }
@@ -237,6 +244,7 @@ function make_prompt() {
     date_part
     venv_part
     git_part
+    fs_part
     ret_part
     end_part
     br
