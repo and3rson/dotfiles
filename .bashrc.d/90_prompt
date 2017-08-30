@@ -146,8 +146,14 @@ function info() {
 }
 
 function make_prompt() {
-    CODE=$?
+    RETCODE=$?
+    START=$(echo -en "\uF274")
+    STAR=$(echo -en "\uF005")
+    PULSE=$(echo -en "\uE234")
     ARROW=$(echo -en "\uE0BC")
+    GIT=$(echo -en "\uE725")
+    #CODE=$(echo -en "\uF054")
+    CODE=$(echo -en "\uE285")
     LAST_BACK=""
     LAST_FORE=255
     LAST_FORE_MOD=0
@@ -181,7 +187,7 @@ function make_prompt() {
 
     function date_part() {
         fb 255 125
-        date +" %H:%M:%S $RST" | tr -d '\n'
+        date +" $START %H:%M:%S $RST" | tr -d '\n'
     }
 
     function venv_part() {
@@ -212,30 +218,39 @@ function make_prompt() {
             else
                 fb 255 130
             fi
-            echo -n " $BRANCH $RST"
+            echo -n " $GIT $BRANCH $RST"
         fi
     }
 
     function ret_part() {
-        if [[ "$CODE" != "0" ]]
+        if [[ "$RETCODE" != "0" ]]
         then
             fb 255 160
-            echo -en " $CODE $RST"
+            echo -en " $RETCODE $RST"
             echo -en "\[$txtrst\]"
         fi
     }
 
-    function pwd_part() {
-        fb 255 27 1
-        echo -en " ${PWD/$HOME/\~} $RST"
+    function dirs_part() {
+        fb 255 31
+        DIRS=$(find . -maxdepth 1 ! -path . -type d | wc -l)
+        echo -en " \uE5FF $DIRS $RST"
     }
 
-    function fs_part() {
-        fb 255 92
-        FILES=$(find . -maxdepth 1 -type f | wc -l)
-        DIRS=$(find . -maxdepth 1 -type d | wc -l)
-        echo -en " $FILES \uF15B $DIRS \uE5FF $RST"
+    function files_part() {
+        fb 255 64
+        FILES=$(find . -maxdepth 1 -type f -printf "%s\n")
+        SIZE=$(echo $FILES | tr ' ' '+' | bc)
+        SIZE=$(numfmt --to=iec-i --suffix=B --format="%.2f" $SIZE | sed -re "s/,00//g;s/([0-9])([A-Z])/\1 \2/g")
+        # | tr -d "\n"
+        echo -en " \uF15B $(echo $FILES | wc -w) ($SIZE) $RST"
     }
+
+    function pwd_part() {
+        fb 255 27 1
+        echo -en " $CODE ${PWD/$HOME/\~} $RST"
+    }
+
 
     function end_part() {
         fb 255
@@ -244,7 +259,8 @@ function make_prompt() {
     date_part
     venv_part
     git_part
-    fs_part
+    dirs_part
+    files_part
     ret_part
     end_part
     br
@@ -254,7 +270,7 @@ function make_prompt() {
 }
 
 function set_prompt() {
-    # PS1="`info`"
+    #PS1="`info`"
     PS1="`make_prompt`"
     #PS1="`ret=$? /home/anderson/.config/qtile/bin/prompt.sh`"
     #PS1="`ret=$? /home/anderson/.config/qtile/bin/prompt.py`"
