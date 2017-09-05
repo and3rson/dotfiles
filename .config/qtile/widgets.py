@@ -124,8 +124,13 @@ class Ping(base._TextBox, NonBlockingSpawn):
             network_names = [
                 conn.Id
                 for conn
-                in NetworkManager.NetworkManager.ActiveConnections
-                if not conn.Ip4Config.Addresses[0][0].startswith('172.')
+                in sorted(
+                    NetworkManager.NetworkManager.ActiveConnections,
+                    key=lambda x: x.Type
+                )
+                # if not conn.Ip4Config.Addresses[0][0].startswith('172.')
+                # and not conn.Ip4Config.Addresses[0][2].startswith('0.')
+                if conn.Type in ('vpn', '802-11-wireless')
             ]
         except:
             network_names = []

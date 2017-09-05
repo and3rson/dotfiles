@@ -1,5 +1,6 @@
 #!/bin/bash
 
+alias sudo='sudo '
 alias ls='ls --color'
 alias ll='ls -l --group-directories-first'
 alias lz='ll -Shr'
@@ -25,3 +26,6 @@ alias sc='sudo systemctl'
 alias jc='sudo journalctl'
 alias k='killall -9'
 alias up='curl -X POST http://kv.dun.ai/ips/latitude --data value=`curl canihazip.com/s`'
+#alias ccat='pygmentize -g -O style=colorful,linenos=1'
+alias cat='highlight -O ansi --force'
+

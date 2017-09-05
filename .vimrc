@@ -148,6 +148,7 @@ inoremap <C-s> <C-o>:w<CR>
 " nnoremap <silent> <C-o>      :CtrlPMixed<CR>
 nnoremap <silent> <C-p>      :CtrlPMixed<CR>
 nnoremap <silent> <C-x>      :bd<CR>
+nnoremap <silent> <C-q>      :q<CR>
 "nnoremap b  :buffers<CR>:b
 
 nnoremap <silent> <C-l> :CtrlPFunky<CR>

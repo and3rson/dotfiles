@@ -147,7 +147,7 @@ function info() {
 
 function make_prompt() {
     RETCODE=$?
-    START=$(echo -en "\uF274")
+    START=$(echo -en "\uF2D0")
     STAR=$(echo -en "\uF005")
     PULSE=$(echo -en "\uE234")
     ARROW=$(echo -en "\uE0BC")
@@ -208,17 +208,26 @@ function make_prompt() {
     }
 
     function git_part() {
-        BRANCH=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>&1)
+        BRANCH="$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>&1) @ $(git rev-parse --short HEAD 2>&1)"
         if [[ "$?" -eq "0" ]]
         then
             OUT=$(git status -s 2>&1)
+            OIFS=$IFS
+            #IFS=$'\n'
+            #for line in $(git st -s | sed -re 's/^\s+|\s+$//g')
+            #do
+                #echo "A${line}B"
+            #done
+            #IFS=$OIFS
             if [ "$OUT" == "" ]
             then
-                fb 255 70
+                fb 255 34  # 28
+                C=''
             else
                 fb 255 130
+                C='!'
             fi
-            echo -n " $GIT $BRANCH $RST"
+            echo -n " $GIT $BRANCH$C $RST"
         fi
     }
 
@@ -238,12 +247,18 @@ function make_prompt() {
     }
 
     function files_part() {
-        fb 255 64
+        fb 255 28  # 64
         FILES=$(find . -maxdepth 1 -type f -printf "%s\n")
         SIZE=$(echo $FILES | tr ' ' '+' | bc)
+        SIZE=${SIZE:-0}
         SIZE=$(numfmt --to=iec-i --suffix=B --format="%.2f" $SIZE | sed -re "s/,00//g;s/([0-9])([A-Z])/\1 \2/g")
         # | tr -d "\n"
         echo -en " \uF15B $(echo $FILES | wc -w) ($SIZE) $RST"
+    }
+
+    function free_part() {
+        fb 255 71
+        echo -n " $(df -h / --output=avail | tail -n 1 | tr -d "\n ")iB free "
     }
 
     function pwd_part() {
@@ -261,6 +276,7 @@ function make_prompt() {
     git_part
     dirs_part
     files_part
+    free_part
     ret_part
     end_part
     br

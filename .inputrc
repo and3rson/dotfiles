@@ -18,6 +18,12 @@ set mark-symlinked-directories on
 "\e[1;5C": forward-word
 "\e[1;5D": backward-word
 
+# sudo
+"\es": "\C-p\C-asudo \C-e"
+
+# comment
+# "\ed": insert-comment
+
 # Do not autocomplete hidden files unless the pattern explicitly begins with a dot
 set match-hidden-files off
 
@@ -55,9 +61,9 @@ set blink-matching-paren on
 
 # set mark-modified-lines on
 
-# set menu-complete-display-prefix on
-# set print-completions-horizontally on
-# set show-mode-in-prompt on
+#set menu-complete-display-prefix on
+#set print-completions-horizontally on
+#set show-mode-in-prompt on
 
 #Use [Tab] and [Shift]+[Tab] to cycle through all the possible completions:
 # "\t": menu-complete

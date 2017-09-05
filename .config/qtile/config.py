@@ -234,7 +234,7 @@ keys = [
 
     Key([mod], 'q', lazy.group['t'].toscreen()),
 
-    Key([lock], 'n', lazy.spawn('networkmanager_dmenu')),
+    Key([mod], 'apostrophe', lazy.spawn('networkmanager_dmenu')),
 
     # Key([lock], 'p', lazy.spawn('xdotool key Up')),
     # Key([lock], 'semicolon', lazy.spawn('xdotool key Down')),
