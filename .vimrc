@@ -200,10 +200,11 @@ let g:airline_enable_branch=1
     "\ 'S': 'S',
     "\ '^S': 'S',
     "\ }
+    "\ 'i': '',
 let g:airline_mode_map = {
     \ '__': '',
     \ 'n': '',
-    \ 'i': '',
+    \ 'i': '',
     \ 'R': '',
     \ 'c': '',
     \ 'v': '',
@@ -419,30 +420,30 @@ function! Breadcrumbs()
     "let lines = getline(0, getpos('.'))
     "return 'asd'
     "echo getline('.')
+    let line_count = line('$')
     let lineno = getpos('.')[1]
     let lineno_initial = lineno
-    let min_indent = match(getline(lineno), '\S')
+    let min_indent = -1
+    while lineno <= line_count
+        let min_indent = match(getline(lineno), '\S')
+        if min_indent != -1
+            break
+        endif
+        let lineno += 1
+    endwhile
+    "let lineno_initial = lineno
     let s = ''
     let path = []
     while lineno > 0
         let line = getline(lineno)
         let indent = match(line, '\S')
-        if (indent < min_indent && indent != -1) || lineno == lineno_initial
+        if (indent < min_indent || lineno == lineno_initial) && indent != -1
             let min_indent = indent
-            let match = matchlist(line, '\(def\|class\) \([a-zA-Z_]*\)[:(]')
+            let match = matchlist(line, '\(def\|class\) \([a-zA-Z_]*\)\(\(:\|([^:]*)\):\)')
             if len(match) != 0
-                "if s != ''
-                    "let s = ' %#Keyword# ' . s
-                "endif
-                "let s = match[2] . s
-                call add(path, match[1:2])
-                " class -> Keyword
-                " def -> Function
+                call add(path, [match[1], match[2], match[4]])
             endif
-            "let s = s . indent . ','
         endif
-
-        "return 'Line ' . lineno . ': [' . spaces . '], min indent: ' . min_indent
         let lineno = lineno - 1
     endwhile
     call reverse(path)
@@ -457,11 +458,13 @@ function! Breadcrumbs()
         endif
         if part[0] ==  'def'
             echohl Function
-            let part[1] .= '()'
+            "let part[1] .= '()'
         elseif part[0] == 'class'
             echohl Keyword
         endif
         echon part[1]
+        echohl Normal
+        echon part[2]
     endfor
     "echo 'x'
 
@@ -484,7 +487,8 @@ function! SectionsInit()
   "let g:airline_section_y = 'Y'
   "let g:airline_section_z = 'Z'
   "let g:airline_section_b = g:airline_section_c
-  "let g:airline_section_c = '%{Breadcrumbs()}'
+  "let g:airline_section_c = ' '
+  let g:airline_section_b = ''
   "let g:airline_section_x = '%{Breadcrumbs()}'
   let g:airline_section_x = ''
   let g:airline_section_y = '%#__accent_bold#%4l%#__restore__#%#__accent_bold#/%L%#__restore__# %{CharSegment()}'
