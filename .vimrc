@@ -45,6 +45,7 @@ Plugin 'vim-syntastic/syntastic'
 Plugin 'Vimjas/vim-python-pep8-indent'
 
 Plugin 'ryanoasis/vim-devicons'
+"Plugin 'airblade/vim-gitgutter'
 
 "Plugin 'ervandew/supertab'
 
@@ -404,19 +405,100 @@ set clipboard=unnamedplus
 
 function! CharSegment()
     let char = matchstr(getline('.'), '\%' . col('.') . 'c.')
+    let code = char2nr(char)
+
+    if code == 0
+        let char = ' '
+    endif
+
     "let g:airline_section_z .= ' ' . code
-    return printf("0x%04x (%s)", char2nr(char), char)
+    return printf("0x%04x (%s)", code, char)
 endfunction
 
-function! Init()
+function! Breadcrumbs()
+    "let lines = getline(0, getpos('.'))
+    "return 'asd'
+    "echo getline('.')
+    let lineno = getpos('.')[1]
+    let lineno_initial = lineno
+    let min_indent = match(getline(lineno), '\S')
+    let s = ''
+    let path = []
+    while lineno > 0
+        let line = getline(lineno)
+        let indent = match(line, '\S')
+        if (indent < min_indent && indent != -1) || lineno == lineno_initial
+            let min_indent = indent
+            let match = matchlist(line, '\(def\|class\) \([a-zA-Z_]*\)[:(]')
+            if len(match) != 0
+                "if s != ''
+                    "let s = ' %#Keyword# ' . s
+                "endif
+                "let s = match[2] . s
+                call add(path, match[1:2])
+                " class -> Keyword
+                " def -> Function
+            endif
+            "let s = s . indent . ','
+        endif
+
+        "return 'Line ' . lineno . ': [' . spaces . '], min indent: ' . min_indent
+        let lineno = lineno - 1
+    endwhile
+    call reverse(path)
+    echo ''
+    let is_first = 1
+    for part in path
+        if is_first == 1
+            let is_first = 0
+        else
+            echohl Number
+            echon '  '
+        endif
+        if part[0] ==  'def'
+            echohl Function
+            let part[1] .= '()'
+        elseif part[0] == 'class'
+            echohl Keyword
+        endif
+        echon part[1]
+    endfor
+    "echo 'x'
+
+    "return '%#Keyword#asd'
+    "return s
+endfunction
+
+autocmd CursorMoved * call Breadcrumbs()
+autocmd CursorMovedI * call Breadcrumbs()
+
+function! SectionsInit()
   "call airline#parts#define_function('cwd', 'getcwd')
   "call airline#parts#define_minwidth('cwd', 80) "adjust as necessary, it'll check against windwidth()
   "let g:airline_section_b = airline#section#create(['Buf #[%n] ', 'cwd'])
   "let g:airline_section_z .= '  %{CharSegment()}'
-  let g:airline_section_z = '%#__accent_bold#%4l%#__restore__#%#__accent_bold#/%L%#__restore__# %{CharSegment()}'
+  "let g:airline_section_a = 'A'
+  "let g:airline_section_b = 'B'
+  "let g:airline_section_c = 'C'
+  "let g:airline_section_x = 'X'
+  "let g:airline_section_y = 'Y'
+  "let g:airline_section_z = 'Z'
+  "let g:airline_section_b = g:airline_section_c
+  "let g:airline_section_c = '%{Breadcrumbs()}'
+  "let g:airline_section_x = '%{Breadcrumbs()}'
+  let g:airline_section_x = ''
+  let g:airline_section_y = '%#__accent_bold#%4l%#__restore__#%#__accent_bold#/%L%#__restore__# %{CharSegment()}'
+  let g:airline_section_z = ''
 endfunction
 
-autocmd VimEnter * call Init()
+"autocmd VimEnter * call SectionsInit()
+"augroup airline_init
+    "autocmd!
+    autocmd User AirlineAfterInit call SectionsInit()
+"augroup END
+
+" Make section Y customizable again!
+let g:webdevicons_enable_airline_statusline_fileformat_symbols = 0
 
 " Error/warning highlights
 
@@ -448,8 +530,28 @@ autocmd FileType python setlocal completeopt-=preview
 " Allow switching to other buffer if current buffer has unsaved changes
 set hidden
 
-autocmd InsertEnter * :set norelativenumber
-autocmd InsertLeave * :set relativenumber
+function! InsertEnterHook()
+    :set norelativenumber
+endfunction
+
+function! InsertLeaveHook()
+    :set relativenumber
+endfunction
+
+autocmd InsertEnter * call InsertEnterHook()
+autocmd InsertLeave * call InsertLeaveHook()
+
+"let &t_EI .= "\<Esc>[2 q\<Esc>]12;green\x7"
+"let &t_SI .= "\<Esc>[2 q\<Esc>]12;red\x7"
+"let &t_EI .= "\<Esc>[6 q"
+"let &t_SI .= "\<Esc>[2 q"
+
+let CursorColumnI = 0 "the cursor column position in INSERT
+autocmd InsertEnter * let CursorColumnI = col('.')
+autocmd CursorMovedI * let CursorColumnI = col('.')
+autocmd InsertLeave * if col('.') != CursorColumnI | call cursor(0, col('.')+1) | endif
+
+autocmd VimLeave * silent !echo -ne "\033]112\007"
 
 " NERDTress File highlighting
 function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)

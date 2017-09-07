@@ -72,7 +72,10 @@ class MainWindow(QtGui.QMainWindow):
         self.hide()
 
     def update(self):
-        screen = self.client.screen.info()['index']
+        try:
+            screen = self.client.screen.info()['index']
+        except:
+            return
         if screen == self.last_screen:
             return
         print('Screen changed')
