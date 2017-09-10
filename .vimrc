@@ -8,15 +8,14 @@ filetype off
 
 set nowrap
 
-set rtp+=/home/anderson/.vim/bundle/Vundle.vim
+set rtp+=~/.vim/bundle/Vundle.vim
 set t_Co=256
 call vundle#begin()
-
 
 Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'scrooloose/nerdtree' 	    	" Project and file navigation
-" Plugin 'majutsushi/tagbar'          	" Class/module browser
+Plugin 'majutsushi/tagbar'          	" Class/module browser
 Plugin 'scrooloose/nerdcommenter'
 
 " Plugin 'mitsuhiko/vim-python-combined'  " Combined Python 2/3 for Vim
@@ -44,7 +43,10 @@ Plugin 'vim-syntastic/syntastic'
 
 Plugin 'Vimjas/vim-python-pep8-indent'
 
-Plugin 'ryanoasis/vim-devicons'
+"Plugin 'ryanoasis/vim-devicons'
+
+Plugin 'and3rson/piecrumbs'
+
 "Plugin 'airblade/vim-gitgutter'
 
 "Plugin 'ervandew/supertab'
@@ -179,12 +181,12 @@ map <PageDown> <C-d>
 """"""""""""""""""""""""""""""""
 
 "let g:airline_powerline_fonts = 1
-let g:airline_powerline_fonts = 1
+let g:airline_powerline_fonts = 0
 
 let g:airline_theme='kalisi'
-" let g:airline_theme='term'
-" let g:airline_theme='molokai'
-" let g:airline_solarized_bg='dark'
+"let g:airline_theme='term'
+"let g:airline_theme='molokai'
+"let g:airline_solarized_bg='dark'
 
 let g:airline_enable_branch=1
 "let g:airline_mode_map = {
@@ -205,7 +207,7 @@ let g:airline_mode_map = {
     \ '__': '',
     \ 'n': '',
     \ 'i': '',
-    \ 'R': '',
+    \ 'R': '',
     \ 'c': '',
     \ 'v': '',
     \ 'V': '',
@@ -319,6 +321,7 @@ let g:webdevicons_enable_airline_statusline = 1
 :hi CursorColumn ctermbg=235
 :hi StatusLine ctermfg=233
 :hi StatusLineNC ctermfg=233 ctermbg=7
+:hi MatchParen ctermfg=magenta ctermbg=none
 " Molokai theme patches
 
 hi Normal guibg=NONE ctermbg=NONE
@@ -415,65 +418,6 @@ function! CharSegment()
     "let g:airline_section_z .= ' ' . code
     return printf("0x%04x (%s)", code, char)
 endfunction
-
-function! Breadcrumbs()
-    "let lines = getline(0, getpos('.'))
-    "return 'asd'
-    "echo getline('.')
-    let line_count = line('$')
-    let lineno = getpos('.')[1]
-    let lineno_initial = lineno
-    let min_indent = -1
-    while lineno <= line_count
-        let min_indent = match(getline(lineno), '\S')
-        if min_indent != -1
-            break
-        endif
-        let lineno += 1
-    endwhile
-    "let lineno_initial = lineno
-    let s = ''
-    let path = []
-    while lineno > 0
-        let line = getline(lineno)
-        let indent = match(line, '\S')
-        if (indent < min_indent || lineno == lineno_initial) && indent != -1
-            let min_indent = indent
-            let match = matchlist(line, '\(def\|class\) \([a-zA-Z_]*\)\(\(:\|([^:]*)\):\)')
-            if len(match) != 0
-                call add(path, [match[1], match[2], match[4]])
-            endif
-        endif
-        let lineno = lineno - 1
-    endwhile
-    call reverse(path)
-    echo ''
-    let is_first = 1
-    for part in path
-        if is_first == 1
-            let is_first = 0
-        else
-            echohl Number
-            echon '  '
-        endif
-        if part[0] ==  'def'
-            echohl Function
-            "let part[1] .= '()'
-        elseif part[0] == 'class'
-            echohl Keyword
-        endif
-        echon part[1]
-        echohl Normal
-        echon part[2]
-    endfor
-    "echo 'x'
-
-    "return '%#Keyword#asd'
-    "return s
-endfunction
-
-autocmd CursorMoved * call Breadcrumbs()
-autocmd CursorMovedI * call Breadcrumbs()
 
 function! SectionsInit()
   "call airline#parts#define_function('cwd', 'getcwd')
@@ -577,4 +521,15 @@ au VimEnter * call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#15151
 au VimEnter * call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
 au VimEnter * call NERDTreeHighlightFile('rb', 'Red', 'none', '#ffa500', '#151515')
 au VimEnter * call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
+
+" piecrumbs
+
+let g:piecrumbs_glue = '  '
+
+" Tagbar
+
+nnoremap <F8> :TagbarToggle<CR>
+nnoremap <Tab> <C-W>w
+
+"set omnifunc=syntaxcomplete#Complete
 

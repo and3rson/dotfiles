@@ -185,6 +185,14 @@ function make_prompt() {
 
     RST="\[\e[0m\]"
 
+    function ssh_part() {
+        if ! [[ -z "$SSH_CONNECTION" ]]
+        then
+            fb 0 255
+            echo -n " $(hostname) "
+        fi
+    }
+
     function date_part() {
         fb 255 125
         date +" $START %H:%M:%S $RST" | tr -d '\n'
@@ -271,6 +279,7 @@ function make_prompt() {
         fb 255
     }
 
+    ssh_part
     date_part
     venv_part
     git_part

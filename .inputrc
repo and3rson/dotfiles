@@ -68,3 +68,7 @@ set blink-matching-paren on
 #Use [Tab] and [Shift]+[Tab] to cycle through all the possible completions:
 # "\t": menu-complete
 # "\e[Z": menu-complete-backward
+
+#set editing-mode vi
+#set keymap vi-command
+

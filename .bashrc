@@ -8,3 +8,5 @@ do
     . $script
 done
 
+#set -o vi
+
