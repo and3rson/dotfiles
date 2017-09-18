@@ -1,10 +1,12 @@
 #!/bin/bash
 
-ARROW=`echo -e "\ue0b0 "`
+#ARROW=`echo -e "\ue0b0 "`
+ARROW=`echo -e "\ue0bc"`
+HOUSE=`echo -e "\u2302"`
 case $(tty) in /dev/tty[0-9]*)
-    ARROW='' ;;
+    ARROW=''; HOUSE='' ;;
 esac
-# ARROW=''
+
 
 
 # function is_chroot()
@@ -12,145 +14,13 @@ esac
 #     [ "$(awk '$5=="/" {print $1}' </proc/1/mountinfo)" != "$(awk '$5=="/" {print $1}' </proc/$$/mountinfo)" ] && return 0 || return 1
 # }
 
-HOSTNAME_BG_COLOR=$bakgrn
-HOSTNAME_FG_COLOR=$txtgrn
-
-function retype_command() {
-    which tmux > /dev/null
-    if [[ "$TMUX_PANE" != "0" ]]
-    then
-        tmux send-keys -t $TMUX_PANE "$1"
-    fi
-}
-
-function info() {
-    CODE=$?
-    CMD=`fc -ln -0 | sed -re 's/^\s+//g' -e 's/\s+$//g'`
-    FIRST=1
-
-    function print_shell_simple() {
-        echo "[${USER}@${HOSTNAME} ${PWD/$HOME/\/\~}]$ "
-    }
-
-    function print_tag() {
-        if [[ ! -z "$TAG" ]]
-        then
-            echo -en "\[$bld\]\[$bldwht\]\[$bakpur\] "
-            echo -n $TAG
-            echo -en " \[$txtrst\]\[$txtpur\]"
-            printf -v "FIRST" 0
-        else
-            echo -en "\[$txtgrn\]"
-        fi
-    }
-
-    function print_virtualenv() {
-        if [[ ! -z "$VIRTUAL_ENV" ]]
-        then
-            echo -en "\[$bld\]\[$bldwht\]\[$bak22\] "
-            echo -n $VIRTUAL_ENV | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
-            echo -en " \[$txtrst\]\[$txt22\]"
-            printf -v "FIRST" 0
-        elif [[ -f ".env/bin/activate" ]]
-        then
-            VIRTUAL_ENV=$( . .env/bin/activate; echo $VIRTUAL_ENV )
-            echo -en "\[$bld\]\[$bldwht\]\[$bakred\] ! "
-            echo -n $VIRTUAL_ENV | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
-            echo -en " \[$txtrst\]\[$txtred\]"
-            printf -v "FIRST" 0
-        else
-            echo -en "\[$txtgrn\]"
-        fi
-    }
-
-    function print_hostname() {
-        echo -en "\[$bldwht\]"
-        if [[ "$UID" -eq "0" ]]
-        then
-            echo -en "\[$bakred\] \uF071 ${HOSTNAME} "
-        else
-            echo -en "\[$HOSTNAME_BG_COLOR\] ${HOSTNAME} "
-        fi
-        # echo -en "\[$txtrst\]"
-    }
-
-    function print_pwd() {
-        echo -en "\[$bldwht\]"
-        echo -en "${PWD/$HOME/\~}"
-        # echo -en "\[$txtrst\]"
-    }
-
-    function git_info() {
-        NAME=`git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
-
-        if [[ "$NAME" != "" ]]
-        then
-            echo -en "\[$txtrst\]\[$HOSTNAME_BG_COLOR\]\[$bldwht\][\[$txtrst\]\[$txtwht\]\[$HOSTNAME_BG_COLOR\]"
-            $(git diff --quiet)
-
-            if [[ "$?" != "0" ]]
-            then
-                echo -en "\[$undwht\]$NAME"
-            else
-                echo -en "$NAME"
-            fi
-            echo -en "\[$txtrst\]\[$HOSTNAME_BG_COLOR\]\[$bldwht]\]"
-        fi
-    }
-
-    function ret_info() {
-        PWD=`print_pwd`
-        if [[ "$CODE" != "0" ]]
-        then
-            if [[ "$CODE" != "130" ]]
-            then
-                echo -en "\[$bakred\] $CODE $PWD \[$txtrst$txtred\]$ARROW"
-            else
-                echo -en "\[$bakred\] $PWD \[$txtrst$txtred\]$ARROW"
-            fi
-        else
-            echo -en "\[$HOSTNAME_BG_COLOR$bldwht\] $PWD \[$txtrst\]\[$HOSTNAME_FG_COLOR\]$ARROW"
-        fi
-        echo -en "\[$txtrst\]"
-    }
-
-    if [[ "$MC_SID" != "" ]]
-    then
-        print_shell_simple
-    else
-        print_tag
-        print_virtualenv
-        print_hostname
-        git_info
-        # print_pwd
-        ret_info
-        # retry
-
-        # echo -en " "
-
-        # if [[ "$TTY" == "0" ]]
-        # then
-        #     echo -en "\[\e[49m\]$ARROW\[$txtrst\] "
-        # else
-        #     echo -en
-        # fi
-
-        # if [[ "$CODE" != "0" && "$CODE" != "130" ]]
-        # then
-        #     retype_command "$CMD"
-        # fi
-    fi
-
-    # PLAIN="[$PWD]"
-    # echo -ne "\[\033]0;$PLAIN\007\]"
-}
 
 function make_prompt() {
     RETCODE=$?
     START=$(echo -en "\uF2D0")
     STAR=$(echo -en "\uF005")
     PULSE=$(echo -en "\uE234")
-    ARROW=$(echo -en "\uE0BC")
+    #ARROW=$(echo -en "\uE0BC")
     GIT=$(echo -en "\uE725")
     #CODE=$(echo -en "\uF054")
     CODE=$(echo -en "\uE285")
@@ -216,7 +86,8 @@ function make_prompt() {
     }
 
     function git_part() {
-        BRANCH="$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>&1) @ $(git rev-parse --short HEAD 2>&1)"
+        #BRANCH="$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>&1) @ $(git rev-parse --short HEAD 2>&1)"
+        BRANCH="$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>&1)"
         if [[ "$?" -eq "0" ]]
         then
             OUT=$(git status -s 2>&1)
@@ -265,13 +136,13 @@ function make_prompt() {
     }
 
     function free_part() {
-        fb 255 71
+        fb 0 71
         echo -n " $(df -h / --output=avail | tail -n 1 | tr -d "\n ")iB free "
     }
 
     function pwd_part() {
         fb 255 27 1
-        echo -en " $CODE ${PWD/$HOME/\~} $RST"
+        echo -en " $CODE ${PWD/$HOME/\$HOUSE} $RST"
     }
 
 
@@ -283,9 +154,9 @@ function make_prompt() {
     date_part
     venv_part
     git_part
-    dirs_part
-    files_part
-    free_part
+    #dirs_part
+    #files_part
+    #free_part
     ret_part
     end_part
     br

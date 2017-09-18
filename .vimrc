@@ -332,12 +332,19 @@ filetype plugin on
 
 " Indentation
 set tabstop=4 softtabstop=4 shiftwidth=4
-set list listchars=tab:❘-,trail:·,extends:»,precedes:«,nbsp:×
+"set list listchars=tab:❘-,trail:·,extends:»,precedes:«,nbsp:×
+set list listchars=tab: ,trail:·,extends:»,precedes:«,nbsp:×
+" 
 
 " let g:indent_guides_enable_on_vim_startup=1
-let g:indentLine_char = '▏'
-" let g:indentLine_char = '┊'
+"let g:indentLine_char = '▏'
+let g:indentLine_char = '⎣'
+"let g:indentLine_char = '⎨'
+"let g:indentLine_char = '⎬'
+"let g:indentLine_char = '├'
+"let g:indentLine_char = '┊'
 let g:indentLine_first_char = '▏'
+"let g:indentLine_first_char = '>'
 " let g:indentLine_first_char = 'x'
 " let g:indentLine_char = 'x'
 " let g:indentLine_leadingSpaceChar = '·'
@@ -349,6 +356,8 @@ let g:indentLine_concealcursor = ''
 let g:indentLine_color_term = 239
 " let g:indentLine_bgcolor_term = 202
 let g:indentLine_showFirstIndentLevel = 1
+let g:indentLine_fileTypeExclude = ['text']
+let g:indentLine_faster = 1 " TODO: Experimental
 
 " PyMode
 "
@@ -380,10 +389,10 @@ let g:syntastic_always_populate_loc_list = 1
 
 nnoremap <silent> <F5> :w<CR>:SyntasticCheck<CR>
 inoremap <silent> <F5> <C-o>:w<CR><C-o>:SyntasticCheck<CR>
-nnoremap <silent> <ESC>[1;2A :lprev<CR>
-inoremap <silent> <ESC>[1;2A <C-o>:lprev<CR>i
-nnoremap <silent> <ESC>[1;2B :lnext<CR>
-inoremap <silent> <ESC>[1;2B <C-o>:lnext<CR>i
+nnoremap <silent> ; :lprev<CR>
+"inoremap <silent> ; <C-o>:lprev<CR>i
+nnoremap <silent> ' :lnext<CR>
+"inoremap <silent> <ESC>[] <C-o>:lnext<CR>i
 
 " Fix cursor positioning on I->N mode switch
 " au InsertLeave * call cursor([getpos('.')[1], getpos('.')[2]+1])
@@ -435,7 +444,7 @@ function! SectionsInit()
   let g:airline_section_b = ''
   "let g:airline_section_x = '%{Breadcrumbs()}'
   let g:airline_section_x = ''
-  let g:airline_section_y = '%#__accent_bold#%4l%#__restore__#%#__accent_bold#/%L%#__restore__# %{CharSegment()}'
+  let g:airline_section_y = '%#__accent_bold#%4l%#__restore__#%#__accent_bold#/%L%#__restore__#:%-4c %{CharSegment()}'
   let g:airline_section_z = ''
 endfunction
 
