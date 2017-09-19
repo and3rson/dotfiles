@@ -46,6 +46,7 @@ Plugin 'Vimjas/vim-python-pep8-indent'
 "Plugin 'ryanoasis/vim-devicons'
 
 Plugin 'and3rson/piecrumbs'
+Plugin 'tomtom/tcomment_vim'
 
 "Plugin 'airblade/vim-gitgutter'
 
@@ -160,8 +161,21 @@ inoremap <silent> <C-l> <ESC>:CtrlPFunky<CR>
 let g:ctrlp_funky_syntax_highlight = 1
 let g:ctrlp_funky_matchtype = 'path'
 
+function ToggleOrSexy() range
+    echo matchstr(getline(a:firstline), '^[ ]*#')
+    if len(matchstr(getline(a:firstline), '^[ ]*#'))
+        "echo 'toggle'
+        ":call NERDComment(a:firstline, a:lastline)
+        exe a:firstline . ',' . a:lastline . 'call NERDComment(0, "toggle")'
+    else
+        "echo 'sexy'
+        exe a:firstline . ',' . a:lastline . 'call NERDComment(0, "alignleft")'
+    endif
+endfunction
+
 nnoremap <silent> <C-_> :call NERDComment(0, "toggle")<CR><CR>
-vnoremap <silent> <C-_> :call NERDComment(0, "toggle")<CR><CR>
+"vnoremap <silent> <C-_> :call NERDComment(0, "alignleft")<CR><CR>
+vnoremap <silent> <C-_> :call ToggleOrSexy()<CR>
 inoremap <silent> <C-_> <C-o>:call NERDComment(0, "toggle")<CR><C-o><CR>
 
 " Go to previous split
@@ -180,15 +194,15 @@ map <PageDown> <C-d>
 " Airline
 """"""""""""""""""""""""""""""""
 
-"let g:airline_powerline_fonts = 1
-let g:airline_powerline_fonts = 0
+let g:airline_powerline_fonts = 1
+"let g:airline_powerline_fonts = 0
 
 let g:airline_theme='kalisi'
 "let g:airline_theme='term'
 "let g:airline_theme='molokai'
 "let g:airline_solarized_bg='dark'
 
-let g:airline_enable_branch=1
+let g:airline_enable_branch=0
 "let g:airline_mode_map = {
     "\ '__': '-',
     "\ 'n': 'N',
@@ -222,7 +236,7 @@ let g:airline#extensions#tabline#show_buffers = 1
 let g:airline#extensions#tabline#show_tabs = 0
 let g:airline#extensions#tabline#buffer_min_count = 1
 let g:airline#extensions#tabline#combined = 1
-let g:airline#extensions#tabline#tab_nr_type = 1
+let g:airline#extensions#tabline#tab_nr_type = 2
 let g:airline_skip_empty_sections = 1
 
 "let g:airline_left_sep = ''
