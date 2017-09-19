@@ -15,11 +15,11 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'scrooloose/nerdtree' 	    	" Project and file navigation
-Plugin 'majutsushi/tagbar'          	" Class/module browser
+"Plugin 'majutsushi/tagbar'          	" Class/module browser
 Plugin 'scrooloose/nerdcommenter'
 
 " Plugin 'mitsuhiko/vim-python-combined'  " Combined Python 2/3 for Vim
-Plugin 'davidhalter/jedi-vim'
+"Plugin 'davidhalter/jedi-vim'
 Plugin 'tpope/vim-fugitive'
 
 Plugin 'vim-airline/vim-airline'
@@ -33,7 +33,7 @@ Plugin 'tacahiroy/ctrlp-funky'
 " Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'Yggdroot/indentLine'
 
-Plugin 'terryma/vim-expand-region'
+"Plugin 'terryma/vim-expand-region'
 
 "Plugin 'python-mode/python-mode'
 
@@ -45,12 +45,12 @@ Plugin 'Vimjas/vim-python-pep8-indent'
 
 "Plugin 'ryanoasis/vim-devicons'
 
-Plugin 'and3rson/piecrumbs'
-Plugin 'tomtom/tcomment_vim'
+"Plugin 'and3rson/piecrumbs'
+"Plugin 'tomtom/tcomment_vim'
 
 "Plugin 'airblade/vim-gitgutter'
 
-"Plugin 'ervandew/supertab'
+Plugin 'ervandew/supertab'
 
 "Plugin 'Valloric/YouCompleteMe'
 
@@ -264,8 +264,9 @@ let g:jedi#goto_command = "<C-M>"
 let g:jedi#completions_enabled = 0
 
 set noshowmode
-let g:jedi#show_call_signatures = 0
+let g:jedi#show_call_signatures = 2
 let g:jedi#show_call_signatures_delay = 0
+"call jedi#configure_call_signatures()
 
 "set wildmode=longest,list,full
 set wildmode=longest,list
@@ -555,4 +556,54 @@ nnoremap <F8> :TagbarToggle<CR>
 nnoremap <Tab> <C-W>w
 
 "set omnifunc=syntaxcomplete#Complete
+
+function! Compl(findstart, base)
+    if a:findstart
+        let line = getline('.')
+        let start = col('.') - 1
+        while start > 0 && (len(matchstr(line[start - 1], '[a-zA-Z_]')) != 0)
+            let start -= 1
+        endwhile
+        return start
+    else
+        let expr = ''
+        for c in split(a:base, '\zs')
+            if len(expr) == 0
+                let expr .= c
+            else
+                let expr .= '[a-zA-Z0-9_]*' . c
+            endif
+        endfor
+        let current_line = 0
+        let line_count = line('$')
+        echo current_line
+        echo line_count
+        let matches = []
+        while current_line < line_count
+            call substitute(getline(current_line), '[a-zA-Z_][a-zA-Z0-9_]*', '\=add(matches, submatch(0))', 'g')
+            "let m = matchstr(getline(current_line), '[a-zA-Z_][0-9]\*')
+            "echo matches
+            let current_line += 1
+        endwhile
+        let results = []
+        for m in matches
+            "echo m
+            "echo expr
+            "echo x
+            if len(matchstr(m, expr))
+                "echo 'MATCHED ' . m
+                "echo x
+                call add(results, m)
+            endif
+        endfor
+        return results
+        "return [a:base . 'aa', a:base . 'ab', a:base . 'ac']
+    endif
+endfunction
+
+" SuperTab
+let g:SuperTabDefaultCompletionType = "<C-X><C-U>"
+inoremap <C-p> <C-X><C-U>
+"set omnifunc=syntaxcomplete#Complete
+set completefunc=Compl
 
