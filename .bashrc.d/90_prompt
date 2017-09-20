@@ -101,7 +101,7 @@ function make_prompt() {
             #IFS=$OIFS
             if [ "$OUT" == "" ]
             then
-                fb 255 34  # 28
+                fb 255 28  # 28
                 C=''
             else
                 fb 255 130
