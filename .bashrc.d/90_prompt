@@ -24,6 +24,7 @@ function make_prompt() {
     GIT=$(echo -en "\uE725")
     #CODE=$(echo -en "\uF054")
     CODE=$(echo -en "\uE285")
+    ROOT=$(echo -en "\uE614")
     LAST_BACK=""
     LAST_FORE=255
     LAST_FORE_MOD=0
@@ -142,7 +143,16 @@ function make_prompt() {
 
     function pwd_part() {
         fb 255 27 1
-        echo -en " $CODE ${PWD/$HOME/\$HOUSE} $RST"
+        if [[ "$PWD" == "/" ]]
+        then
+            echo -en " / $RST"
+        else
+            DIR=${PWD/$HOME/ \$HOUSE}
+            #DIR=${DIR//\// \\uF44A }
+            DIR=${DIR//\// \\uE0BD }
+            #DIR=${DIR//\// \\u258F}
+            echo -en "${DIR} $RST"
+        fi
     }
 
 

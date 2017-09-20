@@ -108,9 +108,11 @@ set showtabline=1
 "Plugin 'vim-airline/vim-airline-themes'
 
 "let g:airline#extensions#tabline#enabled = 1
+"let g:airline#extensions#tabline#left_sep = ''
 let g:airline#extensions#tabline#left_sep = ' '
 " let g:airline#extensions#tabline#left_alt_sep = '│'
 let g:airline#extensions#tabline#left_alt_sep = '⎸'
+"let g:airline#extensions#tabline#left_alt_sep = ''
 "map <F2> :!ls<CR>:e
 
 ":verbose nnoremap <C-[> :tabprevious<CR>
@@ -242,6 +244,7 @@ let g:airline_skip_empty_sections = 1
 "let g:airline_left_sep = ''
 "let g:airline_right_sep = ''
 let g:airline_left_sep = ''
+"let g:airline_left_sep = ''
 let g:airline_right_sep = ''
 
 ":AirlineTheme badwolf
@@ -606,4 +609,12 @@ let g:SuperTabDefaultCompletionType = "<C-X><C-U>"
 inoremap <C-p> <C-X><C-U>
 "set omnifunc=syntaxcomplete#Complete
 set completefunc=Compl
+
+" Completion tweaks
+inoremap <expr> <Esc>      pumvisible() ? "\<C-e>" : "\<Esc>"
+inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
+inoremap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
+inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
+inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
+inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
 
