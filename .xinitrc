@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export TERM=screen-256color
+
 if [[ "$HOSTNAME" == "envy" ]]
 then
 	pacman -Ss lib32-nvidia-libgl | grep \\[ > /dev/null

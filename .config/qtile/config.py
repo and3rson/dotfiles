@@ -264,16 +264,16 @@ GROUP_DEFS = (
         'skypeforlinux', 'IRCCloud'
     ], title=['Messenger', 'Flowdock', re.compile(r'^.* - Chat$')])),
     ('m', 'mail', ['evolution'], 'max', dict(wm_class=['Thunderbird', 'Evolution'])),
-    ('d', 'dev', ['tvim', 'DEFAULTVIM'], 'max', dict(wm_class=['Subl3', 'Atom'], title=['DEFAULTVIM'])),
+    # ('d', 'dev', ['tvim', 'DEFAULTVIM'], 'max', dict(wm_class=['Subl3', 'Atom'], title=['DEFAULTVIM'])),
     ('a', 'audio', ['gpmdp'], 'max', dict(title=['VK audio player'], wm_class=['Google Play Music Desktop Player'])),
     ('g', 'games', [], 'max', dict(wm_class=[
         re.compile('^Steam|csgo_linux64|Deluge$')
     ], title=[
         re.compile('^Steam$')
     ])),
-    ('v', 'var', [], 'max', dict(wm_class=['Pitivi', 'Audacity'])),
-    ('n', 'notes', [], 'max', dict(wm_class=['Simplenote'], title=['Peek App'])),
-    ('s', 'status', [], 'max', dict(wm_class=['Conky', 'conky'])),
+    # ('v', 'var', [], 'max', dict(wm_class=['Pitivi', 'Audacity'])),
+    # ('n', 'notes', [], 'max', dict(wm_class=['Simplenote'], title=['Peek App'])),
+    # ('s', 'status', [], 'max', dict(wm_class=['Conky', 'conky'])),
 )
 
 groups = [
@@ -345,6 +345,25 @@ group_box_config = dict(
     margin_x=0,
 )
 
+group_box_config = dict(
+    background=WidgetOpts.DEFAULT_COLOR,
+    disable_drag=True,
+    borderwidth=2,
+    rounded=False,
+    font=WidgetOpts.DEFAULT_FONT + 'Medium',
+    fontshadow='222222',
+    highlight_method='block',
+    this_screen_border='FF5544.5',
+    this_current_screen_border='FF5544',
+    other_screen_border='333333',
+    other_current_screen_border='333333',
+    padding_x=3,
+    padding_y=3,
+    fontsize=12,
+    margin_x=0
+)
+
+
 
 def make_current_layout_widget():
     w = widget.CurrentLayoutIcon(scale=0.8)
@@ -356,7 +375,7 @@ def make_current_layout_widget():
 
 
 def sep():
-    return widget.Sep(padding=2, foreground='#11BBEE.2', size_percent=80)
+    return widget.Sep(padding=4, foreground='#11BBEE.2', size_percent=100)
 
 
 pacontrol = widgets.PAControl(
@@ -393,7 +412,8 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                widgets.GroupBox2(**group_box_config),
+                widgets.ArchLogo(scale=0.9),
+                widgets.GroupBox(**group_box_config),
                 # widget.Prompt(
                 #     background=WidgetOpts.HIGHLIGHT_COLOR,
                 #     font=WidgetOpts.MONOSPACE_FONT,
@@ -418,12 +438,17 @@ screens = [
                 #     font=WidgetOpts.MONOSPACE_FONT
                 # ),
                 sep(),
+                widgets.GPMDP(
+                    foreground='#F0F040',
+                    font=WidgetOpts.MONOSPACE_FONT
+                ),
+                sep(),
                 widget.Systray(
                     icon_size=14,
                     # padding_y=2
                 ),
-                widget.Sep(padding=8, foreground='#000000.0'),
                 sep(),
+                # widget.Sep(padding=8, foreground='#000000.0'),
                 widget.CPUGraph(
                     border_color='#11BBEE.3',
                     border_width=1,
@@ -475,11 +500,7 @@ screens = [
 #                     foreground='#F0F040',
 #                     font=WidgetOpts.MONOSPACE_FONT
 #                 ),
-                widgets.GPMDP(
-                    foreground='#F0F040',
-                    font=WidgetOpts.MONOSPACE_FONT
-                ),
-                sep(),
+                # sep(),
                 widgets.OpenWeatherMap(
                     appid='5041ca48d55a6669fe8b41ad1a8af753',
                     # I hereby disclose my OpenWeatherMap API token.
@@ -500,7 +521,7 @@ screens = [
                     # font=WidgetOpts.DEFAULT_FONT,
                     # foreground='#11BBEE',
                 # ),
-                sep(),
+                # sep(),
                 widgets.ThermalSensor2(
                     font=WidgetOpts.MONOSPACE_FONT,
                     foreground='#11BBEE',
@@ -538,7 +559,7 @@ screens = [
         ),
         # bottom=bar.Bar(
         #     [
-        #         widgets.ArchLogo(scale=0.9),
+                # widgets.ArchLogo(scale=0.9),
         #         widgets.Hostname(
         #             font=WidgetOpts.DEFAULT_FONT,
         #             fontsize=10,
@@ -596,7 +617,8 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                widgets.GroupBox2(**group_box_config),
+                widgets.ArchLogo(scale=0.9),
+                widgets.GroupBox(**group_box_config),
                 widgets.TaskList2(
                     # font=WidgetOpts.MONOSPACE_FONT,
                     rounded=False,
@@ -637,7 +659,8 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                widgets.GroupBox2(**group_box_config),
+                widgets.ArchLogo(scale=0.9),
+                widgets.GroupBox(**group_box_config),
                 widgets.TaskList2(
                     # font=WidgetOpts.MONOSPACE_FONT,
                     rounded=False,

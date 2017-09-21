@@ -130,7 +130,7 @@ class Ping(base._TextBox, NonBlockingSpawn):
                 )
                 # if not conn.Ip4Config.Addresses[0][0].startswith('172.')
                 # and not conn.Ip4Config.Addresses[0][2].startswith('0.')
-                if conn.Type in ('vpn', '802-11-wireless')
+                if conn.Type in ('vpn', '802-11-wireless', '802-3-ethernet')
             ]
         except:
             network_names = []
@@ -568,7 +568,7 @@ class GPMDP(base._TextBox, NonBlockingSpawn):
         self.last_scroll = 0
 
         self.sep = ' ::: '
-        self.max_len = 24
+        self.max_len = 30
         self.shift = 0
         self.do_scroll = True
         self.last_song = None
