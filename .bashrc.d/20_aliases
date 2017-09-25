@@ -29,3 +29,11 @@ alias up='curl -X POST http://kv.dun.ai/ips/latitude --data value=`curl canihazi
 #alias ccat='pygmentize -g -O style=colorful,linenos=1'
 alias cat='highlight -O ansi --force'
 
+alias st='git st'
+alias br='git branch'
+alias co='git checkout'
+alias cm='git commit -m'
+alias pull='git pull'
+alias push='git push'
+alias merge='git merge'
+

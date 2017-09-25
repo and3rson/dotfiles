@@ -1171,6 +1171,105 @@ class GroupBox2(GroupBox):
         self.drawer.draw(offsetx=self.offset, width=self.width)
 
 
+class GroupBox3(GroupBox):
+    CHARS = {
+        # 1: u'\u0307',
+        # 2: u'\u0308',
+        # 3: u'\u20DB',
+        # 'DEFAULT': u'\u0303'
+        1: u'\u0323',
+        2: u'\u0324',
+        'DEFAULT': u'\u0331'
+    }
+
+    def box_width(self, groups):
+        width, height = self.drawer.max_layout_size(
+            [self.get_group_text(i) for i in groups],
+            self.font,
+            self.fontsize
+        )
+        width += 6
+        return width + self.padding_x * 2 + self.margin_x * 2 + \
+            self.borderwidth * 2
+
+    def get_group_text(self, group):
+        window_count = len(group.windows)
+
+        # group_name = group.name.upper()
+        group_name = group.name.upper()
+
+        if window_count:
+            return u'{}{}'.format(
+                group_name,
+                # u'\u2071' * window_count
+                GroupBox2.CHARS.get(window_count, GroupBox2.CHARS.get('DEFAULT'))
+                # GroupBox2.NUMBERS.get(window_count)
+                # '+' * window_count
+                # self.NUMBERS.get(window_count, self.NUMBERS.get(9) + '+')
+            )
+        else:
+            return group_name
+
+    def draw(self):
+        self.drawer.clear(self.background or self.bar.background)
+
+        offset = self.margin_x
+        for i, g in enumerate(self.groups):
+            to_highlight = False
+            is_block = (self.highlight_method == 'block')
+            is_line = (self.highlight_method == 'line')
+
+            bw = self.box_width([g])
+
+            if self.group_has_urgent(g) and self.urgent_alert_method == "text":
+                text_color = self.urgent_text
+            elif g.windows:
+                text_color = self.active
+            else:
+                text_color = self.inactive
+
+            if g.screen:
+                if self.highlight_method == 'text':
+                    border = self.bar.background
+                    text_color = self.this_current_screen_border
+                else:
+                    if self.bar.screen.group.name == g.name:
+                        if self.qtile.currentScreen == self.bar.screen:
+                            border = self.this_current_screen_border
+                            to_highlight = True
+                        else:
+                            border = self.this_screen_border
+                    else:
+                        if self.qtile.currentScreen == g.screen:
+                            border = self.other_current_screen_border
+                        else:
+                            border = self.other_screen_border
+            elif self.group_has_urgent(g) and \
+                    self.urgent_alert_method in ('border', 'block', 'line'):
+                border = self.urgent_border
+                if self.urgent_alert_method == 'block':
+                    is_block = True
+                elif self.urgent_alert_method == 'line':
+                    is_line = True
+            else:
+                border = self.background or self.bar.background
+
+            self.drawbox(
+                offset,
+                self.get_group_text(g),
+                border,
+                text_color,
+                highlight_color=self.highlight_color,
+                width=bw,
+                rounded=self.rounded,
+                block=is_block,
+                line=is_line,
+                highlighted=to_highlight
+            )
+            offset += bw + self.spacing
+        self.drawer.draw(offsetx=self.offset, width=self.width)
+
+
 class TaskList2(TaskList):
     """
     A patch version of TaskList widget that fixes icon positions.

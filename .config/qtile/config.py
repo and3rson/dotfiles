@@ -357,7 +357,7 @@ group_box_config = dict(
     this_current_screen_border='FF5544',
     other_screen_border='333333',
     other_current_screen_border='333333',
-    padding_x=3,
+    padding_x=0,
     padding_y=3,
     fontsize=12,
     margin_x=0
@@ -413,7 +413,7 @@ screens = [
         top=bar.Bar(
             [
                 widgets.ArchLogo(scale=0.9),
-                widgets.GroupBox(**group_box_config),
+                widgets.GroupBox3(**group_box_config),
                 # widget.Prompt(
                 #     background=WidgetOpts.HIGHLIGHT_COLOR,
                 #     font=WidgetOpts.MONOSPACE_FONT,
@@ -618,7 +618,7 @@ screens = [
         top=bar.Bar(
             [
                 widgets.ArchLogo(scale=0.9),
-                widgets.GroupBox(**group_box_config),
+                widgets.GroupBox3(**group_box_config),
                 widgets.TaskList2(
                     # font=WidgetOpts.MONOSPACE_FONT,
                     rounded=False,
@@ -660,7 +660,7 @@ screens = [
         top=bar.Bar(
             [
                 widgets.ArchLogo(scale=0.9),
-                widgets.GroupBox(**group_box_config),
+                widgets.GroupBox3(**group_box_config),
                 widgets.TaskList2(
                     # font=WidgetOpts.MONOSPACE_FONT,
                     rounded=False,

@@ -399,6 +399,7 @@ let g:pyflakes_use_quickfix = 0
 let g:syntastic_python_checkers = ['flake8']
 let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [],'passive_filetypes': [] }
 let g:syntastic_enable_signs = 1
+let g:syntastic_auto_loc_list = 1
 let g:syntastic_error_symbol = '✖︎'
 let g:syntastic_style_error_symbol = '✖︎'
 let g:syntastic_warning_symbol = '∙∙'
@@ -407,6 +408,8 @@ let g:syntastic_always_populate_loc_list = 1
 
 nnoremap <silent> <F5> :w<CR>:SyntasticCheck<CR>
 inoremap <silent> <F5> <C-o>:w<CR><C-o>:SyntasticCheck<CR>
+nnoremap <silent> <F6> :Errors<CR>
+inoremap <silent> <F6> <C-o>:Errors<CR>
 nnoremap <silent> ; :lprev<CR>
 "inoremap <silent> ; <C-o>:lprev<CR>i
 nnoremap <silent> ' :lnext<CR>
@@ -555,7 +558,7 @@ let g:piecrumbs_glue = '  '
 
 " Tagbar
 
-nnoremap <F8> :TagbarToggle<CR>
+"nnoremap <F8> :TagbarToggle<CR>
 nnoremap <Tab> <C-W>w
 
 "set omnifunc=syntaxcomplete#Complete

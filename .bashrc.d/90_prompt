@@ -44,7 +44,7 @@ function make_prompt() {
         printf -v "LAST_FORE_MOD" "$FORE_MOD"
     }
 
-    function br() {
+    function brk() {
         printf -v "LAST_BACK" ""
         echo
     }
@@ -169,7 +169,7 @@ function make_prompt() {
     #free_part
     ret_part
     end_part
-    br
+    brk
     pwd_part
     end_part
     echo -n "$RST "
