@@ -107,7 +107,14 @@ function make_prompt() {
                 fb 255 130
                 C='!'
             fi
-            echo -n " $GIT $BRANCH$C $RST"
+            UNPUSHED=$(git log origin/$BRANCH..HEAD --oneline | wc -l)
+            echo -n " $GIT $BRANCH$C "
+            if [[ "$UNPUSHED" -gt "0" ]]
+            then
+                fb 255 130
+                echo -n " ($UNPUSHED pending commit) "
+            fi
+            echo -n "$RST"
         fi
     }
 

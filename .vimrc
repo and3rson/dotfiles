@@ -12,6 +12,10 @@ set rtp+=~/.vim/bundle/Vundle.vim
 set t_Co=256
 call vundle#begin()
 
+let g:python_highlight_all = 1
+let g:python_highlight_indent_errors = 1
+let g:python_space_error_highlight = 1
+
 Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'scrooloose/nerdtree' 	    	" Project and file navigation
@@ -32,6 +36,7 @@ Plugin 'tacahiroy/ctrlp-funky'
 " Plugin 'michaeljsmith/vim-indent-object'
 " Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'Yggdroot/indentLine'
+"Plugin 'hdima/python-syntax'
 
 "Plugin 'terryma/vim-expand-region'
 
@@ -264,10 +269,10 @@ let g:jedi#smart_auto_mappings = 0
 
 let g:jedi#goto_command = "<C-M>"
 
-let g:jedi#completions_enabled = 0
+let g:jedi#completions_enabled = 1
 
 set noshowmode
-let g:jedi#show_call_signatures = 2
+let g:jedi#show_call_signatures = 0  " 2
 let g:jedi#show_call_signatures_delay = 0
 "call jedi#configure_call_signatures()
 
@@ -503,7 +508,7 @@ autocmd BufWritePre * %s/\s\+$//e
 "set shiftwidth=2
 
 " Disable jedi docstring popup
-autocmd FileType python setlocal completeopt-=preview
+"autocmd FileType python setlocal completeopt-=preview
 
 " Allow switching to other buffer if current buffer has unsaved changes
 set hidden
@@ -610,14 +615,21 @@ endfunction
 " SuperTab
 let g:SuperTabDefaultCompletionType = "<C-X><C-U>"
 inoremap <C-p> <C-X><C-U>
-"set omnifunc=syntaxcomplete#Complete
 set completefunc=Compl
 
 " Completion tweaks
-inoremap <expr> <Esc>      pumvisible() ? "\<C-e>" : "\<Esc>"
+inoremap <expr> <Esc>      pumvisible() ? "\<C-o>\<Esc>" : "\<Esc>"
 inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
-inoremap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
-inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
-inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
-inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
+"inoremap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
+"inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
+"inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
+"inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
+
+" YouCompleteMe
+
+let g:ycm_auto_trigger = 0
+let g:ycm_key_invoke_completion = '<C-p>'
+let g:ycm_autoclose_preview_window_after_completion = 1
+let g:ycm_autoclose_preview_window_after_insertion = 1
+let g:ycm_key_list_stop_completion = ['<CR>']
 

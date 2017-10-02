@@ -27,7 +27,7 @@ alias jc='sudo journalctl'
 alias k='killall -9'
 alias up='curl -X POST http://kv.dun.ai/ips/latitude --data value=`curl canihazip.com/s`'
 #alias ccat='pygmentize -g -O style=colorful,linenos=1'
-alias cat='highlight -O ansi --force'
+alias cat='highlight -O xterm256 --style molokai --force'
 
 alias st='git st'
 alias br='git branch'

@@ -79,7 +79,8 @@ class MainWindow(QtGui.QMainWindow):
         if screen == self.last_screen:
             return
         print('Screen changed')
-        self.label.setText(str(screen + 1))
+        group = next(iter([key.upper() for key, group in self.client.groups().items() if group['screen'] == screen]), str(screen + 1))
+        self.label.setText(group)
         self.last_screen = screen
         # screen = QtGui.QApplication.desktop().screenNumber(QtGui.QApplication.desktop().cursor().pos())
         centerPoint = QtGui.QApplication.desktop().screenGeometry(screen).center()

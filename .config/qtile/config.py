@@ -261,7 +261,7 @@ GROUP_DEFS = (
     ('i', 'im', ['telegram-desktop', 'irccloud'], 'max', dict(wm_class=[
         'telegram-desktop', 'TelegramDesktop', 'Slack',
         'www.flowdock.com__app_redeapp_main', 'Hexchat', 'Skype',
-        'skypeforlinux', 'IRCCloud'
+        'skypeforlinux', 'IRCCloud', 'ViberPC'
     ], title=['Messenger', 'Flowdock', re.compile(r'^.* - Chat$')])),
     ('m', 'mail', ['evolution'], 'max', dict(wm_class=['Thunderbird', 'Evolution'])),
     # ('d', 'dev', ['tvim', 'DEFAULTVIM'], 'max', dict(wm_class=['Subl3', 'Atom'], title=['DEFAULTVIM'])),
