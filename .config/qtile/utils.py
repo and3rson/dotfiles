@@ -89,11 +89,13 @@ bar_styles = [
     u'▯▮',
     u'◯⬤',
     u'⚪⚫',
-    u' ▏▎▍▌▋▊▉█'
+    u' ▏▎▍▌▋▊▉█',
+    u'▁▂▃▄▅▆▇█'
 ]
 
 
-def progress(min, max, current, width, style=0, before=u'⎹', after=u'⎸'):
+# def progress(min, max, current, width, style=0, before=u'⎹', after=u'⎸'):
+def progress(min, max, current, width, style=0, before=u'▕', after=u'▎'):
     style = bar_styles[style]
     q_max = len(style) * width
     ratio = float(current - min) / (max - min)

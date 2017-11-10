@@ -149,16 +149,37 @@ function make_prompt() {
     }
 
     function pwd_part() {
-        fb 255 27 1
+        #fb 255 27 1
         if [[ "$PWD" == "/" ]]
         then
+            fb 255 27 1
             echo -en " / $RST"
         else
-            DIR=${PWD/$HOME/ \$HOUSE}
-            #DIR=${DIR//\// \\uF44A }
-            DIR=${DIR//\// \\uE0BD }
-            #DIR=${DIR//\// \\u258F}
-            echo -en "${DIR} $RST"
+            DIR=${PWD/$HOME/\$HOUSE}
+            DIR=${PWD/\//}
+            ##DIR=${DIR//\// \\uF44A }
+            ##DIR=${DIR//\// \\uE0B1 }
+            #DIR=${DIR//\// \\uE0BB }
+            ##DIR=${DIR//\//  \\u258F }
+            #echo -en "${DIR} $RST"
+            OLD_IFS=$IFS
+            IFS='/'
+            NUM=100
+            for i in $DIR
+            do
+                # Contrast colors
+                for ((n=0; n<${#i}; n++ ))
+                do
+                    V=$(printf %d "'${i:$n:1}")
+                    NUM=$((NUM+V))
+                done
+                BG=$((((NUM%7)+1)*36-20 + NUM%9))
+                fb 255 $BG 1
+                echo -n " $i "
+                #echo -n a $i b
+                #echo -n 1${i}${i}2
+            done
+            IFS=$OLD_IFS
         fi
     }
 

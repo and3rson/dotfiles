@@ -18,18 +18,18 @@ let g:python_space_error_highlight = 1
 
 Plugin 'VundleVim/Vundle.vim'
 
-Plugin 'scrooloose/nerdtree' 	    	" Project and file navigation
+"Plugin 'scrooloose/nerdtree' 	    	" Project and file navigation
 "Plugin 'majutsushi/tagbar'          	" Class/module browser
 Plugin 'scrooloose/nerdcommenter'
 
 " Plugin 'mitsuhiko/vim-python-combined'  " Combined Python 2/3 for Vim
 "Plugin 'davidhalter/jedi-vim'
-Plugin 'tpope/vim-fugitive'
+"Plugin 'tpope/vim-fugitive'
 
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 
-Plugin 'wincent/command-t'
+"Plugin 'wincent/command-t'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'tacahiroy/ctrlp-funky'
 
@@ -340,11 +340,13 @@ let g:webdevicons_enable_airline_statusline = 1
 
 " Cursor
 
-:hi CursorLine ctermbg=235 " cterm=underline
-:hi CursorColumn ctermbg=235
-:hi StatusLine ctermfg=233
-:hi StatusLineNC ctermfg=233 ctermbg=7
-:hi MatchParen ctermfg=magenta ctermbg=none
+hi CursorLine ctermbg=235 " cterm=underline
+hi CursorColumn ctermbg=235
+hi StatusLine ctermfg=233
+hi StatusLineNC ctermfg=233 ctermbg=7
+hi MatchParen ctermfg=magenta ctermbg=none
+hi CursorLineNr ctermfg=255 cterm=bold
+" 161
 " Molokai theme patches
 
 hi Normal guibg=NONE ctermbg=NONE
@@ -402,6 +404,7 @@ let g:pyflakes_use_quickfix = 0
 
 " let g:syntastic_check_on_open = 1
 let g:syntastic_python_checkers = ['flake8']
+let g:syntastic_javascript_checkers = ['eslint']
 let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [],'passive_filetypes': [] }
 let g:syntastic_enable_signs = 1
 let g:syntastic_auto_loc_list = 1
@@ -514,11 +517,19 @@ autocmd BufWritePre * %s/\s\+$//e
 set hidden
 
 function! InsertEnterHook()
-    :set norelativenumber
+    ":set norelativenumber
+    :hi LineNr ctermbg=52
+    ":hi CursorColumn ctermbg=52
+    ":hi CursorLine ctermbg=52
+    ":hi CursorColumn ctermbg=52
 endfunction
 
 function! InsertLeaveHook()
-    :set relativenumber
+    ":set relativenumber
+    :hi LineNr ctermbg=236
+    ":hi CursorColumn ctermbg=235
+    ":hi CursorLine ctermbg=235
+    ":hi CursorColumn ctermbg=235
 endfunction
 
 autocmd InsertEnter * call InsertEnterHook()

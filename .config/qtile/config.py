@@ -297,7 +297,7 @@ layouts = [
         border_focus=WidgetOpts.HIGHLIGHT_COLOR,
         border_width=1,
         grow_amount=0,
-        margin=0
+        margin=50
     ),
     layout.Max(),
     # layout.Zoomy(
