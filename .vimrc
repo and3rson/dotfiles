@@ -1,5 +1,4 @@
 """"""""""""""""""""""""""""""""
-
 " Vundle
 """"""""""""""""""""""""""""""""
 
@@ -26,8 +25,10 @@ Plugin 'scrooloose/nerdcommenter'
 "Plugin 'davidhalter/jedi-vim'
 "Plugin 'tpope/vim-fugitive'
 
-Plugin 'vim-airline/vim-airline'
-Plugin 'vim-airline/vim-airline-themes'
+"Plugin 'vim-airline/vim-airline'
+"Plugin 'vim-airline/vim-airline-themes'
+
+Plugin 'ap/vim-buftabline'
 
 "Plugin 'wincent/command-t'
 Plugin 'ctrlpvim/ctrlp.vim'
@@ -44,7 +45,8 @@ Plugin 'Yggdroot/indentLine'
 
 " Plugin 'kevinw/pyflakes-vim'
 
-Plugin 'vim-syntastic/syntastic'
+"Plugin 'vim-syntastic/syntastic'
+Plugin 'w0rp/ale'
 
 Plugin 'Vimjas/vim-python-pep8-indent'
 
@@ -201,8 +203,8 @@ map <PageDown> <C-d>
 " Airline
 """"""""""""""""""""""""""""""""
 
-let g:airline_powerline_fonts = 1
-"let g:airline_powerline_fonts = 0
+"let g:airline_powerline_fonts = 1
+let g:airline_powerline_fonts = 0
 
 let g:airline_theme='kalisi'
 "let g:airline_theme='term'
@@ -252,6 +254,9 @@ let g:airline_left_sep = ''
 "let g:airline_left_sep = ''
 let g:airline_right_sep = ''
 
+let g:airline_left_sep = ''
+let g:airline_right_sep = ''
+
 ":AirlineTheme badwolf
 ":AirlineTheme dark
 ":AirlineTheme deus
@@ -299,7 +304,7 @@ inoremap <S-Tab> <C-d>
 "imap <silent> <Home> <Esc><Home>i
 
 :set cursorline
-:set cursorcolumn
+:set nocursorcolumn
 
 :set fillchars+=vert:│
 
@@ -414,13 +419,14 @@ let g:syntastic_warning_symbol = '∙∙'
 let g:syntastic_style_warning_symbol = '∙∙'
 let g:syntastic_always_populate_loc_list = 1
 
-nnoremap <silent> <F5> :w<CR>:SyntasticCheck<CR>
-inoremap <silent> <F5> <C-o>:w<CR><C-o>:SyntasticCheck<CR>
-nnoremap <silent> <F6> :Errors<CR>
-inoremap <silent> <F6> <C-o>:Errors<CR>
-nnoremap <silent> ; :lprev<CR>
+"nnoremap <silent> <F5> :w<CR>:SyntasticCheck<CR>
+"inoremap <silent> <F5> <C-o>:w<CR><C-o>:SyntasticCheck<CR>
+"nnoremap <silent> <F6> :Errors<CR>
+"inoremap <silent> <F6> <C-o>:Errors<CR>
+
+"nnoremap <silent> ; :lprev<CR>
 "inoremap <silent> ; <C-o>:lprev<CR>i
-nnoremap <silent> ' :lnext<CR>
+"nnoremap <silent> ' :lnext<CR>
 "inoremap <silent> <ESC>[] <C-o>:lnext<CR>i
 
 " Fix cursor positioning on I->N mode switch
@@ -518,7 +524,10 @@ set hidden
 
 function! InsertEnterHook()
     ":set norelativenumber
-    :hi LineNr ctermbg=52
+    hi BufTabLineActive ctermbg=161 ctermfg=255 cterm=bold
+    hi BufTabLineCurrent ctermbg=161 ctermfg=255 cterm=bold
+    ":hi LineNr ctermfg=161
+    ":hi LineNr ctermbg=52
     ":hi CursorColumn ctermbg=52
     ":hi CursorLine ctermbg=52
     ":hi CursorColumn ctermbg=52
@@ -526,7 +535,10 @@ endfunction
 
 function! InsertLeaveHook()
     ":set relativenumber
-    :hi LineNr ctermbg=236
+    hi BufTabLineActive ctermbg=118 ctermfg=0 cterm=bold
+    hi BufTabLineCurrent ctermbg=118 ctermfg=0 cterm=bold
+    ":hi LineNr ctermfg=250
+    ":hi LineNr ctermbg=236
     ":hi CursorColumn ctermbg=235
     ":hi CursorLine ctermbg=235
     ":hi CursorColumn ctermbg=235
@@ -643,4 +655,94 @@ let g:ycm_key_invoke_completion = '<C-p>'
 let g:ycm_autoclose_preview_window_after_completion = 1
 let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_key_list_stop_completion = ['<CR>']
+
+" BufTabLine
+
+let g:buftabline_indicators = 1
+let g:buftabline_seperators = 1
+hi BufTabLineFill ctermbg=233
+hi BufTabLineCurrent ctermbg=118 ctermfg=0 cterm=bold
+hi BufTabLineActive ctermbg=118 ctermfg=0 cterm=bold
+hi BufTabLineHidden ctermbg=238
+
+" Custom status
+
+hi User1 ctermfg=245
+hi User2 ctermfg=161
+"hi User1 ctermfg=250
+"hi User1 ctermbg=208 " Orange
+
+let g:mode_map = {
+    \ '__': '',
+    \ 'n': '',
+    \ 'i': '',
+    \ 'R': '',
+    \ 'c': '',
+    \ 'v': '',
+    \ 'V': '',
+    \ '^V': '',
+    \ 's': '',
+    \ 'S': '',
+    \ '^S': '',
+    \ }
+
+function SetStatusLineColor()
+    let m = mode()
+    "echo m
+    if (m ==# 'i')
+        "echo 'INSERT'
+        exe 'hi! StatusLine ctermfg=161'
+    elseif (m ==# 'v' || mode() ==# 'V')
+        "echo 'VISUAL'
+        exe 'hi! StatusLine ctermfg=81'
+    else
+        "echo 'OTHER'
+        exe 'hi! StatusLine ctermfg=118'
+    endif
+    return ''
+endfunction
+
+function! LinterStatus() abort
+    let l:counts = ale#statusline#Count(bufnr(''))
+
+    let l:all_errors = l:counts.error + l:counts.style_error
+    let l:all_non_errors = l:counts.total - l:all_errors
+
+    return l:counts.total == 0 ? '' : printf(
+    \   ' %dW %dE ',
+    \   all_non_errors,
+    \   all_errors
+    \)
+endfunction
+
+hi StatusLine cterm=None cterm=None gui=None ctermbg=233
+
+" !!!
+set lazyredraw
+
+set laststatus=2
+set statusline=
+set statusline +=%{SetStatusLineColor()}
+set statusline +=\ %{mode_map[mode()]}\ %*
+set statusline +=\ %<%F%*
+set statusline +=%=
+set statusline +=%1*:%l.%c/%L\ %*
+set statusline +=%1*\ %{CharSegment()}\ %*
+set statusline +=%2*%{LinterStatus()}%*
+"set statusline +=%=a
+"set statusline +=%{SetStatusLineColor()}
+
+" ALE
+let g:ale_linters = {
+            \'javascript': ['eslint'],
+            \'python': ['flake8']
+            \}
+
+nnoremap <silent> <F5> :w<CR>:SyntasticCheck<CR>
+inoremap <silent> <F5> <C-o>:w<CR><C-o>:SyntasticCheck<CR>
+
+nnoremap <silent> ; :ALEPrevious<CR>
+nnoremap <silent> ' :ALENext<CR>
+
+hi Error ctermfg=235 ctermbg=161
 
