@@ -80,6 +80,8 @@ filetype plugin indent on
 
 
 syntax enable
+let g:molokai_original = 1
+let g:rehash256 = 1
 colorscheme molokai
 set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab
 " Plugin 'sickill/vim-monokai'
@@ -184,7 +186,8 @@ endfunction
 
 nnoremap <silent> <C-_> :call NERDComment(0, "toggle")<CR><CR>
 "vnoremap <silent> <C-_> :call NERDComment(0, "alignleft")<CR><CR>
-vnoremap <silent> <C-_> :call ToggleOrSexy()<CR>
+"vnoremap <silent> <C-_> :call ToggleOrSexy()<CR>
+vnoremap <silent> <C-_> :call NERDComment(0, "toggle")<CR><CR>
 inoremap <silent> <C-_> <C-o>:call NERDComment(0, "toggle")<CR><C-o><CR>
 
 " Go to previous split
@@ -321,7 +324,17 @@ let g:ctrlp_map = '<c-k>'
             "\ 'dir': '\.git$|node_modules$|\.env$',
             "\ 'file': '\.exe$|\.so$|\.pyc$|\.pyo$|__pycache__$'
             "\ }
-let g:ctrlp_custom_ignore = '\v[\/](\.git|node_modules|\.env[236]*|\.cache|\.exe|\.so|\.pyc|\.pyo|__pycache__)'
+let g:ctrlp_custom_ignore = '\v[\/](\.git|node_modules|\.env[236]*|\.cache|\.exe|\.so|\.pyc|\.pyo|__pycache__|build)'
+
+let g:ctrlp_user_command = {
+            \   'types': {
+            \       1: ['.git', 'cd %s && git ls-files -co --exclude-standard'],
+            \   },
+\}
+let g:ctrlp_match_current_file = 0
+let g:ctrlp_types = ['fil']
+
+let g:ctrlp_cmd = 'CtrlPMRUFiles' " Does not work
 
 "let g:ctrlp_buffer_func = { 'enter': 'BrightHighlightOn', 'exit':  'BrightHighlightOff', }
 
@@ -348,7 +361,8 @@ let g:webdevicons_enable_airline_statusline = 1
 hi CursorLine ctermbg=235 " cterm=underline
 hi CursorColumn ctermbg=235
 hi StatusLine ctermfg=233
-hi StatusLineNC ctermfg=233 ctermbg=7
+hi StatusLineNC ctermbg=None ctermfg=240 cterm=None
+" ctermbg=7
 hi MatchParen ctermfg=magenta ctermbg=none
 hi CursorLineNr ctermfg=255 cterm=bold
 " 161
@@ -386,7 +400,7 @@ let g:indentLine_concealcursor = ''
 let g:indentLine_color_term = 239
 " let g:indentLine_bgcolor_term = 202
 let g:indentLine_showFirstIndentLevel = 1
-let g:indentLine_fileTypeExclude = ['text']
+let g:indentLine_fileTypeExclude = ['text', 'json', 'help']
 let g:indentLine_faster = 1 " TODO: Experimental
 
 " PyMode
@@ -507,7 +521,11 @@ let g:airline#extensions#tabline#fnamemod =  ':t'
 "inoremap <silent> <Esc> <C-O>:stopinsert<CR>
 
 " Remove trailing whitespaces
-autocmd BufWritePre * %s/\s\+$//e
+function CleanUp()
+    %s/\s\+$//e
+    " |norm!``
+endfunction
+autocmd BufWritePre * call CleanUp()
 
 ":set noeol
 ":set nofixeol
@@ -522,10 +540,13 @@ autocmd BufWritePre * %s/\s\+$//e
 " Allow switching to other buffer if current buffer has unsaved changes
 set hidden
 
+let g:CursorColumnI = 0 "the cursor column position in INSERT
+
 function! InsertEnterHook()
     ":set norelativenumber
     hi BufTabLineActive ctermbg=161 ctermfg=255 cterm=bold
     hi BufTabLineCurrent ctermbg=161 ctermfg=255 cterm=bold
+    let g:CursorColumnI = col('.')
     ":hi LineNr ctermfg=161
     ":hi LineNr ctermbg=52
     ":hi CursorColumn ctermbg=52
@@ -537,6 +558,7 @@ function! InsertLeaveHook()
     ":set relativenumber
     hi BufTabLineActive ctermbg=118 ctermfg=0 cterm=bold
     hi BufTabLineCurrent ctermbg=118 ctermfg=0 cterm=bold
+    if col('.') != g:CursorColumnI | call cursor(0, col('.')+1) | endif
     ":hi LineNr ctermfg=250
     ":hi LineNr ctermbg=236
     ":hi CursorColumn ctermbg=235
@@ -546,39 +568,35 @@ endfunction
 
 autocmd InsertEnter * call InsertEnterHook()
 autocmd InsertLeave * call InsertLeaveHook()
+autocmd CursorMovedI * let CursorColumnI = col('.')
 
 "let &t_EI .= "\<Esc>[2 q\<Esc>]12;green\x7"
 "let &t_SI .= "\<Esc>[2 q\<Esc>]12;red\x7"
 "let &t_EI .= "\<Esc>[6 q"
 "let &t_SI .= "\<Esc>[2 q"
 
-let CursorColumnI = 0 "the cursor column position in INSERT
-autocmd InsertEnter * let CursorColumnI = col('.')
-autocmd CursorMovedI * let CursorColumnI = col('.')
-autocmd InsertLeave * if col('.') != CursorColumnI | call cursor(0, col('.')+1) | endif
-
-autocmd VimLeave * silent !echo -ne "\033]112\007"
+"autocmd VimLeave * silent !echo -ne "\033]112\007"
 
 " NERDTress File highlighting
-function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
-exec 'autocmd FileType nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
-exec 'autocmd FileType nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
-endfunction
+"function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
+"exec 'autocmd FileType nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
+"exec 'autocmd FileType nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
+"endfunction
 
-au VimEnter * call NERDTreeHighlightFile('jade', 'green', 'none', 'green', '#151515')
-au VimEnter * call NERDTreeHighlightFile('ini', 'yellow', 'none', 'yellow', '#151515')
-au VimEnter * call NERDTreeHighlightFile('md', 'blue', 'none', '#3366FF', '#151515')
-au VimEnter * call NERDTreeHighlightFile('yml', 'yellow', 'none', 'yellow', '#151515')
-au VimEnter * call NERDTreeHighlightFile('config', 'yellow', 'none', 'yellow', '#151515')
-au VimEnter * call NERDTreeHighlightFile('conf', 'yellow', 'none', 'yellow', '#151515')
-au VimEnter * call NERDTreeHighlightFile('json', 'yellow', 'none', 'yellow', '#151515')
-au VimEnter * call NERDTreeHighlightFile('html', 'yellow', 'none', 'yellow', '#151515')
-au VimEnter * call NERDTreeHighlightFile('styl', 'cyan', 'none', 'cyan', '#151515')
-au VimEnter * call NERDTreeHighlightFile('css', 'cyan', 'none', 'cyan', '#151515')
-au VimEnter * call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
-au VimEnter * call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
-au VimEnter * call NERDTreeHighlightFile('rb', 'Red', 'none', '#ffa500', '#151515')
-au VimEnter * call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
+"au VimEnter * call NERDTreeHighlightFile('jade', 'green', 'none', 'green', '#151515')
+"au VimEnter * call NERDTreeHighlightFile('ini', 'yellow', 'none', 'yellow', '#151515')
+"au VimEnter * call NERDTreeHighlightFile('md', 'blue', 'none', '#3366FF', '#151515')
+"au VimEnter * call NERDTreeHighlightFile('yml', 'yellow', 'none', 'yellow', '#151515')
+"au VimEnter * call NERDTreeHighlightFile('config', 'yellow', 'none', 'yellow', '#151515')
+"au VimEnter * call NERDTreeHighlightFile('conf', 'yellow', 'none', 'yellow', '#151515')
+"au VimEnter * call NERDTreeHighlightFile('json', 'yellow', 'none', 'yellow', '#151515')
+"au VimEnter * call NERDTreeHighlightFile('html', 'yellow', 'none', 'yellow', '#151515')
+"au VimEnter * call NERDTreeHighlightFile('styl', 'cyan', 'none', 'cyan', '#151515')
+"au VimEnter * call NERDTreeHighlightFile('css', 'cyan', 'none', 'cyan', '#151515')
+"au VimEnter * call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
+"au VimEnter * call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
+"au VimEnter * call NERDTreeHighlightFile('rb', 'Red', 'none', '#ffa500', '#151515')
+"au VimEnter * call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
 
 " piecrumbs
 
@@ -668,7 +686,7 @@ hi BufTabLineHidden ctermbg=238
 " Custom status
 
 hi User1 ctermfg=245
-hi User2 ctermfg=161
+hi User2 ctermfg=197
 "hi User1 ctermfg=250
 "hi User1 ctermbg=208 " Orange
 
@@ -686,17 +704,18 @@ let g:mode_map = {
     \ '^S': '',
     \ }
 
+let g:last_mode = ''
 function SetStatusLineColor()
     let m = mode()
-    "echo m
+    if m ==# g:last_mode
+        return ''
+    endif
+    let g:last_mode = m
     if (m ==# 'i')
-        "echo 'INSERT'
-        exe 'hi! StatusLine ctermfg=161'
+        exe 'hi! StatusLine ctermfg=197'
     elseif (m ==# 'v' || mode() ==# 'V')
-        "echo 'VISUAL'
         exe 'hi! StatusLine ctermfg=81'
     else
-        "echo 'OTHER'
         exe 'hi! StatusLine ctermfg=118'
     endif
     return ''
@@ -715,7 +734,7 @@ function! LinterStatus() abort
     \)
 endfunction
 
-hi StatusLine cterm=None cterm=None gui=None ctermbg=233
+hi StatusLine cterm=None cterm=None gui=None ctermbg=None
 
 " !!!
 set lazyredraw
@@ -745,4 +764,8 @@ nnoremap <silent> ; :ALEPrevious<CR>
 nnoremap <silent> ' :ALENext<CR>
 
 hi Error ctermfg=235 ctermbg=161
+
+let g:ale_sign_error = '->'
+let g:ale_sign_warning = '-]'
+"let g:ale_sign_column_always = 1
 
