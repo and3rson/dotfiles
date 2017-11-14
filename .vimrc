@@ -55,7 +55,8 @@ Plugin 'Vimjas/vim-python-pep8-indent'
 "Plugin 'and3rson/piecrumbs'
 "Plugin 'tomtom/tcomment_vim'
 
-"Plugin 'airblade/vim-gitgutter'
+Plugin 'airblade/vim-gitgutter'
+"Plugin 'kshenoy/vim-signature'
 
 Plugin 'ervandew/supertab'
 
@@ -65,7 +66,6 @@ Plugin 'ervandew/supertab'
 
 "Bundle 'jistr/vim-nerdtree-tabs'
 " Plugin 'jistr/vim-nerdtree-tabs'
-
 
 call vundle#end()            		" required
 
@@ -266,7 +266,8 @@ let g:airline_right_sep = ''
 
 "set laststatus=0
 
-set timeoutlen=0 ttimeoutlen=0
+set timeoutlen=500 ttimeoutlen=250
+"set esckeys
 
 "let g:jedi#completions_command = "<C-Space>"
 let g:jedi#completions_command = "<C-p>"
@@ -381,8 +382,8 @@ set list listchars=tab: ,trail:·,extends:»,precedes:«,nbsp:×
 " 
 
 " let g:indent_guides_enable_on_vim_startup=1
-"let g:indentLine_char = '▏'
-let g:indentLine_char = '⎣'
+let g:indentLine_char = '▏'
+"let g:indentLine_char = '⎣'
 "let g:indentLine_char = '⎨'
 "let g:indentLine_char = '⎬'
 "let g:indentLine_char = '├'
@@ -768,4 +769,97 @@ hi Error ctermfg=235 ctermbg=161
 let g:ale_sign_error = '->'
 let g:ale_sign_warning = '-]'
 "let g:ale_sign_column_always = 1
+
+" GitGutter
+let g:gitgutter_realtime = 0
+let g:gitgutter_eager = 0
+set signcolumn=yes
+"let g:gitgutter_sign_column_always = 1
+
+" VimSignature
+let g:SignatureMap = {
+    \ 'Leader'             :  "m",
+    \ 'PlaceNextMark'      :  "m,",
+    \ 'ToggleMarkAtLine'   :  "m.",
+    \ 'PurgeMarksAtLine'   :  "m-",
+    \ 'DeleteMark'         :  "dm",
+    \ 'PurgeMarks'         :  "m!",
+    \ 'PurgeMarkers'       :  "m<BS>",
+    \ 'GotoNextLineAlpha'  :  "']",
+    \ 'GotoPrevLineAlpha'  :  "'[",
+    \ 'GotoNextSpotAlpha'  :  "`]",
+    \ 'GotoPrevSpotAlpha'  :  "`[",
+    \ 'GotoNextLineByPos'  :  "]'",
+    \ 'GotoPrevLineByPos'  :  "['",
+    \ 'GotoNextSpotByPos'  :  "]`",
+    \ 'GotoPrevSpotByPos'  :  "[`",
+    \ 'GotoNextMarker'     :  "]-",
+    \ 'GotoPrevMarker'     :  "[-",
+    \ 'GotoNextMarkerAny'  :  "]=",
+    \ 'GotoPrevMarkerAny'  :  "[=",
+    \ 'ListBufferMarks'    :  "m/",
+    \ 'ListBufferMarkers'  :  "m?"
+    \ }
+
+" Fast Escape
+" https://www.reddit.com/r/vim/comments/2391u5/delay_while_using_esc_to_exit_insert_mode/cgw9xrh/
+
+augroup FastEscape
+    autocmd!
+    au InsertEnter * set timeoutlen=0
+    au InsertLeave * set timeoutlen=500
+augroup END
+
+" Custom signs
+let i = 0
+while i < 10
+    exe 'sign define Sign_'.i.' text='.i.' texthl=Function'
+    exe 'nnoremap <silent> mm'.i.' :call SignPlace('.i.')<CR>'
+    exe 'nnoremap <silent> m'.i.' :call SignJump('.i.')<CR>'
+    let i = i + 1
+endwhile
+
+function! EnsureSigns()
+    if ! exists('b:signs')
+        let b:signs = 1
+        let b:sign_line_to_id = {}
+        let b:sign_id_to_line = {}
+    endif
+endfunction
+
+function! SignPlace(id)
+    call EnsureSigns()
+
+    let exists = has_key(b:sign_line_to_id, line('.'))
+    let is_same = 0
+    if exists && (b:sign_line_to_id[line('.')] ==# a:id)
+        let is_same = 1
+    endif
+
+    if exists
+        exe 'sign unplace '.(line('.')+4000000).' buffer='.buffer_number('.')
+        let old_id= b:sign_line_to_id[line('.')]
+        unlet b:sign_line_to_id[line('.')]
+        unlet b:sign_id_to_line[old_id]
+    endif
+    if ! is_same
+        if has_key(b:sign_id_to_line, a:id)
+            echo 'EXISTS'
+            exe 'sign unplace '.(b:sign_id_to_line[a:id]+4000000).' buffer='.buffer_number('.')
+        endif
+        exe 'sign place '.(line('.')+4000000).' line='.line('.').' name=Sign_'.a:id.' buffer='.buffer_number('.')
+        let b:sign_line_to_id[line('.')] = a:id
+        let b:sign_id_to_line[a:id] = line('.')
+    endif
+endfunction
+
+function! SignJump(id)
+    call EnsureSigns()
+
+    if has_key(b:sign_id_to_line, a:id)
+        exe ':'.b:sign_id_to_line[a:id]
+    else
+        echo 'Sign ' . a:id . ' not found'
+    endif
+endfunction
 

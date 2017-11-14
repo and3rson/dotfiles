@@ -27,3 +27,4 @@ case $MON_COUNT in
 esac
 
 $PWD/set_bg.sh
+
