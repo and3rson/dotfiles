@@ -1,9 +1,15 @@
 [options]
 font = DejaVuSansMono Nerd Font 9
 icon_name = terminal
+cursor_blink = on
+highlight =
 
 [colors]
-background = rgba(0, 0, 0, 0.9)
+background = rgba(0, 0, 0, 0.8)
 # foreground = rgba(0, 255, 0, 1)
 # highlight=
+# cursor = rgba(255, 0, 0, 1)
+# color235 = rgba(38, 38, 38, 0.5)
+
+# vim: ft=dosini
 

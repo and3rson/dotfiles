@@ -23,7 +23,7 @@ Plugin 'scrooloose/nerdcommenter'
 
 " Plugin 'mitsuhiko/vim-python-combined'  " Combined Python 2/3 for Vim
 "Plugin 'davidhalter/jedi-vim'
-"Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-fugitive'
 
 "Plugin 'vim-airline/vim-airline'
 "Plugin 'vim-airline/vim-airline-themes'
@@ -365,7 +365,7 @@ hi StatusLine ctermfg=233
 hi StatusLineNC ctermbg=None ctermfg=240 cterm=None
 " ctermbg=7
 hi MatchParen ctermfg=magenta ctermbg=none
-hi CursorLineNr ctermfg=255 cterm=bold
+hi CursorLineNr ctermfg=119 cterm=bold
 " 161
 " Molokai theme patches
 
@@ -475,7 +475,7 @@ function! CharSegment()
     endif
 
     "let g:airline_section_z .= ' ' . code
-    return printf("0x%04x (%s)", code, char)
+    return printf("%3d 0x%04x (%s)", code, code, char)
 endfunction
 
 function! SectionsInit()
@@ -547,6 +547,7 @@ function! InsertEnterHook()
     ":set norelativenumber
     hi BufTabLineActive ctermbg=161 ctermfg=255 cterm=bold
     hi BufTabLineCurrent ctermbg=161 ctermfg=255 cterm=bold
+    hi CursorLineNr ctermfg=161
     let g:CursorColumnI = col('.')
     ":hi LineNr ctermfg=161
     ":hi LineNr ctermbg=52
@@ -559,6 +560,7 @@ function! InsertLeaveHook()
     ":set relativenumber
     hi BufTabLineActive ctermbg=118 ctermfg=0 cterm=bold
     hi BufTabLineCurrent ctermbg=118 ctermfg=0 cterm=bold
+    hi CursorLineNr ctermfg=118
     if col('.') != g:CursorColumnI | call cursor(0, col('.')+1) | endif
     ":hi LineNr ctermfg=250
     ":hi LineNr ctermbg=236
@@ -748,7 +750,9 @@ set statusline +=\ %<%F%*
 set statusline +=%=
 set statusline +=%1*:%l.%c/%L\ %*
 set statusline +=%1*\ %{CharSegment()}\ %*
+"set statusline +=%1*%3b\ 0x%04B
 set statusline +=%2*%{LinterStatus()}%*
+"set statusline +=%<%f%h%m%r%=%b\ 0x%B\ \ %l,%c%V\ %P
 "set statusline +=%=a
 "set statusline +=%{SetStatusLineColor()}
 
@@ -809,6 +813,8 @@ augroup FastEscape
     au InsertEnter * set timeoutlen=0
     au InsertLeave * set timeoutlen=500
 augroup END
+
+inoremap <C-c> <Esc>
 
 " Custom signs
 let i = 0
