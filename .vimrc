@@ -8,6 +8,7 @@ filetype off
 set nowrap
 
 set rtp+=~/.vim/bundle/Vundle.vim
+set rtp+=~/.vim/scripts
 set t_Co=256
 call vundle#begin()
 
@@ -67,6 +68,9 @@ Plugin 'ervandew/supertab'
 "Bundle 'jistr/vim-nerdtree-tabs'
 " Plugin 'jistr/vim-nerdtree-tabs'
 
+Plugin 'ap/vim-css-color'
+Plugin 'osyo-manga/vim-over'
+
 call vundle#end()            		" required
 
 filetype on
@@ -80,109 +84,74 @@ filetype plugin indent on
 
 
 syntax enable
+
+" Theme
 let g:molokai_original = 1
 let g:rehash256 = 1
 colorscheme molokai
-set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab
-" Plugin 'sickill/vim-monokai'
 
-:set guioptions-=m  "remove menu bar
-:set guioptions-=T  "remove toolbar
-:set guioptions-=r  "remove right-hand scroll bar
-:set guioptions-=L  "remove left-hand scroll bar
+set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab
+
+" Gui
+set guioptions-=m  "remove menu bar
+set guioptions-=T  "remove toolbar
+set guioptions-=r  "remove right-hand scroll bar
+set guioptions-=L  "remove left-hand scroll bar
 
 set guifont=DejaVu\ Sans\ Mono\ 9
 
-:set virtualedit=onemore
+" One extra char at the end of the line
+set virtualedit=onemore
 
 set splitbelow
 set splitright
-" g$:set ve= ve=all<CR>
+
 nnoremap <End> g$
+
 set number
 set relativenumber
 
 set whichwrap+=<,>,h,l,[,]
 
+" Timeouts
+set timeoutlen=500 ttimeoutlen=250
 
-"turn off status line
-"set laststatus=0
-set ls=0
-set showtabline=1
-"set tabline="what status line equals, or equaled or whatever"
-"set or change the color of the tabline
-" hi tablinefill cterm=none ctermbg=blue ctermfg=white gui=none guibg=blue guifg=white
 
-"Plugin 'vim-airline/vim-airline'
-"Plugin 'vim-airline/vim-airline-themes'
-
-"let g:airline#extensions#tabline#enabled = 1
-"let g:airline#extensions#tabline#left_sep = ''
-let g:airline#extensions#tabline#left_sep = ' '
-" let g:airline#extensions#tabline#left_alt_sep = '│'
-let g:airline#extensions#tabline#left_alt_sep = '⎸'
-"let g:airline#extensions#tabline#left_alt_sep = ''
-"map <F2> :!ls<CR>:e
-
-":verbose nnoremap <C-[> :tabprevious<CR>
-":verbose nnoremap <C-]> :tabnext<CR>
-"inoremap <C-[> <Esc>:tabprevious<CR>icd ~/
-"inoremap <C-]> <Esc>:tabnext<CR>i
-
-"nnoremap <C-;> :tabprevious<CR>
-"nnoremap <C-'>   :tabnext<CR>
-"nnoremap <C-n>     :tabnew<CR>
-"inoremap <C-S-tab> <Esc>:tabprevious<CR>i
-"inoremap <C-tab>   <Esc>:tabnext<CR>i
-"inoremap <C-t>     <Esc>:tabnew<CR>
-
+" Switch buffers
 nnoremap <silent> <ESC>[5;2~ :bp<CR>
 nnoremap <silent> <ESC>[6;2~ :bn<CR>
-nnoremap <silent> <ESC>[1;3D <C-w>h
-nnoremap <silent> <ESC>[1;3C <C-w>l
-nnoremap <silent> o <C-w>w
-
-
-" inoremap <silent> <ESC>[5;2~ <ESC>:bp<CR>i
-" inoremap <silent> <ESC>[6;2~ <ESC>:bn<CR>i
 inoremap <silent> <ESC>[5;2~ <ESC>:bp<CR>
 inoremap <silent> <ESC>[6;2~ <ESC>:bn<CR>
 
+" Switch buffers (NeoVIM)
+nnoremap <silent> <S-PageUp> :bp<CR>
+nnoremap <silent> <S-PageDown> :bn<CR>
+inoremap <silent> <S-PageUp> <ESC>:bp<CR>
+inoremap <silent> <S-PageDown> <ESC>:bn<CR>
+
+" Jump words
 nnoremap <silent> <ESC>[1;5D b
 nnoremap <silent> <ESC>[1;5C w
 inoremap <silent> <ESC>[1;5D <C-o>b
 inoremap <silent> <ESC>[1;5C <C-o>w
 
-"nnoremap <C-[> :call feedkeys( line('.')==1 ? '' : 'ddkP' )<CR>
-"nnoremap <C-]> ddp
+" Move lines
+nnoremap <silent> <C-Up> :call feedkeys(line('.') == 1 ? '' : '"mddk"mP')<CR>
+nnoremap <silent> <C-Down> ddp
+inoremap <C-Up> <C-o>:call feedkeys(line('.') == 1 ? '' : '<C-o>"mdd<C-o>k<C-o>"mP')<CR>
+inoremap <C-Down> <C-o>:execute "normal! \"mdd\"mp"<CR>
 
+" Save with C-s
 nnoremap <C-s> :w<CR>
 inoremap <C-s> <C-o>:w<CR>
 
-" nnoremap <silent> <C-n>      :tabnew<CR>
-" nnoremap <silent> <C-o>      :CtrlPMixed<CR>
-nnoremap <silent> <C-p>      :CtrlPMixed<CR>
+" Delete buffer
 nnoremap <silent> <C-x>      :bd<CR>
-nnoremap <silent> <C-q>      :q<CR>
 "nnoremap b  :buffers<CR>:b
 
+" Search symbols
 nnoremap <silent> <C-l> :CtrlPFunky<CR>
 inoremap <silent> <C-l> <ESC>:CtrlPFunky<CR>
-
-let g:ctrlp_funky_syntax_highlight = 1
-let g:ctrlp_funky_matchtype = 'path'
-
-function ToggleOrSexy() range
-    echo matchstr(getline(a:firstline), '^[ ]*#')
-    if len(matchstr(getline(a:firstline), '^[ ]*#'))
-        "echo 'toggle'
-        ":call NERDComment(a:firstline, a:lastline)
-        exe a:firstline . ',' . a:lastline . 'call NERDComment(0, "toggle")'
-    else
-        "echo 'sexy'
-        exe a:firstline . ',' . a:lastline . 'call NERDComment(0, "alignleft")'
-    endif
-endfunction
 
 nnoremap <silent> <C-_> :call NERDComment(0, "toggle")<CR><CR>
 "vnoremap <silent> <C-_> :call NERDComment(0, "alignleft")<CR><CR>
@@ -190,101 +159,33 @@ nnoremap <silent> <C-_> :call NERDComment(0, "toggle")<CR><CR>
 vnoremap <silent> <C-_> :call NERDComment(0, "toggle")<CR><CR>
 inoremap <silent> <C-_> <C-o>:call NERDComment(0, "toggle")<CR><C-o><CR>
 
-" Go to previous split
-" nnoremap <ESC>[1;2D <C-W><C-H>
-
-"map <C-o> <plug>NERDTreeTabsToggle<CR>
-"map <Leader>n <plug>NERDTreeTabsToggle<CR>
-"map <C-o> :q!<CR>
-
 map <PageUp> <C-u>
 map <PageDown> <C-d>
 
-"let g:nerdtree_tabs_open_on_console_startup=1
+" Ctrl-P
+let g:ctrlp_funky_syntax_highlight = 1
+let g:ctrlp_funky_matchtype = 'path'
 
-""""""""""""""""""""""""""""""""
-" Airline
-""""""""""""""""""""""""""""""""
+let g:webdevicons_enable_ctrlp = 1
+" let g:ctrlp_max_height = 20
+let g:ctrlp_match_window = 'bottom,order:ttb,min:16,max:16,results:16'
+let g:ctrlp_match_window_reversed = 0
+let g:ctrlp_map = '<c-k>'
+let g:ctrlp_custom_ignore = '\v[\/](\.git|node_modules|\.env[236]*|\.cache|\.exe|\.so|\.pyc|\.pyo|__pycache__|build)'
 
-"let g:airline_powerline_fonts = 1
-let g:airline_powerline_fonts = 0
+let g:ctrlp_user_command = {
+            \   'types': {
+            \       1: ['.git', 'cd %s && git ls-files -co --exclude-standard'],
+            \   },
+\}
+let g:ctrlp_match_current_file = 0
+let g:ctrlp_types = ['fil']
 
-let g:airline_theme='kalisi'
-"let g:airline_theme='term'
-"let g:airline_theme='molokai'
-"let g:airline_solarized_bg='dark'
+let g:ctrlp_cmd = 'CtrlPMRUFiles' " Does not work
 
-let g:airline_enable_branch=0
-"let g:airline_mode_map = {
-    "\ '__': '-',
-    "\ 'n': 'N',
-    "\ 'i': 'I',
-    "\ 'R': 'R',
-    "\ 'c': 'C',
-    "\ 'v': 'V',
-    "\ 'V': 'V',
-    "\ '^V': 'V',
-    "\ 's': 'S',
-    "\ 'S': 'S',
-    "\ '^S': 'S',
-    "\ }
-    "\ 'i': '',
-let g:airline_mode_map = {
-    \ '__': '',
-    \ 'n': '',
-    \ 'i': '',
-    \ 'R': '',
-    \ 'c': '',
-    \ 'v': '',
-    \ 'V': '',
-    \ '^V': '',
-    \ 's': '',
-    \ 'S': '',
-    \ '^S': '',
-    \ }
+nnoremap <silent> <C-p>      :CtrlP<CR>
 
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#show_buffers = 1
-let g:airline#extensions#tabline#show_tabs = 0
-let g:airline#extensions#tabline#buffer_min_count = 1
-let g:airline#extensions#tabline#combined = 1
-let g:airline#extensions#tabline#tab_nr_type = 2
-let g:airline_skip_empty_sections = 1
-
-"let g:airline_left_sep = ''
-"let g:airline_right_sep = ''
-let g:airline_left_sep = ''
-"let g:airline_left_sep = ''
-let g:airline_right_sep = ''
-
-let g:airline_left_sep = ''
-let g:airline_right_sep = ''
-
-":AirlineTheme badwolf
-":AirlineTheme dark
-":AirlineTheme deus
-
-"set laststatus=0
-
-set timeoutlen=500 ttimeoutlen=250
-"set esckeys
-
-"let g:jedi#completions_command = "<C-Space>"
-let g:jedi#completions_command = "<C-p>"
-let g:jedi#popup_on_dot = 0
-"let g:jedi#auto_initialization = 0
-"let g:jedi#use_tabs_not_buffers = 1
-let g:jedi#smart_auto_mappings = 0
-
-let g:jedi#goto_command = "<C-M>"
-
-let g:jedi#completions_enabled = 1
-
-set noshowmode
-let g:jedi#show_call_signatures = 0  " 2
-let g:jedi#show_call_signatures_delay = 0
-"call jedi#configure_call_signatures()
-
+" Completion mode
 "set wildmode=longest,list,full
 set wildmode=longest,list
 set wildmenu
@@ -305,57 +206,12 @@ inoremap <C-h> <C-W>
 nnoremap <S-Tab> <<
 inoremap <S-Tab> <C-d>
 
-"imap <silent> <Home> <Esc><Home>i
+" Show cursor line, hide cursor column
+set cursorline
+set nocursorcolumn
 
-:set cursorline
-:set nocursorcolumn
-
-:set fillchars+=vert:│
-
-" CommandT
-:let g:CommandTFileScanner = 'git'
-
-" CtrlP
-let g:webdevicons_enable_ctrlp = 1
-" let g:ctrlp_max_height = 20
-let g:ctrlp_match_window = 'bottom,order:ttb,min:16,max:16,results:16'
-let g:ctrlp_match_window_reversed = 0
-let g:ctrlp_map = '<c-k>'
-"let g:ctrlp_custom_ignore = {
-            "\ 'dir': '\.git$|node_modules$|\.env$',
-            "\ 'file': '\.exe$|\.so$|\.pyc$|\.pyo$|__pycache__$'
-            "\ }
-let g:ctrlp_custom_ignore = '\v[\/](\.git|node_modules|\.env[236]*|\.cache|\.exe|\.so|\.pyc|\.pyo|__pycache__|build)'
-
-let g:ctrlp_user_command = {
-            \   'types': {
-            \       1: ['.git', 'cd %s && git ls-files -co --exclude-standard'],
-            \   },
-\}
-let g:ctrlp_match_current_file = 0
-let g:ctrlp_types = ['fil']
-
-let g:ctrlp_cmd = 'CtrlPMRUFiles' " Does not work
-
-"let g:ctrlp_buffer_func = { 'enter': 'BrightHighlightOn', 'exit':  'BrightHighlightOff', }
-
-"function BrightHighlightOn()
-  "hi CursorLine ctermbg=darkred
-"endfunction
-
-"function BrightHighlightOff()
-  "hi CursorLine ctermbg=235
-"endfunction
-
-"let g:ctrlp_prompt_mappings = {
-"    \ 'AcceptSelection("e")': ['<2-LeftMouse>'],
-"    \ 'AcceptSelection("t")': ['<cr>'],
-"    \ }
-
-" adding to vim-airline's tabline
-let g:webdevicons_enable_airline_tabline = 1
-" adding to vim-airline's statusline
-let g:webdevicons_enable_airline_statusline = 1
+" Vertical sep
+set fillchars+=vert:│
 
 " Cursor
 
@@ -371,23 +227,17 @@ hi CursorLineNr ctermfg=119 cterm=bold
 
 hi Normal guibg=NONE ctermbg=NONE
 hi NonText ctermbg=NONE
-hi EndOfBuffer ctermfg=118
-
-filetype plugin on
+"hi EndOfBuffer ctermfg=118
 
 " Indentation
 set tabstop=4 softtabstop=4 shiftwidth=4
-"set list listchars=tab:❘-,trail:·,extends:»,precedes:«,nbsp:×
+
+" Chars
 set list listchars=tab: ,trail:·,extends:»,precedes:«,nbsp:×
 " 
 
 " let g:indent_guides_enable_on_vim_startup=1
 let g:indentLine_char = '▏'
-"let g:indentLine_char = '⎣'
-"let g:indentLine_char = '⎨'
-"let g:indentLine_char = '⎬'
-"let g:indentLine_char = '├'
-"let g:indentLine_char = '┊'
 let g:indentLine_first_char = '▏'
 "let g:indentLine_first_char = '>'
 " let g:indentLine_first_char = 'x'
@@ -400,56 +250,16 @@ let g:indentLine_concealcursor = ''
 " let g:indentLine_setConceal = 0
 let g:indentLine_color_term = 239
 " let g:indentLine_bgcolor_term = 202
-let g:indentLine_showFirstIndentLevel = 1
+let g:indentLine_showFirstIndentLevel = 0
 let g:indentLine_fileTypeExclude = ['text', 'json', 'help']
 let g:indentLine_faster = 1 " TODO: Experimental
-
-" PyMode
-"
-"let g:pymode_folding = 0
-"let g:pymode_lint = 1
-"let g:pymode_python = 'python'
-
-"nnoremap <silent> <F5> :PymodeLint<CR>
-"inoremap <silent> <F5> <C-o>:PymodeLint<CR>
-
-"let g:pymode_python = 'python3'
-"let g:pymode_rope = 0
-
-" PyFlakes
-
-let g:pyflakes_use_quickfix = 0
-
-" Syntastic
-
-" let g:syntastic_check_on_open = 1
-let g:syntastic_python_checkers = ['flake8']
-let g:syntastic_javascript_checkers = ['eslint']
-let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [],'passive_filetypes': [] }
-let g:syntastic_enable_signs = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_error_symbol = '✖︎'
-let g:syntastic_style_error_symbol = '✖︎'
-let g:syntastic_warning_symbol = '∙∙'
-let g:syntastic_style_warning_symbol = '∙∙'
-let g:syntastic_always_populate_loc_list = 1
-
-"nnoremap <silent> <F5> :w<CR>:SyntasticCheck<CR>
-"inoremap <silent> <F5> <C-o>:w<CR><C-o>:SyntasticCheck<CR>
-"nnoremap <silent> <F6> :Errors<CR>
-"inoremap <silent> <F6> <C-o>:Errors<CR>
-
-"nnoremap <silent> ; :lprev<CR>
-"inoremap <silent> ; <C-o>:lprev<CR>i
-"nnoremap <silent> ' :lnext<CR>
-"inoremap <silent> <ESC>[] <C-o>:lnext<CR>i
 
 " Fix cursor positioning on I->N mode switch
 " au InsertLeave * call cursor([getpos('.')[1], getpos('.')[2]+1])
 
 " Conceal
 
-" syn keyword Operator lambda conceal cchar=λ
+syn keyword Operator lambda conceal cchar=λ
 
 " Backups
 
@@ -464,63 +274,6 @@ set nobackup
 " Clipboard fix
 set clipboard=unnamedplus
 
-" Char code
-
-function! CharSegment()
-    let char = matchstr(getline('.'), '\%' . col('.') . 'c.')
-    let code = char2nr(char)
-
-    if code == 0
-        let char = ' '
-    endif
-
-    "let g:airline_section_z .= ' ' . code
-    return printf("%3d 0x%04x (%s)", code, code, char)
-endfunction
-
-function! SectionsInit()
-  "call airline#parts#define_function('cwd', 'getcwd')
-  "call airline#parts#define_minwidth('cwd', 80) "adjust as necessary, it'll check against windwidth()
-  "let g:airline_section_b = airline#section#create(['Buf #[%n] ', 'cwd'])
-  "let g:airline_section_z .= '  %{CharSegment()}'
-  "let g:airline_section_a = 'A'
-  "let g:airline_section_b = 'B'
-  "let g:airline_section_c = 'C'
-  "let g:airline_section_x = 'X'
-  "let g:airline_section_y = 'Y'
-  "let g:airline_section_z = 'Z'
-  "let g:airline_section_b = g:airline_section_c
-  "let g:airline_section_c = ' '
-  let g:airline_section_b = ''
-  "let g:airline_section_x = '%{Breadcrumbs()}'
-  let g:airline_section_x = ''
-  let g:airline_section_y = '%#__accent_bold#%4l%#__restore__#%#__accent_bold#/%L%#__restore__#:%-4c %{CharSegment()}'
-  let g:airline_section_z = ''
-endfunction
-
-"autocmd VimEnter * call SectionsInit()
-"augroup airline_init
-    "autocmd!
-    autocmd User AirlineAfterInit call SectionsInit()
-"augroup END
-
-" Make section Y customizable again!
-let g:webdevicons_enable_airline_statusline_fileformat_symbols = 0
-
-" Error/warning highlights
-
-"hi SpellBad ctermbg=9
-"hi SpellCap ctermbg=11
-
-" Interactive bash (with .bashrc)
-":set shellcmdflag=-ic
-
-let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
-let g:airline#extensions#tabline#fnamemod =  ':t'
-
-" Prevent cursor from jumping left when leaving insert mode
-"inoremap <silent> <Esc> <C-O>:stopinsert<CR>
-
 " Remove trailing whitespaces
 function CleanUp()
     %s/\s\+$//e
@@ -530,13 +283,6 @@ autocmd BufWritePre * call CleanUp()
 
 ":set noeol
 ":set nofixeol
-
-"set tabstop=4
-"set softtabstop=4
-"set shiftwidth=2
-
-" Disable jedi docstring popup
-"autocmd FileType python setlocal completeopt-=preview
 
 " Allow switching to other buffer if current buffer has unsaved changes
 set hidden
@@ -549,11 +295,6 @@ function! InsertEnterHook()
     hi BufTabLineCurrent ctermbg=161 ctermfg=255 cterm=bold
     hi CursorLineNr ctermfg=161
     let g:CursorColumnI = col('.')
-    ":hi LineNr ctermfg=161
-    ":hi LineNr ctermbg=52
-    ":hi CursorColumn ctermbg=52
-    ":hi CursorLine ctermbg=52
-    ":hi CursorColumn ctermbg=52
 endfunction
 
 function! InsertLeaveHook()
@@ -562,11 +303,6 @@ function! InsertLeaveHook()
     hi BufTabLineCurrent ctermbg=118 ctermfg=0 cterm=bold
     hi CursorLineNr ctermfg=118
     if col('.') != g:CursorColumnI | call cursor(0, col('.')+1) | endif
-    ":hi LineNr ctermfg=250
-    ":hi LineNr ctermbg=236
-    ":hi CursorColumn ctermbg=235
-    ":hi CursorLine ctermbg=235
-    ":hi CursorColumn ctermbg=235
 endfunction
 
 autocmd InsertEnter * call InsertEnterHook()
@@ -586,28 +322,11 @@ autocmd CursorMovedI * let CursorColumnI = col('.')
 "exec 'autocmd FileType nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
 "endfunction
 
-"au VimEnter * call NERDTreeHighlightFile('jade', 'green', 'none', 'green', '#151515')
-"au VimEnter * call NERDTreeHighlightFile('ini', 'yellow', 'none', 'yellow', '#151515')
-"au VimEnter * call NERDTreeHighlightFile('md', 'blue', 'none', '#3366FF', '#151515')
-"au VimEnter * call NERDTreeHighlightFile('yml', 'yellow', 'none', 'yellow', '#151515')
-"au VimEnter * call NERDTreeHighlightFile('config', 'yellow', 'none', 'yellow', '#151515')
-"au VimEnter * call NERDTreeHighlightFile('conf', 'yellow', 'none', 'yellow', '#151515')
-"au VimEnter * call NERDTreeHighlightFile('json', 'yellow', 'none', 'yellow', '#151515')
-"au VimEnter * call NERDTreeHighlightFile('html', 'yellow', 'none', 'yellow', '#151515')
-"au VimEnter * call NERDTreeHighlightFile('styl', 'cyan', 'none', 'cyan', '#151515')
-"au VimEnter * call NERDTreeHighlightFile('css', 'cyan', 'none', 'cyan', '#151515')
-"au VimEnter * call NERDTreeHighlightFile('coffee', 'Red', 'none', 'red', '#151515')
-"au VimEnter * call NERDTreeHighlightFile('js', 'Red', 'none', '#ffa500', '#151515')
-"au VimEnter * call NERDTreeHighlightFile('rb', 'Red', 'none', '#ffa500', '#151515')
-"au VimEnter * call NERDTreeHighlightFile('php', 'Magenta', 'none', '#ff00ff', '#151515')
-
 " piecrumbs
 
 let g:piecrumbs_glue = '  '
 
-" Tagbar
-
-"nnoremap <F8> :TagbarToggle<CR>
+" Switch between windows using Tab
 nnoremap <Tab> <C-W>w
 
 "set omnifunc=syntaxcomplete#Complete
@@ -669,14 +388,6 @@ inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
 "inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
 "inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
 
-" YouCompleteMe
-
-let g:ycm_auto_trigger = 0
-let g:ycm_key_invoke_completion = '<C-p>'
-let g:ycm_autoclose_preview_window_after_completion = 1
-let g:ycm_autoclose_preview_window_after_insertion = 1
-let g:ycm_key_list_stop_completion = ['<CR>']
-
 " BufTabLine
 
 let g:buftabline_indicators = 1
@@ -707,6 +418,9 @@ let g:mode_map = {
     \ '^S': '',
     \ }
 
+set noshowmode
+
+" Status line color for different modes
 let g:last_mode = ''
 function SetStatusLineColor()
     let m = mode()
@@ -722,6 +436,18 @@ function SetStatusLineColor()
         exe 'hi! StatusLine ctermfg=118'
     endif
     return ''
+endfunction
+
+" Char code
+function! CharCode()
+    let char = matchstr(getline('.'), '\%' . col('.') . 'c.')
+    let code = char2nr(char)
+
+    if code == 0
+        let char = ' '
+    endif
+
+    return printf("%3d 0x%04x (%s)", code, code, char)
 endfunction
 
 function! LinterStatus() abort
@@ -749,9 +475,10 @@ set statusline +=\ %{mode_map[mode()]}\ %*
 set statusline +=\ %<%F%*
 set statusline +=%=
 set statusline +=%1*:%l.%c/%L\ %*
-set statusline +=%1*\ %{CharSegment()}\ %*
+set statusline +=%1*\ %{CharCode()}\ %*
 "set statusline +=%1*%3b\ 0x%04B
 set statusline +=%2*%{LinterStatus()}%*
+"set statusline +=%{strftime('%c')}
 "set statusline +=%<%f%h%m%r%=%b\ 0x%B\ \ %l,%c%V\ %P
 "set statusline +=%=a
 "set statusline +=%{SetStatusLineColor()}
@@ -761,9 +488,6 @@ let g:ale_linters = {
             \'javascript': ['eslint'],
             \'python': ['flake8']
             \}
-
-nnoremap <silent> <F5> :w<CR>:SyntasticCheck<CR>
-inoremap <silent> <F5> <C-o>:w<CR><C-o>:SyntasticCheck<CR>
 
 nnoremap <silent> ; :ALEPrevious<CR>
 nnoremap <silent> ' :ALENext<CR>
@@ -868,4 +592,7 @@ function! SignJump(id)
         echo 'Sign ' . a:id . ' not found'
     endif
 endfunction
+
+" Sexy replace
+:map <C-f> :OverCommandLine<CR>:%
 
