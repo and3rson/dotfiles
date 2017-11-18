@@ -310,7 +310,7 @@ layouts = [
 floating_layout = layout.Floating(
     border_normal=WidgetOpts.GREY_COLOR,
     border_focus=WidgetOpts.HIGHLIGHT_COLOR,
-    border_width=5
+    border_width=2
 )
 
 # Default args for widgets
@@ -412,7 +412,7 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                widgets.ArchLogo(scale=0.9),
+                # widgets.ArchLogo(scale=0.9),
                 widgets.GroupBox3(**group_box_config),
                 # widget.Prompt(
                 #     background=WidgetOpts.HIGHLIGHT_COLOR,
@@ -438,11 +438,11 @@ screens = [
                 #     font=WidgetOpts.MONOSPACE_FONT
                 # ),
                 sep(),
-                widgets.GPMDP(
-                    foreground='#F0F040',
-                    font=WidgetOpts.MONOSPACE_FONT
-                ),
-                sep(),
+                # widgets.GPMDP(
+                    # foreground='#F0F040',
+                    # font=WidgetOpts.MONOSPACE_FONT
+                # ),
+                # sep(),
                 widget.Systray(
                     icon_size=14,
                     # padding_y=2
@@ -487,14 +487,14 @@ screens = [
                 # ),
                 sep(),
                 pacontrol,
-            ] + ([
-                sep(),
-                widgets.Backlight2(
-                    font=WidgetOpts.DEFAULT_FONT,
-                    foreground='#11BBEE',
-                    backlight_name=backlight_name
-                )
-            ] if backlight_name else []) + [
+            # ] + ([
+                # sep(),
+                # widgets.Backlight2(
+                    # font=WidgetOpts.DEFAULT_FONT,
+                    # foreground='#11BBEE',
+                    # backlight_name=backlight_name
+                # )
+            # ] if backlight_name else []) + [
                 sep(),
 #                 widgets.NowPlayingWidget2(
 #                     foreground='#F0F040',
@@ -705,39 +705,41 @@ mouse = [
 
 
 # Make dialogs float & appear at the middle of the screen
-@hook.subscribe.client_new
-def floating_dialogs(window):
-    dialog = window.window.get_wm_type() == 'dialog'
-    transient = window.window.get_wm_transient_for()
-    if dialog or transient:
-        window.floating = True
-        window.float_x = 0
-        window.float_y = 0
-    if window.window.get_name() == 'Friends':
-        window.width = 300
-        window.floating = True
-    if window.window.get_name().strip() == 'Error executing query':
-        window.floating = True
-        window.float_x = 0
-        window.float_y = 0
+# @hook.subscribe.client_new
+# def floating_dialogs(window):
+    # # print('startup_once hook')
+    # dialog = window.window.get_wm_type() == 'dialog'
+    # transient = window.window.get_wm_transient_for()
+    # if dialog or transient:
+        # window.floating = True
+        # window.float_x = 0
+        # window.float_y = 0
+    # if window.window.get_name() == 'Friends':
+        # window.width = 300
+        # window.floating = True
+    # if window.window.get_name().strip() == 'Error executing query':
+        # window.floating = True
+        # window.float_x = 0
+        # window.float_y = 0
 
 
-@hook.subscribe.client_new
-def custom_icons(window):
-    try:
-        icon = WM_ICONS.get(window.cmd_inspect()['wm_class'][1])
-        if icon:
-            wid = window.cmd_info()['id']
-            subprocess.Popen(['/usr/bin/xseticon', '-id', '0x%X' % wid, icon])
-            logger.error('Setting icon {} for window {}'.format(icon, wid))
-            # print ' '.join(['/usr/bin/xseticon', '-id', '0x%X' % wid, icon])
-    except Exception as e:
-        logger.exception('Error in custom_icons method: {}'.format(e))
+# @hook.subscribe.client_new
+# def custom_icons(window):
+    # try:
+        # icon = WM_ICONS.get(window.cmd_inspect()['wm_class'][1])
+        # if icon:
+            # wid = window.cmd_info()['id']
+            # subprocess.Popen(['/usr/bin/xseticon', '-id', '0x%X' % wid, icon])
+            # logger.error('Setting icon {} for window {}'.format(icon, wid))
+            # # print ' '.join(['/usr/bin/xseticon', '-id', '0x%X' % wid, icon])
+    # except Exception as e:
+        # logger.exception('Error in custom_icons method: {}'.format(e))
 
 
 # Always keep at least one terminal app instance running on the first tab
 @hook.subscribe.client_killed
 def respawn_term(window):
+    print('client_killed hook')
     if window.group.name == 't':
         terminals = [
             w
@@ -752,6 +754,7 @@ def respawn_term(window):
 # Run autostart.sh & xrandr.sh
 @hook.subscribe.startup_once
 def autostart():
+    print('startup_once hook')
     subprocess.Popen([os.path.expanduser('~/.config/qtile/autostart.sh')])
     # subprocess.Popen([os.path.expanduser('~/.config/qtile/bin/xrandr.sh')])
 

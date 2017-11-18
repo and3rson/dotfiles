@@ -8,7 +8,9 @@
 # feh --bg-fill ~/.wallpapers/ut/7.jpg
 #feh --bg-fill ~/.wallpapers/utt/Y0amP.jpg
 #feh --bg-fill ~/.wallpapers/new3/minimal_play_vector-wide.jpg
+
 feh --bg-fill ~/.wallpapers/ut/3.jpg
+
 #feh --bg-fill ~/.wallpapers/new3/wallhaven-319318.png
 #echo bg set2
 

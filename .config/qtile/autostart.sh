@@ -5,12 +5,12 @@ PWD=`dirname $0`
 # pulseaudio --start -D
 start-pulseaudio-x11-mod
 $PWD/bin/kbfix.sh
-$PWD/bin/qoverlay.py -d
+#$PWD/bin/qoverlay.py -d
 xbanish &
 # xss-lock -- /sh/i3lock.sh &
 nm-applet &
 blueman-applet &
-$PWD/bin/gpmdp_bg.sh &
+#$PWD/bin/gpmdp_bg.sh &
 # deluged -l /tmp/deluged.log &
 
 # sudo pritunl-client-gtk &
