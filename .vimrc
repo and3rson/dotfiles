@@ -9,6 +9,7 @@ set nowrap
 
 set rtp+=~/.vim/bundle/Vundle.vim
 set rtp+=~/.vim/scripts
+set rtp+=/usr/share/vim/vimfiles/plugin
 set t_Co=256
 call vundle#begin()
 
@@ -70,6 +71,10 @@ Plugin 'ervandew/supertab'
 
 Plugin 'ap/vim-css-color'
 Plugin 'osyo-manga/vim-over'
+
+"Plugin 'fzf'
+
+"Plugin 'junegunn/fzf.vim'
 
 call vundle#end()            		" required
 
@@ -150,8 +155,8 @@ nnoremap <silent> <C-x>      :bd<CR>
 "nnoremap b  :buffers<CR>:b
 
 " Search symbols
-nnoremap <silent> <C-l> :CtrlPFunky<CR>
-inoremap <silent> <C-l> <ESC>:CtrlPFunky<CR>
+"nnoremap <silent> <C-l> :CtrlPFunky<CR>
+"inoremap <silent> <C-l> <ESC>:CtrlPFunky<CR>
 
 nnoremap <silent> <C-_> :call NERDComment(0, "toggle")<CR><CR>
 "vnoremap <silent> <C-_> :call NERDComment(0, "alignleft")<CR><CR>
@@ -399,10 +404,30 @@ hi BufTabLineHidden ctermbg=238
 
 " Custom status
 
-hi User1 ctermfg=245
-hi User2 ctermfg=197
+"hi User1 ctermfg=245
+"hi User1 ctermfg=118 cterm=none
+"hi User2 ctermfg=197 cterm=none
+"hi User3 ctermfg=118 cterm=none
 "hi User1 ctermfg=250
 "hi User1 ctermbg=208 " Orange
+
+" Insert
+hi StatusBarInsert ctermbg=197 ctermfg=0
+hi StatusBarInsertInv ctermbg=none ctermfg=197
+" Visual
+hi StatusBarVisual ctermbg=81 ctermfg=0
+hi StatusBarVisualInv ctermbg=none ctermfg=81
+" Normal
+hi StatusBarNormal ctermbg=118 ctermfg=0
+hi StatusBarNormalInv ctermbg=none ctermfg=118
+" Normal
+hi StatusBarReplace ctermbg=222 ctermfg=0
+hi StatusBarReplaceInv ctermbg=none ctermfg=222
+" Text
+hi StatusBarText ctermfg=245
+" Error parts
+hi StatusBarWarning ctermfg=3 ctermbg=none cterm=bold
+hi StatusBarError ctermfg=1 ctermbg=none cterm=bold
 
 let g:mode_map = {
     \ '__': '',
@@ -420,24 +445,6 @@ let g:mode_map = {
 
 set noshowmode
 
-" Status line color for different modes
-let g:last_mode = ''
-function SetStatusLineColor()
-    let m = mode()
-    if m ==# g:last_mode
-        return ''
-    endif
-    let g:last_mode = m
-    if (m ==# 'i')
-        exe 'hi! StatusLine ctermfg=197'
-    elseif (m ==# 'v' || mode() ==# 'V')
-        exe 'hi! StatusLine ctermfg=81'
-    else
-        exe 'hi! StatusLine ctermfg=118'
-    endif
-    return ''
-endfunction
-
 " Char code
 function! CharCode()
     let char = matchstr(getline('.'), '\%' . col('.') . 'c.')
@@ -448,6 +455,19 @@ function! CharCode()
     endif
 
     return printf("%3d 0x%04x (%s)", code, code, char)
+endfunction
+
+function! AleWarnings() abort
+    let l:counts = ale#statusline#Count(bufnr(''))
+    let l:errors = l:counts.error + l:counts.style_error
+    let l:warnings = l:counts.total - l:errors
+    return l:warnings == 0 ? '' : (' ' . l:warnings . 'W ')
+endfunction
+
+function! AleErrors() abort
+    let l:counts = ale#statusline#Count(bufnr(''))
+    let l:errors = l:counts.error + l:counts.style_error
+    return l:errors == 0 ? '' : (' ' . l:errors . 'E ')
 endfunction
 
 function! LinterStatus() abort
@@ -463,25 +483,68 @@ function! LinterStatus() abort
     \)
 endfunction
 
+"call SetStatusLineColor('n')
+
 hi StatusLine cterm=None cterm=None gui=None ctermbg=None
 
 " !!!
 set lazyredraw
 
+function! StatusBar()
+    let s = ''
+    let end = '%*'
+    let m = mode()
+    if (m ==# 'i')
+        let mn = 'Insert'
+    elseif (m ==# 'R')
+        let mn = 'Replace'
+    elseif (m ==# 'v' || m ==# 'V')
+        let mn = 'Visual'
+    else
+        let mn = 'Normal'
+    endif
+    let c1 = printf('%%#StatusBar%s#', mn)
+    let c2 = printf('%%#StatusBar%sInv#', mn)
+    let s .= c1 . ' ' . g:mode_map[m] . ' ' . end
+    let s .= c2 . ' %<%F '
+    let s .= ' %='
+    let s .= '%#StatusBarText# :%l.%c/%L '
+    let s .= ' ' . CharCode() . ' '
+    let s .= '%#StatusBarWarning#' . AleWarnings()
+    let s .= '%#StatusBarError#' . AleErrors()
+    let s .= end
+    return s
+endfunction
+
 set laststatus=2
-set statusline=
-set statusline +=%{SetStatusLineColor()}
-set statusline +=\ %{mode_map[mode()]}\ %*
-set statusline +=\ %<%F%*
-set statusline +=%=
-set statusline +=%1*:%l.%c/%L\ %*
-set statusline +=%1*\ %{CharCode()}\ %*
-"set statusline +=%1*%3b\ 0x%04B
-set statusline +=%2*%{LinterStatus()}%*
-"set statusline +=%{strftime('%c')}
-"set statusline +=%<%f%h%m%r%=%b\ 0x%B\ \ %l,%c%V\ %P
-"set statusline +=%=a
-"set statusline +=%{SetStatusLineColor()}
+set statusline=%!StatusBar()
+"set statusline=
+""set statusline +=%{SetStatusLineColor(mode())}
+"set statusline +=%1*\ %{mode_map[mode()]}\ %*
+"set statusline +=%2*\ %<%F%*
+"set statusline +=%2*%=
+"set statusline +=%2*:%l.%c/%L\ %*
+"set statusline +=%2*\ %{CharCode()}\ %*
+"set statusline +=%!CharCode()
+""set statusline +=%1*%3b\ 0x%04B
+"set statusline +=%3*%{LinterStatus()}%*
+""set statusline +=%{strftime('%c')}
+""set statusline +=%<%f%h%m%r%=%b\ 0x%B\ \ %l,%c%V\ %P
+""set statusline +=%=a
+""set statusline +=%{SetStatusLineColor(mode())}
+
+set statusline=%!StatusBar()
+hi StatusLine ctermfg=255 ctermbg=0
+
+"set updatetime=1000
+"au InsertEnter * :call SetStatusLineColor('i')
+"au InsertLeave * :call SetStatusLineColor('n')
+"au CursorHold * :echo getline('.')
+"au CursorHoldI * :echo getline('.')
+
+" Remap visual mode
+"nnoremap <silent> v :call SetStatusLineColor('v')<CR>v
+"nnoremap <silent> V :call SetStatusLineColor('V')<CR>V
 
 " ALE
 let g:ale_linters = {
@@ -494,8 +557,8 @@ nnoremap <silent> ' :ALENext<CR>
 
 hi Error ctermfg=235 ctermbg=161
 
-let g:ale_sign_error = '->'
-let g:ale_sign_warning = '-]'
+let g:ale_sign_error = '!!'
+let g:ale_sign_warning = '..'
 "let g:ale_sign_column_always = 1
 
 " GitGutter
@@ -595,4 +658,6 @@ endfunction
 
 " Sexy replace
 :map <C-f> :OverCommandLine<CR>:%
+
+set nolazyredraw
 
