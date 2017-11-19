@@ -19,39 +19,27 @@ let g:python_space_error_highlight = 1
 
 Plugin 'VundleVim/Vundle.vim'
 
-"Plugin 'scrooloose/nerdtree' 	    	" Project and file navigation
-"Plugin 'majutsushi/tagbar'          	" Class/module browser
 Plugin 'scrooloose/nerdcommenter'
 
-" Plugin 'mitsuhiko/vim-python-combined'  " Combined Python 2/3 for Vim
+"Plugin 'mitsuhiko/vim-python-combined'  " Combined Python 2/3 for Vim
 "Plugin 'davidhalter/jedi-vim'
+"Plugin 'python-mode/python-mode'
 Plugin 'tpope/vim-fugitive'
-
-"Plugin 'vim-airline/vim-airline'
-"Plugin 'vim-airline/vim-airline-themes'
 
 Plugin 'ap/vim-buftabline'
 
-"Plugin 'wincent/command-t'
 Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'tacahiroy/ctrlp-funky'
+"Plugin 'tacahiroy/ctrlp-funky'
 
-" Plugin 'michaeljsmith/vim-indent-object'
-" Plugin 'nathanaelkane/vim-indent-guides'
+"Plugin 'michaeljsmith/vim-indent-object'
+"Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'Yggdroot/indentLine'
 "Plugin 'hdima/python-syntax'
-
-"Plugin 'terryma/vim-expand-region'
-
-"Plugin 'python-mode/python-mode'
-
-" Plugin 'kevinw/pyflakes-vim'
 
 "Plugin 'vim-syntastic/syntastic'
 Plugin 'w0rp/ale'
 
 Plugin 'Vimjas/vim-python-pep8-indent'
-
 "Plugin 'ryanoasis/vim-devicons'
 
 "Plugin 'and3rson/piecrumbs'
@@ -64,15 +52,12 @@ Plugin 'ervandew/supertab'
 
 "Plugin 'Valloric/YouCompleteMe'
 
-" Plugin 'nvie/vim-flake8'
+"Plugin 'nvie/vim-flake8'
 
-"Bundle 'jistr/vim-nerdtree-tabs'
-" Plugin 'jistr/vim-nerdtree-tabs'
+"Plugin 'jistr/vim-nerdtree-tabs'
 
 Plugin 'ap/vim-css-color'
 Plugin 'osyo-manga/vim-over'
-
-"Plugin 'fzf'
 
 "Plugin 'junegunn/fzf.vim'
 
@@ -86,7 +71,6 @@ filetype plugin indent on
 """"""""""""""""""""""""""""""""
 " Configs
 """"""""""""""""""""""""""""""""
-
 
 syntax enable
 
@@ -171,6 +155,7 @@ map <PageDown> <C-d>
 let g:ctrlp_funky_syntax_highlight = 1
 let g:ctrlp_funky_matchtype = 'path'
 
+let g:webdevicons_enable = 1
 let g:webdevicons_enable_ctrlp = 1
 " let g:ctrlp_max_height = 20
 let g:ctrlp_match_window = 'bottom,order:ttb,min:16,max:16,results:16'
@@ -224,15 +209,14 @@ hi CursorLine ctermbg=235 " cterm=underline
 hi CursorColumn ctermbg=235
 hi StatusLine ctermfg=233
 hi StatusLineNC ctermbg=None ctermfg=240 cterm=None
-" ctermbg=7
 hi MatchParen ctermfg=magenta ctermbg=none
 hi CursorLineNr ctermfg=119 cterm=bold
-" 161
-" Molokai theme patches
 
+" Molokai theme patches
 hi Normal guibg=NONE ctermbg=NONE
 hi NonText ctermbg=NONE
-"hi EndOfBuffer ctermfg=118
+
+hi Error ctermfg=235 ctermbg=161
 
 " Indentation
 set tabstop=4 softtabstop=4 shiftwidth=4
@@ -321,77 +305,13 @@ autocmd CursorMovedI * let CursorColumnI = col('.')
 
 "autocmd VimLeave * silent !echo -ne "\033]112\007"
 
-" NERDTress File highlighting
-"function! NERDTreeHighlightFile(extension, fg, bg, guifg, guibg)
-"exec 'autocmd FileType nerdtree highlight ' . a:extension .' ctermbg='. a:bg .' ctermfg='. a:fg .' guibg='. a:guibg .' guifg='. a:guifg
-"exec 'autocmd FileType nerdtree syn match ' . a:extension .' #^\s\+.*'. a:extension .'$#'
-"endfunction
-
 " piecrumbs
-
 let g:piecrumbs_glue = '  '
 
 " Switch between windows using Tab
 nnoremap <Tab> <C-W>w
 
 "set omnifunc=syntaxcomplete#Complete
-
-function! Compl(findstart, base)
-    if a:findstart
-        let line = getline('.')
-        let start = col('.') - 1
-        while start > 0 && (len(matchstr(line[start - 1], '[a-zA-Z_]')) != 0)
-            let start -= 1
-        endwhile
-        return start
-    else
-        let expr = ''
-        for c in split(a:base, '\zs')
-            if len(expr) == 0
-                let expr .= c
-            else
-                let expr .= '[a-zA-Z0-9_]*' . c
-            endif
-        endfor
-        let current_line = 0
-        let line_count = line('$')
-        echo current_line
-        echo line_count
-        let matches = []
-        while current_line < line_count
-            call substitute(getline(current_line), '[a-zA-Z_][a-zA-Z0-9_]*', '\=add(matches, submatch(0))', 'g')
-            "let m = matchstr(getline(current_line), '[a-zA-Z_][0-9]\*')
-            "echo matches
-            let current_line += 1
-        endwhile
-        let results = []
-        for m in matches
-            "echo m
-            "echo expr
-            "echo x
-            if len(matchstr(m, expr))
-                "echo 'MATCHED ' . m
-                "echo x
-                call add(results, m)
-            endif
-        endfor
-        return results
-        "return [a:base . 'aa', a:base . 'ab', a:base . 'ac']
-    endif
-endfunction
-
-" SuperTab
-let g:SuperTabDefaultCompletionType = "<C-X><C-U>"
-inoremap <C-p> <C-X><C-U>
-set completefunc=Compl
-
-" Completion tweaks
-inoremap <expr> <Esc>      pumvisible() ? "\<C-o>\<Esc>" : "\<Esc>"
-inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
-"inoremap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
-"inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"
-"inoremap <expr> <PageDown> pumvisible() ? "\<PageDown>\<C-p>\<C-n>" : "\<PageDown>"
-"inoremap <expr> <PageUp>   pumvisible() ? "\<PageUp>\<C-p>\<C-n>" : "\<PageUp>"
 
 " BufTabLine
 
@@ -402,150 +322,6 @@ hi BufTabLineCurrent ctermbg=118 ctermfg=0 cterm=bold
 hi BufTabLineActive ctermbg=118 ctermfg=0 cterm=bold
 hi BufTabLineHidden ctermbg=238
 
-" Custom status
-
-"hi User1 ctermfg=245
-"hi User1 ctermfg=118 cterm=none
-"hi User2 ctermfg=197 cterm=none
-"hi User3 ctermfg=118 cterm=none
-"hi User1 ctermfg=250
-"hi User1 ctermbg=208 " Orange
-
-" Insert
-hi StatusBarInsert ctermbg=197 ctermfg=0
-hi StatusBarInsertInv ctermbg=none ctermfg=197
-" Visual
-hi StatusBarVisual ctermbg=81 ctermfg=0
-hi StatusBarVisualInv ctermbg=none ctermfg=81
-" Normal
-hi StatusBarNormal ctermbg=118 ctermfg=0
-hi StatusBarNormalInv ctermbg=none ctermfg=118
-" Normal
-hi StatusBarReplace ctermbg=222 ctermfg=0
-hi StatusBarReplaceInv ctermbg=none ctermfg=222
-" Text
-hi StatusBarText ctermfg=245
-" Error parts
-hi StatusBarWarning ctermfg=3 ctermbg=none cterm=bold
-hi StatusBarError ctermfg=1 ctermbg=none cterm=bold
-
-let g:mode_map = {
-    \ '__': '',
-    \ 'n': '',
-    \ 'i': '',
-    \ 'R': '',
-    \ 'c': '',
-    \ 'v': '',
-    \ 'V': '',
-    \ '^V': '',
-    \ 's': '',
-    \ 'S': '',
-    \ '^S': '',
-    \ }
-
-set noshowmode
-
-" Char code
-function! CharCode()
-    let char = matchstr(getline('.'), '\%' . col('.') . 'c.')
-    let code = char2nr(char)
-
-    if code == 0
-        let char = ' '
-    endif
-
-    return printf("%3d 0x%04x (%s)", code, code, char)
-endfunction
-
-function! AleWarnings() abort
-    let l:counts = ale#statusline#Count(bufnr(''))
-    let l:errors = l:counts.error + l:counts.style_error
-    let l:warnings = l:counts.total - l:errors
-    return l:warnings == 0 ? '' : (' ' . l:warnings . 'W ')
-endfunction
-
-function! AleErrors() abort
-    let l:counts = ale#statusline#Count(bufnr(''))
-    let l:errors = l:counts.error + l:counts.style_error
-    return l:errors == 0 ? '' : (' ' . l:errors . 'E ')
-endfunction
-
-function! LinterStatus() abort
-    let l:counts = ale#statusline#Count(bufnr(''))
-
-    let l:all_errors = l:counts.error + l:counts.style_error
-    let l:all_non_errors = l:counts.total - l:all_errors
-
-    return l:counts.total == 0 ? '' : printf(
-    \   ' %dW %dE ',
-    \   all_non_errors,
-    \   all_errors
-    \)
-endfunction
-
-"call SetStatusLineColor('n')
-
-hi StatusLine cterm=None cterm=None gui=None ctermbg=None
-
-" !!!
-set lazyredraw
-
-function! StatusBar()
-    let s = ''
-    let end = '%*'
-    let m = mode()
-    if (m ==# 'i')
-        let mn = 'Insert'
-    elseif (m ==# 'R')
-        let mn = 'Replace'
-    elseif (m ==# 'v' || m ==# 'V')
-        let mn = 'Visual'
-    else
-        let mn = 'Normal'
-    endif
-    let c1 = printf('%%#StatusBar%s#', mn)
-    let c2 = printf('%%#StatusBar%sInv#', mn)
-    let s .= c1 . ' ' . g:mode_map[m] . ' ' . end
-    let s .= c2 . ' %<%F '
-    let s .= ' %='
-    let s .= '%#StatusBarText# :%l.%c/%L '
-    let s .= ' ' . CharCode() . ' '
-    let s .= '%#StatusBarWarning#' . AleWarnings()
-    let s .= '%#StatusBarError#' . AleErrors()
-    let s .= end
-    return s
-endfunction
-
-set laststatus=2
-set statusline=%!StatusBar()
-"set statusline=
-""set statusline +=%{SetStatusLineColor(mode())}
-"set statusline +=%1*\ %{mode_map[mode()]}\ %*
-"set statusline +=%2*\ %<%F%*
-"set statusline +=%2*%=
-"set statusline +=%2*:%l.%c/%L\ %*
-"set statusline +=%2*\ %{CharCode()}\ %*
-"set statusline +=%!CharCode()
-""set statusline +=%1*%3b\ 0x%04B
-"set statusline +=%3*%{LinterStatus()}%*
-""set statusline +=%{strftime('%c')}
-""set statusline +=%<%f%h%m%r%=%b\ 0x%B\ \ %l,%c%V\ %P
-""set statusline +=%=a
-""set statusline +=%{SetStatusLineColor(mode())}
-
-set statusline=%!StatusBar()
-hi StatusLine ctermfg=255 ctermbg=0
-
-"set updatetime=1000
-"au InsertEnter * :call SetStatusLineColor('i')
-"au InsertLeave * :call SetStatusLineColor('n')
-"au CursorHold * :echo getline('.')
-"au CursorHoldI * :echo getline('.')
-
-" Remap visual mode
-"nnoremap <silent> v :call SetStatusLineColor('v')<CR>v
-"nnoremap <silent> V :call SetStatusLineColor('V')<CR>V
-
 " ALE
 let g:ale_linters = {
             \'javascript': ['eslint'],
@@ -555,7 +331,6 @@ let g:ale_linters = {
 nnoremap <silent> ; :ALEPrevious<CR>
 nnoremap <silent> ' :ALENext<CR>
 
-hi Error ctermfg=235 ctermbg=161
 
 let g:ale_sign_error = '!!'
 let g:ale_sign_warning = '..'
@@ -567,97 +342,11 @@ let g:gitgutter_eager = 0
 set signcolumn=yes
 "let g:gitgutter_sign_column_always = 1
 
-" VimSignature
-let g:SignatureMap = {
-    \ 'Leader'             :  "m",
-    \ 'PlaceNextMark'      :  "m,",
-    \ 'ToggleMarkAtLine'   :  "m.",
-    \ 'PurgeMarksAtLine'   :  "m-",
-    \ 'DeleteMark'         :  "dm",
-    \ 'PurgeMarks'         :  "m!",
-    \ 'PurgeMarkers'       :  "m<BS>",
-    \ 'GotoNextLineAlpha'  :  "']",
-    \ 'GotoPrevLineAlpha'  :  "'[",
-    \ 'GotoNextSpotAlpha'  :  "`]",
-    \ 'GotoPrevSpotAlpha'  :  "`[",
-    \ 'GotoNextLineByPos'  :  "]'",
-    \ 'GotoPrevLineByPos'  :  "['",
-    \ 'GotoNextSpotByPos'  :  "]`",
-    \ 'GotoPrevSpotByPos'  :  "[`",
-    \ 'GotoNextMarker'     :  "]-",
-    \ 'GotoPrevMarker'     :  "[-",
-    \ 'GotoNextMarkerAny'  :  "]=",
-    \ 'GotoPrevMarkerAny'  :  "[=",
-    \ 'ListBufferMarks'    :  "m/",
-    \ 'ListBufferMarkers'  :  "m?"
-    \ }
-
-" Fast Escape
-" https://www.reddit.com/r/vim/comments/2391u5/delay_while_using_esc_to_exit_insert_mode/cgw9xrh/
-
-augroup FastEscape
-    autocmd!
-    au InsertEnter * set timeoutlen=0
-    au InsertLeave * set timeoutlen=500
-augroup END
-
-inoremap <C-c> <Esc>
-
-" Custom signs
-let i = 0
-while i < 10
-    exe 'sign define Sign_'.i.' text='.i.' texthl=Function'
-    exe 'nnoremap <silent> mm'.i.' :call SignPlace('.i.')<CR>'
-    exe 'nnoremap <silent> m'.i.' :call SignJump('.i.')<CR>'
-    let i = i + 1
-endwhile
-
-function! EnsureSigns()
-    if ! exists('b:signs')
-        let b:signs = 1
-        let b:sign_line_to_id = {}
-        let b:sign_id_to_line = {}
-    endif
-endfunction
-
-function! SignPlace(id)
-    call EnsureSigns()
-
-    let exists = has_key(b:sign_line_to_id, line('.'))
-    let is_same = 0
-    if exists && (b:sign_line_to_id[line('.')] ==# a:id)
-        let is_same = 1
-    endif
-
-    if exists
-        exe 'sign unplace '.(line('.')+4000000).' buffer='.buffer_number('.')
-        let old_id= b:sign_line_to_id[line('.')]
-        unlet b:sign_line_to_id[line('.')]
-        unlet b:sign_id_to_line[old_id]
-    endif
-    if ! is_same
-        if has_key(b:sign_id_to_line, a:id)
-            echo 'EXISTS'
-            exe 'sign unplace '.(b:sign_id_to_line[a:id]+4000000).' buffer='.buffer_number('.')
-        endif
-        exe 'sign place '.(line('.')+4000000).' line='.line('.').' name=Sign_'.a:id.' buffer='.buffer_number('.')
-        let b:sign_line_to_id[line('.')] = a:id
-        let b:sign_id_to_line[a:id] = line('.')
-    endif
-endfunction
-
-function! SignJump(id)
-    call EnsureSigns()
-
-    if has_key(b:sign_id_to_line, a:id)
-        exe ':'.b:sign_id_to_line[a:id]
-    else
-        echo 'Sign ' . a:id . ' not found'
-    endif
-endfunction
-
 " Sexy replace
 :map <C-f> :OverCommandLine<CR>:%
 
-set nolazyredraw
+source $HOME/.vim/scripts/signs.vim
+source $HOME/.vim/scripts/fastescape.vim
+source $HOME/.vim/scripts/statusline.vim
+source $HOME/.vim/scripts/compl.vim
 
