@@ -59,7 +59,11 @@ Plugin 'ervandew/supertab'
 Plugin 'ap/vim-css-color'
 Plugin 'osyo-manga/vim-over'
 
+Plugin 'tmux-plugins/vim-tmux'
+
 "Plugin 'junegunn/fzf.vim'
+
+"Plugin 'Shougo/deoplete.nvim'
 
 call vundle#end()            		" required
 
@@ -105,7 +109,6 @@ set whichwrap+=<,>,h,l,[,]
 " Timeouts
 set timeoutlen=500 ttimeoutlen=250
 
-
 " Switch buffers
 nnoremap <silent> <ESC>[5;2~ :bp<CR>
 nnoremap <silent> <ESC>[6;2~ :bn<CR>
@@ -133,20 +136,26 @@ inoremap <C-Down> <C-o>:execute "normal! \"mdd\"mp"<CR>
 " Save with C-s
 nnoremap <C-s> :w<CR>
 inoremap <C-s> <C-o>:w<CR>
+nnoremap <M-s> :w<CR>
+inoremap <M-s> <C-o>:w<CR>
 
 " Delete buffer
-nnoremap <silent> <C-x>      :bd<CR>
+nnoremap <silent> <M-x>      :bd<CR>
 "nnoremap b  :buffers<CR>:b
+
+" Redo with Alt
+nnoremap <silent> <M-r> <C-r>
+nnoremap <silent> r <C-r>
 
 " Search symbols
 "nnoremap <silent> <C-l> :CtrlPFunky<CR>
 "inoremap <silent> <C-l> <ESC>:CtrlPFunky<CR>
 
-nnoremap <silent> <C-_> :call NERDComment(0, "toggle")<CR><CR>
+nnoremap <silent> <M-/> :call NERDComment(0, "toggle")<CR><CR>
 "vnoremap <silent> <C-_> :call NERDComment(0, "alignleft")<CR><CR>
 "vnoremap <silent> <C-_> :call ToggleOrSexy()<CR>
-vnoremap <silent> <C-_> :call NERDComment(0, "toggle")<CR><CR>
-inoremap <silent> <C-_> <C-o>:call NERDComment(0, "toggle")<CR><C-o><CR>
+vnoremap <silent> <M-/> :call NERDComment(0, "toggle")<CR><CR>
+inoremap <silent> <M-/> <C-o>:call NERDComment(0, "toggle")<CR><C-o><CR>
 
 map <PageUp> <C-u>
 map <PageDown> <C-d>
@@ -174,6 +183,7 @@ let g:ctrlp_types = ['fil']
 let g:ctrlp_cmd = 'CtrlPMRUFiles' " Does not work
 
 nnoremap <silent> <C-p>      :CtrlP<CR>
+nnoremap <silent> <M-p>      :CtrlP<CR>
 
 " Completion mode
 "set wildmode=longest,list,full
@@ -190,6 +200,7 @@ imap <silent> <Esc>OF <C-o><End>
 
 " Delete words
 inoremap <C-h> <C-W>
+inoremap <M-BS> <C-W>
 
 " Unindent
 
@@ -343,10 +354,36 @@ set signcolumn=yes
 "let g:gitgutter_sign_column_always = 1
 
 " Sexy replace
-:map <C-f> :OverCommandLine<CR>:%
+:map <C-f> :OverCommandLine<CR>:
 
 source $HOME/.vim/scripts/signs.vim
 source $HOME/.vim/scripts/fastescape.vim
 source $HOME/.vim/scripts/statusline.vim
 source $HOME/.vim/scripts/compl.vim
+"pyfile $HOME/.vim/scripts/compl.py
+
+"function! PyCompl(findstart, base)
+    "return ['a', 'b']
+    "result = exe 'py compl('.a:findstart.', "'.a:base.'")'
+    "return result
+"endfunction
+"set completefunc=PyCompl
+
+" Disable folding
+set nofoldenable
+set foldlevelstart=99
+
+" Deoplete
+"let g:deoplete#enable_at_startup = 1
+"let g:deoplete#auto_complete_start_length = 0
+
+"inoremap <expr> <Esc>      pumvisible() ? "\<C-o>\<Esc>" : "\<Esc>"
+"inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
+
+" python3 plugins
+"call remote#host#RegisterPlugin(
+            "\ 'python3', '/home/anderson/.vim/config/compl2.py', [
+            "\ {'sync': v:false, 'name': 'BufWritePost', 'type': 'autocmd', 'opts': {'pattern': '*', 'eval': 'expand("<afile>:p")'}},
+            "\ ]
+            "\ )
 

@@ -1567,10 +1567,10 @@ class PAControl(base._TextBox, NonBlockingSpawn):
         self.spawn(self._do_process, self.on_process_result)
 
     def cmd_increase_volume(self):
-        self.modify_volume(0.04)
+        self.modify_volume(0.02)
 
     def cmd_decrease_volume(self):
-        self.modify_volume(-0.04)
+        self.modify_volume(-0.02)
 
     def cmd_toggle_mute(self):
         self.toggle_mute()

@@ -30,4 +30,5 @@ compton --config ~/.compton.conf -b -f
 # colorfire, euphoria, flux, lockward, pixelcity
 
 $PWD/bin/set_bg.sh
+$PWD/bin/osd.py
 

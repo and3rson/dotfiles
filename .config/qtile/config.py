@@ -423,7 +423,7 @@ screens = [
                 widgets.TaskList2(
                     # font=WidgetOpts.MONOSPACE_FONT,
                     rounded=False,
-                    max_title_width=140,
+                    max_title_width=240,
                     highlight_method='block',
                     border=WidgetOpts.HIGHLIGHT_COLOR,
                     borderwidth=0,

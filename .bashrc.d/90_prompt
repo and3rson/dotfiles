@@ -8,7 +8,6 @@ case $(tty) in /dev/tty[0-9]*)
 esac
 
 
-
 # function is_chroot()
 # {
 #     [ "$(awk '$5=="/" {print $1}' </proc/1/mountinfo)" != "$(awk '$5=="/" {print $1}' </proc/$$/mountinfo)" ] && return 0 || return 1
