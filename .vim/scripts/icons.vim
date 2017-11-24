@@ -1,11 +1,16 @@
+" \ 'default': '',
+"\ 'default': ''
 let g:ic = {
+            \ 'insert': '',
+            \ 'replace': '',
             \ 'python': '',
             \ 'vim': '',
             \ 'javascript': '',
             \ 'markdown': '',
             \ 'haskell': '',
-            \ 'default': ''
+            \ 'default': '',
             \ }
+"'',
 
 let g:abbr = {
             \ 'python': 'py',

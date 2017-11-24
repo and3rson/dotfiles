@@ -22,11 +22,13 @@ hi! StatusBarWarning ctermfg=3 ctermbg=234 cterm=bold
 hi! StatusBarError ctermfg=1 ctermbg=234 cterm=bold
 
 "\ 'n': '',
+"\ 'i': '',
+"\ 'R': '',
 let g:mode_map = {
     \ '__': '',
     \ 'n': '',
-    \ 'i': '',
-    \ 'R': '',
+    \ 'i': g:ic.insert,
+    \ 'R': g:ic.replace,
     \ 'c': '',
     \ 'v': '',
     \ 'V': '',
@@ -111,6 +113,11 @@ endfunction
 
 "call SetStatusLineColor('n')
 
+let g:winid = win_getid()
+function! SLEnter()
+    let g:winid = win_getid()
+endfunction
+
 hi StatusLine ctermfg=255 cterm=None gui=None ctermbg=None
 
 " !!!
@@ -118,12 +125,12 @@ set lazyredraw
 
 let g:active_winnr = winnr()
 
-function! StatusBar(winid)
+function! StatusBar(winid, file_icon)
     let s = ''
     let end = '%*'
-    let m = mode()
     let tn = 'Text'
-    if win_getid() == a:winid
+    if g:winid == a:winid
+        let m = mode()
         if (m ==# 'i')
             let mn = 'Insert'
         elseif (m ==# 'R')
@@ -136,13 +143,14 @@ function! StatusBar(winid)
             let mn = 'Normal'
         endif
     else
+        let m = 'n'
         let mn = 'Inactive'
         let tn = 'Inactive'
     endif
     let c1 = printf('%%#StatusBar%s#', mn)
     let c2 = printf('%%#StatusBar%sInv#', mn)
     let ct = printf('%%#StatusBar%s#', tn)
-    let s .= c1 . ' ' . ((m == 'n') ? FileIcon() : g:mode_map[m]) . ' ' . end
+    let s .= c1 . ' ' . ((m == 'n') ? a:file_icon : g:mode_map[m]) . ' ' . end
     let s .= c2 . ' %<%F '
     let s .= ' %='
     "let s .= 'A=' . win_getid() . ' C=' . a:winid
@@ -159,9 +167,10 @@ endfunction
 
 set laststatus=2
 function InitStatusBar()
-    let &l:statusline='%!StatusBar('.win_getid().')'
+    let &l:statusline='%!StatusBar('.win_getid().', "' . FileIcon() . '")'
 endfunction
-au VimEnter,WinNew * call InitStatusBar()
+au VimEnter,WinNew,BufEnter * call InitStatusBar()
+au VimEnter,WinEnter,BufEnter * call SLEnter()
 "au VimEnter,WinNew * setlocal statusline=%!StatusBar(win_getid())
 "set statusline=%!StatusBar()
 
