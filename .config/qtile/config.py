@@ -760,10 +760,10 @@ def autostart():
 
 
 # Look for new monitor and call xrandr.sh to reconfigure stuff once screen config changes
-@hook.subscribe.screen_change
-def restart_on_randr(qtile, ev):
-    # subprocess.Popen([os.path.expanduser('~/.config/qtile/bin/xrandr.sh')])
-    qtile.cmd_restart()
+# @hook.subscribe.screen_change
+# def restart_on_randr(qtile, ev):
+    # # subprocess.Popen([os.path.expanduser('~/.config/qtile/bin/xrandr.sh')])
+    # qtile.cmd_restart()
 
 
 dgroups_key_binder = None

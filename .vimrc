@@ -28,7 +28,7 @@ Plugin 'tpope/vim-fugitive'
 
 Plugin 'ap/vim-buftabline'
 
-Plugin 'ctrlpvim/ctrlp.vim'
+"Plugin 'ctrlpvim/ctrlp.vim'
 "Plugin 'tacahiroy/ctrlp-funky'
 
 "Plugin 'michaeljsmith/vim-indent-object'
@@ -54,16 +54,21 @@ Plugin 'ervandew/supertab'
 
 "Plugin 'nvie/vim-flake8'
 
-"Plugin 'jistr/vim-nerdtree-tabs'
+"Plugin 'scrooloose/vim-nerdtree'
+Plugin 'nerdtree'
 
 Plugin 'ap/vim-css-color'
 Plugin 'osyo-manga/vim-over'
 
 Plugin 'tmux-plugins/vim-tmux'
 
-"Plugin 'junegunn/fzf.vim'
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
 
 "Plugin 'Shougo/deoplete.nvim'
+
+"Plugin 'joeytwiddle/sexy_scroller.vim'
+Plugin 'mhinz/vim-startify'
 
 call vundle#end()            		" required
 
@@ -139,6 +144,10 @@ inoremap <C-s> <C-o>:w<CR>
 nnoremap <M-s> :w<CR>
 inoremap <M-s> <C-o>:w<CR>
 
+" Unmap "s" anc "c"
+map s <Nop>
+map c <Nop>
+
 " Delete buffer
 nnoremap <silent> <M-x>      :bd<CR>
 "nnoremap b  :buffers<CR>:b
@@ -147,9 +156,17 @@ nnoremap <silent> <M-x>      :bd<CR>
 nnoremap <silent> <M-r> <C-r>
 nnoremap <silent> r <C-r>
 
+" Quick open .vimrc
+nnoremap <silent> <M-c> :e ~/.vimrc<CR>
+
 " Search symbols
 "nnoremap <silent> <C-l> :CtrlPFunky<CR>
 "inoremap <silent> <C-l> <ESC>:CtrlPFunky<CR>
+
+" NERD Commenter
+let g:NERDCompactSexyComs = 0
+let g:NERDDefaultAlign = 'left'
+"let g:NERDCustomDelimiters = {'python': {'leftAlt': '"""', 'rightAlt': '"""', 'left': '# '}}
 
 nnoremap <silent> <M-/> :call NERDComment(0, "toggle")<CR><CR>
 "vnoremap <silent> <C-_> :call NERDComment(0, "alignleft")<CR><CR>
@@ -182,8 +199,9 @@ let g:ctrlp_types = ['fil']
 
 let g:ctrlp_cmd = 'CtrlPMRUFiles' " Does not work
 
-nnoremap <silent> <C-p>      :CtrlP<CR>
-nnoremap <silent> <M-p>      :CtrlP<CR>
+" CtrlP
+"nnoremap <silent> <C-p>      :CtrlP<CR>
+"nnoremap <silent> <M-p>      :CtrlP<CR>
 
 " Completion mode
 "set wildmode=longest,list,full
@@ -356,6 +374,7 @@ set signcolumn=yes
 " Sexy replace
 :map <C-f> :OverCommandLine<CR>:
 
+source $HOME/.vim/scripts/icons.vim
 source $HOME/.vim/scripts/signs.vim
 source $HOME/.vim/scripts/fastescape.vim
 source $HOME/.vim/scripts/statusline.vim
@@ -386,4 +405,47 @@ set foldlevelstart=99
             "\ {'sync': v:false, 'name': 'BufWritePost', 'type': 'autocmd', 'opts': {'pattern': '*', 'eval': 'expand("<afile>:p")'}},
             "\ ]
             "\ )
+
+" FZF
+nnoremap <silent> <C-p>      :Files<CR>
+nnoremap <silent> <M-p>      :Files<CR>
+nnoremap <silent> <C-l>      :Lines<CR>
+nnoremap <silent> <M-l>      :Lines<CR>
+
+function! s:fzf_statusline()
+  " Override statusline as you like
+  "highlight fzf1 ctermfg=161 ctermbg=251
+  hi link fzf1 StatusBarVisual
+  "highlight fzf2 ctermfg=23 ctermbg=251
+  hi link fzf2 StatusBarVisualInv
+  "highlight fzf3 ctermfg=237 ctermbg=251
+  hi link fzf3 StatusBarVisualInv
+  setlocal statusline=%#fzf1#\ \ %*\ %#fzf2#fzf%#fzf3#
+endfunction
+
+autocmd! User FzfStatusLine call <SID>fzf_statusline()
+
+autocmd! FileType fzf
+autocmd FileType fzf set conceallevel=0
+  \| autocmd BufLeave <buffer> set conceallevel=2
+
+"command! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+command! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, {'options': ['--reverse', '--preview', 'highlight -O xterm256 --style molokai --force -n {}']}, <bang>0)
+
+"let g:fzf_files_options = '--prefiew "cat {}"'
+
+" NERDTree
+"autocmd FileType nerdtree mapc <buffer>
+autocmd FileType nerdtree map <buffer> <S-PageUp> <nop>
+autocmd FileType nerdtree map <buffer> <S-PageDown> <nop>
+autocmd FileType nerdtree map <buffer> <M-x> <nop>
+autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+"autocmd FileType nerdtree cnoreabbrev <buffer> bd <nop>
+"autocmd FileType nerdtree cnoreabbrev <buffer> bn <nop>
+"autocmd FileType nerdtree cnoreabbrev <buffer> bp <nop>
+"au VimEnter *  NERDTree
+"autocmd VimEnter * wincmd p
+
+" Cursor blinking & look
+set guicursor=n-v-c-sm:block-blinkon100,i-ci-ve:ver25-blinkon100,r-cr-o:hor20-blinkon100
 

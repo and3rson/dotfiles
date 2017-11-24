@@ -91,8 +91,23 @@ def compl_run():
     src = ' '.join(vim.current.buffer[:-1])
     matches = list(re.findall(SEP + SEP.join(base) + SEP, src))
     matches = set(matches)
-    matches = sorted(matches, key=lambda x: levenshtein(base, x))
-    vim.command('let b:compl_result = ' + str(list(matches)))
+    result = []
+    for m in matches:
+        fn_args = re.findall('def ' + m + '\([^)]*\)', src)
+        if fn_args:
+            result.append(dict(word=m, menu=fn_args[0].strip().strip(':'), kind='f'))
+            continue
+        class_args = re.findall('class[\s]*' + m + '[\s]*\([^)]*\)', src)
+        if class_args:
+            result.append(dict(word=m, menu=class_args[0].strip().strip(':'), kind='t'))
+            continue
+        import_args = re.findall('import ' + m, src)
+        if import_args:
+            result.append(dict(word=m, menu=import_args[0].strip().strip(':'), kind='d'))
+            continue
+        result.append(dict(word=m, kind='v'))
+    result = sorted(result, key=lambda x: levenshtein(base, x if isinstance(x, str) else x['word']))
+    vim.command('let b:compl_result = ' + str(list(result)))
 EOF
 endfunction
 
