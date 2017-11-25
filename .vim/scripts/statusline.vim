@@ -235,6 +235,10 @@ function! StatusBar(winid, file_type, file_icon)
     let s .= ct
     "let s .= ' ' . FileIcon() . '  ' . FileType() . ' '
     "let s .= ' ' . ScrollProgress() . ' '
+    let head = fugitive#head()
+    if strlen(head)
+        let s .= '  ' . head . ' '
+    endif
     let s .= ' :%04l.%02c/%L '
     let s .= ' ' . CharCode() . ' '
     let s .= '%#StatusBarWarning#' . AleWarnings()

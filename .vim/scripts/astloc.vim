@@ -29,12 +29,12 @@ def astloc_represent_node(node, show_signatures=False):
         template = '{name}'
     if isinstance(node, ClassDef):
         bases = [base for base in node.bases if hasattr(base, 'id')]
-        return '%#Keyword#' + template.format(
+        return '%#PieClass#' + template.format(
             name=node.name,
             args=', '.join([base.id for base in bases])
         )
     elif isinstance(node, FunctionDef):
-        return '%#Function#' + template.format(
+        return '%#PieFunction#' + template.format(
             name=node.name,
             args=', '.join([arg.arg for arg in node.args.args])
         )
@@ -54,7 +54,7 @@ def astloc_run():
     src = '\n'.join(vim.current.buffer[:-1])
     root = parse(src)
     path = astloc_find_node(root, line)
-    nodes = [astloc_represent_node(node) for node in path]
+    nodes = [astloc_represent_node(node, True) for node in path if isinstance(node, (ClassDef, FunctionDef))]
     # vim.command('let b:astloc_result = ' + str(list(nodes)))
     result = '.'.join(nodes)
     vim.command('let b:astloc_result = ' + repr(result))
