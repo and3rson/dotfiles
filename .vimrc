@@ -70,6 +70,8 @@ Plugin 'junegunn/fzf.vim'
 "Plugin 'joeytwiddle/sexy_scroller.vim'
 Plugin 'mhinz/vim-startify'
 
+Plugin 'wkentaro/conque.vim'
+
 call vundle#end()            		" required
 
 filetype on
@@ -377,6 +379,7 @@ set signcolumn=yes
 source $HOME/.vim/scripts/icons.vim
 source $HOME/.vim/scripts/signs.vim
 source $HOME/.vim/scripts/fastescape.vim
+source $HOME/.vim/scripts/astloc.vim
 source $HOME/.vim/scripts/statusline.vim
 source $HOME/.vim/scripts/compl.vim
 "pyfile $HOME/.vim/scripts/compl.py

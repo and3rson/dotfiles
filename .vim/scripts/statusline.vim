@@ -21,6 +21,10 @@ hi! StatusBarText ctermfg=245 ctermbg=234
 hi! StatusBarWarning ctermfg=3 ctermbg=234 cterm=bold
 hi! StatusBarError ctermfg=1 ctermbg=234 cterm=bold
 
+" PieCrumbs
+hi! PieClass ctermfg=197 ctermbg=234 cterm=bold
+hi! PieFunction ctermfg=154 ctermbg=234
+
 "\ 'n': '',
 "\ 'i': '',
 "\ 'R': '',
@@ -47,10 +51,15 @@ function! CharCode()
     let code = char2nr(char)
 
     if code == 0
-        let char = ' '
+        let char = ''
+    elseif code == 32
+        let char = ''
+    elseif code == 9
+        let char = ''
     endif
 
-    return printf("%3d 0x%04x (%s)", code, code, char)
+
+    return printf("%s (0x%04x)", char, code)
 endfunction
 
 function! Clamp(smin, smax, dmin, dmax, value)
@@ -79,13 +88,14 @@ function! AleWarnings() abort
     let l:counts = ale#statusline#Count(bufnr(''))
     let l:errors = l:counts.error + l:counts.style_error
     let l:warnings = l:counts.total - l:errors
-    return l:warnings == 0 ? '' : (' ' . l:warnings . 'W ')
+    "return l:warnings == 0 ? '' : ('  ' . l:warnings . ' ')
+    return l:warnings == 0 ? '' : ('  ' . l:warnings . ' ')
 endfunction
 
 function! AleErrors() abort
     let l:counts = ale#statusline#Count(bufnr(''))
     let l:errors = l:counts.error + l:counts.style_error
-    return l:errors == 0 ? '' : (' ' . l:errors . 'E ')
+    return l:errors == 0 ? '' : ('  ' . l:errors . ' ')
 endfunction
 
 function! LinterStatus() abort
@@ -95,7 +105,7 @@ function! LinterStatus() abort
     let l:all_non_errors = l:counts.total - l:all_errors
 
     return l:counts.total == 0 ? '' : printf(
-    \   ' %dW %dE ',
+    \   '  %d  %d ',
     \   all_non_errors,
     \   all_errors
     \)
@@ -125,7 +135,71 @@ set lazyredraw
 
 let g:active_winnr = winnr()
 
-function! StatusBar(winid, file_icon)
+function! PieCrumbs(show_signatures)
+    let result = ''
+    if a:show_signatures
+        let regexp = '\(def\|class\) \([a-zA-Z_]*\)\(\(:\|([^:]*)\):\)'
+    else
+        let regexp = '\(def\|class\) \([a-zA-Z_]*\)[(:]'
+    endif
+    let line_count = line('$')
+    let lineno = getpos('.')[1]
+    let lineno_initial = lineno
+    let min_indent = -1
+    let remaining = winwidth(0)
+    while lineno <= line_count
+        let min_indent = match(getline(lineno), '\S')
+        if min_indent != -1
+            break
+        endif
+        let lineno += 1
+    endwhile
+    let s = ''
+    let path = []
+    while lineno > 0
+        let line = getline(lineno)
+        let indent = match(line, '\S')
+        if (indent < min_indent || lineno == lineno_initial) && indent != -1
+            let min_indent = indent
+            let match = matchlist(line, regexp)
+            if len(match) != 0
+                call add(path, [match[1], match[2], match[4]])
+            endif
+        endif
+        let lineno = lineno - 1
+    endwhile
+    if len(path) == 0
+        return ''
+    endif
+    call reverse(path)
+    "echo ''
+    let result .= '%#StatusBarText#  '
+    let is_first = 1
+    for part in path
+        if is_first == 1
+            let is_first = 0
+        else
+            "echohl Number
+            "let remaining = PieCrumbsPrintTrimmed(remaining, g:piecrumbs_glue)
+            let result .= '%#StatusBarText#  '
+        endif
+        if part[0] ==  'def'
+            "echohl Function
+            let result .= '%#PieFunction#'
+        elseif part[0] == 'class'
+            "echohl Keyword
+            let result .= '%#PieClass#'
+        endif
+        let result .= part[1]
+        "let remaining = PieCrumbsPrintTrimmed(remaining, part[1])
+        let result .= a:show_signatures ? part[2] : '()'
+        "echohl Normal
+        "let remaining = PieCrumbsPrintTrimmed(remaining, part[2])
+    endfor
+    return result
+endfunction
+
+function! StatusBar(winid, file_type, file_icon)
     let s = ''
     let end = '%*'
     let tn = 'Text'
@@ -151,8 +225,12 @@ function! StatusBar(winid, file_icon)
     let c2 = printf('%%#StatusBar%sInv#', mn)
     let ct = printf('%%#StatusBar%s#', tn)
     let s .= c1 . ' ' . ((m == 'n') ? a:file_icon : g:mode_map[m]) . ' ' . end
-    let s .= c2 . ' %<%F '
-    let s .= ' %='
+    let s .= c2 . ' %<%F'
+    if a:file_type ==# 'python'
+        "let s .= ' ' . ASTLoc()
+        let s .= PieCrumbs(1) . ' %#StatusBarText#'
+    endif
+    let s .= '%='
     "let s .= 'A=' . win_getid() . ' C=' . a:winid
     let s .= ct
     "let s .= ' ' . FileIcon() . '  ' . FileType() . ' '
@@ -167,7 +245,7 @@ endfunction
 
 set laststatus=2
 function InitStatusBar()
-    let &l:statusline='%!StatusBar('.win_getid().', "' . FileIcon() . '")'
+    let &l:statusline='%!StatusBar('.win_getid().', "' . &filetype . '", "' . FileIcon() . '")'
 endfunction
 au VimEnter,WinNew,BufEnter * call InitStatusBar()
 au VimEnter,WinEnter,BufEnter * call SLEnter()

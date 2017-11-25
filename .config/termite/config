@@ -1,5 +1,7 @@
 [options]
 font = DejaVuSansMono Nerd Font 9
+# font = BitstreamVeraSansMono Nerd Font 9
+# font = BitstreamVeraSansMono 9
 icon_name = terminal
 cursor_blink = on
 highlight =

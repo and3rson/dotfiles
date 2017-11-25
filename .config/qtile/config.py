@@ -25,6 +25,7 @@ import subprocess
 from libqtile.config import Key, Screen, Group, Drag, Click, Match
 from libqtile.command import lazy
 from libqtile import layout, bar, widget, hook
+from xcffib.xproto import EventMask, StackMode, SetMode
 import logging
 from libqtile.log_utils import logger
 from systemd.journal import JournalHandler
@@ -256,7 +257,7 @@ for i in xrange(1, 9):
 # - default layout
 # - arguments for `Match`es
 GROUP_DEFS = (
-    ('t', 'term', [HOME_TERM_CMD], 'max', dict()),
+    ('t', 'term', [HOME_TERM_CMD], 'max', dict(title=['CAVA'])),
     ('w', 'web', ['chromium'], 'max', dict(wm_class=['chromium', 'Firefox'])),
     ('i', 'im', ['telegram-desktop', 'irccloud'], 'max', dict(wm_class=[
         'telegram-desktop', 'TelegramDesktop', 'Slack',
@@ -295,9 +296,9 @@ layouts = [
     layout.MonadTall(
         border_normal=WidgetOpts.DEFAULT_COLOR,
         border_focus=WidgetOpts.HIGHLIGHT_COLOR,
-        border_width=1,
+        border_width=2,
         grow_amount=0,
-        margin=50
+        margin=0
     ),
     layout.Max(),
     # layout.Zoomy(
@@ -702,6 +703,17 @@ mouse = [
     Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
     Click([mod], "Button2", lazy.window.bring_to_front())
 ]
+
+
+@hook.subscribe.client_new
+def xcava(window):
+    if window.window.get_name() == 'CAVA':
+        window.floating = True
+        window.tweak_float(x=0, y=0)
+        # window.cmd_set_size_floating(window.group.screen.dwidth, window.group.screen.dheight)
+        # logger.error('%s %s', window.group.screen.dwidth, window.group.screen.dheight)
+        window.tweak_float(w=1366, h=768)
+        window.window.configure(stackmode=StackMode.Below)
 
 
 # Make dialogs float & appear at the middle of the screen

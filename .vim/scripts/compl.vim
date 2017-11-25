@@ -88,11 +88,14 @@ def backtrace(s1, s2, rows, key=hash):
 
 def compl_run():
     base = vim.eval('a:base')
+    base = base.replace('.', '')
     src = ' '.join(vim.current.buffer[:-1])
-    matches = list(re.findall(SEP + SEP.join(base) + SEP, src))
+    matches = list(re.findall('(?:^|\n|[^a-zA-Z0-9_])(' + SEP.join(base) + SEP + ')', src))
     matches = set(matches)
     result = []
     for m in matches:
+        if len(m) < 3:
+            continue
         fn_args = re.findall('def ' + m + '\([^)]*\)', src)
         if fn_args:
             result.append(dict(word=m, menu=fn_args[0].strip().strip(':'), kind='f'))

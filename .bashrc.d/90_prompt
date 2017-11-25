@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #ARROW=`echo -e "\ue0b0 "`
-ARROW=`echo -e "\ue0bc"`
+ARROW=`echo -e "\ue0bc "`
 HOUSE=`echo -e "\u2302"`
 case $(tty) in /dev/tty[0-9]*)
     ARROW=''; HOUSE='' ;;
