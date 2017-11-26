@@ -14,7 +14,7 @@ hi! StatusBarTerminal ctermbg=57 ctermfg=0
 hi! StatusBarTerminalInv ctermbg=234 ctermfg=57
 " Inactive
 hi! StatusBarInactive ctermfg=245 ctermbg=236
-hi! StatusBarInactiveInv ctermfg=245 ctermbg=234
+hi! StatusBarInactiveInv ctermfg=245 ctermbg=236
 " Text
 hi! StatusBarText ctermfg=245 ctermbg=234
 " Error parts
@@ -42,6 +42,7 @@ let g:mode_map = {
     \ '^S': '',
     \ 't': ''
     \ }
+let g:sep = ' ⎪ '
 
 set noshowmode
 
@@ -84,18 +85,18 @@ fu! ScrollProgress()
     return s
 endf
 
-fu! AleWarnings() abort
+fu! AleWarnings(reset_style) abort
     let l:counts = ale#statusline#Count(bufnr(''))
     let l:errors = l:counts.error + l:counts.style_error
     let l:warnings = l:counts.total - l:errors
     "return l:warnings == 0 ? '' : ('  ' . l:warnings . ' ')
-    return l:warnings == 0 ? '' : ('  ' . l:warnings . ' ')
+    return l:warnings == 0 ? '' : ('%#StatusBarWarning# ' . l:warnings . a:reset_style . g:sep)
 endf
 
-fu! AleErrors() abort
+fu! AleErrors(reset_style) abort
     let l:counts = ale#statusline#Count(bufnr(''))
     let l:errors = l:counts.error + l:counts.style_error
-    return l:errors == 0 ? '' : ('  ' . l:errors . ' ')
+    return l:errors == 0 ? '' : ('%#StatusBarError# ' . l:errors . a:reset_style . g:sep)
 endf
 
 fu! LinterStatus() abort
@@ -105,7 +106,7 @@ fu! LinterStatus() abort
     let l:all_non_errors = l:counts.total - l:all_errors
 
     return l:counts.total == 0 ? '' : printf(
-    \   '  %d  %d ',
+    \   '  %d  %d' . g:sep,
     \   all_non_errors,
     \   all_errors
     \)
@@ -199,6 +200,18 @@ fu! PieCrumbs(show_signatures)
     return result
 endf
 
+fu! Branch()
+    let head = fugitive#head()
+    if strlen(head)
+        if strlen(head) > 16
+            let head = head[:15] . '>'
+        endif
+        let br = ' ' . head . g:sep
+        return br
+    endif
+    return ''
+endf
+
 fu! StatusBar(winid, file_type, file_icon)
     let s = ''
     let end = '%*'
@@ -235,15 +248,12 @@ fu! StatusBar(winid, file_type, file_icon)
     let s .= ct
     "let s .= ' ' . FileIcon() . '  ' . FileType() . ' '
     "let s .= ' ' . ScrollProgress() . ' '
-    let head = fugitive#head()
-    if strlen(head)
-        let s .= '  ' . head . ' '
-    endif
-    let s .= ' :%04l.%02c/%L '
-    let s .= ' ' . CharCode() . ' '
-    let s .= '%#StatusBarWarning#' . AleWarnings()
-    let s .= '%#StatusBarError#' . AleErrors()
-    let s .= '%#StatusBarText# ' . g:rotate_icons[g:rotate_state % 4] . ' '
+    let s .= Branch()
+    let s .= '%04l.%02c/%L' . g:sep
+    let s .= CharCode() . g:sep
+    let s .= '%#StatusBarWarning#' . AleWarnings(ct)
+    let s .= '%#StatusBarError#' . AleErrors(ct)
+    let s .= ct . g:rotate_icons[g:rotate_state % 4] . ' '
     let s .= end
     return s
 endf

@@ -154,6 +154,10 @@ map c <Nop>
 nnoremap <silent> <M-x>      :bd<CR>
 "nnoremap b  :buffers<CR>:b
 
+" Close window
+nnoremap <silent> <M-q> <C-w>q
+
+
 " Redo with Alt
 nnoremap <silent> <M-r> <C-r>
 nnoremap <silent> r <C-r>
