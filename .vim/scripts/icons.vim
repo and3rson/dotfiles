@@ -1,7 +1,7 @@
 " \ 'default': '',
 "\ 'default': ''
 let g:ic = {
-            \ 'insert': '',
+            \ 'insert': '',
             \ 'replace': '',
             \ 'python': '',
             \ 'vim': '',

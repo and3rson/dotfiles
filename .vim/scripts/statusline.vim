@@ -46,7 +46,7 @@ let g:mode_map = {
 set noshowmode
 
 " Char code
-function! CharCode()
+fu! CharCode()
     let char = matchstr(getline('.'), '\%' . col('.') . 'c.')
     let code = char2nr(char)
 
@@ -60,16 +60,16 @@ function! CharCode()
 
 
     return printf("%s (0x%04x)", char, code)
-endfunction
+endf
 
-function! Clamp(smin, smax, dmin, dmax, value)
+fu! Clamp(smin, smax, dmin, dmax, value)
     let smin = a:smin * 1.0
     let smax = a:smax * 1.0
     let k = (a:value - smin) / (smax - smin)
     return a:dmin + (a:dmax - a:dmin) * k
-endfunction
+endf
 
-function! ScrollProgress()
+fu! ScrollProgress()
     let base = 0x2581
     let base = 0x2588
     let size = 8
@@ -82,23 +82,23 @@ function! ScrollProgress()
     let s .= nr2char(base + (8 - v))
     let s .= '⎸'
     return s
-endfunction
+endf
 
-function! AleWarnings() abort
+fu! AleWarnings() abort
     let l:counts = ale#statusline#Count(bufnr(''))
     let l:errors = l:counts.error + l:counts.style_error
     let l:warnings = l:counts.total - l:errors
     "return l:warnings == 0 ? '' : ('  ' . l:warnings . ' ')
     return l:warnings == 0 ? '' : ('  ' . l:warnings . ' ')
-endfunction
+endf
 
-function! AleErrors() abort
+fu! AleErrors() abort
     let l:counts = ale#statusline#Count(bufnr(''))
     let l:errors = l:counts.error + l:counts.style_error
     return l:errors == 0 ? '' : ('  ' . l:errors . ' ')
-endfunction
+endf
 
-function! LinterStatus() abort
+fu! LinterStatus() abort
     let l:counts = ale#statusline#Count(bufnr(''))
 
     let l:all_errors = l:counts.error + l:counts.style_error
@@ -109,24 +109,24 @@ function! LinterStatus() abort
     \   all_non_errors,
     \   all_errors
     \)
-endfunction
+endf
 
-function! FileIcon()
+fu! FileIcon()
     let ft = &filetype
     return has_key(g:ic, ft) ? g:ic[ft] : g:ic.default
-endfunction
+endf
 
-function! FileType()
+fu! FileType()
     let ft = &filetype
     return has_key(g:abbr, ft) ? g:abbr[ft] : ft
-endfunction
+endf
 
 "call SetStatusLineColor('n')
 
 let g:winid = win_getid()
-function! SLEnter()
+fu! SLEnter()
     let g:winid = win_getid()
-endfunction
+endf
 
 hi StatusLine ctermfg=255 cterm=None gui=None ctermbg=None
 
@@ -135,7 +135,7 @@ set lazyredraw
 
 let g:active_winnr = winnr()
 
-function! PieCrumbs(show_signatures)
+fu! PieCrumbs(show_signatures)
     let result = ''
     if a:show_signatures
         let regexp = '\(def\|class\) \([a-zA-Z_]*\)\(\(:\|([^:]*)\):\)'
@@ -197,9 +197,9 @@ function! PieCrumbs(show_signatures)
         "let remaining = PieCrumbsPrintTrimmed(remaining, part[2])
     endfor
     return result
-endfunction
+endf
 
-function! StatusBar(winid, file_type, file_icon)
+fu! StatusBar(winid, file_type, file_icon)
     let s = ''
     let end = '%*'
     let tn = 'Text'
@@ -243,14 +243,23 @@ function! StatusBar(winid, file_type, file_icon)
     let s .= ' ' . CharCode() . ' '
     let s .= '%#StatusBarWarning#' . AleWarnings()
     let s .= '%#StatusBarError#' . AleErrors()
+    let s .= '%#StatusBarText# ' . g:rotate_icons[g:rotate_state % 4] . ' '
     let s .= end
     return s
-endfunction
+endf
+
+let g:rotate_state = 0
+let g:rotate_icons = ['—', '\', '|', '/']
+fu Rotate(timer)
+    let g:rotate_state = g:rotate_state + 1
+endf
+
+call timer_start(100, 'Rotate', {'repeat': -1})
 
 set laststatus=2
-function InitStatusBar()
+fu InitStatusBar()
     let &l:statusline='%!StatusBar('.win_getid().', "' . &filetype . '", "' . FileIcon() . '")'
-endfunction
+endf
 au VimEnter,WinNew,BufEnter * call InitStatusBar()
 au VimEnter,WinEnter,BufEnter * call SLEnter()
 "au VimEnter,WinNew * setlocal statusline=%!StatusBar(win_getid())

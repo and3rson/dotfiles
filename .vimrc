@@ -295,11 +295,11 @@ set nobackup
 set clipboard=unnamedplus
 
 " Remove trailing whitespaces
-function CleanUp()
+fu CleanUp()
     %s/\s\+$//e
     " |norm!``
-endfunction
-autocmd BufWritePre * call CleanUp()
+endf
+au BufWritePre * call CleanUp()
 
 ":set noeol
 ":set nofixeol
@@ -309,32 +309,32 @@ set hidden
 
 let g:CursorColumnI = 0 "the cursor column position in INSERT
 
-function! InsertEnterHook()
+fu! InsertEnterHook()
     ":set norelativenumber
     hi BufTabLineActive ctermbg=161 ctermfg=255 cterm=bold
     hi BufTabLineCurrent ctermbg=161 ctermfg=255 cterm=bold
     hi CursorLineNr ctermfg=161
     let g:CursorColumnI = col('.')
-endfunction
+endf
 
-function! InsertLeaveHook()
+fu! InsertLeaveHook()
     ":set relativenumber
     hi BufTabLineActive ctermbg=118 ctermfg=0 cterm=bold
     hi BufTabLineCurrent ctermbg=118 ctermfg=0 cterm=bold
     hi CursorLineNr ctermfg=118
     if col('.') != g:CursorColumnI | call cursor(0, col('.')+1) | endif
-endfunction
+endf
 
-autocmd InsertEnter * call InsertEnterHook()
-autocmd InsertLeave * call InsertLeaveHook()
-autocmd CursorMovedI * let CursorColumnI = col('.')
+au InsertEnter * call InsertEnterHook()
+au InsertLeave * call InsertLeaveHook()
+au CursorMovedI * let CursorColumnI = col('.')
 
 "let &t_EI .= "\<Esc>[2 q\<Esc>]12;green\x7"
 "let &t_SI .= "\<Esc>[2 q\<Esc>]12;red\x7"
 "let &t_EI .= "\<Esc>[6 q"
 "let &t_SI .= "\<Esc>[2 q"
 
-"autocmd VimLeave * silent !echo -ne "\033]112\007"
+"au VimLeave * silent !echo -ne "\033]112\007"
 
 " piecrumbs
 let g:piecrumbs_glue = '  '
@@ -384,11 +384,11 @@ source $HOME/.vim/scripts/statusline.vim
 source $HOME/.vim/scripts/compl.vim
 "pyfile $HOME/.vim/scripts/compl.py
 
-"function! PyCompl(findstart, base)
+"fu! PyCompl(findstart, base)
     "return ['a', 'b']
     "result = exe 'py compl('.a:findstart.', "'.a:base.'")'
     "return result
-"endfunction
+"endf
 "set completefunc=PyCompl
 
 " Disable folding
@@ -405,7 +405,7 @@ set foldlevelstart=99
 " python3 plugins
 "call remote#host#RegisterPlugin(
             "\ 'python3', '/home/anderson/.vim/config/compl2.py', [
-            "\ {'sync': v:false, 'name': 'BufWritePost', 'type': 'autocmd', 'opts': {'pattern': '*', 'eval': 'expand("<afile>:p")'}},
+            "\ {'sync': v:false, 'name': 'BufWritePost', 'type': 'au', 'opts': {'pattern': '*', 'eval': 'expand("<afile>:p")'}},
             "\ ]
             "\ )
 
@@ -415,7 +415,7 @@ nnoremap <silent> <M-p>      :Files<CR>
 nnoremap <silent> <C-l>      :Lines<CR>
 nnoremap <silent> <M-l>      :Lines<CR>
 
-function! s:fzf_statusline()
+fu! s:fzf_statusline()
   " Override statusline as you like
   "highlight fzf1 ctermfg=161 ctermbg=251
   hi link fzf1 StatusBarVisual
@@ -424,30 +424,30 @@ function! s:fzf_statusline()
   "highlight fzf3 ctermfg=237 ctermbg=251
   hi link fzf3 StatusBarVisualInv
   setlocal statusline=%#fzf1#\ \ %*\ %#fzf2#fzf%#fzf3#
-endfunction
+endf
 
-autocmd! User FzfStatusLine call <SID>fzf_statusline()
+au! User FzfStatusLine call <SID>fzf_statusline()
 
-autocmd! FileType fzf
-autocmd FileType fzf set conceallevel=0
-  \| autocmd BufLeave <buffer> set conceallevel=2
+au! FileType fzf
+au FileType fzf set conceallevel=0
+  \| au BufLeave <buffer> set conceallevel=2
 
-"command! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-command! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, {'options': ['--reverse', '--preview', 'highlight -O xterm256 --style molokai --force -n {}']}, <bang>0)
+"com! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+com! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, {'options': ['--reverse', '--preview', 'highlight -O xterm256 --style molokai --force -n {}']}, <bang>0)
 
 "let g:fzf_files_options = '--prefiew "cat {}"'
 
 " NERDTree
-"autocmd FileType nerdtree mapc <buffer>
-autocmd FileType nerdtree map <buffer> <S-PageUp> <nop>
-autocmd FileType nerdtree map <buffer> <S-PageDown> <nop>
-autocmd FileType nerdtree map <buffer> <M-x> <nop>
-autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-"autocmd FileType nerdtree cnoreabbrev <buffer> bd <nop>
-"autocmd FileType nerdtree cnoreabbrev <buffer> bn <nop>
-"autocmd FileType nerdtree cnoreabbrev <buffer> bp <nop>
+"au FileType nerdtree mapc <buffer>
+au FileType nerdtree map <buffer> <S-PageUp> <nop>
+au FileType nerdtree map <buffer> <S-PageDown> <nop>
+au FileType nerdtree map <buffer> <M-x> <nop>
+au BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+"au FileType nerdtree cnoreabbrev <buffer> bd <nop>
+"au FileType nerdtree cnoreabbrev <buffer> bn <nop>
+"au FileType nerdtree cnoreabbrev <buffer> bp <nop>
 "au VimEnter *  NERDTree
-"autocmd VimEnter * wincmd p
+"au VimEnter * wincmd p
 
 " Cursor blinking & look
 set guicursor=n-v-c-sm:block-blinkon100,i-ci-ve:ver25-blinkon100,r-cr-o:hor20-blinkon100
