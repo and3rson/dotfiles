@@ -1,7 +1,8 @@
 #!/bin/bash
 
 #ARROW=`echo -e "\ue0b0 "`
-ARROW=`echo -e "\ue0bc "`
+#ARROW=`echo -e "\ue0bc "`
+ARROW=`echo -e ""`
 #ARROW=`echo -e "\ue0d2 "`
 HOUSE=`echo -e "\u2302"`
 case $(tty) in /dev/tty[0-9]*)
@@ -46,6 +47,7 @@ function make_prompt() {
 
     function brk() {
         printf -v "LAST_BACK" ""
+        #echo -e "\e[0;42m\e[K asd"
         echo
     }
 
@@ -76,13 +78,15 @@ function make_prompt() {
             #fore 22
             #arrow
             echo -n " "
-            echo -en "$VIRTUAL_ENV $RST" | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
+            #echo -en "$VIRTUAL_ENV $RST" | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
+            echo -en "env! $RST"
         elif [[ -f ".env/bin/activate" ]]
         then
             VIRTUAL_ENV=$( . .env/bin/activate; echo $VIRTUAL_ENV )
             fb 255 160
             echo -n " "
-            echo -en "$VIRTUAL_ENV $RST" | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
+            #echo -en "$VIRTUAL_ENV $RST" | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
+            echo -en "env! $RST"
         fi
     }
 
@@ -165,6 +169,7 @@ function make_prompt() {
             OLD_IFS=$IFS
             IFS='/'
             NUM=100
+            N=0
             for i in $DIR
             do
                 # Contrast colors
@@ -173,11 +178,16 @@ function make_prompt() {
                     V=$(printf %d "'${i:$n:1}")
                     NUM=$((NUM+V))
                 done
-                BG=$((((NUM%7)+1)*36-20 + NUM%9))
+                NUM1=$NUM
+                NUM2=2
+                #NUM1=$N
+                #NUM2=8
+                BG=$((((NUM1%7)+1)*36-20 + NUM2%9))
                 fb 255 $BG 1
                 echo -n " $i "
                 #echo -n a $i b
                 #echo -n 1${i}${i}2
+                N=$((N+1))
             done
             IFS=$OLD_IFS
         fi

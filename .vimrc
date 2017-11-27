@@ -114,7 +114,7 @@ set relativenumber
 set whichwrap+=<,>,h,l,[,]
 
 " Timeouts
-set timeoutlen=500 ttimeoutlen=250
+set timeoutlen=0 ttimeoutlen=0
 
 " Switch buffers
 nnoremap <silent> <ESC>[5;2~ :bp<CR>
@@ -366,10 +366,11 @@ let g:ale_linters = {
 nnoremap <silent> ; :ALEPrevious<CR>
 nnoremap <silent> ' :ALENext<CR>
 
-
 let g:ale_sign_error = '!!'
 let g:ale_sign_warning = '..'
 "let g:ale_sign_column_always = 1
+
+noremap <silent> <A-e> :lopen<CR>
 
 " GitGutter
 let g:gitgutter_realtime = 0
@@ -382,7 +383,7 @@ set signcolumn=yes
 
 source $HOME/.vim/scripts/icons.vim
 source $HOME/.vim/scripts/signs.vim
-source $HOME/.vim/scripts/fastescape.vim
+"source $HOME/.vim/scripts/fastescape.vim
 source $HOME/.vim/scripts/astloc.vim
 source $HOME/.vim/scripts/statusline.vim
 source $HOME/.vim/scripts/compl.vim

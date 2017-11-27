@@ -13,10 +13,10 @@ hi! StatusBarReplaceInv ctermbg=234 ctermfg=222
 hi! StatusBarTerminal ctermbg=57 ctermfg=0
 hi! StatusBarTerminalInv ctermbg=234 ctermfg=57
 " Inactive
-hi! StatusBarInactive ctermfg=245 ctermbg=236
-hi! StatusBarInactiveInv ctermfg=245 ctermbg=236
+hi! StatusBarInactive ctermfg=238 ctermbg=232
+hi! StatusBarInactiveInv ctermfg=238 ctermbg=232
 " Text
-hi! StatusBarText ctermfg=245 ctermbg=234
+hi! StatusBarText ctermfg=248 ctermbg=234
 " Error parts
 hi! StatusBarWarning ctermfg=3 ctermbg=234 cterm=bold
 hi! StatusBarError ctermfg=1 ctermbg=234 cterm=bold
@@ -47,8 +47,9 @@ let g:sep = ' ⎪ '
 set noshowmode
 
 " Char code
-fu! CharCode()
-    let char = matchstr(getline('.'), '\%' . col('.') . 'c.')
+fu! CharCode(bufnr)
+    "echo getbufline(a:bufnr, '.')
+    let char = matchstr(getbufline(a:bufnr, '.'), '\%' . col('.') . 'c.')
     let code = char2nr(char)
 
     if code == 0
@@ -85,16 +86,16 @@ fu! ScrollProgress()
     return s
 endf
 
-fu! AleWarnings(reset_style) abort
-    let l:counts = ale#statusline#Count(bufnr(''))
+fu! AleWarnings(bufnr, reset_style) abort
+    let l:counts = ale#statusline#Count(a:bufnr)
     let l:errors = l:counts.error + l:counts.style_error
     let l:warnings = l:counts.total - l:errors
     "return l:warnings == 0 ? '' : ('  ' . l:warnings . ' ')
     return l:warnings == 0 ? '' : ('%#StatusBarWarning# ' . l:warnings . a:reset_style . g:sep)
 endf
 
-fu! AleErrors(reset_style) abort
-    let l:counts = ale#statusline#Count(bufnr(''))
+fu! AleErrors(bufnr, reset_style) abort
+    let l:counts = ale#statusline#Count(a:bufnr)
     let l:errors = l:counts.error + l:counts.style_error
     return l:errors == 0 ? '' : ('%#StatusBarError# ' . l:errors . a:reset_style . g:sep)
 endf
@@ -173,7 +174,6 @@ fu! PieCrumbs(show_signatures)
         return ''
     endif
     call reverse(path)
-    "echo ''
     let result .= '%#StatusBarText#  '
     let is_first = 1
     for part in path
@@ -216,18 +216,30 @@ fu! StatusBar(winid, file_type, file_icon)
     let s = ''
     let end = '%*'
     let tn = 'Text'
+    let bufnr = -1
+    for bufinfo in getbufinfo()
+        if index(bufinfo.windows, str2nr(a:winid)) != -1
+            let bufnr = bufinfo.bufnr
+        endif
+    endfor
     if g:winid == a:winid
-        let m = mode()
-        if (m ==# 'i')
+        if a:file_type == 'qf'
+            let m ='t'
             let mn = 'Insert'
-        elseif (m ==# 'R')
-            let mn = 'Replace'
-        elseif (m ==# 'v' || m ==# 'V' || m ==# nr2char(22))
-            let mn = 'Visual'
-        elseif (m ==# 't')
-            let mn = 'Terminal'
+            let tn = 'Text'
         else
-            let mn = 'Normal'
+            let m = mode()
+            if (m ==# 'i')
+                let mn = 'Insert'
+            elseif (m ==# 'R')
+                let mn = 'Replace'
+            elseif (m ==# 'v' || m ==# 'V' || m ==# nr2char(22))
+                let mn = 'Visual'
+            elseif (m ==# 't')
+                let mn = 'Terminal'
+            else
+                let mn = 'Normal'
+            endif
         endif
     else
         let m = 'n'
@@ -248,11 +260,12 @@ fu! StatusBar(winid, file_type, file_icon)
     let s .= ct
     "let s .= ' ' . FileIcon() . '  ' . FileType() . ' '
     "let s .= ' ' . ScrollProgress() . ' '
+    let s .= '' . bufnr . g:sep
     let s .= Branch()
     let s .= '%04l.%02c/%L' . g:sep
-    let s .= CharCode() . g:sep
-    let s .= '%#StatusBarWarning#' . AleWarnings(ct)
-    let s .= '%#StatusBarError#' . AleErrors(ct)
+    "let s .= CharCode(bufnr) . g:sep
+    let s .= '%#StatusBarWarning#' . AleWarnings(bufnr, ct)
+    let s .= '%#StatusBarError#' . AleErrors(bufnr, ct)
     let s .= ct . g:rotate_icons[g:rotate_state % 4] . ' '
     let s .= end
     return s
@@ -272,6 +285,7 @@ fu InitStatusBar()
 endf
 au VimEnter,WinNew,BufEnter * call InitStatusBar()
 au VimEnter,WinEnter,BufEnter * call SLEnter()
+au FileType qf call InitStatusBar()
 "au VimEnter,WinNew * setlocal statusline=%!StatusBar(win_getid())
 "set statusline=%!StatusBar()
 

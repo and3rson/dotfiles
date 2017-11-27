@@ -4,9 +4,9 @@
 augroup FastEscape
     autocmd!
     au InsertEnter * set timeoutlen=0
-    au InsertLeave * set timeoutlen=500
+    au InsertLeave * set timeoutlen=250
     au InsertEnter * set ttimeoutlen=0
-    au InsertLeave * set ttimeoutlen=500
+    au InsertLeave * set ttimeoutlen=250
 augroup END
 
 inoremap <C-c> <Esc>
