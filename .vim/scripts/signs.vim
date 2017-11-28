@@ -1,4 +1,5 @@
 " Custom signs
+"nnoremap <silent> mmm <Nop>
 let i = 0
 while i < 10
     exe 'sign define Sign_'.i.' text='.i.' texthl=Function'

@@ -705,6 +705,71 @@ class GPMDP(base._TextBox, NonBlockingSpawn):
         #         self.vkplayer.broadcast('play_next')
 
 
+class GPMDP2(base._TextBox, NonBlockingSpawn):
+    """
+    Displays current song from GPMDP.
+    """
+    orientations = base.ORIENTATION_HORIZONTAL
+
+    def __init__(self, **config):
+        self.file = os.path.expanduser('~/.config/Google Play Music Desktop Player/json_store/playback.json')
+        base._TextBox.__init__(self, **config)
+        self.text = '?'
+
+    def _configure(self, *args):
+        super(GPMDP2, self)._configure(*args)
+        self.timeout_add(0.5, self.poll)
+        # self.poll()
+
+    def poll(self):
+        try:
+            if os.path.exists(self.file):
+                f = open(self.file, 'r')
+                data = json.loads(f.read())
+                self._update_state(False, data['playing'], u' - '.join([data['song']['artist'], data['song']['title']]), data['song'])
+                f.close()
+            else:
+                self._update_state(False, False, 'Not playing', None)
+
+            self.timeout_add(0.5, self.poll)
+        except Exception as e:
+            # logger.exception(str(e))
+            self._update_state(False, False, 'Error', None)
+            logger.exception(str(e))
+            self.timeout_add(5, self.poll)
+
+    def _update_state(self, is_downloading, is_playing, current_song, song):
+        try:
+            self.is_downloading = is_downloading
+            self.is_playing = is_playing
+
+            self.current_icon = u'\uF04B' if is_playing else u'\uF04C'
+            self.current_icon = u'\u25b6' if is_playing else u'\u25a0'
+
+            self.current_song = current_song
+            self._draw()
+        except Exception as e:
+            logger.exception(str(e))
+
+    def _draw(self, redraw=False):
+        newtext = u'{} {}'.format(self.current_icon, self.current_song if len(self.current_song) < 40 else self.current_song[:39] + '>')
+
+        if len(newtext) != len(self.text):
+            redraw = True
+
+        self.text = newtext
+
+        if self.is_playing:
+            self.foreground = '#99EE99'
+        else:
+            self.foreground = '#EEEE99'
+
+        if redraw:
+            self.bar.draw()
+        else:
+            self.draw()
+
+
 class Volume2(Volume):
     """
     Patched version of Volume widget that shows icon font chars.

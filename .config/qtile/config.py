@@ -319,7 +319,7 @@ widget_defaults = dict(
     font=WidgetOpts.DEFAULT_FONT,
     # font='DejaVu Sans Mono',
     fontsize=12,
-    padding=3,
+    padding=2,
     margin_y=0,
     margin_x=2
 )
@@ -341,7 +341,7 @@ group_box_config = dict(
     # font='Nimbus Sans Bold',  # Terminus, Nimbus Sans
     font=WidgetOpts.DEFAULT_FONT + ' Medium',
     padding_x=1,
-    padding_y=3,
+    padding_y=1,
     fontsize=12,
     margin_x=0,
 )
@@ -359,7 +359,7 @@ group_box_config = dict(
     other_screen_border='333333',
     other_current_screen_border='333333',
     padding_x=0,
-    padding_y=3,
+    padding_y=2,
     fontsize=12,
     margin_x=0
 )
@@ -443,6 +443,8 @@ screens = [
                     # foreground='#F0F040',
                     # font=WidgetOpts.MONOSPACE_FONT
                 # ),
+                widgets.GPMDP2(),
+                sep(),
                 # sep(),
                 widget.Systray(
                     icon_size=14,
@@ -556,7 +558,7 @@ screens = [
                 ),
                 # make_current_layout_widget(),
             ],
-            18
+            16
         ),
         # bottom=bar.Bar(
         #     [
@@ -654,7 +656,7 @@ screens = [
                 # widget.Sep(padding=10),
                 # widget.Clock(format='%Y-%m-%d %H:%M'),
             ],
-            18
+            16
         )
     ),
     Screen(
@@ -692,7 +694,7 @@ screens = [
                     update_delay=5
                 ),
             ],
-            18
+            16
         )
     ),
 ]

@@ -71,6 +71,8 @@ Plugin 'junegunn/fzf.vim'
 Plugin 'mhinz/vim-startify'
 
 Plugin 'wkentaro/conque.vim'
+"Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'jpalardy/vim-slime'
 
 call vundle#end()            		" required
 
@@ -387,6 +389,7 @@ source $HOME/.vim/scripts/signs.vim
 source $HOME/.vim/scripts/astloc.vim
 source $HOME/.vim/scripts/statusline.vim
 source $HOME/.vim/scripts/compl.vim
+"source $HOME/.vim/scripts/termrun.vim
 "pyfile $HOME/.vim/scripts/compl.py
 
 "fu! PyCompl(findstart, base)
@@ -456,4 +459,11 @@ au BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTre
 
 " Cursor blinking & look
 set guicursor=n-v-c-sm:block-blinkon100,i-ci-ve:ver25-blinkon100,r-cr-o:hor20-blinkon100
+
+" Slime
+let g:slime_target = 'tmux'
+
+" Terminal tweaks
+"tnoremap <Esc> <C-\><C-n>
+"nnoremap <M-d> :q!<CR>
 
