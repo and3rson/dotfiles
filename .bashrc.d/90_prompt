@@ -3,10 +3,17 @@
 #ARROW=`echo -e "\ue0b0 "`
 #ARROW=`echo -e "\ue0bc "`
 ARROW=`echo -e ""`
+ARROW=`echo -e "\e[38;5;238m\u23AA"`
 #ARROW=`echo -e "\ue0d2 "`
-HOUSE=`echo -e "\u2302"`
+#HOUSE=`echo -e "\u2302"`
+#HOUSE=`echo -e "\uE614"`
+HOUSE=`echo -e "\uF015"`
+ROOT=`echo -e "\uE614"`
+PWD_SEP=`echo -e "\uF0DA"`
+PY_ICON=`echo -e "\uE606"`
+ELLIPSIS=`echo -e "\u2026"`
 case $(tty) in /dev/tty[0-9]*)
-    ARROW=''; HOUSE='' ;;
+    ARROW=''; HOUSE=''; ROOT='' ;;
 esac
 
 
@@ -18,7 +25,8 @@ esac
 
 function make_prompt() {
     RETCODE=$?
-    START=$(echo -en "\uF2D0")
+    #START=$(echo -en "\uF2D0")
+    START=""
     STAR=$(echo -en "\uF005")
     PULSE=$(echo -en "\uE234")
     #ARROW=$(echo -en "\uE0BC")
@@ -34,7 +42,11 @@ function make_prompt() {
         FORE=$1
         BACK=$2
         FORE_MOD=${3:-0}
-        if [[ "$LAST_BACK" != "" && "$LAST_BACK" != "$BACK" ]]
+        #if [[ "$LAST_BACK" != "" && "$LAST_BACK" != "$BACK" ]]
+        #then
+        #    echo -n "\[\e[48;5;${BACK}m\]\[\e[38;5;${LAST_BACK}m\]$ARROW"
+        #fi
+        if [[ "$LAST_BACK" != "" ]]
         then
             echo -n "\[\e[48;5;${BACK}m\]\[\e[38;5;${LAST_BACK}m\]$ARROW"
         fi
@@ -67,36 +79,45 @@ function make_prompt() {
     }
 
     function date_part() {
-        fb 255 125
-        date +" $START %H:%M:%S $RST" | tr -d '\n'
+        #fb 255 125
+        fb 32 234
+        #date +" $START %H:%M:%S $RST" | tr -d '\n'
+        date +" %H:%M:%S $RST" | tr -d '\n'
     }
 
     function venv_part() {
         if [[ ! -z "$VIRTUAL_ENV" ]]
         then
-            fb 255 22
+            #fb 255 22
+            fb 28 234
             #fore 22
             #arrow
             echo -n " "
             #echo -en "$VIRTUAL_ENV $RST" | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
-            echo -en "env! $RST"
+            echo -en "$PY_ICON env $RST"
         elif [[ -f ".env/bin/activate" ]]
         then
             VIRTUAL_ENV=$( . .env/bin/activate; echo $VIRTUAL_ENV )
-            fb 255 160
+            #fb 255 160
+            fb 160 234
             echo -n " "
             #echo -en "$VIRTUAL_ENV $RST" | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
-            echo -en "env! $RST"
+            echo -en "$PY_ICON env! $RST"
         fi
     }
 
     function git_part() {
         #BRANCH="$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>&1) @ $(git rev-parse --short HEAD 2>&1)"
         BRANCH="$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>&1)"
+        #BRANCH="$(cat .git/HEAD | awk -F"refs/heads/" '{print $2}')"
         if [[ "$?" -eq "0" ]]
         then
             OUT=$(git status -s 2>&1)
             OIFS=$IFS
+            if [ "${#BRANCH}" -gt 16 ]
+            then
+                BRANCH="${BRANCH::16}$ELLIPSIS"
+            fi
             #IFS=$'\n'
             #for line in $(git st -s | sed -re 's/^\s+|\s+$//g')
             #do
@@ -105,10 +126,12 @@ function make_prompt() {
             #IFS=$OIFS
             if [ "$OUT" == "" ]
             then
-                fb 255 28  # 28
+                #fb 255 28  # 28
+                fb 41 234
                 C=''
             else
-                fb 255 130
+                #fb 255 130
+                fb 3 234
                 C='!'
             fi
             UNPUSHED=$(git log origin/$BRANCH..HEAD --oneline wc -l 2> /dev/null | wc -l)
@@ -125,7 +148,8 @@ function make_prompt() {
     function ret_part() {
         if [[ "$RETCODE" != "0" ]]
         then
-            fb 255 160
+            #fb 255 160
+            fb 160 234 1
             echo -en " $RETCODE $RST"
             echo -en "\[$txtrst\]"
         fi
@@ -153,14 +177,44 @@ function make_prompt() {
     }
 
     function pwd_part() {
+        SPACE=`echo -e '\u2026'`
+        fb 32 234 # 255 27 1
+        #fb 197 234 # 255 27 1
+        DIR=${PWD/$HOME/$HOUSE\/}
+        DIR=${DIR/\//}
+        DIR=${DIR// /$SPACE}
+        IFS='/'
+        PARTS=($DIR)
+        CURRENT=0
+        COUNT=${#PARTS[@]}
+        if [[ "$PWD" == "/" ]]
+        then
+            echo -en " $ROOT $RST"
+        else
+            for PART in ${PARTS[@]}
+            do
+                CURRENT=$((CURRENT+1))
+                if [[ "$CURRENT" != "$COUNT" ]]
+                then
+                    echo -n " ${PART::3} "
+                    echo -n "$PWD_SEP"
+                else
+                    echo -n " ${PART} "
+                fi
+            done
+        fi
+    }
+
+    function pwd_part_old() {
         #fb 255 27 1
         if [[ "$PWD" == "/" ]]
         then
-            fb 255 27 1
-            echo -en " / $RST"
+            fb 32 234 # 255 27 1
+            echo -en " $ROOT $RST"
         else
-            DIR=${PWD/$HOME/\$HOUSE}
-            DIR=${PWD/\//}
+            #echo $PWD
+            DIR=${PWD/$HOME/$HOUSE\/}
+            DIR=${DIR/\//}
             ##DIR=${DIR//\// \\uF44A }
             ##DIR=${DIR//\// \\uE0B1 }
             #DIR=${DIR//\// \\uE0BB }
@@ -170,6 +224,13 @@ function make_prompt() {
             IFS='/'
             NUM=100
             N=0
+            COUNT=-1
+            for _ in $DIR
+            do
+                COUNT=$((COUNT+1))
+            done
+            fb 32 234
+            echo -n " "
             for i in $DIR
             do
                 # Contrast colors
@@ -178,13 +239,18 @@ function make_prompt() {
                     V=$(printf %d "'${i:$n:1}")
                     NUM=$((NUM+V))
                 done
-                NUM1=$NUM
-                NUM2=2
+                NUM1=5
+                NUM2=$NUM
                 #NUM1=$N
                 #NUM2=8
                 BG=$((((NUM1%7)+1)*36-20 + NUM2%9))
-                fb 255 $BG 1
-                echo -n " $i "
+                fb $BG 234
+                echo -n "$i "
+                #echo $N $COUNT
+                if [[ "$N" != "$COUNT" ]]
+                then
+                    echo -n " " # "
+                fi
                 #echo -n a $i b
                 #echo -n 1${i}${i}2
                 N=$((N+1))
@@ -206,10 +272,10 @@ function make_prompt() {
     #files_part
     #free_part
     ret_part
-    end_part
+    #end_part
     brk
     pwd_part
-    end_part
+    #end_part
     echo -n "$RST "
 }
 

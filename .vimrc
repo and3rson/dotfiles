@@ -55,7 +55,7 @@ Plugin 'ervandew/supertab'
 "Plugin 'nvie/vim-flake8'
 
 "Plugin 'scrooloose/vim-nerdtree'
-Plugin 'nerdtree'
+"Plugin 'nerdtree'
 
 Plugin 'ap/vim-css-color'
 Plugin 'osyo-manga/vim-over'
@@ -389,6 +389,7 @@ source $HOME/.vim/scripts/signs.vim
 source $HOME/.vim/scripts/astloc.vim
 source $HOME/.vim/scripts/statusline.vim
 source $HOME/.vim/scripts/compl.vim
+source $HOME/.vim/scripts/hi_yaml.vim
 "source $HOME/.vim/scripts/termrun.vim
 "pyfile $HOME/.vim/scripts/compl.py
 
@@ -466,4 +467,9 @@ let g:slime_target = 'tmux'
 " Terminal tweaks
 "tnoremap <Esc> <C-\><C-n>
 "nnoremap <M-d> :q!<CR>
+
+" Detect hi groups
+map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
+\ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
+\ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
 

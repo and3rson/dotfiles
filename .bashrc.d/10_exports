@@ -1,9 +1,10 @@
 #!/bin/bash
 
 PATH="/sh:/bin:/usr/local/bin:/sbin:/usr/local/sbin:/usr/bin/core_perl"
-export EDITOR="vim"
+export EDITOR="nvim"
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on'
 export PATH="/home/anderson/.npm-packages/bin:$PATH:/home/anderson/.gem/ruby/2.4.0/bin:/home/anderson/.config/qtile/bin:/usr/lib/jvm/java-8-jdk/jre/bin:/opt/android-sdk/tools"
+export GOPATH="/home/anderson/src/go"
 # export PATH="/usr/share/perl5/vendor_perl/auto/share/dist/Cope:$PATH"
 # export TERM=screen-256color
 # export COPE=1

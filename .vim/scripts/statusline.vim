@@ -14,7 +14,7 @@ hi! StatusBarTerminal ctermbg=57 ctermfg=0
 hi! StatusBarTerminalInv ctermbg=234 ctermfg=57
 " Inactive
 hi! StatusBarInactive ctermfg=238 ctermbg=232
-hi! StatusBarInactiveInv ctermfg=238 ctermbg=232
+hi! StatusBarInactiveInv ctermfg=248 ctermbg=232
 " Text
 hi! StatusBarText ctermfg=248 ctermbg=234
 " Error parts
@@ -42,7 +42,7 @@ let g:mode_map = {
     \ '^S': '',
     \ 't': ''
     \ }
-let g:sep = ' ⎪ '
+let g:sep = '⎪'
 
 set noshowmode
 
@@ -55,7 +55,7 @@ fu! CharCode(bufnr)
     if code == 0
         let char = ''
     elseif code == 32
-        let char = ''
+        let char = '…' " ''
     elseif code == 9
         let char = ''
     endif
@@ -91,13 +91,13 @@ fu! AleWarnings(bufnr, reset_style) abort
     let l:errors = l:counts.error + l:counts.style_error
     let l:warnings = l:counts.total - l:errors
     "return l:warnings == 0 ? '' : ('  ' . l:warnings . ' ')
-    return l:warnings == 0 ? '' : ('%#StatusBarWarning# ' . l:warnings . a:reset_style . g:sep)
+    return l:warnings == 0 ? '' : (g:sep . ' %#StatusBarWarning# ' . l:warnings . ' ' . a:reset_style)
 endf
 
 fu! AleErrors(bufnr, reset_style) abort
     let l:counts = ale#statusline#Count(a:bufnr)
     let l:errors = l:counts.error + l:counts.style_error
-    return l:errors == 0 ? '' : ('%#StatusBarError# ' . l:errors . a:reset_style . g:sep)
+    return l:errors == 0 ? '' : (g:sep . ' %#StatusBarError# ' . l:errors . ' ' . a:reset_style)
 endf
 
 fu! LinterStatus() abort
@@ -113,9 +113,8 @@ fu! LinterStatus() abort
     \)
 endf
 
-fu! FileIcon()
-    let ft = &filetype
-    return has_key(g:ic, ft) ? g:ic[ft] : g:ic.default
+fu! FileIcon(filetype)
+    return has_key(g:ic, a:filetype) ? g:ic[a:filetype] : g:ic.default
 endf
 
 fu! FileType()
@@ -201,22 +200,37 @@ fu! PieCrumbs(show_signatures)
 endf
 
 fu! Branch()
-    let head = fugitive#head()
+    " expand('%:p:h')
+    " let head = system('git -C ' . shellescape(a:file) . ' rev-parse --symbolic-full-name --abbrev-ref HEAD')
+    " let head = substitute(head, '\n\+$', '', '')
+    " if v:shell_error != 0
+    "     let head = ''
+    " endif
+    let head = fugitive#head(8)
     if strlen(head)
         if strlen(head) > 16
             let head = head[:15] . '>'
         endif
-        let br = ' ' . head . g:sep
+        let br = g:sep . '  ' . head . ' '
         return br
     endif
     return ''
 endf
 
-fu! StatusBar(winid, file_type, file_icon)
+fu! FilePos()
+    return g:sep . ' %04l.%02c/%L '
+endf
+
+fu! BufNr(bufnr)
+    return g:sep . ' ' . a:bufnr . ' '
+endf
+
+fu! StatusBar(winid, file_type)
     let s = ''
     let end = '%*'
     let tn = 'Text'
     let bufnr = -1
+    let file_icon = FileIcon(a:file_type)
     for bufinfo in getbufinfo()
         if index(bufinfo.windows, str2nr(a:winid)) != -1
             let bufnr = bufinfo.bufnr
@@ -246,42 +260,43 @@ fu! StatusBar(winid, file_type, file_icon)
         let mn = 'Inactive'
         let tn = 'Inactive'
     endif
-    let c1 = printf('%%#StatusBar%s#', mn)
-    let c2 = printf('%%#StatusBar%sInv#', mn)
-    let ct = printf('%%#StatusBar%s#', tn)
-    let s .= c1 . ' ' . ((m == 'n') ? a:file_icon : g:mode_map[m]) . ' ' . end
-    let s .= c2 . ' %<%F'
+    let hi_color_bright = printf('%%#StatusBar%s#', mn)
+    let hi_color = printf('%%#StatusBar%sInv#', mn)
+    let color = printf('%%#StatusBar%s#', tn)
+    let s .= hi_color_bright . ' ' . ((m == 'n') ? file_icon : g:mode_map[m]) . ' ' . end
+    let s .= hi_color . ' %<%F'
     if a:file_type ==# 'python'
         "let s .= ' ' . ASTLoc()
         let s .= PieCrumbs(1) . ' %#StatusBarText#'
     endif
     let s .= '%='
     "let s .= 'A=' . win_getid() . ' C=' . a:winid
-    let s .= ct
+    let s .= color
     "let s .= ' ' . FileIcon() . '  ' . FileType() . ' '
     "let s .= ' ' . ScrollProgress() . ' '
-    let s .= '' . bufnr . g:sep
+    let s .= BufNr(bufnr)
+    "let s .= g:sep . ' ' . a:file_type . ' '
     let s .= Branch()
-    let s .= '%04l.%02c/%L' . g:sep
+    let s .= FilePos()
     "let s .= CharCode(bufnr) . g:sep
-    let s .= '%#StatusBarWarning#' . AleWarnings(bufnr, ct)
-    let s .= '%#StatusBarError#' . AleErrors(bufnr, ct)
-    let s .= ct . g:rotate_icons[g:rotate_state % 4] . ' '
+    let s .= AleWarnings(bufnr, color)
+    let s .= AleErrors(bufnr, color)
+    "let s .= color . g:rotate_icons[g:rotate_state % 4] . ' '
     let s .= end
     return s
 endf
 
-let g:rotate_state = 0
-let g:rotate_icons = ['—', '\', '|', '/']
-fu Rotate(timer)
-    let g:rotate_state = g:rotate_state + 1
-endf
+"let g:rotate_state = 0
+"let g:rotate_icons = ['—', '\', '|', '/']
+"fu Rotate(timer)
+"    let g:rotate_state = g:rotate_state + 1
+"endf
 
-call timer_start(100, 'Rotate', {'repeat': -1})
+"call timer_start(100, 'Rotate', {'repeat': -1})
 
 set laststatus=2
 fu InitStatusBar()
-    let &l:statusline='%!StatusBar('.win_getid().', "' . &filetype . '", "' . FileIcon() . '")'
+    let &l:statusline='%!StatusBar('.win_getid().', "' . &filetype . '")'
 endf
 au VimEnter,WinNew,BufEnter * call InitStatusBar()
 au VimEnter,WinEnter,BufEnter * call SLEnter()

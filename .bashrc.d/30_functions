@@ -14,12 +14,12 @@ function get_dmenu_pos {
     h=`echo $s | cut -d 'x' -f2`
     # w=`get_display_width`
     # h=`get_display_height`
-    echo "-x $(($w/2-200)) -y $(($h/2-100)) -w 400 -h 200"
+    echo "-x $((w/2-200)) -y $((h/2-100)) -w 400 -h 200"
 }
 
 function cd() {
     builtin cd "${@}"
-    ls -l
+    ll
 }
 
 # function feh() {

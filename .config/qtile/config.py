@@ -714,7 +714,7 @@ def xcava(window):
         window.tweak_float(x=0, y=0)
         # window.cmd_set_size_floating(window.group.screen.dwidth, window.group.screen.dheight)
         # logger.error('%s %s', window.group.screen.dwidth, window.group.screen.dheight)
-        window.tweak_float(w=1366, h=768)
+        window.tweak_float(w=1920, h=1080)
         window.window.configure(stackmode=StackMode.Below)
 
 
