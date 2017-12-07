@@ -1527,7 +1527,7 @@ class DiskUsage(base._TextBox, NonBlockingSpawn):
         size, _, free = result
         self.update(size, free)
 
-        self.timeout_add(5, self.do_process)
+        self.timeout_add(10, self.do_process)
 
     def button_press(self, x, y, button):
         pass
@@ -1548,8 +1548,9 @@ class DiskUsage(base._TextBox, NonBlockingSpawn):
             self.foreground = self.foreground_alert
         else:
             self.foreground = self.foreground_normal
-        self.text = u'{} {}'.format(progress(0, size, size - free, 5, style=8, before='', after=''), self.sizeof_fmt(free))
-        self.bar.draw()
+        self.text = self.sizeof_fmt(free)
+        # self.text = u'{} {}'.format(progress(0, size, size - free, 5, style=8, before='', after=''), self.sizeof_fmt(free))
+        self.draw()
 
 
 class PAControl(base._TextBox, NonBlockingSpawn):

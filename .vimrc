@@ -74,7 +74,11 @@ Plugin 'wkentaro/conque.vim'
 "Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'jpalardy/vim-slime'
 
-call vundle#end()            		" required
+Plugin 'majutsushi/tagbar'
+"Plugin 'calebsmith/vim-lambdify'
+"Plugin 'ehamberg/vim-cute-python'
+
+call vundle#end()                    " required
 
 filetype on
 filetype plugin on
@@ -472,4 +476,56 @@ let g:slime_target = 'tmux'
 map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
 \ . synIDattr(synID(line("."),col("."),0),"name") . "> lo<"
 \ . synIDattr(synIDtrans(synID(line("."),col("."),1)),"name") . ">"<CR>
+
+" Tagbar
+let g:tagbar_sort = 0
+let g:tagbar_indent = 4
+let g:tagbar_compact = 1
+let g:tagbar_show_visibility = 1
+"let g:tagbar_show_linenumbers = 0
+let g:tagbar_silent = 1
+let g:tagbar_show_linenumbers = 2
+"let g:tagbar_iconchars = ['-', '|']
+"let g:tagbar_autopreview = 1
+function! TagbarStatusFn(current, sort, fname, flags, ...) abort
+    let colour = a:current ? '%#StatusLine#' : '%#StatusLineNC#'
+    let flagstr = join(a:flags, '')
+    if flagstr != ''
+        let flagstr = '[' . flagstr . '] '
+    endif
+    return colour . '[' . a:sort . '] ' . flagstr . a:fname
+endfunction
+let g:tagbar_status_func = 'TagbarStatusFn'
+"au VimEnter * TagbarToggle
+nnoremap <silent> <F2> :TagbarToggle<CR>
+inoremap <silent> <F2> <C-o>:TagbarToggle<CR>
+set updatetime=800
+
+let g:tagbar_type_go = {
+    \ 'ctagstype' : 'go',
+    \ 'kinds'     : [
+        \ 'p:package',
+        \ 'i:imports:1',
+        \ 'c:constants',
+        \ 'v:variables',
+        \ 't:types',
+        \ 'n:interfaces',
+        \ 'w:fields',
+        \ 'e:embedded',
+        \ 'm:methods',
+        \ 'r:constructor',
+        \ 'f:functions'
+    \ ],
+    \ 'sro' : '.',
+    \ 'kind2scope' : {
+        \ 't' : 'ctype',
+        \ 'n' : 'ntype'
+    \ },
+    \ 'scope2kind' : {
+        \ 'ctype' : 't',
+        \ 'ntype' : 'n'
+    \ },
+    \ 'ctagsbin'  : 'gotags',
+    \ 'ctagsargs' : '-sort -silent'
+\ }
 

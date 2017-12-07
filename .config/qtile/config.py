@@ -489,6 +489,13 @@ screens = [
                 #     update_interval=0.5
                 # ),
                 sep(),
+                widgets.DiskUsage(
+                    root='/',
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    foreground_normal='#11BBEE',
+                    foreground_alert='#F05040'
+                ),
+                sep(),
                 pacontrol,
             # ] + ([
                 # sep(),

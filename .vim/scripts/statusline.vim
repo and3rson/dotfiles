@@ -3,6 +3,8 @@ hi! StatusBarInsertInv ctermbg=234 ctermfg=197
 " Visual
 hi! StatusBarVisual ctermbg=81 ctermfg=0
 hi! StatusBarVisualInv ctermbg=234 ctermfg=81
+"hi! StatusBarVisual ctermbg=32 ctermfg=0
+"hi! StatusBarVisualInv ctermbg=234 ctermfg=32
 " Normal
 hi! StatusBarNormal ctermbg=118 ctermfg=0
 hi! StatusBarNormalInv ctermbg=234 ctermfg=118
@@ -16,6 +18,7 @@ hi! StatusBarTerminalInv ctermbg=234 ctermfg=57
 hi! StatusBarInactive ctermfg=238 ctermbg=232
 hi! StatusBarInactiveInv ctermfg=248 ctermbg=232
 " Text
+"hi! StatusBarText ctermfg=33 ctermbg=234
 hi! StatusBarText ctermfg=248 ctermbg=234
 " Error parts
 hi! StatusBarWarning ctermfg=3 ctermbg=234 cterm=bold
@@ -199,6 +202,14 @@ fu! PieCrumbs(show_signatures)
     return result
 endf
 
+fu! TagBarLoc()
+    let tag = tagbar#currenttag('%s', '', 'f')
+    if strlen(tag) == 0
+        return ''
+    endif
+    return ' > ' . tag
+endf
+
 fu! Branch()
     " expand('%:p:h')
     " let head = system('git -C ' . shellescape(a:file) . ' rev-parse --symbolic-full-name --abbrev-ref HEAD')
@@ -234,6 +245,7 @@ fu! StatusBar(winid, file_type)
     for bufinfo in getbufinfo()
         if index(bufinfo.windows, str2nr(a:winid)) != -1
             let bufnr = bufinfo.bufnr
+            break
         endif
     endfor
     if g:winid == a:winid
@@ -265,10 +277,11 @@ fu! StatusBar(winid, file_type)
     let color = printf('%%#StatusBar%s#', tn)
     let s .= hi_color_bright . ' ' . ((m == 'n') ? file_icon : g:mode_map[m]) . ' ' . end
     let s .= hi_color . ' %<%F'
-    if a:file_type ==# 'python'
-        "let s .= ' ' . ASTLoc()
-        let s .= PieCrumbs(1) . ' %#StatusBarText#'
-    endif
+    "let s .= TagBarLoc()
+    "if a:file_type ==# 'python'
+    "    "let s .= ' ' . ASTLoc()
+    "    let s .= PieCrumbs(1) . ' %#StatusBarText#'
+    "endif
     let s .= '%='
     "let s .= 'A=' . win_getid() . ' C=' . a:winid
     let s .= color
@@ -276,7 +289,7 @@ fu! StatusBar(winid, file_type)
     "let s .= ' ' . ScrollProgress() . ' '
     let s .= BufNr(bufnr)
     "let s .= g:sep . ' ' . a:file_type . ' '
-    let s .= Branch()
+    "let s .= Branch()
     let s .= FilePos()
     "let s .= CharCode(bufnr) . g:sep
     let s .= AleWarnings(bufnr, color)
