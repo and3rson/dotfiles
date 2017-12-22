@@ -36,7 +36,7 @@ let g:mode_map = {
     \ 'n': '',
     \ 'i': g:ic.insert,
     \ 'R': g:ic.replace,
-    \ 'c': '',
+    \ 'c': g:ic.code,
     \ 'v': '',
     \ 'V': '',
     \ nr2char(22): '',
@@ -232,8 +232,8 @@ fu! FilePos()
     return g:sep . ' %04l.%02c/%L '
 endf
 
-fu! BufNr(bufnr)
-    return g:sep . ' ' . a:bufnr . ' '
+fu! BufNr(bufnr, mode)
+    return g:sep . ' ' . a:bufnr . ':' . a:mode . ' '
 endf
 
 fu! StatusBar(winid, file_type)
@@ -287,7 +287,7 @@ fu! StatusBar(winid, file_type)
     let s .= color
     "let s .= ' ' . FileIcon() . '  ' . FileType() . ' '
     "let s .= ' ' . ScrollProgress() . ' '
-    let s .= BufNr(bufnr)
+    let s .= BufNr(bufnr, m)
     "let s .= g:sep . ' ' . a:file_type . ' '
     "let s .= Branch()
     let s .= FilePos()
@@ -309,11 +309,15 @@ endf
 
 set laststatus=2
 fu InitStatusBar()
+    if &filetype == 'tagbar'
+        return
+    endif
     let &l:statusline='%!StatusBar('.win_getid().', "' . &filetype . '")'
 endf
 au VimEnter,WinNew,BufEnter * call InitStatusBar()
 au VimEnter,WinEnter,BufEnter * call SLEnter()
 au FileType qf call InitStatusBar()
+au FileType tagbar call InitStatusBar()
 "au VimEnter,WinNew * setlocal statusline=%!StatusBar(win_getid())
 "set statusline=%!StatusBar()
 

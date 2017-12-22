@@ -1,6 +1,7 @@
 """"""""""""""""""""""""""""""""
 " Vundle
 """"""""""""""""""""""""""""""""
+" ⍢⍩
 
 set nocompatible
 filetype off
@@ -78,6 +79,9 @@ Plugin 'majutsushi/tagbar'
 "Plugin 'calebsmith/vim-lambdify'
 "Plugin 'ehamberg/vim-cute-python'
 
+Plugin 'pangloss/vim-javascript'
+Plugin 'mxw/vim-jsx'
+
 call vundle#end()                    " required
 
 filetype on
@@ -120,7 +124,7 @@ set relativenumber
 set whichwrap+=<,>,h,l,[,]
 
 " Timeouts
-set timeoutlen=0 ttimeoutlen=0
+set timeoutlen=0 ttimeoutlen=10
 
 " Switch buffers
 nnoremap <silent> <ESC>[5;2~ :bp<CR>
@@ -242,7 +246,8 @@ set cursorline
 set nocursorcolumn
 
 " Vertical sep
-set fillchars+=vert:│
+set fillchars+=vert:\ " Stuff
+" │
 
 " Cursor
 
@@ -258,6 +263,10 @@ hi Normal guibg=NONE ctermbg=NONE
 hi NonText ctermbg=NONE
 
 hi Error ctermfg=235 ctermbg=161
+
+" Split
+"hi VertSplit ctermbg=235
+hi VertSplit ctermbg=none
 
 " Indentation
 set tabstop=4 softtabstop=4 shiftwidth=4
@@ -428,6 +437,8 @@ nnoremap <silent> <M-p>      :Files<CR>
 nnoremap <silent> <C-l>      :Lines<CR>
 nnoremap <silent> <M-l>      :Lines<CR>
 
+"let g:fzf_prefer_tmux = 1
+
 fu! s:fzf_statusline()
   " Override statusline as you like
   "highlight fzf1 ctermfg=161 ctermbg=251
@@ -484,18 +495,26 @@ let g:tagbar_compact = 1
 let g:tagbar_show_visibility = 1
 "let g:tagbar_show_linenumbers = 0
 let g:tagbar_silent = 1
-let g:tagbar_show_linenumbers = 2
+let g:tagbar_show_linenumbers = 0
+let g:tagbar_left = 1
 "let g:tagbar_iconchars = ['-', '|']
 "let g:tagbar_autopreview = 1
-function! TagbarStatusFn(current, sort, fname, flags, ...) abort
-    let colour = a:current ? '%#StatusLine#' : '%#StatusLineNC#'
+fu! TagbarStatusFn(current, sort, fname, flags, ...) abort
+    let highlight_colour = a:current ? '%#StatusBarNormal#' : '%#StatusBarInactive#'
+    let text_colour = a:current ? '%#StatusBarText#' : '%#StatusBarInactive#'
     let flagstr = join(a:flags, '')
     if flagstr != ''
         let flagstr = '[' . flagstr . '] '
     endif
-    return colour . '[' . a:sort . '] ' . flagstr . a:fname
+    "echo a:current . '/' . colour
+    return highlight_colour . ' ' . g:ic.code . ' ' . text_colour . ' Tag list'
+    return highlight_colour . '[' . a:sort . '] ' . flagstr . a:fname
 endfunction
+"fu! Nope(...)
+"    return ''
+"endf
 let g:tagbar_status_func = 'TagbarStatusFn'
+"let g:tagbar_status_func = 'Nope'
 "au VimEnter * TagbarToggle
 nnoremap <silent> <F2> :TagbarToggle<CR>
 inoremap <silent> <F2> <C-o>:TagbarToggle<CR>
@@ -528,4 +547,7 @@ let g:tagbar_type_go = {
     \ 'ctagsbin'  : 'gotags',
     \ 'ctagsargs' : '-sort -silent'
 \ }
+
+" JSX
+let g:jsx_ext_required = 0
 

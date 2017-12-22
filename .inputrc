@@ -72,3 +72,7 @@ set blink-matching-paren on
 #set editing-mode vi
 #set keymap vi-command
 
+set meta-flag on
+set convert-meta off
+set output-meta on
+

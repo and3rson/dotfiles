@@ -627,7 +627,7 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                widgets.ArchLogo(scale=0.9),
+                # widgets.ArchLogo(scale=0.9),
                 widgets.GroupBox3(**group_box_config),
                 widgets.TaskList2(
                     # font=WidgetOpts.MONOSPACE_FONT,
@@ -669,7 +669,7 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                widgets.ArchLogo(scale=0.9),
+                # widgets.ArchLogo(scale=0.9),
                 widgets.GroupBox3(**group_box_config),
                 widgets.TaskList2(
                     # font=WidgetOpts.MONOSPACE_FONT,

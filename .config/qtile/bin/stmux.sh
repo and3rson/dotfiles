@@ -1,4 +1,5 @@
 #!/bin/bash
 
 # exec tmux
-tmux ls && tmux attach || tmux -2
+tmux ls 2> /dev/null && tmux attach || tmux -2
+

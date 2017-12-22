@@ -7,9 +7,11 @@ ARROW=`echo -e "\e[38;5;238m\u23AA"`
 #ARROW=`echo -e "\ue0d2 "`
 #HOUSE=`echo -e "\u2302"`
 #HOUSE=`echo -e "\uE614"`
-HOUSE=`echo -e "\uF015"`
+#HOUSE=`echo -e "\uF015"`
+HOUSE="~"
 ROOT=`echo -e "\uE614"`
-PWD_SEP=`echo -e "\uF0DA"`
+#PWD_SEP=`echo -e "\uF0DA"`
+PWD_SEP="/"
 PY_ICON=`echo -e "\uE606"`
 ELLIPSIS=`echo -e "\u2026"`
 case $(tty) in /dev/tty[0-9]*)
@@ -38,14 +40,23 @@ function make_prompt() {
     LAST_FORE=255
     LAST_FORE_MOD=0
 
+    function fgcol() {
+        echo -n "\[\e[38;5;$1m\]"
+    }
+
     function fb() {
         FORE=$1
         BACK=$2
         FORE_MOD=${3:-0}
+        if [[ "$4" == "-" ]]
+        then
+            ARROW=""
+        fi
         #if [[ "$LAST_BACK" != "" && "$LAST_BACK" != "$BACK" ]]
         #then
         #    echo -n "\[\e[48;5;${BACK}m\]\[\e[38;5;${LAST_BACK}m\]$ARROW"
         #fi
+
         if [[ "$LAST_BACK" != "" ]]
         then
             echo -n "\[\e[48;5;${BACK}m\]\[\e[38;5;${LAST_BACK}m\]$ARROW"
@@ -74,7 +85,7 @@ function make_prompt() {
         if ! [[ -z "$SSH_CONNECTION" ]]
         then
             fb 0 255
-            echo -n " $(hostname) "
+            echo -n "$(hostname) "
         fi
     }
 
@@ -82,7 +93,7 @@ function make_prompt() {
         #fb 255 125
         fb 32 234
         #date +" $START %H:%M:%S $RST" | tr -d '\n'
-        date +" %H:%M:%S $RST" | tr -d '\n'
+        date +"%H:%M:%S $RST" | tr -d '\n'
     }
 
     function venv_part() {
@@ -92,17 +103,17 @@ function make_prompt() {
             fb 28 234
             #fore 22
             #arrow
-            echo -n " "
+            echo -n ""
             #echo -en "$VIRTUAL_ENV $RST" | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
-            echo -en "$PY_ICON env $RST"
+            echo -en " $PY_ICON env $RST"
         elif [[ -f ".env/bin/activate" ]]
         then
             VIRTUAL_ENV=$( . .env/bin/activate; echo $VIRTUAL_ENV )
             #fb 255 160
             fb 160 234
-            echo -n " "
+            echo -n ""
             #echo -en "$VIRTUAL_ENV $RST" | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
-            echo -en "$PY_ICON env! $RST"
+            echo -en " $PY_ICON env! $RST"
         fi
     }
 
@@ -135,13 +146,13 @@ function make_prompt() {
                 C='!'
             fi
             UNPUSHED=$(git log origin/$BRANCH..HEAD --oneline wc -l 2> /dev/null | wc -l)
-            echo -n " $GIT $BRANCH$C "
+            echo -n " $GIT $BRANCH$C"
             if [[ "$UNPUSHED" -gt "0" ]]
             then
                 fb 255 130
-                echo -n " ($UNPUSHED pending commit) "
+                echo -n " ($UNPUSHED pending commit)"
             fi
-            echo -n "$RST"
+            echo -n " $RST"
         fi
     }
 
@@ -150,7 +161,7 @@ function make_prompt() {
         then
             #fb 255 160
             fb 160 234 1
-            echo -en " $RETCODE $RST"
+            echo -en "$RETCODE $RST"
             echo -en "\[$txtrst\]"
         fi
     }
@@ -189,17 +200,29 @@ function make_prompt() {
         COUNT=${#PARTS[@]}
         if [[ "$PWD" == "/" ]]
         then
-            echo -en " $ROOT $RST"
+            fgcol 238
+            echo -en " / $RST"
         else
             for PART in ${PARTS[@]}
             do
                 CURRENT=$((CURRENT+1))
                 if [[ "$CURRENT" != "$COUNT" ]]
                 then
+                    fgcol 32
                     echo -n " ${PART::3} "
+                    fgcol 238
                     echo -n "$PWD_SEP"
+                #elif [[ "$CURRENT" != "$COUNT" ]]
+                #then
+                #    fgcol 32
+                #    echo -n " ${PART::3} "
+                #    #fgcol 42
+                #    fgcol 238
+                #    echo -n "$PWD_SEP"
+                #    #fb 32 234 0 -
                 else
-                    echo -n " ${PART} "
+                    fgcol 32
+                    echo -n " ${PART}"
                 fi
             done
         fi
@@ -264,6 +287,11 @@ function make_prompt() {
         fb 255
     }
 
+    function dollar_part() {
+        fb 32 0 1 -
+        echo -n ' $'
+    }
+
     ssh_part
     date_part
     venv_part
@@ -276,7 +304,8 @@ function make_prompt() {
     brk
     pwd_part
     #end_part
-    echo -n "$RST "
+    #dollar_part
+    echo -n " $RST "
 }
 
 function set_prompt() {
@@ -312,3 +341,4 @@ then
 fi
 
 # PROMPT_COMMAND="~/.config/qtile/bin/prompt.py"
+
