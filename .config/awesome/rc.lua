@@ -8,7 +8,10 @@ local wibox = require("wibox")
 -- Theme handling library
 local beautiful = require("beautiful")
 -- Notification library
+local _dbus = dbus; dbus = nil
 local naughty = require("naughty")
+dbus = _dbus
+--local naughty = require("naughty")
 local menubar = require("menubar")
 
 -- {{{ Variable definitions
