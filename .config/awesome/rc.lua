@@ -17,6 +17,10 @@ local menubar = require("menubar")
 --beautiful.init(gears.filesystem.get_dir("config") .. "custom.lua")
 beautiful.init("/home/anderson/.config/awesome/themes/custom.lua")
 
+beautiful.taglist_squares_sel = beautiful.taglist_squares_unsel_empty
+beautiful.taglist_squares_unsel = beautiful.taglist_squares_unsel_empty
+beautiful.taglist_squares_sel_empty = beautiful.taglist_squares_unsel_empty
+
 -- Widgets
 --local volumebar = require("widgets.volumebar")
 local spacer = require("widgets.spacer")

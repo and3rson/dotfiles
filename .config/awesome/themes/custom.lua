@@ -32,6 +32,10 @@ theme.border_focus  = "#535d6c"
 theme.border_marked = "#91231c"
 theme.systray_icon_spacing = 2
 
+--theme.taglist_disable_icon = true
+theme.taglist_fg_empty = '#777777'
+
+
 -- There are other variable sets
 -- overriding the default one when
 -- defined, the sets are:
