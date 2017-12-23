@@ -551,3 +551,6 @@ let g:tagbar_type_go = {
 " JSX
 let g:jsx_ext_required = 0
 
+" .xinitrc
+"au! BufRead,BufNewFile *.xinitrc set filetype=sh
+

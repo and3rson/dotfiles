@@ -67,8 +67,8 @@ shift = 'shift'
 
 class WidgetOpts:
     LOCATION = 'Lviv, Ukraine'
-    DEFAULT_FONT = 'Roboto'
-    DEFAULT_FONT_BOLD = 'Roboto Bold'
+    MONOSPACE_FONT = 'Roboto'
+    MONOSPACE_FONT_BOLD = 'Roboto Bold'
     MONOSPACE_FONT = 'Liberation Mono'
     # MONOSPACE_FONT = 'FuraCode Nerd Font'
     # MONOSPACE_FONT = 'Roboto Sans'
@@ -87,7 +87,7 @@ class WidgetOpts:
 def hide_show_bar(qtile):
     bar = qtile.currentScreen.top
     if bar.size == 0:
-        bar.size = 18
+        bar.size = 16
         bar.window.unhide()
     else:
         bar.size = 0
@@ -316,7 +316,7 @@ floating_layout = layout.Floating(
 
 # Default args for widgets
 widget_defaults = dict(
-    font=WidgetOpts.DEFAULT_FONT,
+    font=WidgetOpts.MONOSPACE_FONT,
     # font='DejaVu Sans Mono',
     fontsize=12,
     padding=2,
@@ -339,7 +339,7 @@ group_box_config = dict(
     current_highlight_method='block',
     other_highlight_method='border',
     # font='Nimbus Sans Bold',  # Terminus, Nimbus Sans
-    font=WidgetOpts.DEFAULT_FONT + ' Medium',
+    font=WidgetOpts.MONOSPACE_FONT + ' Medium',
     padding_x=1,
     padding_y=1,
     fontsize=12,
@@ -351,7 +351,7 @@ group_box_config = dict(
     disable_drag=True,
     borderwidth=2,
     rounded=False,
-    font=WidgetOpts.DEFAULT_FONT + 'Medium',
+    font=WidgetOpts.MONOSPACE_FONT + 'Medium',
     fontshadow='222222',
     highlight_method='block',
     this_screen_border='FF5544.5',
@@ -376,11 +376,11 @@ def make_current_layout_widget():
 
 
 def sep():
-    return widget.Sep(padding=4, foreground='#11BBEE.2', size_percent=100)
+    return widget.Sep(padding=6, foreground='#11BBEE.5', size_percent=100)
 
 
 pacontrol = widgets.PAControl(
-    font=WidgetOpts.DEFAULT_FONT,
+    font=WidgetOpts.MONOSPACE_FONT,
     foreground='#11BBEE'
 )
 
@@ -433,7 +433,7 @@ screens = [
                     padding_y=3,
                     padding_x_extra=-4,
                     padding_y_extra=-5,
-                    font=WidgetOpts.DEFAULT_FONT
+                    font=WidgetOpts.MONOSPACE_FONT
                 ),
                 # widgets.WindowTabs2(
                 #     font=WidgetOpts.MONOSPACE_FONT
@@ -447,7 +447,7 @@ screens = [
                 sep(),
                 # sep(),
                 widget.Systray(
-                    icon_size=14,
+                    icon_size=12,
                     # padding_y=2
                 ),
                 sep(),
@@ -500,7 +500,7 @@ screens = [
             # ] + ([
                 # sep(),
                 # widgets.Backlight2(
-                    # font=WidgetOpts.DEFAULT_FONT,
+                    # font=WidgetOpts.MONOSPACE_FONT,
                     # foreground='#11BBEE',
                     # backlight_name=backlight_name
                 # )
@@ -516,19 +516,19 @@ screens = [
                     # I hereby disclose my OpenWeatherMap API token.
                     # Please show me some respect and do not abuse it. <3
                     location=WidgetOpts.LOCATION,
-                    # font=WidgetOpts.MONOSPACE_FONT,
-                    font=WidgetOpts.WEATHER_FONT,
+                    font=WidgetOpts.MONOSPACE_FONT,
+                    # font=WidgetOpts.WEATHER_FONT,
                     foreground='#11BBEE'
                 ),
                 sep(),
                 widgets.Ping(
-                    font=WidgetOpts.DEFAULT_FONT,
+                    font=WidgetOpts.MONOSPACE_FONT,
                     foreground_normal='#11BBEE',
                     foreground_alert='#F05040'
                 ),
                 sep(),
                 # widgets.BluetoothInfo(
-                    # font=WidgetOpts.DEFAULT_FONT,
+                    # font=WidgetOpts.MONOSPACE_FONT,
                     # foreground='#11BBEE',
                 # ),
                 # sep(),
@@ -549,7 +549,7 @@ screens = [
                 sep(),
                 widget.Clock(
                     format='%H:%M',
-                    font=WidgetOpts.DEFAULT_FONT,
+                    font=WidgetOpts.MONOSPACE_FONT,
                     foreground='#11BBEE',
                 ),
                 sep(),
@@ -560,7 +560,7 @@ screens = [
                     foreground_charging='#11BB11',
                     foreground_low='#F05040',
                     format=u'{percent:2.0%} {char}',
-                    font=WidgetOpts.DEFAULT_FONT,
+                    font=WidgetOpts.MONOSPACE_FONT,
                     update_delay=5
                 ),
                 # make_current_layout_widget(),
@@ -571,7 +571,7 @@ screens = [
         #     [
                 # widgets.ArchLogo(scale=0.9),
         #         widgets.Hostname(
-        #             font=WidgetOpts.DEFAULT_FONT,
+        #             font=WidgetOpts.MONOSPACE_FONT,
         #             fontsize=10,
         #             # background='#FFFFFF',
         #             # foreground='#222222'
@@ -644,7 +644,7 @@ screens = [
                 sep(),
                 widget.Clock(
                     format='%H:%M',
-                    font=WidgetOpts.DEFAULT_FONT,
+                    font=WidgetOpts.MONOSPACE_FONT,
                     foreground='#11BBEE',
                 ),
                 sep(),
@@ -655,7 +655,7 @@ screens = [
                     foreground_charging='#11BB11',
                     foreground_low='#F05040',
                     format=u'{percent:2.0%} {char}',
-                    font=WidgetOpts.DEFAULT_FONT,
+                    font=WidgetOpts.MONOSPACE_FONT,
                     update_delay=5
                 ),
                 # make_current_layout_widget(),
@@ -686,7 +686,7 @@ screens = [
                 sep(),
                 widget.Clock(
                     format='%H:%M',
-                    font=WidgetOpts.DEFAULT_FONT,
+                    font=WidgetOpts.MONOSPACE_FONT,
                     foreground='#11BBEE',
                 ),
                 sep(),
@@ -697,7 +697,7 @@ screens = [
                     foreground_charging='#11BB11',
                     foreground_low='#F05040',
                     format=u'{percent:2.0%} {char}',
-                    font=WidgetOpts.DEFAULT_FONT,
+                    font=WidgetOpts.MONOSPACE_FONT,
                     update_delay=5
                 ),
             ],
@@ -724,6 +724,11 @@ def xcava(window):
         window.tweak_float(w=1920, h=1080)
         window.window.configure(stackmode=StackMode.Below)
 
+# @hook.subscribe.group_window_add
+@hook.subscribe.client_managed
+def termite_fullscreen(window):
+    if window.window.get_name().lower() == 'termite':
+        window.fullscreen = True
 
 # Make dialogs float & appear at the middle of the screen
 # @hook.subscribe.client_new

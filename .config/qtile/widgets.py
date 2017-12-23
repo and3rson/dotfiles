@@ -247,7 +247,7 @@ class OpenWeatherMap(base._TextBox, NonBlockingSpawn):
         try:
             response = json.loads(urlopen(self.url).read())
             # F0C2
-            return u'{icon}  {temp}\u00B0C'.format(
+            return u'{temp}\u00B0C'.format(
                 city=response['name'],
                 temp=int(response['main']['temp'] - OpenWeatherMap.ABS_ZERO),
                 # name=response['weather'][0]['main']
@@ -603,7 +603,7 @@ class GPMDP(base._TextBox, NonBlockingSpawn):
         except Exception:
             # logger.exception(str(e))
             self._update_state(False, False, 'Error', None)
-            self.timeout_add(5, self.poll)
+            self.timeout_add(1, self.poll)
 
     def _update_state(self, is_downloading, is_playing, current_song, song):
         try:
@@ -910,12 +910,36 @@ class FanControl(base._TextBox, NonBlockingSpawn):
         self.timeout_add(0.5, self.do_update)
 
 
-class Battery2(Battery):
+class Battery2(base.ThreadedPollText):
     """
     Patched version of Battery widget that shows icon font chars.
     Psst: I use nerd-fonts package for this.
     """
-    def update(self):
+    def __init__(self, **config):
+        config['update_interval'] = 5
+        self.last_text = None
+        super().__init__(**config)
+
+    def _read(self, key):
+        try:
+            with open('/sys/class/power_supply/BAT0/{}'.format(key), 'r') as f:
+                return f.read().strip()
+        except OSError:
+            return None
+
+    def _get_info(self):
+        try:
+            info = {
+                'status': self._read('status'),
+                'capacity': float(self._read('capacity')),
+                'charge_now': float(self._read('charge_now')),
+                'charge_full': float(self._read('charge_full')),
+            }
+        except TypeError:
+            return None
+        return info
+
+    def poll(self):
         # f037
         # f011
         # self.update_delay = 1
@@ -957,9 +981,9 @@ class Battery2(Battery):
         critical_value = 0
 
         if info:
-            value = int(info['now'] / info['full'] * 100)
+            value = int(info['charge_now'] / info['charge_full'] * 100 / info['capacity'] * 100)
 
-            if info['stat'] in ('Charging', 'Full'):
+            if info['status'] in ('Charging', 'Full'):
                 icon_id = 0xF1E6
 
                 self.foreground = self.foreground_charging
@@ -999,11 +1023,24 @@ class Battery2(Battery):
             ntext = u'{} {}'.format(icon, text)
         else:
             ntext = u'{}'.format(icon)
+
         if ntext != self.text:
-            self.text = ntext
-            self.bar.draw()
+            self.last_text = ntext
             if is_critical:
                 notify('Battery Widget', 'error', 'Low battery!', 'Only {}% left.'.format(critical_value))
+        self.last_text = ntext
+
+        return ntext
+
+        # if text:
+        #     ntext = u'{} {}'.format(icon, text)
+        # else:
+        #     ntext = u'{}'.format(icon)
+        # if ntext != self.text:
+        #     self.text = ntext
+        #     self.bar.draw()
+        #     if is_critical:
+        #         notify('Battery Widget', 'error', 'Low battery!', 'Only {}% left.'.format(critical_value))
 
 
 class UnreadMail(base._TextBox):
@@ -1536,7 +1573,7 @@ class DiskUsage(base._TextBox, NonBlockingSpawn):
         for unit in ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi']:
             if abs(num) < 1024.0:
                 # return "%3.1f%s%s" % (num, unit, suffix)
-                return "%3d %s%s" % (num, unit, suffix)
+                return "%d %s%s" % (num, unit, suffix)
             num /= 1024.0
         return "%.1f%s%s" % (num, 'Yi', suffix)
 
