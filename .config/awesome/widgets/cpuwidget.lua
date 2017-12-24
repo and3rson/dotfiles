@@ -10,6 +10,7 @@
 
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
+local gears = require("gears")
 
 local cpugraph_widget = wibox.widget {
     max_value = 100,
@@ -27,10 +28,17 @@ local cpu_widget = wibox.container.margin(wibox.container.mirror(cpugraph_widget
 local total_prev = 0
 local idle_prev = 0
 
-watch("cat /proc/stat | grep '^cpu '", 0.25,
-    function(widget, stdout, stderr, exitreason, exitcode)
+gears.timer {
+    timeout=0.25,
+    autostart=true,
+    callback=function()
+        local lines = {}
+        for line in io.lines('/proc/stat') do
+            lines[#lines + 1] = line
+        end
+        local info = lines[1]
         local user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice =
-        stdout:match('(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s')
+        info:match('(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)%s(%d+)')
 
         local total = user + nice + system + idle + iowait + irq + softirq + steal
 
@@ -39,16 +47,18 @@ watch("cat /proc/stat | grep '^cpu '", 0.25,
         local diff_usage = (1000 * (diff_total - diff_idle) / diff_total + 5) / 10
 
         if diff_usage > 80 then
-            widget:set_color('#ff4136')
+            cpugraph_widget:set_color('#ff4136')
         else
-            widget:set_color('#74aeab')
+            cpugraph_widget:set_color('#74aeab')
         end
 
-        widget:add_value(diff_usage)
+        cpugraph_widget:add_value(diff_usage)
 
         total_prev = total
         idle_prev = idle
-    end,
+    end
+}
+watch("cat /proc/stat | grep '^cpu '", 0.25,
     cpugraph_widget
 )
 

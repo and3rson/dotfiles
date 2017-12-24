@@ -1,5 +1,6 @@
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
+local gears = require("gears")
 
 local memgraph_widget = wibox.widget {
     max_value = 100,
@@ -25,22 +26,28 @@ local split = function(s)
     return parts
 end
 
-watch("free", 0.25,
-    function(widget, stdout, stderr, exitreason, exitcode)
-        local total = split(stdout)[8]
-        local used = split(stdout)[9]
+gears.timer {
+    timeout=0.25,
+    autostart=true,
+    callback=function()
+        local lines = {}
+        for line in io.lines('/proc/meminfo') do
+            lines[#lines + 1] = line
+        end
+        local total = split(lines[1])[2]
+        local available = split(lines[3])[2]
         total, _ = tonumber(total)
-        used, _ = tonumber(used)
+        available, _ = tonumber(available)
+        local used = total - available
         diff_usage = used / total * 100
         if diff_usage > 80 then
-            widget:set_color('#ff4136')
+            memgraph_widget:set_color('#ff4136')
         else
-            widget:set_color('#74fe7b')
+            memgraph_widget:set_color('#74fe7b')
         end
-        widget:add_value(used / total * 100)
-    end,
-    memgraph_widget
-)
+        memgraph_widget:add_value(used / total * 100)
+    end
+}
 
 return mem_widget
 
