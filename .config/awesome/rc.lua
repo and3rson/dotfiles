@@ -28,7 +28,10 @@ beautiful.taglist_squares_sel_empty = beautiful.taglist_squares_unsel_empty
 --local volumebar = require("widgets.volumebar")
 local spacer = require("widgets.spacer")
 local gpmdp = require("widgets.gpmdp")
+local cpuwidget = require("widgets.cpuwidget")
+local memwidget = require("widgets.memwidget")
 local volume = require("widgets.volume")
+local openweathermap = require("widgets.openweathermap")
 local date = require("widgets.date")
 local battery = require("widgets.battery")
 
@@ -100,7 +103,7 @@ end
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ "term", "web", "im", "mail", "audio", "games" }, s, layouts[1])
+    tags[s] = awful.tag({ "q", "w", "i", "m", "a", "g" }, s, layouts[1])
 end
 -- }}}
 
@@ -203,7 +206,7 @@ for s = 1, screen.count() do
     mytasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist.buttons, nil, list_update, wibox.layout.flex.horizontal())
 
     -- Create the wibox
-    mywibox[s] = awful.wibox({ position = "top", screen = s, height = 16 })
+    mywibox[s] = awful.wibox({ position = "top", screen = s, height = 18 })
 
     -- Widgets that are aligned to the left
     local left_layout = wibox.layout.fixed.horizontal()
@@ -217,13 +220,19 @@ for s = 1, screen.count() do
     if s == 1 then
         systray = wibox.widget.systray()
         systray:set_base_size(12)
-        right_layout:add(wibox.container.margin(systray, 0, 0, 2, 0))
+        right_layout:add(wibox.container.margin(systray, 0, 6, 2, 0))
     end
     --right_layout:add(awful.widget.watch('bash -c "sensors | grep temp1 | awk \'{print $2}\'"', 5))
     right_layout:add(spacer)
     right_layout:add(gpmdp)
     right_layout:add(spacer)
+    right_layout:add(cpuwidget)
+    right_layout:add(spacer)
+    right_layout:add(memwidget)
+    right_layout:add(spacer)
     right_layout:add(volume)
+    right_layout:add(spacer)
+    right_layout:add(openweathermap)
     right_layout:add(spacer)
     right_layout:add(date)
     right_layout:add(spacer)
@@ -307,7 +316,10 @@ globalkeys = awful.util.table.join(
                   mypromptbox[mouse.screen].widget,
                   awful.util.eval, nil,
                   awful.util.getdir("cache") .. "/history_eval")
-              end)
+              end),
+
+    awful.key({}, 'XF86AudioRaiseVolume', function() awful.util.spawn('amixer set Master 4%+') end),
+    awful.key({}, 'XF86AudioLowerVolume', function() awful.util.spawn('amixer set Master 4%-') end)
     -- Menubar
     --awful.key({ modkey }, "p", function() menubar.show() end)
 )
@@ -391,23 +403,23 @@ awful.rules.rules = {
     --  properties = { floating = true } },
     {
         rule_any = { class = {"HomeTerm"} },
-        properties = { tag = "term" }
+        properties = { tag = "q" }
     },
     {
         rule = { class = "Chromium" },
-        properties = { tag = "web" }
+        properties = { tag = "w" }
     },
     {
         rule_any = { class = {"TelegramDesktop"} },
-        properties = { tag = "im" }
+        properties = { tag = "i" }
     },
     {
         rule_any = { class = {"Evolution"} },
-        properties = { tag = "mail" }
+        properties = { tag = "m" }
     },
     {
         rule_any = { class = {"Google Play Music Desktop Player"} },
-        properties = { tag = "audio" }
+        properties = { tag = "a" }
     },
     -- Set Firefox to always map on tags number 2 of screen 1.
     -- { rule = { class = "Firefox" },
