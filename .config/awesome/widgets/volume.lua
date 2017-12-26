@@ -2,17 +2,17 @@ local awful = require('awful')
 local wibox = require('wibox')
 local gears = require('gears')
 local beautiful = require('beautiful')
-local watch = require("awful.widget.watch")
 
-local CMD = "bash -c \"amixer -D pulse get Master -c 1 -M | grep -o -E '[[:digit:]]+%'\""
+local ICONS = {
+    speaker=' ',
+    headphones=' '
+}
 
---local volume_widget = wibox.widget{
---    markup='~',
---    widget=wibox.widget.textbox
---}
+local volume
+local default_sink
 
 local icon = wibox.widget{
-    text=' ',
+    text=' ~',
     widget=wibox.widget.textbox
 }
 
@@ -36,17 +36,44 @@ local volume_value = wibox.widget{
     widget=wibox.widget.textbox
 }
 
-local update_widget = function(widgets, stdout, _, _, _)
-    local value = stdout:gsub("^%s+", ""):gsub("%s+$", ""):gsub("%%", "")
-    local n, _ = tonumber(value)
-    widgets[1].value = n
-    widgets[2].text = value .. '%'
+local update_widget = function()
+    local f = io.popen('pacmd dump')
+
+    if f == nil then
+        return false
+    end
+
+    local stdout = f:read("*a")
+    f:close()
+
+    default_sink = stdout:match('set%-default%-sink (%S+)\n')
+    volume = stdout:match('set%-sink%-volume ' .. default_sink:gsub('%.', '%%.'):gsub('%-', '%%-') .. ' (%S+)\n')
+    volume = tonumber(volume)
+    local value = math.floor(volume / 0x10000 * 100)
+    --local value = stdout:gsub("^%s+", ""):gsub("%s+$", ""):gsub("%%", "")
+    --local n, _ = tonumber(value)
+    if default_sink:match('bluez') then
+        icon.text = ICONS.headphones
+    else
+        icon.text = ICONS.speaker
+    end
+    volume_widget.value = value
+    volume_value.text = value .. '%'
     --widget.markup = '<b><span>  ' .. value .. '</span></b>'
 end
 
-watch(CMD, 0.5, update_widget, {volume_widget, volume_value})
+local modify_volume = function(diff)
+    volume = math.floor(volume + diff / 100 * 0x10000)
+    awful.util.spawn('pacmd set-sink-volume ' .. default_sink .. ' ' .. string.format('0x%x', math.floor(volume)))
+    update_widget()
+end
 
---return wibox.container.margin(volume_widget, 2, 2, 2, 2)
+gears.timer {
+    timeout=1,
+    autostart=true,
+    callback=update_widget
+}
+
 local layout = wibox.layout.fixed.horizontal()
 layout.spacing = 8
 local widget = wibox.widget{
@@ -55,6 +82,9 @@ local widget = wibox.widget{
     volume_value,
     layout=layout
 }
+
+widget.increase_volume = function() modify_volume(2) end
+widget.decrease_volume = function() modify_volume(-2) end
 
 widget:connect_signal('button::press', function(lx, ly, button, mods, find_widgets_result)
     awful.util.spawn('pavucontrol')

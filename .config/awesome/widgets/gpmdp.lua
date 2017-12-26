@@ -2,6 +2,10 @@ local wibox = require('wibox')
 local gears = require("gears");
 local beautiful = require('beautiful')
 local json = require("json");
+local inotify = require("inotify");
+
+local FILE = os.getenv('HOME') .. '/.config/Google Play Music Desktop Player/json_store/playback.json'
+print(FILE)
 
 local progressbar = wibox.widget {
     forced_width=10,
@@ -22,7 +26,7 @@ local gpmdp_widget = wibox.widget {
 
 local update_widget = function()
     local content = ''
-    for line in io.lines('/home/anderson/.config/Google Play Music Desktop Player/json_store/playback.json') do
+    for line in io.lines(FILE) do
         content = content .. line
     end
     local data = json.decode(content)
@@ -52,11 +56,38 @@ local update_widget = function()
         '</span>'
 end
 
+local inot, errno, errstr
+function poll()
+    print(inot)
+    local events, nread, errno, errstr = inot:read()
+    print(events)
+    if events then
+        for i, event in ipairs(events) do
+            for k, v in pairs(event) do
+                if event.mask & inotify.IN_CLOSE then
+                    update_widget()
+                    --print('close', event.mask)
+                end
+            end
+        end
+    end
+end
+
 gears.timer {
-    timeout=1,
+    timeout=0.2,
     autostart=true,
     callback=update_widget
 }
+--inot, errno, errstr = inotify.init(false)
+--if errno ~= nil then
+--    print(errno, errstr)
+--end
+--inot:addwatch(FILE, inotify.IN_CLOSE)
+--gears.timer {
+--    timeout=0.2,
+--    autostart=true,
+--    callback=poll
+--}
 --watch(CMD, 1, update_widget, gpmdp_widget)
 
 --return wibox.container.margin(gpmdp_widget, 2, 2, 2, 2)

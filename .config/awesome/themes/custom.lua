@@ -11,9 +11,14 @@ local themes_path = gfs.get_themes_dir()
 
 local theme = {}
 
-theme.font          = "DejaVuSansMono Nerd Font 9"
+--theme.font          = "DejaVuSansMono Nerd Font 9"
+theme.font          = "RobotoMono Nerd Font Medium 9"
+--theme.font          = "SauceCodePro Nerd Font Medium 9"
 --theme.font          = "Pixeled 5"
 --theme.font          = "Symtext 8"
+--theme.font          = "Pixel-Art 7"
+--theme.font    = "Pixellari 9"
+--theme.pixel_font    = "Pixellari 9"
 
 --theme.bg_normal     = "#2D2D2D"
 theme.bg_normal     = "#080202"
@@ -22,6 +27,7 @@ theme.bg_urgent     = "#000000"
 theme.bg_minimize   = "#2D2D2D"
 theme.bg_systray    = theme.bg_normal
 
+--theme.fg_normal     = "#CACAC0"
 theme.fg_normal     = "#CACAC0"
 theme.fg_focus      = "#ffffff"
 theme.fg_urgent     = "#ffffff"
@@ -33,6 +39,9 @@ theme.border_normal = "#000000"
 theme.border_focus  = "#535d6c"
 theme.border_marked = "#91231c"
 theme.systray_icon_spacing = 2
+
+theme.tooltip_bg=theme.bg_normal
+theme.tooltip_fg=theme.fg_normal
 
 --theme.taglist_disable_icon = true
 theme.taglist_fg_empty = '#777777'
@@ -65,6 +74,10 @@ theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(
 -- notification_[bg|fg]
 -- notification_[width|height|margin]
 -- notification_[border_color|border_width|shape|opacity]
+theme.notification_font = 'Roboto 10'
+theme.notification_border_color = theme.bg_normal
+theme.notification_margin = dpi(100)
+theme.notification_opacity = 0.92
 
 -- Variables set for theming the menu:
 -- menu_[bg|fg]_[normal|focus]

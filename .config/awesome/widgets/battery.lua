@@ -32,6 +32,7 @@ battery_widget.display_labels = false
 
 local battery_value = wibox.widget{
     text='~ ',
+    --font=beautiful.pixel_font,
     widget=wibox.widget.textbox
 }
 
@@ -40,7 +41,7 @@ local update_widget = function(widgets, stdout, _, _, _)
     local n, _ = charge:gsub("%%", "")
     local color
     n = tonumber(n)
-    if status == 'Charging' then
+    if status == 'Charging' or status == 'Full' then
         color = '#4477FF'
     else
         if n <= 10 then
@@ -78,7 +79,46 @@ local layout = wibox.layout.fixed.horizontal()
 layout.spacing = 8
 return wibox.widget{
     --wibox.container.mirror(wibox.container.rotate(battery_widget, 'east'), {horizontal=true}),
-    battery_widget,
+    wibox.widget{
+        battery_widget,
+        wibox.widget{
+            wibox.widget{
+                wibox.widget{widget=wibox.widget.textbox},
+                bg=beautiful.bg_normal,
+                layout=wibox.container.background
+            },
+            top=5, bottom=11, left=15, right=0,
+            layout=wibox.container.margin
+        },
+        wibox.widget{
+            wibox.widget{
+                wibox.widget{widget=wibox.widget.textbox},
+                bg=beautiful.bg_normal,
+                layout=wibox.container.background
+            },
+            top=11, bottom=5, left=15, right=0,
+            layout=wibox.container.margin
+        },
+        --wibox.widget{
+        --    wibox.widget{
+        --        wibox.widget{widget=wibox.widget.textbox},
+        --        bg=beautiful.bg_normal,
+        --        layout=wibox.container.background
+        --    },
+        --    top=5, bottom=12, left=0, right=15,
+        --    layout=wibox.container.margin
+        --},
+        --wibox.widget{
+        --    wibox.widget{
+        --        wibox.widget{widget=wibox.widget.textbox},
+        --        bg=beautiful.bg_normal,
+        --        layout=wibox.container.background
+        --    },
+        --    top=12, bottom=5, left=0, right=15,
+        --    layout=wibox.container.margin
+        --},
+        layout=wibox.layout.stack
+    },
     battery_value,
     layout=layout
 }

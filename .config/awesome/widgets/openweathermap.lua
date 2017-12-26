@@ -1,5 +1,7 @@
+local awful = require('awful')
 local wibox = require('wibox')
 local gears = require("gears")
+local beautiful = require("beautiful")
 local json = require("json")
 local http = require("socket.http")
 
@@ -10,6 +12,8 @@ local URL = 'http://api.openweathermap.org/data/2.5/weather?appid=' .. APPID .. 
 local CACHE_DIR = gears.filesystem.get_cache_dir() .. 'weather_icons/'
 
 gears.filesystem.make_directories(CACHE_DIR)
+
+local weather_data
 
 local openweathermap_widget = wibox.widget{
     paddings=2,
@@ -37,7 +41,7 @@ local download_icon = function(id)
 end
 
 timer = gears.timer {
-    timeout=5,
+    timeout=900,
     autostart=true,
     callback=function()
         local response = http.request(URL)
@@ -48,6 +52,7 @@ timer = gears.timer {
             --if temp <= 0 then
             --    icon = ''
             --end
+            weather_data = data
             local filepath = download_icon(data.weather[1].icon)
             icon_widget.image = filepath
             local weathers = {}
@@ -62,9 +67,28 @@ timer = gears.timer {
 }
 timer:emit_signal('timeout')
 
-return wibox.widget{
+widget = wibox.widget{
     wibox.container.margin(icon_widget, 0, 4, 2, 0),
     openweathermap_widget,
     layout=wibox.layout.fixed.horizontal
 }
+widget_t = awful.tooltip{
+    objects={widget},
+    timer_function=function()
+        if weather_data == nil then
+            return nil
+        end
+        local s = ''
+        s = s .. 'Температура: ' .. math.floor(weather_data.main.temp - 273.15) .. '°\n'
+        s = s .. 'Умови:\n'
+        for _, value in pairs(weather_data.weather) do
+            s = s .. '  - ' .. value.description .. '\n'
+        end
+        s = s .. 'Вологість: ' .. weather_data.main.humidity .. '%\n'
+        s = s .. 'Видимість: ' .. weather_data.visibility .. '\n'
+        s = s .. 'Вітер: ' .. weather_data.wind.speed .. 'м/с (' .. weather_data.wind.deg .. '°)'
+        return s
+    end
+}
+return widget
 

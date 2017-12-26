@@ -1,12 +1,14 @@
 local awful = require('awful')
+local beautiful = require('beautiful')
 local wibox = require('wibox')
 local watch = require("awful.widget.watch")
 
-CMD = "date +\"%A, %d %b, %H:%M:%S\""
+CMD = [[date +"%a, %d %b, %H:%M:%S"]]
 
 local date_widget = wibox.widget{
     paddings=2,
     markup='~',
+    --font=beautiful.pixel_font,
     widget=wibox.widget.textbox
 }
 
