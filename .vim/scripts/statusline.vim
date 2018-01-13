@@ -58,7 +58,8 @@ fu! CharCode(bufnr)
     if code == 0
         let char = ''
     elseif code == 32
-        let char = '…' " ''
+        let char = '␣'
+        "let char = '…' " ''
     elseif code == 9
         let char = ''
     endif
@@ -229,7 +230,7 @@ fu! Branch()
 endf
 
 fu! FilePos()
-    return g:sep . ' %04l.%02c/%L '
+    return g:sep . ' %04l:%02c/%L '
 endf
 
 fu! BufNr(bufnr, mode)

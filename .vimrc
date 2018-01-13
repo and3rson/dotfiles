@@ -247,6 +247,8 @@ set nocursorcolumn
 
 " Vertical sep
 set fillchars+=vert:\ " Stuff
+"set fillchars+=vert:\│
+
 " │
 
 " Cursor
@@ -375,8 +377,9 @@ hi BufTabLineHidden ctermbg=238
 " ALE
 let g:ale_linters = {
             \'javascript': ['eslint'],
-            \'python': ['flake8']
+            \'python': ['flake8', 'pylint']
             \}
+" \'python': ['flake8']
 
 nnoremap <silent> ; :ALEPrevious<CR>
 nnoremap <silent> ' :ALENext<CR>
@@ -553,4 +556,7 @@ let g:jsx_ext_required = 0
 
 " .xinitrc
 "au! BufRead,BufNewFile *.xinitrc set filetype=sh
+
+" Force python path
+let g:python_host_prog='/usr/bin/python'
 

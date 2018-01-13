@@ -4,27 +4,28 @@ local gears = require('gears')
 local beautiful = require('beautiful')
 
 local ICONS = {
-    speaker=' ',
-    headphones=' '
+    speaker='',
+    headphones=''
 }
 
 local volume
 local default_sink
 
 local icon = wibox.widget{
-    text=' ~',
+    markup=' ~',
     widget=wibox.widget.textbox
 }
 
 local volume_widget = wibox.widget{
     widget=wibox.widget.progressbar,
-    forced_width=40,
+    forced_width=32,
     clip=true,
     max_value=100,
     value=0,
     shape=gears.shape.bar,
     background_color=beautiful.bg_minimize,
     color=beautiful.bg_focus,
+    --color='#7777FF',
     margins={
         top=7,
         bottom=7
@@ -53,12 +54,13 @@ local update_widget = function()
     --local value = stdout:gsub("^%s+", ""):gsub("%s+$", ""):gsub("%%", "")
     --local n, _ = tonumber(value)
     if default_sink:match('bluez') then
-        icon.text = ICONS.headphones
+        icon_str = ICONS.headphones
     else
-        icon.text = ICONS.speaker
+        icon_str = ICONS.speaker
     end
+    icon.markup = '<span size="2000"> </span><span color="' .. beautiful.fg_bright .. '">' .. icon_str .. '</span>'
     volume_widget.value = value
-    volume_value.text = value .. '%'
+    volume_value.markup = '<span color="' .. beautiful.fg_bright .. '">' .. value .. '%</span>'
     --widget.markup = '<b><span>  ' .. value .. '</span></b>'
 end
 

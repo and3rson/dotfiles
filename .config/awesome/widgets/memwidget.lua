@@ -1,19 +1,27 @@
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
 local gears = require("gears")
+--local beautiful = require("beautiful")
+
+local icon = wibox.widget{
+    --markup='<span size="2000"> </span><span color="#74fe7b"></span>',
+    markup='<span size="2000"> </span><span color="#74fe7b"></span>',
+    widget=wibox.widget.textbox
+}
 
 local memgraph_widget = wibox.widget {
     max_value = 100,
     color = '#74fe7b',
+    --color = '#7777FF',
     --background_color = "#1e252c",
-    forced_width = 32,
+    forced_width = 40,
     step_width = 2,
     step_spacing = 1,
     widget = wibox.widget.graph
 }
 
 -- mirros and pushs up a bit
-local mem_widget = wibox.container.margin(wibox.container.mirror(memgraph_widget, { horizontal = true }), 0, 0, 0, 2)
+local mem_widget = wibox.container.margin(wibox.container.mirror(memgraph_widget, { horizontal = true }), 0, 1, 0, 2)
 
 local total_prev = 0
 local idle_prev = 0
@@ -41,13 +49,23 @@ gears.timer {
         local used = total - available
         diff_usage = used / total * 100
         if diff_usage > 80 then
+            icon.markup = '<span size="2000"> </span><span color="#ff4136"></span>'
             memgraph_widget:set_color('#ff4136')
         else
+            --memgraph_widget:set_color('#74fe7b')
+            icon.markup = '<span size="2000"> </span><span color="#74fe7b"></span>'
             memgraph_widget:set_color('#74fe7b')
         end
         memgraph_widget:add_value(used / total * 100)
     end
 }
 
-return mem_widget
+local layout = wibox.layout.fixed.horizontal()
+layout.spacing = 8
+local widget = wibox.widget{
+    icon,
+    mem_widget,
+    layout=layout
+}
+return widget
 

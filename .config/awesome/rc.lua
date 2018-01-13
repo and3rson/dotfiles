@@ -16,9 +16,6 @@ local menubar = require("menubar")
 local common = require("awful.widget.common")
 
 -- {{{ Variable definitions
--- Themes define colours, icons, font and wallpapers.
---beautiful.init("/usr/share/awesome/themes/default/theme.lua")
---beautiful.init(gears.filesystem.get_dir("config") .. "custom.lua")
 beautiful.init("/home/anderson/.config/awesome/themes/custom.lua")
 
 beautiful.taglist_squares_sel = beautiful.taglist_squares_unsel_empty
@@ -32,9 +29,8 @@ naughty.config.defaults.border_width = 0
 naughty.config.presets.critical.bg = beautiful.bg_focus
 
 -- Widgets
---local volumebar = require("widgets.volumebar")
 local spacer = require("widgets.spacer")
-local gpmdp = require("widgets.gpmdp")
+local clay = require("widgets.clay")
 local cpuwidget = require("widgets.cpuwidget")
 local memwidget = require("widgets.memwidget")
 local volume = require("widgets.volume")
@@ -87,69 +83,37 @@ modkey = "Mod4"
 local layouts =
 {
     awful.layout.suit.max,
-    --awful.layout.suit.floating,
-    --awful.layout.suit.tile,
-    --awful.layout.suit.tile.left,
-    --awful.layout.suit.tile.bottom,
-    --awful.layout.suit.tile.top,
-    awful.layout.suit.fair,
-    --awful.layout.suit.fair.horizontal,
-    --awful.layout.suit.spiral,
-    --awful.layout.suit.spiral.dwindle,
-    --awful.layout.suit.max.fullscreen,
-    --awful.layout.suit.magnifier
+    awful.layout.suit.fair
 }
 -- }}}
 
--- {{{ Wallpaper
-if beautiful.wallpaper then
-    for s = 1, screen.count() do
+awful.screen.connect_for_each_screen(function(s)
+    -- {{{ Wallpaper
+    if beautiful.wallpaper then
         gears.wallpaper.maximized(beautiful.wallpaper, s, false)
     end
-end
--- }}}
+    -- }}}
 
--- {{{ Tags
--- Define a tag table which hold all screen tags.
-tags = {}
---tags[1] = awful.tag({ "Q", "W", "I", "M", "A", "G" }, 1, layouts[1])
-for s = 1, screen.count() do
-    ss = tostring(s)
+    -- {{{ Tags
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ "Q", "W", "I", "M", "A", "G" }, s, layouts[1])
-    --tags[s] = awful.tag({ '-', '-', '-', '-', '-', '-' }, s, layouts[1])
-    --tags[s] = tag_list
-end
--- }}}
+    awful.tag({ "Q", "W", "I", "M", "A", "G" }, s, layouts[1])
+    -- }}}
+end)
 
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 
 -- {{{ Wibox
--- Create a wibox for each screen and add it
-mywibox = {}
-mytaglist = {}
-mytasklist = {}
 
-local function list_update(w, buttons, label, data, objects)
-    common.list_update(w, buttons, label, data, objects)
-    w:set_max_widget_size(120)
-end
 
 for s = 1, screen.count() do
-    -- Create a taglist widget
-    mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.filter.all, mytaglist.buttons)
-
-    -- Create a tasklist widget
-    mytasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist.buttons, nil, list_update, wibox.layout.flex.horizontal())
-
     -- Create the wibox
-    mywibox[s] = awful.wibox({ position = "top", screen = s, height = 18 })
+    local mywibox = awful.wibox({ position = "top", screen = s, height = 18 })
 
     -- Widgets that are aligned to the left
     local left_layout = wibox.layout.fixed.horizontal()
-    left_layout:add(mytaglist[s])
+    left_layout:add(awful.widget.taglist(s, awful.widget.taglist.filter.all, nil))
 
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
@@ -158,7 +122,7 @@ for s = 1, screen.count() do
         systray:set_base_size(12)
         right_layout:add(wibox.container.margin(systray, 0, 6, 2, 0))
         right_layout:add(spacer)
-        right_layout:add(gpmdp)
+        right_layout:add(clay)
         right_layout:add(spacer)
         right_layout:add(cpuwidget)
         right_layout:add(spacer)
@@ -176,10 +140,13 @@ for s = 1, screen.count() do
     -- Now bring it all together (with the tasklist in the middle)
     local layout = wibox.layout.align.horizontal()
     layout:set_left(left_layout)
-    layout:set_middle(mytasklist[s])
+    layout:set_middle(awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, nil, nil, function(w, buttons, label, data, objects)
+        common.list_update(w, buttons, label, data, objects)
+        w:set_max_widget_size(120)
+    end, wibox.layout.flex.horizontal()))
     layout:set_right(right_layout)
 
-    mywibox[s]:set_widget(layout)
+    mywibox:set_widget(layout)
 end
 -- }}}
 
@@ -257,6 +224,9 @@ globalkeys = awful.util.table.join(
     --awful.key({}, 'XF86AudioLowerVolume', function() awful.util.spawn('amixer set Master 2%-') end)
     awful.key({}, 'XF86AudioRaiseVolume', function() volume.increase_volume() end),
     awful.key({}, 'XF86AudioLowerVolume', function() volume.decrease_volume() end),
+    -- Backlight
+    awful.key({}, 'XF86MonBrightnessUp', function() awful.util.spawn('xbacklight +10%') end),
+    awful.key({}, 'XF86MonBrightnessDown', function() awful.util.spawn('xbacklight -10%') end),
     -- Lock screen
     awful.key({'Ctrl', 'Mod1'}, 'l', function() awful.util.spawn('/sh/i3lock.sh') end),
     -- Notifications
@@ -273,7 +243,9 @@ globalkeys = awful.util.table.join(
         end
         print(awful.screen.focused().index, '->', index)
         awful.client.movetoscreen(client, index)
-    end)
+    end),
+    -- NetworkManager DMenu
+    awful.key({modkey}, "'", function() awful.util.spawn('networkmanager_dmenu') end)
     -- Tag management
     --awful.key({ modkey }, "Left",
     --                 function()
@@ -401,6 +373,7 @@ awful.rules.rules = {
                      focus = awful.client.focus.filter,
                      raise = true,
                      keys = clientkeys,
+                     screen = awful.screen.preferred,
                      buttons = clientbuttons } },
     { rule = { class = "MPlayer" },
       properties = { floating = true } },
@@ -425,7 +398,8 @@ awful.rules.rules = {
         properties = { tag = "M" }
     },
     {
-        rule_any = { class = {"Google Play Music Desktop Player"} },
+        --rule_any = { class = {"Google Play Music Desktop Player"} },
+        rule_any = { class = {"Clay"} },
         properties = { tag = "A" }
     },
     -- Set Firefox to always map on tags number 2 of screen 1.
@@ -508,5 +482,5 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- }}}
 
 --awful.util.spawn('chromium')
-awful.util.spawn('start-pulseaudio-x11-mod')
+--awful.util.spawn('start-pulseaudio-x11-mod')
 

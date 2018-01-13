@@ -28,7 +28,10 @@ theme.bg_minimize   = "#2D2D2D"
 theme.bg_systray    = theme.bg_normal
 
 --theme.fg_normal     = "#CACAC0"
-theme.fg_normal     = "#CACAC0"
+--theme.fg_soft       = "#888888"
+--theme.fg_normal     = "#CACAC0"
+theme.fg_normal     = "#C0C0C0"
+theme.fg_bright     = "#FFFFFF"
 theme.fg_focus      = "#ffffff"
 theme.fg_urgent     = "#ffffff"
 theme.fg_minimize   = "#ffffff"

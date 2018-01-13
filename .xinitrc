@@ -40,7 +40,7 @@ export LANG=uk_UA.UTF8
 
 if [[ -z "$1" ]]
 then
-    echo Starting awesome
+    echo Starting AwesomeWM
     start-pulseaudio-x11-mod
     compton --config ~/.compton.conf -b -f
     xbanish &
@@ -54,7 +54,8 @@ then
     chromium &
     telegram-desktop &
     evolution &
-    gpmdp &
+    #gpmdp &
+    /sh/xclay.sh &
 
     awesome > ~/.awesome.log
 else

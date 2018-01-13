@@ -50,3 +50,7 @@ UXterm*color12: #729fcf
 UXterm*color13: #ad7fa8
 UXterm*color14: #34e2e2
 UXterm*color15: #eeeeec
+
+!URxvt.depth: 32
+!URxvt.font: -*-dejavu sans mono-*-*-*-*-*-*-*-*-*-*-*-*
+

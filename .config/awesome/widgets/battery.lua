@@ -47,7 +47,7 @@ local update_widget = function(widgets, stdout, _, _, _)
         if n <= 10 then
             color = '#D64937'
         else
-            color = beautiful.fg_normal
+            color = beautiful.fg_bright
         end
     end
     --widgets[1].colors = {beautiful.bg_normal, color}

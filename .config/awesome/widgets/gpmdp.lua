@@ -10,7 +10,7 @@ print(FILE)
 local progressbar = wibox.widget {
     forced_width=10,
     max_value=100,
-    value=30,
+    value=0,
     background_color=beautiful.bg_minimize,
     color=beautiful.bg_focus,
     widget=wibox.widget.progressbar,
@@ -39,6 +39,11 @@ local update_widget = function()
         color = '#FFCC77'
         icon = ''
         --icon = '◫'
+    end
+    if data.song.title == nil then
+        gpmdp_widget.markup = '?'
+        progressbar.value = 0
+        return
     end
     progress = data.time.current / data.time.total * 100
     --current = math.floor(data.time.current / 1000)
