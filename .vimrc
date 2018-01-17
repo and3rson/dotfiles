@@ -503,8 +503,8 @@ let g:tagbar_left = 1
 "let g:tagbar_iconchars = ['-', '|']
 "let g:tagbar_autopreview = 1
 fu! TagbarStatusFn(current, sort, fname, flags, ...) abort
-    let highlight_colour = a:current ? '%#StatusBarNormal#' : '%#StatusBarInactive#'
-    let text_colour = a:current ? '%#StatusBarText#' : '%#StatusBarInactive#'
+    let highlight_colour = a:current ? '%#StatusBarNormal#' : '%#StatusBarText#'
+    let text_colour = a:current ? '%#StatusBarText#' : '%#StatusBarText#'
     let flagstr = join(a:flags, '')
     if flagstr != ''
         let flagstr = '[' . flagstr . '] '

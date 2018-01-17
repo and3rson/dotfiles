@@ -15,11 +15,12 @@ hi! StatusBarReplaceInv ctermbg=234 ctermfg=222
 hi! StatusBarTerminal ctermbg=57 ctermfg=0
 hi! StatusBarTerminalInv ctermbg=234 ctermfg=57
 " Inactive
-hi! StatusBarInactive ctermfg=238 ctermbg=232
-hi! StatusBarInactiveInv ctermfg=248 ctermbg=232
+"hi! StatusBarInactive ctermfg=238 ctermbg=232
+"hi! StatusBarInactiveInv ctermfg=248 ctermbg=232
 " Text
 "hi! StatusBarText ctermfg=33 ctermbg=234
 hi! StatusBarText ctermfg=248 ctermbg=234
+hi! StatusBarTextInv ctermfg=234 ctermbg=248
 " Error parts
 hi! StatusBarWarning ctermfg=3 ctermbg=234 cterm=bold
 hi! StatusBarError ctermfg=1 ctermbg=234 cterm=bold
@@ -90,18 +91,18 @@ fu! ScrollProgress()
     return s
 endf
 
-fu! AleWarnings(bufnr, reset_style) abort
+fu! AleWarnings(bufnr) abort
     let l:counts = ale#statusline#Count(a:bufnr)
     let l:errors = l:counts.error + l:counts.style_error
     let l:warnings = l:counts.total - l:errors
     "return l:warnings == 0 ? '' : ('  ' . l:warnings . ' ')
-    return l:warnings == 0 ? '' : (g:sep . ' %#StatusBarWarning# ' . l:warnings . ' ' . a:reset_style)
+    return l:warnings == 0 ? '' : (g:sep . ' %#StatusBarWarning# ' . l:warnings . ' %#StatusBarText#')
 endf
 
-fu! AleErrors(bufnr, reset_style) abort
+fu! AleErrors(bufnr) abort
     let l:counts = ale#statusline#Count(a:bufnr)
     let l:errors = l:counts.error + l:counts.style_error
-    return l:errors == 0 ? '' : (g:sep . ' %#StatusBarError# ' . l:errors . ' ' . a:reset_style)
+    return l:errors == 0 ? '' : (g:sep . ' %#StatusBarError# ' . l:errors . ' %#StatusBarText#')
 endf
 
 fu! LinterStatus() abort
@@ -240,9 +241,10 @@ endf
 fu! StatusBar(winid, file_type)
     let s = ''
     let end = '%*'
-    let tn = 'Text'
     let bufnr = -1
     let file_icon = FileIcon(a:file_type)
+    let icon_hi = 'StatusBarText'
+    let title_hi = 'StatusBarText'
     for bufinfo in getbufinfo()
         if index(bufinfo.windows, str2nr(a:winid)) != -1
             let bufnr = bufinfo.bufnr
@@ -252,32 +254,34 @@ fu! StatusBar(winid, file_type)
     if g:winid == a:winid
         if a:file_type == 'qf'
             let m ='t'
-            let mn = 'Insert'
-            let tn = 'Text'
+            let icon_hi = 'StatusBarInsert'
+            let title_hi = 'StatusBarInsertInv'
+            "let mn = 'Insert'
+            "let tn = 'Text'
         else
             let m = mode()
             if (m ==# 'i')
-                let mn = 'Insert'
+                let icon_hi = 'StatusBarInsert'
+                let title_hi = 'StatusBarInsertInv'
             elseif (m ==# 'R')
-                let mn = 'Replace'
+                let icon_hi = 'StatusBarReplace'
+                let title_hi = 'StatusBarReplaceInv'
             elseif (m ==# 'v' || m ==# 'V' || m ==# nr2char(22))
-                let mn = 'Visual'
+                let icon_hi = 'StatusBarVisual'
+                let title_hi = 'StatusBarVisualInv'
             elseif (m ==# 't')
-                let mn = 'Terminal'
+                let icon_hi = 'StatusBarTerminal'
+                let title_hi = 'StatusBarTerminalInv'
             else
-                let mn = 'Normal'
+                let icon_hi = 'StatusBarNormal'
+                let title_hi = 'StatusBarNormalInv'
             endif
         endif
     else
         let m = 'n'
-        let mn = 'Inactive'
-        let tn = 'Inactive'
     endif
-    let hi_color_bright = printf('%%#StatusBar%s#', mn)
-    let hi_color = printf('%%#StatusBar%sInv#', mn)
-    let color = printf('%%#StatusBar%s#', tn)
-    let s .= hi_color_bright . ' ' . ((m == 'n') ? file_icon : g:mode_map[m]) . ' ' . end
-    let s .= hi_color . ' %<%F'
+    let s .= '%#' . icon_hi . '# ' . ((m == 'n') ? file_icon : g:mode_map[m]) . ' ' . end
+    let s .= '%#' . title_hi . '# %<%F'
     "let s .= TagBarLoc()
     "if a:file_type ==# 'python'
     "    "let s .= ' ' . ASTLoc()
@@ -285,7 +289,7 @@ fu! StatusBar(winid, file_type)
     "endif
     let s .= '%='
     "let s .= 'A=' . win_getid() . ' C=' . a:winid
-    let s .= color
+    let s .= '%#StatusBarText#'
     "let s .= ' ' . FileIcon() . '  ' . FileType() . ' '
     "let s .= ' ' . ScrollProgress() . ' '
     let s .= BufNr(bufnr, m)
@@ -293,8 +297,8 @@ fu! StatusBar(winid, file_type)
     "let s .= Branch()
     let s .= FilePos()
     "let s .= CharCode(bufnr) . g:sep
-    let s .= AleWarnings(bufnr, color)
-    let s .= AleErrors(bufnr, color)
+    let s .= AleWarnings(bufnr)
+    let s .= AleErrors(bufnr)
     "let s .= color . g:rotate_icons[g:rotate_state % 4] . ' '
     let s .= end
     return s
