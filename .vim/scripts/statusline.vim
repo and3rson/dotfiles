@@ -1,33 +1,33 @@
 hi! StatusBarInsert ctermbg=197 ctermfg=0
-hi! StatusBarInsertInv ctermbg=234 ctermfg=197
+hi! StatusBarInsertInv ctermbg=232 ctermfg=197
 " Visual
 hi! StatusBarVisual ctermbg=81 ctermfg=0
-hi! StatusBarVisualInv ctermbg=234 ctermfg=81
+hi! StatusBarVisualInv ctermbg=232 ctermfg=81
 "hi! StatusBarVisual ctermbg=32 ctermfg=0
 "hi! StatusBarVisualInv ctermbg=234 ctermfg=32
 " Normal
 hi! StatusBarNormal ctermbg=118 ctermfg=0
-hi! StatusBarNormalInv ctermbg=234 ctermfg=118
+hi! StatusBarNormalInv ctermbg=232 ctermfg=118
 " Replace
 hi! StatusBarReplace ctermbg=222 ctermfg=0
-hi! StatusBarReplaceInv ctermbg=234 ctermfg=222
+hi! StatusBarReplaceInv ctermbg=232 ctermfg=222
 " Terminal
 hi! StatusBarTerminal ctermbg=57 ctermfg=0
-hi! StatusBarTerminalInv ctermbg=234 ctermfg=57
+hi! StatusBarTerminalInv ctermbg=232 ctermfg=57
 " Inactive
 "hi! StatusBarInactive ctermfg=238 ctermbg=232
 "hi! StatusBarInactiveInv ctermfg=248 ctermbg=232
 " Text
 "hi! StatusBarText ctermfg=33 ctermbg=234
-hi! StatusBarText ctermfg=248 ctermbg=234
-hi! StatusBarTextInv ctermfg=234 ctermbg=248
+hi! StatusBarText ctermfg=248 ctermbg=232
+hi! StatusBarTextInv ctermfg=232 ctermbg=248
 " Error parts
-hi! StatusBarWarning ctermfg=3 ctermbg=234 cterm=bold
-hi! StatusBarError ctermfg=1 ctermbg=234 cterm=bold
+hi! StatusBarWarning ctermfg=3 ctermbg=232 cterm=bold
+hi! StatusBarError ctermfg=1 ctermbg=232 cterm=bold
 
 " PieCrumbs
-hi! PieClass ctermfg=197 ctermbg=234 cterm=bold
-hi! PieFunction ctermfg=154 ctermbg=234
+hi! PieClass ctermfg=197 ctermbg=232 cterm=bold
+hi! PieFunction ctermfg=154 ctermbg=232
 
 "\ 'n': '',
 "\ 'i': '',
@@ -280,7 +280,7 @@ fu! StatusBar(winid, file_type)
     else
         let m = 'n'
     endif
-    let s .= '%#' . icon_hi . '# ' . ((m == 'n') ? file_icon : g:mode_map[m]) . ' ' . end
+    let s .= '%#' . title_hi . '# ' . ((m == 'n') ? file_icon : g:mode_map[m]) . ' ' . end
     let s .= '%#' . title_hi . '# %<%F'
     "let s .= TagBarLoc()
     "if a:file_type ==# 'python'

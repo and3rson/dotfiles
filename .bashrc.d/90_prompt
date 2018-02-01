@@ -4,6 +4,7 @@
 #ARROW=`echo -e "\ue0bc "`
 ARROW=`echo -e ""`
 ARROW=`echo -e "\e[38;5;238m\u23AA"`
+ARROW=''
 #ARROW=`echo -e "\ue0d2 "`
 #HOUSE=`echo -e "\u2302"`
 #HOUSE=`echo -e "\uE614"`
@@ -14,6 +15,8 @@ ROOT=`echo -e "\uE614"`
 PWD_SEP="/"
 PY_ICON=`echo -e "\uE606"`
 ELLIPSIS=`echo -e "\u2026"`
+#SPACE=`echo -e "\u2423"`
+SPACE=`echo -e "\u00B7"`
 case $(tty) in /dev/tty[0-9]*)
     ARROW=''; HOUSE=''; ROOT='' ;;
 esac
@@ -93,7 +96,7 @@ function make_prompt() {
         #fb 255 125
         fb 32 234
         #date +" $START %H:%M:%S $RST" | tr -d '\n'
-        date +"%H:%M:%S $RST" | tr -d '\n'
+        date +" %H:%M:%S $RST" | tr -d '\n'
     }
 
     function venv_part() {
@@ -103,17 +106,18 @@ function make_prompt() {
             fb 28 234
             #fore 22
             #arrow
+            NAME=`echo $VIRTUAL_ENV | awk -F'/' '{print $NF}'`
             echo -n ""
             #echo -en "$VIRTUAL_ENV $RST" | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
-            echo -en " $PY_ICON env $RST"
-        elif [[ -f ".env/bin/activate" ]]
-        then
-            VIRTUAL_ENV=$( . .env/bin/activate; echo $VIRTUAL_ENV )
-            #fb 255 160
-            fb 160 234
-            echo -n ""
-            #echo -en "$VIRTUAL_ENV $RST" | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
-            echo -en " $PY_ICON env! $RST"
+            echo -en " $PY_ICON $NAME $RST"
+        #elif [[ -f ".env/bin/activate" ]]
+        #then
+        #    VIRTUAL_ENV=$( . .env/bin/activate; echo $VIRTUAL_ENV )
+        #    #fb 255 160
+        #    fb 160 234
+        #    echo -n ""
+        #    #echo -en "$VIRTUAL_ENV $RST" | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
+        #    echo -en " $PY_ICON env! $RST"
         fi
     }
 
@@ -125,9 +129,9 @@ function make_prompt() {
         then
             OUT=$(git status -s 2>&1)
             OIFS=$IFS
-            if [ "${#BRANCH}" -gt 16 ]
+            if [ "${#BRANCH}" -gt 24 ]
             then
-                BRANCH="${BRANCH::16}$ELLIPSIS"
+                BRANCH="${BRANCH::23}$ELLIPSIS"
             fi
             #IFS=$'\n'
             #for line in $(git st -s | sed -re 's/^\s+|\s+$//g')
@@ -161,7 +165,7 @@ function make_prompt() {
         then
             #fb 255 160
             fb 160 234 1
-            echo -en "$RETCODE $RST"
+            echo -en " $RETCODE $RST"
             echo -en "\[$txtrst\]"
         fi
     }
@@ -188,7 +192,7 @@ function make_prompt() {
     }
 
     function pwd_part() {
-        SPACE=`echo -e '\u2026'`
+        #SPACE=`echo -e '\u2026'`
         fb 32 234 # 255 27 1
         #fb 197 234 # 255 27 1
         DIR=${PWD/$HOME/$HOUSE\/}
@@ -209,7 +213,12 @@ function make_prompt() {
                 if [[ "$CURRENT" != "$COUNT" ]]
                 then
                     fgcol 32
-                    echo -n " ${PART::3} "
+                    echo -n " ${PART::3}"
+                    if [[ "${#PART}" -gt "3" ]]
+                    then
+                        echo -n "$ELLIPSIS"
+                    fi
+                    echo -n " "
                     fgcol 238
                     echo -n "$PWD_SEP"
                 #elif [[ "$CURRENT" != "$COUNT" ]]
@@ -293,7 +302,7 @@ function make_prompt() {
     }
 
     ssh_part
-    date_part
+    #date_part
     venv_part
     git_part
     #dirs_part
@@ -306,6 +315,7 @@ function make_prompt() {
     #end_part
     #dollar_part
     echo -n " $RST "
+    #echo -e "\e[0;38;5;32m"
 }
 
 function set_prompt() {

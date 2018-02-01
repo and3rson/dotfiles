@@ -140,10 +140,17 @@ for s = 1, screen.count() do
     -- Now bring it all together (with the tasklist in the middle)
     local layout = wibox.layout.align.horizontal()
     layout:set_left(left_layout)
-    layout:set_middle(awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, nil, nil, function(w, buttons, label, data, objects)
-        common.list_update(w, buttons, label, data, objects)
-        w:set_max_widget_size(120)
-    end, wibox.layout.flex.horizontal()))
+    layout:set_middle(awful.widget.tasklist(
+        s,
+        awful.widget.tasklist.filter.currenttags,
+        nil,
+        nil,
+        function(w, buttons, label, data, objects)
+            common.list_update(w, buttons, label, data, objects)
+            w:set_max_widget_size(28)
+        end,
+        wibox.layout.flex.horizontal()
+    ))
     layout:set_right(right_layout)
 
     mywibox:set_widget(layout)
@@ -327,13 +334,10 @@ for key, index in pairs({Q=1, W=2, I=3, M=4, A=5, G=6}) do
     globalkeys = awful.util.table.join(
         globalkeys,
         awful.key({modkey}, key:lower(), function()
-            print(key)
             for _, tag in pairs(awful.tag.gettags(mouse.screen)) do
-                print(key, tag.name)
                 if tag.name == key then
                     awful.tag.viewonly(tag)
                 end
-                --print(tag.name)
             end
             --awful.tag.viewonly(awful.tag.gettags(mouse.screen)[index])
         end)

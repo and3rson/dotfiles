@@ -560,3 +560,15 @@ let g:jsx_ext_required = 0
 " Force python path
 let g:python_host_prog='/usr/bin/python'
 
+" Virtualenv
+"python with virtualenv support
+"py3 << EOF
+"import os
+"import sys
+"if 'VIRTUAL_ENV' in os.environ:
+"    project_base_dir = os.environ['VIRTUAL_ENV']
+"    activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+"    exec(open(activate_this).read(), dict(__file__=activate_this))
+"EOF
+let g:ale_python_flake8_executable = $VIRTUAL_ENV . '/bin/flake8'
+

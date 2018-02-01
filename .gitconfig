@@ -1,9 +1,9 @@
 [user]
-	email = andunai@gmail.com
+	email = andrew@dun.ai
 	name = Andrew Dunai
 
 [alias]
 	st = status
 	co = checkout
 	br = branch
-    spull = submodule update --init --recursive --remote
+    spull = submodule update --init --recursive

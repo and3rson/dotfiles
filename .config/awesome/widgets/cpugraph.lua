@@ -34,11 +34,7 @@ local update_values = function()
     local value = 0
     if total > 0 then
         value = busy * 100.0 / total
-        print(string.rep('=', math.floor(value / 10)))
-    else
-        print('Total is 0')
     end
-    --print(value)
     oldvalues = nval
 end
 
