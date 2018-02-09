@@ -49,6 +49,8 @@ theme.tooltip_fg=theme.fg_normal
 
 --theme.taglist_disable_icon = true
 theme.taglist_fg_empty = '#777777'
+theme.taglist_spacing = 0
+theme.taglist_font = 'Roboto Bold 8'
 
 
 -- There are other variable sets

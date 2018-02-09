@@ -9,13 +9,15 @@ local CMD = 'acpi -b'
 local battery_widget = wibox.widget{
     widget=wibox.widget.progressbar,
     forced_width=16,
+    clip=true,
     max_value=100,
     value=0,
     shape=gears.shape.bar,
     background_color=beautiful.bg_minimize,
     color=beautiful.bg_focus,
     margins={
-        bottom=15
+        top=5,
+        bottom=5
     }
 }
 
@@ -45,14 +47,14 @@ local update_widget = function(widgets, stdout, _, _, _)
         if n <= 10 then
             color = '#D64937'
         else
-            color = beautiful.fg_normal
+            color = beautiful.fg_bright
         end
     end
     --widgets[1].colors = {beautiful.bg_normal, color}
     --widgets[1].data_list = {{'Used', 100 - n}, {'Remaining', n}}
     widgets[1].color = color
     widgets[1].value = n
-    widgets[2].markup = '<span color="' .. color .. '">' .. charge .. '</span>'
+    widgets[2].markup = '<span color="' .. color .. '">' .. charge .. '</span> '
     --n, _ = charge:gsub("%%", "")
     --n = tonumber(n)
     --local style = ''
@@ -76,11 +78,49 @@ watch(CMD, 10, update_widget, {battery_widget, battery_value})
 local layout = wibox.layout.fixed.horizontal()
 layout.spacing = 8
 return wibox.widget{
+    --wibox.container.mirror(wibox.container.rotate(battery_widget, 'east'), {horizontal=true}),
     wibox.widget{
         battery_widget,
-        battery_value,
+        wibox.widget{
+            wibox.widget{
+                wibox.widget{widget=wibox.widget.textbox},
+                bg=beautiful.bg_normal,
+                layout=wibox.container.background
+            },
+            top=5, bottom=11, left=15, right=0,
+            layout=wibox.container.margin
+        },
+        wibox.widget{
+            wibox.widget{
+                wibox.widget{widget=wibox.widget.textbox},
+                bg=beautiful.bg_normal,
+                layout=wibox.container.background
+            },
+            top=11, bottom=5, left=15, right=0,
+            layout=wibox.container.margin
+        },
+        --wibox.widget{
+        --    wibox.widget{
+        --        wibox.widget{widget=wibox.widget.textbox},
+        --        bg=beautiful.bg_normal,
+        --        layout=wibox.container.background
+        --    },
+        --    top=5, bottom=12, left=0, right=15,
+        --    layout=wibox.container.margin
+        --},
+        --wibox.widget{
+        --    wibox.widget{
+        --        wibox.widget{widget=wibox.widget.textbox},
+        --        bg=beautiful.bg_normal,
+        --        layout=wibox.container.background
+        --    },
+        --    top=12, bottom=5, left=0, right=15,
+        --    layout=wibox.container.margin
+        --},
         layout=wibox.layout.stack
     },
-    right=8,
-    layout=wibox.layout.margin
+    battery_value,
+    layout=layout
 }
+
+

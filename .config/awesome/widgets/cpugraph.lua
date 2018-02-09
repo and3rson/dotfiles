@@ -39,7 +39,7 @@ local update_values = function()
 end
 
 gears.timer {
-    timeout=0.1,
+    timeout=0.5,
     autostart=true,
     callback=update_values
 }

@@ -35,6 +35,7 @@ local cpuwidget = require("widgets.cpuwidget")
 local memwidget = require("widgets.memwidget")
 local volume = require("widgets.volume")
 local openweathermap = require("widgets.openweathermap")
+local df = require("widgets.df")
 local date = require("widgets.date")
 local battery = require("widgets.battery")
 
@@ -96,7 +97,17 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- {{{ Tags
     -- Each screen has its own tag table.
-    awful.tag({ "Q", "W", "I", "M", "A", "G" }, s, layouts[1])
+    for i, char in pairs({'Q', 'W', 'I', 'M', 'A', 'G'}) do
+        local sel = i == 1
+        awful.tag.add(char, {
+            --icon_only=true,
+            --icon='/home/anderson/.icons/tags/bullet.png',
+            selected=sel,
+            screen=s,
+            layout=layouts[1]
+        })
+    end
+    --awful.tag({ "Q", "W", "I", "M", "A", "G" }, s, layouts[1])
     -- }}}
 end)
 
@@ -106,6 +117,13 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 
 -- {{{ Wibox
 
+--local taglist_label_orig = awful.widget.taglist.taglist_label
+--print(awful.widget.taglist.taglist_label)
+--awful.widget.taglist = function(t, args)
+    --local text, bgc, bgi, icon, other = taglist_label_orig(t, args)
+    --return text, bgc, bgi, icon, other
+--end
+
 
 for s = 1, screen.count() do
     -- Create the wibox
@@ -113,6 +131,7 @@ for s = 1, screen.count() do
 
     -- Widgets that are aligned to the left
     local left_layout = wibox.layout.fixed.horizontal()
+    --left_layout:add(awful.widget.layoutbox(s))
     left_layout:add(awful.widget.taglist(s, awful.widget.taglist.filter.all, nil))
 
     -- Widgets that are aligned to the right
@@ -129,6 +148,8 @@ for s = 1, screen.count() do
         right_layout:add(memwidget)
         right_layout:add(spacer)
         right_layout:add(volume)
+        right_layout:add(spacer)
+        right_layout:add(df)
         right_layout:add(spacer)
         right_layout:add(openweathermap)
     end

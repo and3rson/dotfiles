@@ -261,7 +261,7 @@ hi MatchParen ctermfg=magenta ctermbg=none
 hi CursorLineNr ctermfg=119 cterm=bold
 
 " Molokai theme patches
-hi Normal guibg=NONE ctermbg=NONE
+hi Normal guibg=NONE ctermbg=NONE ctermfg=NONE
 hi NonText ctermbg=NONE
 
 hi Error ctermfg=235 ctermbg=161

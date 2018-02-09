@@ -7,8 +7,11 @@ local spacer_widget = wibox.widget{
     widget=wibox.widget.textbox
 }
 
+--return wibox.container.margin(
+--    spacer_widget,
+--    1, 1, 0, 0
+--)
 return wibox.container.margin(
-    spacer_widget,
-    2, 2, 0, 0
+    wibox.widget{},
+    6, 6, 0, 0
 )
-

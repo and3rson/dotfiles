@@ -49,11 +49,11 @@ gears.timer {
         local used = total - available
         diff_usage = used / total * 100
         if diff_usage > 80 then
-            icon.markup = '<span size="2000"> </span><span color="#ff4136"></span>'
+            icon.markup = '<span size="2000"> </span><span size="10000" color="#ff4136"></span>'
             memgraph_widget:set_color('#ff4136')
         else
             --memgraph_widget:set_color('#74fe7b')
-            icon.markup = '<span size="2000"> </span><span color="#74fe7b"></span>'
+            icon.markup = '<span size="2000"> </span><span size="10000" color="#74fe7b"></span>'
             memgraph_widget:set_color('#74fe7b')
         end
         memgraph_widget:add_value(used / total * 100)

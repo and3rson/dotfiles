@@ -18,7 +18,7 @@ local icon = wibox.widget{
 
 local volume_widget = wibox.widget{
     widget=wibox.widget.progressbar,
-    forced_width=32,
+    forced_width=10,
     clip=true,
     max_value=100,
     value=0,
@@ -27,8 +27,7 @@ local volume_widget = wibox.widget{
     color=beautiful.bg_focus,
     --color='#7777FF',
     margins={
-        top=7,
-        bottom=7
+        bottom=15
     }
 }
 
@@ -58,9 +57,9 @@ local update_widget = function()
     else
         icon_str = ICONS.speaker
     end
-    icon.markup = '<span size="2000"> </span><span color="' .. beautiful.fg_bright .. '">' .. icon_str .. '</span>'
+    icon.markup = '<span size="2000"> </span><span color="' .. beautiful.fg_normal .. '">' .. icon_str .. '</span>'
     volume_widget.value = value
-    volume_value.markup = '<span color="' .. beautiful.fg_bright .. '">' .. value .. '%</span>'
+    volume_value.markup = '<span color="' .. beautiful.fg_normal .. '">' .. value .. '%</span>'
     --widget.markup = '<b><span>  ' .. value .. '</span></b>'
 end
 
@@ -76,13 +75,16 @@ gears.timer {
     callback=update_widget
 }
 
-local layout = wibox.layout.fixed.horizontal()
-layout.spacing = 8
+local row = wibox.layout.fixed.horizontal()
+row.spacing = 8
 local widget = wibox.widget{
-    icon,
     volume_widget,
-    volume_value,
-    layout=layout
+    wibox.widget{
+        icon,
+        volume_value,
+        layout=row
+    },
+    layout=wibox.layout.stack
 }
 
 widget.increase_volume = function() modify_volume(2) end

@@ -10,6 +10,7 @@ local CITY = 'Lviv,Ukraine'
 local LANG='ua'
 local URL = 'http://api.openweathermap.org/data/2.5/weather?appid=' .. APPID .. '&q=' .. CITY .. '&lang=' .. LANG
 local CACHE_DIR = gears.filesystem.get_cache_dir() .. 'weather_icons/'
+local DEFAULT_ICON = '/usr/share/icons/gnome/48x48/status/weather-few-clouds-night.png'
 
 gears.filesystem.make_directories(CACHE_DIR)
 
@@ -59,10 +60,13 @@ timer = gears.timer {
             for _, value in pairs(data.weather) do
                 weathers[#weathers + 1] = value.description
             end
-            openweathermap_widget.text = math.floor(tostring(temp)) .. '°'
+            openweathermap_widget.text = '<span size="8000">' .. math.floor(tostring(temp)) .. '°</span>'
             -- ..
             -- ' ' ..
             -- '(' .. table.concat(weathers, ", ") .. ')'
+        else
+            openweathermap_widget.markup = '<span size="8000">No info</span>'
+            icon_widget.image = DEFAULT_ICON
         end
     end
 }

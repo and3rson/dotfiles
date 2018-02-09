@@ -54,12 +54,14 @@ gears.timer {
         local diff_total = total - total_prev
         local diff_usage = (1000 * (diff_total - diff_idle) / diff_total + 5) / 10
 
+        --icon = ''
+
         if diff_usage > 80 then
-            icon.markup = '<span size="2000"> </span><span size="8000" color="#ff4136"></span>'
+            icon.markup = '<span size="2000"> </span><span size="10000" color="#ff4136"></span>'
             cpugraph_widget:set_color('#ff4136')
         else
             --cpugraph_widget:set_color('#74aeab')
-            icon.markup = '<span size="2000"> </span><span size="8000" color="#7777FF"></span>'
+            icon.markup = '<span size="2000"> </span><span size="10000" color="#7777FF"></span>'
             cpugraph_widget:set_color('#7777FF')
         end
 
@@ -69,9 +71,9 @@ gears.timer {
         idle_prev = idle
     end
 }
-watch("cat /proc/stat | grep '^cpu '", 0.25,
-    cpugraph_widget
-)
+--watch("cat /proc/stat | grep '^cpu '", 0.25,
+--    cpugraph_widget
+--)
 
 local layout = wibox.layout.fixed.horizontal()
 layout.spacing = 8

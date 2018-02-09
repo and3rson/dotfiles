@@ -2,7 +2,7 @@
 local wibox = require('wibox')
 local watch = require("awful.widget.watch")
 
-local CMD = [[date +"%a, %d %b, %H:%M:%S"]]
+local CMD = [[date +"%a ─ %d %b ─ %H:%M:%S"]]
 
 local ICONS = {
     day='',
