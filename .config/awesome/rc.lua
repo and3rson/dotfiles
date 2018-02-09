@@ -97,7 +97,7 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- {{{ Tags
     -- Each screen has its own tag table.
-    for i, char in pairs({'Q', 'W', 'I', 'M', 'A', 'G'}) do
+    for i, char in pairs({'Q', 'W', 'I', 'M'}) do
         local sel = i == 1
         awful.tag.add(char, {
             --icon_only=true,
@@ -422,11 +422,11 @@ awful.rules.rules = {
         rule_any = { class = {"Evolution"} },
         properties = { tag = "M" }
     },
-    {
-        --rule_any = { class = {"Google Play Music Desktop Player"} },
-        rule_any = { class = {"Clay"} },
-        properties = { tag = "A" }
-    },
+    --{
+    --    --rule_any = { class = {"Google Play Music Desktop Player"} },
+    --    rule_any = { class = {"Clay"} },
+    --    properties = { tag = "A" }
+    --},
     -- Set Firefox to always map on tags number 2 of screen 1.
     -- { rule = { class = "Firefox" },
     --   properties = { tag = tags[1][2] } },

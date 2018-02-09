@@ -55,7 +55,7 @@ then
     telegram-desktop &
     #evolution &
     #gpmdp &
-    /sh/xclay.sh &
+    #/sh/xclay.sh &
 
     awesome > ~/.awesome.log
 else
