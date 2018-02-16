@@ -87,8 +87,8 @@ function make_prompt() {
     function ssh_part() {
         if ! [[ -z "$SSH_CONNECTION" ]]
         then
-            fb 0 255
-            echo -n "$(hostname) "
+            fb 202 234
+            echo -n " @ $(hostname) $RST"
         fi
     }
 
