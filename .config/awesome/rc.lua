@@ -415,7 +415,7 @@ awful.rules.rules = {
         properties = { tag = "W" }
     },
     {
-        rule_any = { class = {"TelegramDesktop"} },
+        rule_any = { class = {"TelegramDesktop", "IRCCloud", "ViberPC"} },
         properties = { tag = "I" }
     },
     {

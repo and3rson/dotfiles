@@ -292,7 +292,7 @@ let g:indentLine_concealcursor = ''
 let g:indentLine_color_term = 239
 " let g:indentLine_bgcolor_term = 202
 let g:indentLine_showFirstIndentLevel = 0
-let g:indentLine_fileTypeExclude = ['text', 'json', 'help']
+let g:indentLine_fileTypeExclude = ['text', 'json', 'help', 'startify']
 let g:indentLine_faster = 1 " TODO: Experimental
 
 " Fix cursor positioning on I->N mode switch

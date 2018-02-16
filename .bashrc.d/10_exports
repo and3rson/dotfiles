@@ -18,7 +18,7 @@ export DMENU_STYLE="-fn 'DejaVu Sans Mono-10' -sb '#F05040' -sf '#000' -nb black
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 
-export FZF_DEFAULT_COMMAND='ag -g . --ignore __pycache__ --ignore .git'
+export FZF_DEFAULT_COMMAND='ag -g . --ignore __pycache__ --ignore .git --ignore "*".pyc'
 
 case $(tty) in /dev/tty[0-9]*)
     export TERM=linux ;;

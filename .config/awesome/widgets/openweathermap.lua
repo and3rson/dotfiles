@@ -60,7 +60,7 @@ timer = gears.timer {
             for _, value in pairs(data.weather) do
                 weathers[#weathers + 1] = value.description
             end
-            openweathermap_widget.text = '<span size="8000">' .. math.floor(tostring(temp)) .. '°</span>'
+            openweathermap_widget.markup = '<span size="8000">' .. math.floor(tostring(temp)) .. '°</span>'
             -- ..
             -- ' ' ..
             -- '(' .. table.concat(weathers, ", ") .. ')'
