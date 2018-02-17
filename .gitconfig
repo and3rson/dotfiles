@@ -9,3 +9,7 @@
 	co = checkout
 	br = branch
     spull = submodule update --init --recursive
+[core]
+	pager = less
+[color]
+	ui = true
