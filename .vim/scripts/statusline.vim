@@ -281,7 +281,7 @@ fu! StatusBar(winid, file_type)
         let m = 'n'
     endif
     let s .= '%#' . title_hi . '# ' . ((m == 'n') ? file_icon : g:mode_map[m]) . ' ' . end
-    let s .= '%#' . title_hi . '# %<%F'
+    let s .= '%#' . title_hi . '#%<%F'
     "let s .= TagBarLoc()
     "if a:file_type ==# 'python'
     "    "let s .= ' ' . ASTLoc()

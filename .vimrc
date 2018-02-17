@@ -34,7 +34,9 @@ Plugin 'ap/vim-buftabline'
 
 "Plugin 'michaeljsmith/vim-indent-object'
 "Plugin 'nathanaelkane/vim-indent-guides'
+
 Plugin 'Yggdroot/indentLine'
+
 "Plugin 'hdima/python-syntax'
 
 "Plugin 'vim-syntastic/syntastic'
@@ -406,6 +408,7 @@ source $HOME/.vim/scripts/astloc.vim
 source $HOME/.vim/scripts/statusline.vim
 source $HOME/.vim/scripts/compl.vim
 source $HOME/.vim/scripts/hi_yaml.vim
+source $HOME/.vim/scripts/cute.vim
 "source $HOME/.vim/scripts/termrun.vim
 "pyfile $HOME/.vim/scripts/compl.py
 
