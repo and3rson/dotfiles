@@ -13,3 +13,5 @@
 	pager = less
 [color]
 	ui = true
+[merge]
+	tool = meld
