@@ -1,6 +1,7 @@
 [user]
 	email = andrew@dun.ai
 	name = Andrew Dunai
+	signingkey = 7FA9F240665038B6
 
 [alias]
 	st = status
