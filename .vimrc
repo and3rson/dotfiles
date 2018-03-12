@@ -279,7 +279,7 @@ set tabstop=4 softtabstop=4 shiftwidth=4
 set list listchars=tab: ,trail:·,extends:»,precedes:«,nbsp:×
 " 
 
-" let g:indent_guides_enable_on_vim_startup=1
+let g:indent_guides_enable_on_vim_startup=1
 let g:indentLine_char = '▏'
 let g:indentLine_first_char = '▏'
 "let g:indentLine_first_char = '>'
@@ -293,7 +293,7 @@ let g:indentLine_concealcursor = ''
 " let g:indentLine_setConceal = 0
 let g:indentLine_color_term = 239
 " let g:indentLine_bgcolor_term = 202
-let g:indentLine_showFirstIndentLevel = 0
+let g:indentLine_showFirstIndentLevel = 1
 let g:indentLine_fileTypeExclude = ['text', 'json', 'help', 'startify']
 let g:indentLine_faster = 1 " TODO: Experimental
 
@@ -575,3 +575,5 @@ let g:python_host_prog='/usr/bin/python'
 "EOF
 let g:ale_python_flake8_executable = $VIRTUAL_ENV . '/bin/flake8'
 
+" GraphViz
+au BufNewFile,BufRead *.gv set filetype=dot

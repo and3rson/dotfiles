@@ -34,8 +34,8 @@ local clay = require("widgets.clay")
 local cpuwidget = require("widgets.cpuwidget")
 local memwidget = require("widgets.memwidget")
 local volume = require("widgets.volume")
-local openweathermap = require("widgets.openweathermap")
-local df = require("widgets.df")
+--local openweathermap = require("widgets.openweathermap")
+--local df = require("widgets.df")
 local date = require("widgets.date")
 local battery = require("widgets.battery")
 
@@ -129,49 +129,48 @@ for s = 1, screen.count() do
     -- Create the wibox
     local mywibox = awful.wibox({ position = "top", screen = s, height = 18 })
 
-    -- Widgets that are aligned to the left
     local left_layout = wibox.layout.fixed.horizontal()
     --left_layout:add(awful.widget.layoutbox(s))
     left_layout:add(awful.widget.taglist(s, awful.widget.taglist.filter.all, nil))
 
-    -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then
-        local systray = wibox.widget.systray()
-        systray:set_base_size(12)
-        right_layout:add(wibox.container.margin(systray, 0, 6, 2, 0))
-        right_layout:add(spacer)
-        right_layout:add(clay)
+        left_layout:add(spacer)
+        left_layout:add(clay)
+        --right_layout:add(spacer)
+        --right_layout:add(clay)
+        --local systray = wibox.widget.systray()
+        --systray:set_base_size(12)
+        --right_layout:add(wibox.container.margin(systray, 0, 6, 2, 0))
         right_layout:add(spacer)
         right_layout:add(cpuwidget)
         right_layout:add(spacer)
         right_layout:add(memwidget)
         right_layout:add(spacer)
         right_layout:add(volume)
-        right_layout:add(spacer)
-        right_layout:add(df)
-        right_layout:add(spacer)
-        right_layout:add(openweathermap)
+        --right_layout:add(spacer)
+        --right_layout:add(df)
+        --right_layout:add(spacer)
+        --right_layout:add(openweathermap)
     end
     right_layout:add(spacer)
     right_layout:add(date)
     right_layout:add(spacer)
     right_layout:add(battery)
 
-    -- Now bring it all together (with the tasklist in the middle)
     local layout = wibox.layout.align.horizontal()
     layout:set_left(left_layout)
-    layout:set_middle(awful.widget.tasklist(
-        s,
-        awful.widget.tasklist.filter.currenttags,
-        nil,
-        nil,
-        function(w, buttons, label, data, objects)
-            common.list_update(w, buttons, label, data, objects)
-            w:set_max_widget_size(28)
-        end,
-        wibox.layout.flex.horizontal()
-    ))
+    --layout:set_middle(awful.widget.tasklist(
+    --    s,
+    --    awful.widget.tasklist.filter.currenttags,
+    --    nil,
+    --    nil,
+    --    function(w, buttons, label, data, objects)
+    --        common.list_update(w, buttons, label, data, objects)
+    --        w:set_max_widget_size(28)
+    --    end,
+    --    wibox.layout.flex.horizontal()
+    --))
     layout:set_right(right_layout)
 
     mywibox:set_widget(layout)

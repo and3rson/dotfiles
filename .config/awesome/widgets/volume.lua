@@ -27,6 +27,7 @@ local volume_widget = wibox.widget{
     color=beautiful.bg_focus,
     --color='#7777FF',
     margins={
+        top=1,
         bottom=15
     }
 }

@@ -11,7 +11,7 @@
 local watch = require("awful.widget.watch")
 local wibox = require("wibox")
 local gears = require("gears")
---local beautiful = require("beautiful")
+local beautiful = require("beautiful")
 
 local icon = wibox.widget{
     --markup='<span size="2000"> </span><span size="8000" color="#74aeab"></span>',
@@ -23,8 +23,9 @@ local cpugraph_widget = wibox.widget {
     max_value = 100,
     --color = '#74aeab',
     color = '#7777FF',
+    background_color = beautiful.bg_normal,
     --background_color = "#1e252c",
-    forced_width = 40,
+    forced_width = 32,
     step_width = 2,
     step_spacing = 1,
     widget = wibox.widget.graph
@@ -37,7 +38,7 @@ local total_prev = 0
 local idle_prev = 0
 
 gears.timer {
-    timeout=0.25,
+    timeout=0.2,
     autostart=true,
     callback=function()
         local lines = {}
@@ -57,11 +58,11 @@ gears.timer {
         --icon = ''
 
         if diff_usage > 80 then
-            icon.markup = '<span size="2000"> </span><span size="10000" color="#ff4136"></span>'
+            --icon.markup = '<span size="2000"> </span><span size="10000" color="#ff4136"></span>'
             cpugraph_widget:set_color('#ff4136')
         else
             --cpugraph_widget:set_color('#74aeab')
-            icon.markup = '<span size="2000"> </span><span size="10000" color="#7777FF"></span>'
+            --icon.markup = '<span size="2000"> </span><span size="10000" color="#7777FF"></span>'
             cpugraph_widget:set_color('#7777FF')
         end
 
@@ -78,7 +79,7 @@ gears.timer {
 local layout = wibox.layout.fixed.horizontal()
 layout.spacing = 8
 local widget = wibox.widget{
-    icon,
+    --icon,
     cpu_widget,
     layout=layout
 }

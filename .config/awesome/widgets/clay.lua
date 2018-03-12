@@ -14,6 +14,7 @@ local progressbar = wibox.widget {
     color=beautiful.bg_focus,
     widget=wibox.widget.progressbar,
     margins={
+        top=1,
         bottom=15
     }
 }
@@ -27,8 +28,10 @@ local update_widget = function()
     local content = ''
     f = io.open(FILE)
     if f == nil then
+        root_widget.visible = false
         clay_widget.markup = 'Clay not running'
     else
+        root_widget.visible = true
         for line in f:lines() do
             content = content .. line
         end
@@ -53,13 +56,15 @@ local update_widget = function()
     total = string.format('%02d:%02d', math.floor(data.length / 60), data.length % 60)
     progressbar.value = progress
     progressbar.color = color
-    clay_widget.markup = '<span color="' .. color ..
+    local text = '<span color="' .. color ..
         '" size="8000">' .. icon ..
         ' ' ..
         data.artist .. ' - ' .. data.title ..
         ' ' ..
         '[' .. total .. ']' ..
         '</span>'
+    text = text:gsub('&', '&amp;')
+    clay_widget.markup = text
 end
 
 gears.timer {
@@ -68,9 +73,9 @@ gears.timer {
     callback=update_widget
 }
 
-return wibox.widget{
+root_widget = wibox.widget{
     progressbar,
     clay_widget,
     layout=wibox.layout.stack
 }
-
+return root_widget
