@@ -4,7 +4,7 @@
 
 Those are my dotfiles.
 
-Now: awesomeWM, vim, tmux & bash.
+Now: awesomeWM, neovim, tmux & bash.
 
 Also includes: qTile.
 
