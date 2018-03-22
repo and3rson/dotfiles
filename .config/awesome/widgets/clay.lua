@@ -15,7 +15,7 @@ local progressbar = wibox.widget {
     widget=wibox.widget.progressbar,
     margins={
         top=1,
-        bottom=15
+        bottom=14
     }
 }
 
@@ -40,10 +40,12 @@ local update_widget = function()
     local color, icon, total, progress
     if data.playing then
         color = '#44FF77'
+        --color = beautiful.bg_focus
         icon = ''
         --icon = '▷'
     else
         color = '#FFCC77'
+        --color = beautiful.fg_normal
         icon = ''
         --icon = '◫'
     end
@@ -57,7 +59,7 @@ local update_widget = function()
     progressbar.value = progress
     progressbar.color = color
     local text = '<span color="' .. color ..
-        '" size="8000">' .. icon ..
+        '">' .. icon ..
         ' ' ..
         data.artist .. ' - ' .. data.title ..
         ' ' ..

@@ -22,11 +22,12 @@ local icon = wibox.widget{
 local cpugraph_widget = wibox.widget {
     max_value = 100,
     --color = '#74aeab',
-    color = '#7777FF',
+    --color = '#7777FF',
+    color = beautiful.bg_focus,
     background_color = beautiful.bg_normal,
     --background_color = "#1e252c",
-    forced_width = 32,
-    step_width = 2,
+    forced_width = 25,
+    step_width = 1,
     step_spacing = 1,
     widget = wibox.widget.graph
 }
@@ -60,10 +61,11 @@ gears.timer {
         if diff_usage > 80 then
             --icon.markup = '<span size="2000"> </span><span size="10000" color="#ff4136"></span>'
             cpugraph_widget:set_color('#ff4136')
+            --cpugraph_widget:set_color(beautiful.bg_focus)
         else
-            --cpugraph_widget:set_color('#74aeab')
             --icon.markup = '<span size="2000"> </span><span size="10000" color="#7777FF"></span>'
-            cpugraph_widget:set_color('#7777FF')
+            cpugraph_widget:set_color('#74aeab')
+            --cpugraph_widget:set_color(beautiful.fg_normal)
         end
 
         cpugraph_widget:add_value(diff_usage)

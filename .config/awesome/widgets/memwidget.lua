@@ -11,12 +11,12 @@ local icon = wibox.widget{
 
 local memgraph_widget = wibox.widget {
     max_value = 100,
-    color = '#74fe7b',
+    color = beautiful.bg_focus,
     background_color = beautiful.bg_normal,
     --color = '#7777FF',
     --background_color = "#1e252c",
-    forced_width = 32,
-    step_width = 2,
+    forced_width = 25,
+    step_width = 1,
     step_spacing = 1,
     widget = wibox.widget.graph
 }
@@ -52,10 +52,11 @@ gears.timer {
         if diff_usage > 80 then
             --icon.markup = '<span size="2000"> </span><span size="10000" color="#ff4136"></span>'
             memgraph_widget:set_color('#ff4136')
+            --memgraph_widget:set_color(beautiful.bg_focus)
         else
-            --memgraph_widget:set_color('#74fe7b')
             --icon.markup = '<span size="2000"> </span><span size="10000" color="#74fe7b"></span>'
             memgraph_widget:set_color('#74fe7b')
+            --memgraph_widget:set_color(beautiful.fg_normal)
         end
         memgraph_widget:add_value(used / total * 100)
     end

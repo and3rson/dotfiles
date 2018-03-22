@@ -577,3 +577,6 @@ let g:ale_python_flake8_executable = $VIRTUAL_ENV . '/bin/flake8'
 
 " GraphViz
 au BufNewFile,BufRead *.gv set filetype=dot
+
+" Scrolling
+"au BufRead * set scroll=20

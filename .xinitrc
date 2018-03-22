@@ -53,6 +53,7 @@ then
     termite --class HomeTerm -e /sh/stmux.sh &
     chromium &
     telegram-desktop &
+    irccloud &
     #evolution &
     #gpmdp &
     #/sh/xclay.sh &

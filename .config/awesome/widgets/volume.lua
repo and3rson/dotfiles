@@ -18,17 +18,24 @@ local icon = wibox.widget{
 
 local volume_widget = wibox.widget{
     widget=wibox.widget.progressbar,
-    forced_width=10,
+    forced_width=24,
     clip=true,
     max_value=100,
     value=0,
     shape=gears.shape.bar,
     background_color=beautiful.bg_minimize,
     color=beautiful.bg_focus,
+    --color=beautiful.fg_normal,
     --color='#7777FF',
+    --border_color=beautiful.bg_minimize,
+    --border_width=1,
+    --ticks=true,
+    --ticks_size=2,
+    --ticks_gap=1,
     margins={
-        top=1,
-        bottom=15
+        bottom=14,
+        --top=7,
+        --bottom=6
     }
 }
 
@@ -77,7 +84,7 @@ gears.timer {
 }
 
 local row = wibox.layout.fixed.horizontal()
-row.spacing = 8
+row.spacing = 4
 local widget = wibox.widget{
     volume_widget,
     wibox.widget{
