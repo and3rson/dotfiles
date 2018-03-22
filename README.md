@@ -4,9 +4,24 @@
 
 Those are my dotfiles.
 
-Now: awesomeWM, neovim, tmux & bash.
+## Stack
 
-Also includes: qTile.
+  - awesomewm
+  - neovim
+  - tmux
+  - bash
+
+## Additionals
+
+  - termite
+  - rofi
+  - dircolors
+  - compton
+  - readline (.inputrc)
+  - dunst
+  - hexchat
+  - qtile
+  - wallpapers
 
 # License
 
