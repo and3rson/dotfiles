@@ -1,5 +1,7 @@
 # dotfiles
 
+![Screenshot](./images/sshot.jpg)
+
 Those are my dotfiles.
 
 Now: awesomeWM, vim, tmux & bash.
