@@ -21,6 +21,7 @@ Those are my dotfiles.
   - [dunst](https://dunst-project.org/)
   - [hexchat](https://hexchat.github.io/)
   - [qtile](http://www.qtile.org/)
+  - [GTK 2](https://www.gtk.org/)
   - wallpapers
 
 # License
