@@ -152,20 +152,41 @@ function make_prompt() {
                 #fb 3 234
                 C='!'
             fi
-            fb $COLOR 234
             #echo -n " $GIT"
-            TAG=`git describe --tags 2> /dev/null | sed -re 's/-g/  /g;s/-([0-9]+)/ (+\1)/g'`
+            #TAG=`git describe --tags 2> /dev/null | sed -re 's/-g/  /g;s/-([0-9]+)/ (+\1)/g'`
+            DESCRIBE=`git describe --tags 2> /dev/null`
+            TAG=""
+            COUNT=""
+            if [[ "$DESCRIBE" =~ \-([0-9]+)\- ]]
+            then
+                COUNT=${BASH_REMATCH[1]}
+            fi
+            if [[ "$DESCRIBE" =~ ^(.*)-([0-9]+)-g([0-9a-f]+)$ ]]
+            then
+                TAG=${BASH_REMATCH[1]}
+            elif [[ "$DESCRIBE" != "" ]]
+            then
+                TAG=$DESCRIBE
+            fi
             #TAG=${TAG/-g/ }
             #TAG=${TAG/-/ +}
             #TAG=`echo $TAG | sed -re 's/-([0-9]+)/ (+\1)/g'`
-            if ! [[ "$TAG" == "" ]]
+            fb $COLOR 234
+            if [[ "$TAG" != "" ]]
             then
                 echo -n "  $TAG"
-            else
-                echo -n "  $HASH"
+                if [[ "$COUNT" != "" ]]
+                then
+                    echo -n " (+$COUNT)"
+                fi
             fi
             fb $COLOR 234 1
-            echo -n " $GIT $BRANCH$C"
+            if [[ "$BRANCH" != "HEAD" ]]
+            then
+                echo -n " $GIT $BRANCH$C"
+            else
+                echo -n " (detached$C)"
+            fi
             #UNPUSHED=$(git log origin/$BRANCH..HEAD --oneline wc -l 2> /dev/null | wc -l)
             #if [[ "$UNPUSHED" -gt "0" ]]
             #then
@@ -180,6 +201,8 @@ function make_prompt() {
             #    echo -n " <- $HEADS"
             #fi
             ##script --return -c 'git show --oneline' | head -n 2 | tail -n 1
+            fb 241 234 1
+            echo -n "  $HASH"
             echo -n " $RST"
         fi
     }
