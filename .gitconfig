@@ -9,6 +9,7 @@
 	co = checkout
 	br = branch
     spull = submodule update --init --recursive
+    commit = commit -S
 [core]
 	pager = less
 [color]

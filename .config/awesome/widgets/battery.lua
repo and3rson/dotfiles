@@ -46,7 +46,7 @@ local update_widget = function(widgets, stdout, _, _, _)
     n = tonumber(n)
     if status == 'Charging' or status == 'Full' then
         prefix = '+'
-        color = beautiful.bg_focus
+        color = '#AAAAFF'
     else
         if n <= 10 then
             prefix = '!'
@@ -59,7 +59,7 @@ local update_widget = function(widgets, stdout, _, _, _)
     end
     --widgets[1].colors = {beautiful.bg_normal, color}
     --widgets[1].data_list = {{'Used', 100 - n}, {'Remaining', n}}
-    widgets[1].color = beautiful.bg_focus
+    widgets[1].color = color
     widgets[1].value = n
     widgets[2].markup = '<span color="' .. color .. '">' .. prefix .. charge .. '</span>'
     --n, _ = charge:gsub("%%", "")

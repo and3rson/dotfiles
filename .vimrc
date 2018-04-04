@@ -84,6 +84,9 @@ Plugin 'majutsushi/tagbar'
 Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
 
+Plugin 'chr4/nginx.vim'
+Plugin 'martinda/Jenkinsfile-vim-syntax'
+
 call vundle#end()                    " required
 
 filetype on
@@ -176,6 +179,8 @@ nnoremap <silent> r <C-r>
 
 " Quick open .vimrc
 nnoremap <silent> <M-c> :e ~/.vimrc<CR>
+nnoremap <M-c> :nohlsearch<CR>
+
 
 " Search symbols
 "nnoremap <silent> <C-l> :CtrlPFunky<CR>
@@ -260,13 +265,18 @@ hi CursorColumn ctermbg=235
 hi StatusLine ctermfg=233
 hi StatusLineNC ctermbg=None ctermfg=240 cterm=None
 hi MatchParen ctermfg=magenta ctermbg=none
-hi CursorLineNr ctermfg=119 cterm=bold
+hi CursorLineNr ctermfg=119 ctermbg=235 cterm=bold
 
 " Molokai theme patches
 hi Normal guibg=NONE ctermbg=NONE ctermfg=NONE
 hi NonText ctermbg=NONE
 
 hi Error ctermfg=235 ctermbg=161
+
+"hi Repeat cterm=underline
+hi Function cterm=underline
+hi Include cterm=bold ctermfg=154
+hi MatchParen ctermfg=197
 
 " Split
 "hi VertSplit ctermbg=235
@@ -386,11 +396,18 @@ let g:ale_linters = {
 nnoremap <silent> ; :ALEPrevious<CR>
 nnoremap <silent> ' :ALENext<CR>
 
-let g:ale_sign_error = '!!'
-let g:ale_sign_warning = '..'
+let g:ale_sign_error = ' '
+let g:ale_sign_warning = ' '
 "let g:ale_sign_column_always = 1
 
 noremap <silent> <A-e> :lopen<CR>
+
+hi ALEWarning ctermbg=190 ctermfg=235
+"hi ALEWarning cterm=reverse
+hi ALEWarningSign ctermbg=235 ctermfg=190
+hi ALEError ctermbg=197 ctermfg=255
+"hi ALEError cterm=reverse
+hi ALEErrorSign ctermbg=235 ctermfg=197
 
 " GitGutter
 let g:gitgutter_realtime = 0
@@ -580,3 +597,5 @@ au BufNewFile,BufRead *.gv set filetype=dot
 
 " Scrolling
 "au BufRead * set scroll=20
+set scrolloff=5
+

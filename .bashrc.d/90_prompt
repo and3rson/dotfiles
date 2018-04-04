@@ -142,17 +142,30 @@ function make_prompt() {
             if [ "$OUT" == "" ]
             then
                 #fb 255 28  # 28
-                fb 41 234
+                COLOR=41
+                #fb 41 234
                 C=''
             else
                 #fb 255 130
-                fb 3 234
+                COLOR=3
+                #fb 3 234
                 C='!'
             fi
+            fb $COLOR 234
+            echo -n " $GIT"
+            TAG=`git describe --tags --always 2> /dev/null`
+            TAG=${TAG//-g[0-9a-f]*/}
+            TAG=`echo $TAG | sed -re 's/-([0-9]+)/ (+\1)/g'`
+            if ! [[ "$TAG" == "" ]]
+            then
+                echo -n " $TAG @"
+            fi
             UNPUSHED=$(git log origin/$BRANCH..HEAD --oneline wc -l 2> /dev/null | wc -l)
-            echo -n " $GIT $BRANCH$C"
+            fb $COLOR 234 1
+            echo -n " $BRANCH$C"
             if [[ "$UNPUSHED" -gt "0" ]]
             then
+                fb $COLOR 234
                 fb 255 130
                 echo -n " ($UNPUSHED pending commit)"
             fi

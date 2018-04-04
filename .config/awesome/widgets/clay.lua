@@ -36,6 +36,9 @@ local update_widget = function()
             content = content .. line
         end
     end
+    if content == '' then
+        return
+    end
     local data = json.decode(content)
     local color, icon, total, progress
     if data.playing then
