@@ -124,6 +124,7 @@ function make_prompt() {
     function git_part() {
         #BRANCH="$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>&1) @ $(git rev-parse --short HEAD 2>&1)"
         BRANCH="$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>&1)"
+        HASH="$(git rev-parse --short=8 HEAD 2>&1)"
         #BRANCH="$(cat .git/HEAD | awk -F"refs/heads/" '{print $2}')"
         if [[ "$?" -eq "0" ]]
         then
@@ -153,22 +154,30 @@ function make_prompt() {
             fi
             fb $COLOR 234
             echo -n " $GIT"
-            TAG=`git describe --tags --always 2> /dev/null`
-            TAG=${TAG//-g[0-9a-f]*/}
-            TAG=`echo $TAG | sed -re 's/-([0-9]+)/ (+\1)/g'`
+            TAG=`git describe --tags --always 2> /dev/null | sed -re 's/-g/ < /g;s/-([0-9]+)/ (+\1)/g'`
+            #TAG=${TAG/-g/ }
+            #TAG=${TAG/-/ +}
+            #TAG=`echo $TAG | sed -re 's/-([0-9]+)/ (+\1)/g'`
             if ! [[ "$TAG" == "" ]]
             then
                 echo -n " $TAG @"
             fi
-            UNPUSHED=$(git log origin/$BRANCH..HEAD --oneline wc -l 2> /dev/null | wc -l)
             fb $COLOR 234 1
             echo -n " $BRANCH$C"
-            if [[ "$UNPUSHED" -gt "0" ]]
-            then
-                fb $COLOR 234
-                fb 255 130
-                echo -n " ($UNPUSHED pending commit)"
-            fi
+            #UNPUSHED=$(git log origin/$BRANCH..HEAD --oneline wc -l 2> /dev/null | wc -l)
+            #if [[ "$UNPUSHED" -gt "0" ]]
+            #then
+            #    fb $COLOR 234
+            #    fb 255 130
+            #    echo -n " ($UNPUSHED pending commit)"
+            #fi
+            #HEADS=`git show-ref --abbrev=8 | grep $HASH | awk '{print $2}' | tr '\n' ' ' | sed -re 's/refs\///g;s/[ ]*$//;s/ /, /g;s/\/([^,/]*)(,|$)/\/\x1B[1;38;5;252m\x1B[48;5;234m\1\x1B[0;38;5;242m\x1B[48;5;234m/g'`
+            #fb 242 234
+            #if ! [[ -z "$HEADS" ]]
+            #then
+            #    echo -n " <- $HEADS"
+            #fi
+            ##script --return -c 'git show --oneline' | head -n 2 | tail -n 1
             echo -n " $RST"
         fi
     }
