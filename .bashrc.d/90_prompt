@@ -153,17 +153,19 @@ function make_prompt() {
                 C='!'
             fi
             fb $COLOR 234
-            echo -n " $GIT"
-            TAG=`git describe --tags --always 2> /dev/null | sed -re 's/-g/ < /g;s/-([0-9]+)/ (+\1)/g'`
+            #echo -n " $GIT"
+            TAG=`git describe --tags 2> /dev/null | sed -re 's/-g/  /g;s/-([0-9]+)/ (+\1)/g'`
             #TAG=${TAG/-g/ }
             #TAG=${TAG/-/ +}
             #TAG=`echo $TAG | sed -re 's/-([0-9]+)/ (+\1)/g'`
             if ! [[ "$TAG" == "" ]]
             then
-                echo -n " $TAG @"
+                echo -n "  $TAG"
+            else
+                echo -n "  $HASH"
             fi
             fb $COLOR 234 1
-            echo -n " $BRANCH$C"
+            echo -n " $GIT $BRANCH$C"
             #UNPUSHED=$(git log origin/$BRANCH..HEAD --oneline wc -l 2> /dev/null | wc -l)
             #if [[ "$UNPUSHED" -gt "0" ]]
             #then
