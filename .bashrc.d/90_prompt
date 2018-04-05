@@ -122,38 +122,31 @@ function make_prompt() {
     }
 
     function git_part() {
-        #BRANCH="$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>&1) @ $(git rev-parse --short HEAD 2>&1)"
         BRANCH="$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>&1)"
-        HASH="$(git rev-parse --short=8 HEAD 2>&1)"
-        #BRANCH="$(cat .git/HEAD | awk -F"refs/heads/" '{print $2}')"
+        INFO_STR="$(git log --abbrev=8 --format="%h%n%an%n%s" -n 1)"
+        IFS=$'\n' read -rd '' -a INFO <<< "$INFO_STR"
+        HASH=${INFO[0]}
+        AUTHOR=${INFO[1]}
+        MESSAGE=${INFO[2]}
         if [[ "$?" -eq "0" ]]
         then
             OUT=$(git status -s 2>&1)
-            OIFS=$IFS
             if [ "${#BRANCH}" -gt 24 ]
             then
                 BRANCH="${BRANCH::23}$ELLIPSIS"
             fi
-            #IFS=$'\n'
-            #for line in $(git st -s | sed -re 's/^\s+|\s+$//g')
-            #do
-                #echo "A${line}B"
-            #done
-            #IFS=$OIFS
+            if [ "${#MESSAGE}" -gt 32 ]
+            then
+                MESSAGE="${MESSAGE::31}$ELLIPSIS"
+            fi
             if [ "$OUT" == "" ]
             then
-                #fb 255 28  # 28
                 COLOR=41
-                #fb 41 234
                 C=''
             else
-                #fb 255 130
                 COLOR=3
-                #fb 3 234
                 C='!'
             fi
-            #echo -n " $GIT"
-            #TAG=`git describe --tags 2> /dev/null | sed -re 's/-g/  /g;s/-([0-9]+)/ (+\1)/g'`
             DESCRIBE=`git describe --tags 2> /dev/null`
             TAG=""
             COUNT=""
@@ -168,16 +161,13 @@ function make_prompt() {
             then
                 TAG=$DESCRIBE
             fi
-            #TAG=${TAG/-g/ }
-            #TAG=${TAG/-/ +}
-            #TAG=`echo $TAG | sed -re 's/-([0-9]+)/ (+\1)/g'`
             fb $COLOR 234
             if [[ "$TAG" != "" ]]
             then
                 echo -n "  $TAG"
                 if [[ "$COUNT" != "" ]]
                 then
-                    echo -n " (+$COUNT)"
+                    echo -n "+$COUNT"
                 fi
             fi
             fb $COLOR 234 1
@@ -187,22 +177,10 @@ function make_prompt() {
             else
                 echo -n " (detached$C)"
             fi
-            #UNPUSHED=$(git log origin/$BRANCH..HEAD --oneline wc -l 2> /dev/null | wc -l)
-            #if [[ "$UNPUSHED" -gt "0" ]]
-            #then
-            #    fb $COLOR 234
-            #    fb 255 130
-            #    echo -n " ($UNPUSHED pending commit)"
-            #fi
-            #HEADS=`git show-ref --abbrev=8 | grep $HASH | awk '{print $2}' | tr '\n' ' ' | sed -re 's/refs\///g;s/[ ]*$//;s/ /, /g;s/\/([^,/]*)(,|$)/\/\x1B[1;38;5;252m\x1B[48;5;234m\1\x1B[0;38;5;242m\x1B[48;5;234m/g'`
-            #fb 242 234
-            #if ! [[ -z "$HEADS" ]]
-            #then
-            #    echo -n " <- $HEADS"
-            #fi
-            ##script --return -c 'git show --oneline' | head -n 2 | tail -n 1
-            fb 241 234 1
+            fb 32 234
             echo -n "  $HASH"
+            fb 241 234
+            echo -n " ($AUTHOR: $MESSAGE)"
             echo -n " $RST"
         fi
     }
