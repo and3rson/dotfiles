@@ -541,7 +541,7 @@ let g:tagbar_status_func = 'TagbarStatusFn'
 "au VimEnter * TagbarToggle
 nnoremap <silent> <F2> :TagbarToggle<CR>
 inoremap <silent> <F2> <C-o>:TagbarToggle<CR>
-set updatetime=800
+set updatetime=200
 
 let g:tagbar_type_go = {
     \ 'ctagstype' : 'go',
