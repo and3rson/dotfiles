@@ -2,7 +2,7 @@
 
 PWD=`dirname $0`
 
-if [[ "$1" -eq "norotate" ]]
+if [[ "$1" == "norotate" ]]
 then
     ROTATE="normal"
 else

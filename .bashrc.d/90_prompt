@@ -43,6 +43,8 @@ function make_prompt() {
     LAST_FORE=255
     LAST_FORE_MOD=0
 
+    PRINTED=0
+
     function fgcol() {
         echo -n "\[\e[38;5;$1m\]"
     }
@@ -72,9 +74,12 @@ function make_prompt() {
     }
 
     function brk() {
-        printf -v "LAST_BACK" ""
-        #echo -e "\e[0;42m\e[K asd"
-        echo
+        if [ "$PRINTED" -gt 0 ]
+        then
+            printf -v "LAST_BACK" ""
+            #echo -e "\e[0;42m\e[K asd"
+            echo
+        fi
     }
 
     #function back() {
@@ -87,6 +92,7 @@ function make_prompt() {
     function ssh_part() {
         if ! [[ -z "$SSH_CONNECTION" ]]
         then
+            PRINTED=$((PRINTED+1))
             fb 202 234
             echo -n " @ $(hostname) $RST"
         fi
@@ -102,6 +108,7 @@ function make_prompt() {
     function venv_part() {
         if [[ ! -z "$VIRTUAL_ENV" ]]
         then
+            PRINTED=$((PRINTED+1))
             #fb 255 22
             fb 28 234
             #fore 22
@@ -125,6 +132,7 @@ function make_prompt() {
         BRANCH="$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>&1)"
         if [[ "$?" -eq "0" ]]
         then
+            PRINTED=$((PRINTED+1))
             INFO_STR="$(git log --abbrev=8 --format="%h%n%an%n%s" -n 1)"
             IFS=$'\n' read -rd '' -a INFO <<< "$INFO_STR"
             HASH=${INFO[0]}
@@ -135,9 +143,9 @@ function make_prompt() {
             then
                 BRANCH="${BRANCH::23}$ELLIPSIS"
             fi
-            if [ "${#MESSAGE}" -gt 32 ]
+            if [ "${#MESSAGE}" -gt 20 ]
             then
-                MESSAGE="${MESSAGE::31}$ELLIPSIS"
+                MESSAGE="${MESSAGE::19}$ELLIPSIS"
             fi
             if [ "$OUT" == "" ]
             then
@@ -188,6 +196,7 @@ function make_prompt() {
     function ret_part() {
         if [[ "$RETCODE" != "0" ]]
         then
+            PRINTED=$((PRINTED+1))
             #fb 255 160
             fb 160 234 1
             echo -en " $RETCODE $RST"
