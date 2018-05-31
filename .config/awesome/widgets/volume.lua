@@ -24,7 +24,8 @@ local volume_widget = wibox.widget{
     value=0,
     shape=gears.shape.bar,
     background_color=beautiful.bg_minimize,
-    color=beautiful.bg_focus,
+    --color=beautiful.bg_focus,
+    color=beautiful.fg_volume,
     --color=beautiful.fg_normal,
     --color='#7777FF',
     --border_color=beautiful.bg_minimize,
@@ -65,9 +66,9 @@ local update_widget = function()
     else
         icon_str = ICONS.speaker
     end
-    icon.markup = '<span size="2000"> </span><span color="' .. beautiful.fg_normal .. '">' .. icon_str .. '</span>'
+    icon.markup = '<span size="2000"> </span><span color="' .. beautiful.fg_volume .. '">' .. icon_str .. '</span>'
     volume_widget.value = value
-    volume_value.markup = '<span color="' .. beautiful.fg_normal .. '">' .. value .. '%</span>'
+    volume_value.markup = '<span color="' .. beautiful.fg_volume .. '">' .. value .. '%</span>'
     --widget.markup = '<b><span>  ' .. value .. '</span></b>'
 end
 

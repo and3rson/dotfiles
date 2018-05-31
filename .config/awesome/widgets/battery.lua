@@ -54,7 +54,7 @@ local update_widget = function(widgets, stdout, _, _, _)
             color = '#D64937'
         else
             prefix = '-'
-            color = beautiful.fg_normal
+            color = beautiful.fg_battery
         end
     end
     --widgets[1].colors = {beautiful.bg_normal, color}
@@ -91,5 +91,5 @@ return wibox.widget{
         layout=wibox.layout.stack
     },
     right=8,
-    layout=wibox.layout.margin
+    layout=wibox.container.margin
 }

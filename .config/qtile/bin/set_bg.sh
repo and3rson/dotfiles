@@ -18,6 +18,8 @@
 #feh --bg-fill ~/.wallpapers/doom/686968.jpg
 #feh --bg-fill ~/.wallpapers/doom/maxresdefault.jpg
 
-feh --bg-fill ~/.wallpapers/new3/wallhaven-319318.png
+#feh --bg-fill ~/.wallpapers/new3/wallhaven-319318.png
+#feh --bg-fill ~/.wallpapers/ut3/1.png
+feh --bg-fill ~/.wallpapers/ut4/ut99_red3.png
 #echo bg set2
 

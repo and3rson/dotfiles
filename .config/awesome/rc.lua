@@ -1,4 +1,6 @@
--- Standard awesome library
+-- My AwesomeWM config
+-- luacheck: ignore dbus
+-- luacheck: globals root awesome screen dbus client mouse
 local gears = require("gears")
 local awful = require("awful")
 awful.rules = require("awful.rules")
@@ -13,7 +15,6 @@ local naughty = require("naughty")
 dbus = _dbus
 --local naughty = require("naughty")
 local menubar = require("menubar")
-local common = require("awful.widget.common")
 
 -- {{{ Variable definitions
 beautiful.init("/home/anderson/.config/awesome/themes/custom.lua")
@@ -38,6 +39,7 @@ local volume = require("widgets.volume")
 --local df = require("widgets.df")
 local date = require("widgets.date")
 local battery = require("widgets.battery")
+local term = require("widgets.term")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -69,14 +71,12 @@ end
 -- }}}
 
 -- This is used later as the default terminal and editor to run.
-terminal = "termite"
-editor = os.getenv("EDITOR") or "nvim"
-editor_cmd = terminal .. " -e " .. editor
+local terminal = "termite"
 
 -- Modifier keys.
-alt = "Mod1"
-super = "Mod4"
-ctrl = "Ctrl"
+local alt = "Mod1"
+local super = "Mod4"
+local ctrl = "Ctrl"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
@@ -88,8 +88,8 @@ local layouts =
 -- Wallpaper & tags for each screen.
 awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper.
-    if beautiful.wallpaper then
-        gears.wallpaper.maximized(beautiful.wallpaper, s, false)
+    if beautiful.wallpapers then
+        gears.wallpaper.maximized(beautiful.wallpapers[s.index], s, false)
     end
 
     -- Tags.
@@ -119,7 +119,7 @@ local wiboxes = {}
 
 for s = 1, screen.count() do
     -- Create the wibox
-    local mywibox = awful.wibox({ position = "top", screen = s, height = 16 })
+    local mywibox = awful.wibar({ position = "top", screen = s, height = 16 })
     wiboxes[s] = mywibox
 
     local layout = wibox.layout.align.horizontal()
@@ -127,14 +127,19 @@ for s = 1, screen.count() do
 
     local left_layout = wibox.layout.fixed.horizontal()
     --left_layout:add(awful.widget.layoutbox(s))
+
+    left_layout:add(wibox.container.margin(
+        awful.widget.layoutbox(s),
+        0, 3, 0, 0
+    ))
+
     if s == 1 then
         left_layout:add(awful.widget.taglist(s, awful.widget.taglist.filter.all, nil))
-        layout:set_left(left_layout)
     end
 
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then
-        left_layout:add(spacer)
+        --left_layout:add(spacer)
         left_layout:add(clay)
         --right_layout:add(spacer)
         --right_layout:add(clay)
@@ -146,6 +151,8 @@ for s = 1, screen.count() do
         right_layout:add(spacer)
         right_layout:add(memwidget)
         right_layout:add(spacer)
+        right_layout:add(term)
+        right_layout:add(spacer)
         right_layout:add(volume)
     end
     right_layout:add(spacer)
@@ -153,6 +160,7 @@ for s = 1, screen.count() do
     right_layout:add(spacer)
     right_layout:add(battery)
 
+    layout:set_left(left_layout)
     layout:set_right(right_layout)
 end
 
@@ -186,22 +194,24 @@ root.buttons(awful.util.table.join(
     --awful.button({ }, 5, awful.tag.viewprev)
 ))
 
+local alt_tab = function ()
+    local current_screen = awful.screen.focused().index
+    local next_screen = current_screen + 1
+    if next_screen > screen:count() then
+        next_screen = 1
+    end
+    awful.screen.focus(next_screen)
+end
+
 -- Key bindings
-globalkeys = awful.util.table.join(
+local globalkeys = awful.util.table.join(
     -- Switch tag
     awful.key({super}, "Page_Up", awful.tag.viewprev),
     awful.key({super}, "Page_Down", awful.tag.viewnext),
 
     -- Switch screen
-    awful.key({alt}, "Tab",
-        function ()
-            current_screen = awful.screen.focused().index
-            next_screen = current_screen + 1
-            if next_screen > screen:count() then
-                next_screen = 1
-            end
-            awful.screen.focus(next_screen)
-        end),
+    awful.key({alt}, "Tab", alt_tab),
+    awful.key({super}, "Tab", alt_tab),
 
     -- Layouts
     awful.key({super}, "space", function () awful.layout.inc(layouts,  1) end),
@@ -249,7 +259,7 @@ globalkeys = awful.util.table.join(
     --awful.key({ super }, "p", function() menubar.show() end)
 )
 
-clientkeys = awful.util.table.join(
+local clientkeys = awful.util.table.join(
     awful.key({alt}, 'F4', function(c) c:kill() end),
     awful.key({super}, "f",      function (c) c.fullscreen = not c.fullscreen  end),
     --awful.key({super}, "p",  awful.client.floating.toggle                     ),
@@ -258,7 +268,7 @@ clientkeys = awful.util.table.join(
 )
 
 -- Bind all key numbers to tags.
-for key, index in pairs({Q=1, W=2, I=3, M=4, A=5, G=6}) do
+for key, _ in pairs({Q=1, W=2, I=3, M=4, A=5, G=6}) do
     globalkeys = awful.util.table.join(
         globalkeys,
         awful.key({super}, key:lower(), function()
@@ -276,8 +286,8 @@ end
 for i = 1, 9 do
     globalkeys = awful.util.table.join(
         globalkeys,
-        awful.key({super}, tostring(i), function(c)
-            clients = awful.screen.focused().selected_tag:clients()
+        awful.key({super}, tostring(i), function()
+            local clients = awful.screen.focused().selected_tag:clients()
             if clients[i] ~= nil then
                 clients[i]:jump_to()
             end
@@ -285,7 +295,7 @@ for i = 1, 9 do
     )
 end
 
-clientbuttons = awful.util.table.join(
+local clientbuttons = awful.util.table.join(
     awful.button({}, 1, function (c) client.focus = c; c:raise() end),
     awful.button({super}, 1, awful.mouse.client.move),
     awful.button({super}, 3, awful.mouse.client.resize))
@@ -307,26 +317,28 @@ awful.rules.rules = {
                      screen = awful.screen.preferred,
                      buttons = clientbuttons } },
     { rule = { class = "MPlayer" },
-      properties = { floating = true } },
+      properties = { screen = 1, floating = true } },
     { rule = { class = "pinentry" },
-      properties = { floating = true } },
+      properties = { screen = 1, floating = true } },
+    { rule = { class = "Godot" },
+      properties = { tag = "M", floating = true } },
     --{ rule = { class = "gimp" },
     --  properties = { floating = true } },
     {
         rule_any = { class = {"HomeTerm"} },
-        properties = { tag = "Q" }
+        properties = { screen = 1, tag = "Q" }
     },
     {
         rule = { class = "Chromium" },
-        properties = { tag = "W" }
+        properties = { screen = 1, tag = "W" }
     },
     {
         rule_any = { class = {"TelegramDesktop", "IRCCloud", "ViberPC"} },
-        properties = { tag = "I" }
+        properties = { screen = 1, tag = "I" }
     },
     {
         rule_any = { class = {"Evolution"} },
-        properties = { tag = "M" }
+        properties = { screen = 1, tag = "M" }
     },
     --{
     --    --rule_any = { class = {"Google Play Music Desktop Player"} },
@@ -406,4 +418,3 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 --awful.util.spawn('chromium')
 --awful.util.spawn('start-pulseaudio-x11-mod')
-

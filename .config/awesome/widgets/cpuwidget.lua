@@ -23,7 +23,7 @@ local cpugraph_widget = wibox.widget {
     max_value = 100,
     --color = '#74aeab',
     --color = '#7777FF',
-    color = beautiful.bg_focus,
+    color = beautiful.fg_cpu,
     background_color = beautiful.bg_normal,
     --background_color = "#1e252c",
     forced_width = 25,
@@ -64,7 +64,7 @@ gears.timer {
             --cpugraph_widget:set_color(beautiful.bg_focus)
         else
             --icon.markup = '<span size="2000"> </span><span size="10000" color="#7777FF"></span>'
-            cpugraph_widget:set_color('#74aeab')
+            cpugraph_widget:set_color(beautiful.fg_cpu)
             --cpugraph_widget:set_color(beautiful.fg_normal)
         end
 

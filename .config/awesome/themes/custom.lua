@@ -9,6 +9,9 @@ local dpi = xresources.apply_dpi
 local gfs = require("gears.filesystem")
 local themes_path = gfs.get_themes_dir()
 
+local home_dir = '/home/anderson/'
+local this_dir = home_dir .. '.config/awesome/themes/'
+
 local theme = {}
 
 --theme.font          = "DejaVuSansMono Nerd Font 9"
@@ -37,6 +40,13 @@ theme.fg_bright     = "#FFFFFF"
 theme.fg_focus      = "#FFFFFF"
 theme.fg_urgent     = "#ffffff"
 theme.fg_minimize   = "#ffffff"
+
+theme.fg_battery = '#FF0087'
+theme.fg_date = '#00FF5F'
+theme.fg_volume = '#44B7F7'
+theme.fg_term = '#44B7F7'
+theme.fg_mem = '#00FF5F'
+theme.fg_cpu = '#74AEAB'
 
 --theme.accent_color = '#44ff77'
 
@@ -128,18 +138,30 @@ theme.titlebar_maximized_button_normal_active = themes_path.."default/titlebar/m
 theme.titlebar_maximized_button_focus_active  = themes_path.."default/titlebar/maximized_focus_active.png"
 
 --theme.wallpaper = themes_path.."zenburn/background.png"
-theme.wallpaper = '/home/anderson/.wallpapers/new3/wallhaven-319318.png'
+--theme.wallpaper = '/home/anderson/.wallpapers/new3/wallhaven-319318.png'
+theme.wallpapers = {
+    --'/home/anderson/.wallpapers/ut3/1.png',
+    --'/home/anderson/.wallpapers/ut3/1blue.png',
+    --'/home/anderson/.wallpapers/ut3/1.png',
+    '/home/anderson/.wallpapers/ut4/ut99_red3.png',
+    '/home/anderson/.wallpapers/ut4/ut99_red3.png',
+    '/home/anderson/.wallpapers/ut4/ut99_red3.png',
+}
+
+--theme.wallpaper = '/home/anderson/.wallpapers/ut3/1full.jpg'
 
 -- You can use your own layout icons like this:
 theme.layout_tile       = themes_path .. "zenburn/layouts/tile.png"
 theme.layout_tileleft   = themes_path .. "zenburn/layouts/tileleft.png"
 theme.layout_tilebottom = themes_path .. "zenburn/layouts/tilebottom.png"
 theme.layout_tiletop    = themes_path .. "zenburn/layouts/tiletop.png"
-theme.layout_fairv      = themes_path .. "zenburn/layouts/fairv.png"
+--theme.layout_fairv      = themes_path .. "zenburn/layouts/fairv.png"
+theme.layout_fairv      = this_dir .. "layouts/fairv.png"
 theme.layout_fairh      = themes_path .. "zenburn/layouts/fairh.png"
 theme.layout_spiral     = themes_path .. "zenburn/layouts/spiral.png"
 theme.layout_dwindle    = themes_path .. "zenburn/layouts/dwindle.png"
-theme.layout_max        = themes_path .. "zenburn/layouts/max.png"
+--theme.layout_max        = themes_path .. "zenburn/layouts/max.png"
+theme.layout_max        = this_dir .. "layouts/max.png"
 theme.layout_fullscreen = themes_path .. "zenburn/layouts/fullscreen.png"
 theme.layout_magnifier  = themes_path .. "zenburn/layouts/magnifier.png"
 theme.layout_floating   = themes_path .. "zenburn/layouts/floating.png"

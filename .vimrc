@@ -179,7 +179,7 @@ nnoremap <silent> r <C-r>
 
 " Quick open .vimrc
 nnoremap <silent> <M-c> :e ~/.vimrc<CR>
-nnoremap <M-c> :nohlsearch<CR>
+nnoremap <silent> <M-c> :nohlsearch<CR>
 
 
 " Search symbols
@@ -199,6 +199,11 @@ inoremap <silent> <M-/> <C-o>:call NERDComment(0, "toggle")<CR><C-o><CR>
 
 map <PageUp> <C-u>
 map <PageDown> <C-d>
+"map <PageUp> 10<Up>
+"map <PageDown> 10<Down>
+
+"map <S-Up> <C-y>
+"map <S-Down> <C-e>
 
 " Ctrl-P
 let g:ctrlp_funky_syntax_highlight = 1

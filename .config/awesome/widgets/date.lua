@@ -23,11 +23,13 @@ local update_widget = function(widget, stdout, _, _, _)
     local hour = tonumber(os.date('%H'))
     if hour < 6 or hour >= 18 then
         icon_name = 'night'
-        icon_color = '#AAAAFF'
+        --icon_color = '#AAAAFF'
+        icon_color = beautiful.fg_date
     else
         icon_name = 'day'
-        icon_color = beautiful.fg_normal
+        --icon_color = beautiful.fg_normal
         --icon_color = '#FFFF77'
+        icon_color = beautiful.fg_date
     end
     --icon_color = beautiful.bg_focus
     --icon_color = beautiful.fg_normal
