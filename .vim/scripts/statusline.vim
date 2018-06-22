@@ -1,33 +1,31 @@
-hi! StatusBarInsert ctermbg=197 ctermfg=0
-hi! StatusBarInsertInv ctermbg=none ctermfg=197
+hi! StatusBarInsertInv ctermbg=235 ctermfg=197
 " Visual
-hi! StatusBarVisual ctermbg=81 ctermfg=0
-hi! StatusBarVisualInv ctermbg=none ctermfg=81
+hi! StatusBarVisualInv ctermbg=235 ctermfg=81
 "hi! StatusBarVisual ctermbg=32 ctermfg=0
 "hi! StatusBarVisualInv ctermbg=234 ctermfg=32
 " Normal
-hi! StatusBarNormal ctermbg=118 ctermfg=0
-hi! StatusBarNormalInv ctermbg=none ctermfg=118
+hi! StatusBarNormalInv ctermbg=235 ctermfg=118
 " Replace
-hi! StatusBarReplace ctermbg=222 ctermfg=0
-hi! StatusBarReplaceInv ctermbg=none ctermfg=222
+hi! StatusBarReplaceInv ctermbg=235 ctermfg=222
 " Terminal
-hi! StatusBarTerminal ctermbg=57 ctermfg=0
-hi! StatusBarTerminalInv ctermbg=none ctermfg=57
+hi! StatusBarTerminalInv ctermbg=235 ctermfg=57
 " Inactive
 "hi! StatusBarInactive ctermfg=238 ctermbg=232
 "hi! StatusBarInactiveInv ctermfg=248 ctermbg=232
 " Text
 "hi! StatusBarText ctermfg=33 ctermbg=234
-hi! StatusBarText ctermfg=248 ctermbg=none
-hi! StatusBarTextInv ctermfg=232 ctermbg=none
+hi! StatusBarText ctermfg=248 ctermbg=235
+hi! StatusBarTextInv ctermfg=232 ctermbg=235
 " Error parts
-hi! StatusBarWarning ctermfg=3 ctermbg=none cterm=bold
-hi! StatusBarError ctermfg=1 ctermbg=none cterm=bold
+hi! StatusBarWarning ctermfg=3 ctermbg=235 cterm=bold
+hi! StatusBarError ctermfg=1 ctermbg=235 cterm=bold
+
+hi! StatusLine ctermfg=248 ctermbg=235 cterm=none
+hi! StatusLineNC ctermfg=242 ctermbg=233 cterm=none
 
 " PieCrumbs
-hi! PieClass ctermfg=197 ctermbg=none cterm=bold
-hi! PieFunction ctermfg=154 ctermbg=none
+hi! PieClass ctermfg=197 ctermbg=235 cterm=bold
+hi! PieFunction ctermfg=154 ctermbg=235
 
 "\ 'n': '',
 "\ 'i': '',
@@ -46,7 +44,8 @@ let g:mode_map = {
     \ '^S': '',
     \ 't': ''
     \ }
-let g:sep = '⎪'
+"let g:sep = ' ⎪ '
+let g:sep = '  '
 
 set noshowmode
 
@@ -96,13 +95,13 @@ fu! AleWarnings(bufnr) abort
     let l:errors = l:counts.error + l:counts.style_error
     let l:warnings = l:counts.total - l:errors
     "return l:warnings == 0 ? '' : ('  ' . l:warnings . ' ')
-    return l:warnings == 0 ? '' : (g:sep . ' %#StatusBarWarning# ' . l:warnings . ' %#StatusBarText#')
+    return l:warnings == 0 ? '' : (g:sep . '%#StatusBarWarning# ' . l:warnings . '%#StatusBarText#')
 endf
 
 fu! AleErrors(bufnr) abort
     let l:counts = ale#statusline#Count(a:bufnr)
     let l:errors = l:counts.error + l:counts.style_error
-    return l:errors == 0 ? '' : (g:sep . ' %#StatusBarError# ' . l:errors . ' %#StatusBarText#')
+    return l:errors == 0 ? '' : (g:sep . '%#StatusBarError# ' . l:errors . '%#StatusBarText#')
 endf
 
 fu! LinterStatus() abort
@@ -112,7 +111,7 @@ fu! LinterStatus() abort
     let l:all_non_errors = l:counts.total - l:all_errors
 
     return l:counts.total == 0 ? '' : printf(
-    \   '  %d  %d' . g:sep,
+    \   '  %d  %d',
     \   all_non_errors,
     \   all_errors
     \)
@@ -134,7 +133,7 @@ fu! SLEnter()
     let g:winid = win_getid()
 endf
 
-hi StatusLine ctermfg=255 cterm=None gui=None ctermbg=None
+"hi StatusLine ctermfg=255 cterm=None gui=None ctermbg=None
 
 " !!!
 set lazyredraw
@@ -224,27 +223,27 @@ fu! Branch()
         if strlen(head) > 16
             let head = head[:15] . '>'
         endif
-        let br = g:sep . '  ' . head . ' '
+        let br = g:sep . ' ' . head
         return br
     endif
     return ''
 endf
 
 fu! FilePos()
-    return g:sep . ' %04l:%02c/%L '
+    return g:sep . '(%03l/%L):%03c'
 endf
 
 fu! BufNr(bufnr, mode)
-    return g:sep . ' ' . a:bufnr . ':' . a:mode . ' '
+    "return g:sep . ' ' . a:bufnr . ':' . a:mode . ' '
+    return '' . a:bufnr . ' ' . a:mode
 endf
 
 fu! StatusBar(winid, file_type)
     let s = ''
-    let end = '%*'
+    let end = ' %*'
     let bufnr = -1
     let file_icon = FileIcon(a:file_type)
-    let icon_hi = 'StatusBarText'
-    let title_hi = 'StatusBarText'
+    let title_hi = '*'
     for bufinfo in getbufinfo()
         if index(bufinfo.windows, str2nr(a:winid)) != -1
             let bufnr = bufinfo.bufnr
@@ -254,34 +253,31 @@ fu! StatusBar(winid, file_type)
     if g:winid == a:winid
         if a:file_type == 'qf'
             let m ='t'
-            let icon_hi = 'StatusBarInsert'
-            let title_hi = 'StatusBarInsertInv'
+            let title_hi = '#StatusBarInsertInv#'
             "let mn = 'Insert'
             "let tn = 'Text'
         else
             let m = mode()
             if (m ==# 'i')
-                let icon_hi = 'StatusBarInsert'
-                let title_hi = 'StatusBarInsertInv'
+                let title_hi = '#StatusBarInsertInv#'
             elseif (m ==# 'R')
-                let icon_hi = 'StatusBarReplace'
-                let title_hi = 'StatusBarReplaceInv'
+                let title_hi = '#StatusBarReplaceInv#'
             elseif (m ==# 'v' || m ==# 'V' || m ==# nr2char(22))
-                let icon_hi = 'StatusBarVisual'
-                let title_hi = 'StatusBarVisualInv'
+                let title_hi = '#StatusBarVisualInv#'
             elseif (m ==# 't')
-                let icon_hi = 'StatusBarTerminal'
-                let title_hi = 'StatusBarTerminalInv'
+                let title_hi = '#StatusBarTerminalInv#'
             else
-                let icon_hi = 'StatusBarNormal'
-                let title_hi = 'StatusBarNormalInv'
+                let title_hi = '#StatusBarNormalInv#'
             endif
         endif
     else
         let m = 'n'
     endif
-    let s .= '%#' . title_hi . '# ' . ((m == 'n') ? file_icon : g:mode_map[m]) . ' ' . end
-    let s .= '%#' . title_hi . '#%<%F'
+    let s .= '%' . title_hi . ' ' . ((m == 'n') ? file_icon : g:mode_map[m]) . ' ' . end
+    let s .= '%' . title_hi . '%<%f'
+    "let s .= '%*%<%f'
+    let s .= '%*'
+
     "let s .= TagBarLoc()
     "if a:file_type ==# 'python'
     "    "let s .= ' ' . ASTLoc()
@@ -289,7 +285,7 @@ fu! StatusBar(winid, file_type)
     "endif
     let s .= '%='
     "let s .= 'A=' . win_getid() . ' C=' . a:winid
-    let s .= '%#StatusBarText#'
+    "" let s .= '%#StatusBarText#'
     "let s .= ' ' . FileIcon() . '  ' . FileType() . ' '
     "let s .= ' ' . ScrollProgress() . ' '
     let s .= BufNr(bufnr, m)

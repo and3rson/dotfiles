@@ -7,16 +7,20 @@ set nocompatible
 filetype off
 
 set nowrap
+syntax off
+
+let g:python_highlight_all = 1
+let python_highlight_all = 1
+let g:python_highlight_indent_errors = 1
+let g:python_space_error_highlight = 1
+
+let g:python_self_cls_highlight = 1
 
 set rtp+=~/.vim/bundle/Vundle.vim
 set rtp+=~/.vim/scripts
 set rtp+=/usr/share/vim/vimfiles/plugin
 set t_Co=256
 call vundle#begin()
-
-let g:python_highlight_all = 1
-let g:python_highlight_indent_errors = 1
-let g:python_space_error_highlight = 1
 
 Plugin 'VundleVim/Vundle.vim'
 
@@ -25,7 +29,7 @@ Plugin 'scrooloose/nerdcommenter'
 "Plugin 'mitsuhiko/vim-python-combined'  " Combined Python 2/3 for Vim
 "Plugin 'davidhalter/jedi-vim'
 "Plugin 'python-mode/python-mode'
-Plugin 'tpope/vim-fugitive'
+"Plugin 'tpope/vim-fugitive'
 
 Plugin 'ap/vim-buftabline'
 
@@ -63,7 +67,7 @@ Plugin 'ervandew/supertab'
 Plugin 'ap/vim-css-color'
 Plugin 'osyo-manga/vim-over'
 
-Plugin 'tmux-plugins/vim-tmux'
+"Plugin 'tmux-plugins/vim-tmux'
 
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
@@ -73,17 +77,17 @@ Plugin 'junegunn/fzf.vim'
 "Plugin 'joeytwiddle/sexy_scroller.vim'
 Plugin 'mhinz/vim-startify'
 
-Plugin 'wkentaro/conque.vim'
+"Plugin 'wkentaro/conque.vim'
 "Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'jpalardy/vim-slime'
+"Plugin 'jpalardy/vim-slime'
 
 Plugin 'majutsushi/tagbar'
 "Plugin 'calebsmith/vim-lambdify'
 "Plugin 'ehamberg/vim-cute-python'
 
+" Syntax files
 Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
-
 Plugin 'chr4/nginx.vim'
 Plugin 'martinda/Jenkinsfile-vim-syntax'
 
@@ -257,9 +261,17 @@ inoremap <S-Tab> <C-d>
 set cursorline
 set nocursorcolumn
 
+" Making active window more obvious
+augroup BgHighlight
+    autocmd!
+    autocmd WinEnter * set cul
+    autocmd WinLeave * set nocul
+augroup END
+
 " Vertical sep
-set fillchars+=vert:\ " Stuff
-"set fillchars+=vert:\│
+"set fillchars+=vert:\ " Stuff
+set fillchars+=vert:\│
+"set fillchars+=vert:\|
 
 " │
 
@@ -267,8 +279,8 @@ set fillchars+=vert:\ " Stuff
 
 hi CursorLine ctermbg=235 " cterm=underline
 hi CursorColumn ctermbg=235
-hi StatusLine ctermfg=233
-hi StatusLineNC ctermbg=None ctermfg=240 cterm=None
+"hi StatusLine ctermfg=233
+"hi StatusLineNC ctermbg=None ctermfg=240 cterm=None
 hi MatchParen ctermfg=magenta ctermbg=none
 hi CursorLineNr ctermfg=119 ctermbg=235 cterm=bold
 
@@ -284,8 +296,8 @@ hi Include cterm=bold ctermfg=154
 hi MatchParen ctermfg=197
 
 " Split
-"hi VertSplit ctermbg=235
-hi VertSplit ctermbg=none
+hi VertSplit ctermbg=235
+"hi VertSplit ctermbg=none
 
 " Indentation
 set tabstop=4 softtabstop=4 shiftwidth=4
@@ -403,6 +415,16 @@ nnoremap <silent> ' :ALENext<CR>
 
 let g:ale_sign_error = ' '
 let g:ale_sign_warning = ' '
+let g:ale_lint_delay = 500
+let g:ale_lint_on_enter = 0
+let g:ale_lint_on_filetype_changed = 0
+let g:ale_lint_on_save = 0
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 0
+
+nmap <silent> <F5> :ALELint<CR>
+
+"au BufNewFile,BufRead * ALELint
 "let g:ale_sign_column_always = 1
 
 noremap <silent> <A-e> :lopen<CR>

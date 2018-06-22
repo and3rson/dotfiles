@@ -31,7 +31,7 @@ naughty.config.presets.critical.bg = beautiful.bg_focus
 
 -- Widgets
 local spacer = require("widgets.spacer")
-local clay = require("widgets.clay")
+--local clay = require("widgets.clay")
 local cpuwidget = require("widgets.cpuwidget")
 local memwidget = require("widgets.memwidget")
 local volume = require("widgets.volume")
@@ -140,12 +140,15 @@ for s = 1, screen.count() do
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then
         --left_layout:add(spacer)
-        left_layout:add(clay)
+
+        --left_layout:add(clay)
+
         --right_layout:add(spacer)
         --right_layout:add(clay)
         --local systray = wibox.widget.systray()
         --systray:set_base_size(12)
         --right_layout:add(wibox.container.margin(systray, 0, 6, 2, 0))
+
         right_layout:add(spacer)
         right_layout:add(cpuwidget)
         right_layout:add(spacer)
@@ -251,7 +254,7 @@ local globalkeys = awful.util.table.join(
     end),
 
     -- NetworkManager DMenu
-    awful.key({super}, "'", function() awful.util.spawn('networkmanager_dmenu') end),
+    awful.key({super}, "n", function() awful.util.spawn('networkmanager_dmenu') end),
 
     -- Screenshot
     awful.key({super}, "p", function() awful.util.spawn('/sh/sshot.sh') end)

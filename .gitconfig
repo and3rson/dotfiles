@@ -16,3 +16,5 @@
 	ui = true
 [merge]
 	tool = meld
+[diff]
+	tool = meld
