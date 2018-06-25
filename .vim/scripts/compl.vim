@@ -118,7 +118,7 @@ function! Compl(findstart, base)
     if a:findstart
         let line = getline('.')
         let start = col('.') - 1
-        while start > 0 && (len(matchstr(line[start - 1], '[a-zA-Z_]')) != 0)
+        while start > 0 && (len(matchstr(line[start - 1], '[a-zA-Z0-9_]')) != 0)
             let start -= 1
         endwhile
         return start

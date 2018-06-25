@@ -20,4 +20,4 @@ fu Cute()
     set cole=1
 endfu
 
-"au filetype python call Cute()
+au filetype python call Cute()

@@ -38,6 +38,8 @@ Plugin 'ap/vim-buftabline'
 
 "Plugin 'michaeljsmith/vim-indent-object'
 "Plugin 'nathanaelkane/vim-indent-guides'
+"Plugin 'thaerkh/vim-indentguides'
+"let g:indentguides_spacechar = '┆'
 
 Plugin 'Yggdroot/indentLine'
 
@@ -288,12 +290,28 @@ hi CursorLineNr ctermfg=119 ctermbg=235 cterm=bold
 hi Normal guibg=NONE ctermbg=NONE ctermfg=NONE
 hi NonText ctermbg=NONE
 
-hi Error ctermfg=235 ctermbg=161
+hi Error ctermbg=197 ctermfg=255 cterm=bold,underline
 
 "hi Repeat cterm=underline
 hi Function cterm=underline
 hi Include cterm=bold ctermfg=154
 hi MatchParen ctermfg=197
+
+" Highlight selected word
+hi Selected ctermbg=94 ctermfg=none cterm=underline,italic
+":autocmd CursorMoved * exe printf('match Selected /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+" Better version: https://stackoverflow.com/a/36554391/3455614
+let g:no_highlight_group_for_current_word=["Statement", "Comment", "Type", "PreProc", "Include", "Conditional"]
+function s:HighlightWordUnderCursor()
+    let l:syntaxgroup = synIDattr(synIDtrans(synID(line("."), stridx(getline("."), expand('<cword>')) + 1, 1)), "name")
+
+    if (index(g:no_highlight_group_for_current_word, l:syntaxgroup) == -1)
+        exe printf('match Selected /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+    else
+        exe 'match Selected /\V\<\>/'
+    endif
+endfunction
+autocmd CursorMoved * call s:HighlightWordUnderCursor()
 
 " Split
 hi VertSplit ctermbg=235
@@ -307,6 +325,8 @@ set list listchars=tab: ,trail:·,extends:»,precedes:«,nbsp:×
 " 
 
 let g:indent_guides_enable_on_vim_startup=1
+let g:indent_guides_guide_size=1
+
 let g:indentLine_char = '▏'
 let g:indentLine_first_char = '▏'
 "let g:indentLine_first_char = '>'
@@ -315,12 +335,12 @@ let g:indentLine_first_char = '▏'
 " let g:indentLine_leadingSpaceChar = '·'
 " let g:indentLine_leadingSpaceEnabled = 1
 " let g:indentLine_setColors = 0
-let g:indentLine_concealcursor = ''
-" let g:indentLine_conceallevel = 1
+let g:indentLine_concealcursor = 0
+let g:indentLine_conceallevel = 1
 " let g:indentLine_setConceal = 0
 let g:indentLine_color_term = 239
 " let g:indentLine_bgcolor_term = 202
-let g:indentLine_showFirstIndentLevel = 1
+let g:indentLine_showFirstIndentLevel = 0
 let g:indentLine_fileTypeExclude = ['text', 'json', 'help', 'startify']
 let g:indentLine_faster = 1 " TODO: Experimental
 
@@ -432,7 +452,8 @@ noremap <silent> <A-e> :lopen<CR>
 hi ALEWarning ctermbg=190 ctermfg=235
 "hi ALEWarning cterm=reverse
 hi ALEWarningSign ctermbg=235 ctermfg=190
-hi ALEError ctermbg=197 ctermfg=255
+"hi ALEError ctermbg=197 ctermfg=255
+hi ALEError ctermbg=197 ctermfg=255 cterm=bold,underline
 "hi ALEError cterm=reverse
 hi ALEErrorSign ctermbg=235 ctermfg=197
 
@@ -452,7 +473,7 @@ source $HOME/.vim/scripts/astloc.vim
 source $HOME/.vim/scripts/statusline.vim
 source $HOME/.vim/scripts/compl.vim
 source $HOME/.vim/scripts/hi_yaml.vim
-source $HOME/.vim/scripts/cute.vim
+"source $HOME/.vim/scripts/cute.vim
 "source $HOME/.vim/scripts/termrun.vim
 "pyfile $HOME/.vim/scripts/compl.py
 

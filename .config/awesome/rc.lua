@@ -31,7 +31,7 @@ naughty.config.presets.critical.bg = beautiful.bg_focus
 
 -- Widgets
 local spacer = require("widgets.spacer")
---local clay = require("widgets.clay")
+local clay = require("widgets.clay")
 local cpuwidget = require("widgets.cpuwidget")
 local memwidget = require("widgets.memwidget")
 local volume = require("widgets.volume")
@@ -139,11 +139,13 @@ for s = 1, screen.count() do
 
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then
+        left_layout:add(wibox.container.margin(
+            clay,
+            3, 3, 0, 0
+        ))
+        --left_layout:add(clay)
         --left_layout:add(spacer)
 
-        --left_layout:add(clay)
-
-        --right_layout:add(spacer)
         --right_layout:add(clay)
         --local systray = wibox.widget.systray()
         --systray:set_base_size(12)
