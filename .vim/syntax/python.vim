@@ -481,7 +481,8 @@ if version >= 508 || !exists("did_python_syn_inits")
 
   HiLink pythonStatement        Statement
   HiLink pythonImport           Include
-  HiLink pythonFunction         Function
+  "HiLink pythonFunction         Function
+  hi pythonFunction ctermfg=154 cterm=underline
   HiLink pythonConditional      Conditional
   HiLink pythonRepeat           Repeat
   HiLink pythonException        Exception

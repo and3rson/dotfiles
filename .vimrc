@@ -43,12 +43,17 @@ Plugin 'ap/vim-buftabline'
 
 Plugin 'Yggdroot/indentLine'
 
+"Plugin 'honza/vim-snippets'
+"Plugin 'SirVer/ultisnips'
+
 "Plugin 'hdima/python-syntax'
 
 "Plugin 'vim-syntastic/syntastic'
 Plugin 'w0rp/ale'
 
-Plugin 'Vimjas/vim-python-pep8-indent'
+" Slow returns
+"Plugin 'Vimjas/vim-python-pep8-indent'
+
 "Plugin 'ryanoasis/vim-devicons'
 
 "Plugin 'and3rson/piecrumbs'
@@ -92,6 +97,14 @@ Plugin 'pangloss/vim-javascript'
 Plugin 'mxw/vim-jsx'
 Plugin 'chr4/nginx.vim'
 Plugin 'martinda/Jenkinsfile-vim-syntax'
+
+" Faster YAML syntax
+Plugin 'stephpy/vim-yaml'
+
+"Plugin 'kien/rainbow_parentheses.vim'
+
+" Godot GDScript
+Plugin 'calviken/vim-gdscript3'
 
 call vundle#end()                    " required
 
@@ -272,7 +285,7 @@ augroup END
 
 " Vertical sep
 "set fillchars+=vert:\ " Stuff
-set fillchars+=vert:\│
+set fillchars+=vert:\│,stl:\ ,stlnc:\ ,fold:\―"
 "set fillchars+=vert:\|
 
 " │
@@ -286,6 +299,39 @@ hi CursorColumn ctermbg=235
 hi MatchParen ctermfg=magenta ctermbg=none
 hi CursorLineNr ctermfg=119 ctermbg=235 cterm=bold
 
+" https://stackoverflow.com/a/19594724/3455614
+" Dim inactive windows using 'colorcolumn' setting
+" This tends to slow down redrawing, but is very useful.
+" Based on https://groups.google.com/d/msg/vim_use/IJU-Vk-QLJE/xz4hjPjCRBUJ
+" XXX: this will only work with lines containing text (i.e. not '~')
+" from
+"if exists('+colorcolumn')
+"  function! s:DimInactiveWindows()
+"    for i in range(1, tabpagewinnr(tabpagenr(), '$'))
+"      let l:range = ""
+"      if i != winnr()
+"        if &wrap
+"         " HACK: when wrapping lines is enabled, we use the maximum number
+"         " of columns getting highlighted. This might get calculated by
+"         " looking for the longest visible line and using a multiple of
+"         " winwidth().
+"         let l:width=256 " max
+"        else
+"         let l:width=winwidth(i)
+"        endif
+"        let l:range = join(range(1, l:width), ',')
+"      endif
+"      call setwinvar(i, '&colorcolumn', l:range)
+"    endfor
+"  endfunction
+"  augroup DimInactiveWindows
+"    au!
+"    au WinEnter * call s:DimInactiveWindows()
+"    au WinEnter * set cursorline
+"    au WinLeave * set nocursorline
+"  augroup END
+"endif
+
 " Molokai theme patches
 hi Normal guibg=NONE ctermbg=NONE ctermfg=NONE
 hi NonText ctermbg=NONE
@@ -293,25 +339,25 @@ hi NonText ctermbg=NONE
 hi Error ctermbg=197 ctermfg=255 cterm=bold,underline
 
 "hi Repeat cterm=underline
-hi Function cterm=underline
+"hi Function cterm=underline
 hi Include cterm=bold ctermfg=154
 hi MatchParen ctermfg=197
 
 " Highlight selected word
-hi Selected ctermbg=94 ctermfg=none cterm=underline,italic
-":autocmd CursorMoved * exe printf('match Selected /\V\<%s\>/', escape(expand('<cword>'), '/\'))
-" Better version: https://stackoverflow.com/a/36554391/3455614
-let g:no_highlight_group_for_current_word=["Statement", "Comment", "Type", "PreProc", "Include", "Conditional"]
-function s:HighlightWordUnderCursor()
-    let l:syntaxgroup = synIDattr(synIDtrans(synID(line("."), stridx(getline("."), expand('<cword>')) + 1, 1)), "name")
+"hi Selected ctermbg=94 ctermfg=none
+"":autocmd CursorMoved * exe printf('match Selected /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+"" Better version: https://stackoverflow.com/a/36554391/3455614
+"let g:no_highlight_group_for_current_word=["Statement", "Comment", "Type", "PreProc", "Include", "Conditional"]
+"function s:HighlightWordUnderCursor()
+"    let l:syntaxgroup = synIDattr(synIDtrans(synID(line("."), stridx(getline("."), expand('<cword>')) + 1, 1)), "name")
 
-    if (index(g:no_highlight_group_for_current_word, l:syntaxgroup) == -1)
-        exe printf('match Selected /\V\<%s\>/', escape(expand('<cword>'), '/\'))
-    else
-        exe 'match Selected /\V\<\>/'
-    endif
-endfunction
-autocmd CursorMoved * call s:HighlightWordUnderCursor()
+"    if (index(g:no_highlight_group_for_current_word, l:syntaxgroup) == -1)
+"        exe printf('match Selected /\V\<%s\>/', escape(expand('<cword>'), '/\'))
+"    else
+"        exe 'match Selected /\V\<\>/'
+"    endif
+"endfunction
+"autocmd CursorMoved * call s:HighlightWordUnderCursor()
 
 " Split
 hi VertSplit ctermbg=235
@@ -442,6 +488,8 @@ let g:ale_lint_on_save = 0
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 0
 
+let g:ale_python_pylint_options = '-j4 -E'
+
 nmap <silent> <F5> :ALELint<CR>
 
 "au BufNewFile,BufRead * ALELint
@@ -485,8 +533,40 @@ source $HOME/.vim/scripts/hi_yaml.vim
 "set completefunc=PyCompl
 
 " Disable folding
-set nofoldenable
-set foldlevelstart=99
+"set nofoldenable
+"set foldlevelstart=99
+" Nope, let's use it!
+nnoremap <space> za
+vnoremap <space> zf
+set foldmethod=indent
+set foldnestmax=2
+
+fu! FoldText()
+    "let l:indent = match(getline(v:foldstart), '\S')
+    "let l:indent_str = repeat(' ', l:indent)
+    "return l:indent_str . getline(v:foldstart)
+    "return getline(v:foldstart) . '    (' . string(v:foldend - v:foldstart - 1) . ' more lines)'
+    return getline(v:foldstart) . '    [' . repeat('+', v:foldend - v:foldstart) . '] '
+endf
+set foldtext=FoldText()
+hi FoldColumn ctermfg=245 ctermbg=235
+set foldcolumn=1
+
+function! GoToOpenFold(direction)
+  let start = line('.')
+  if (a:direction == "next")
+    while (foldclosed(start) != -1)
+      let start = start + 1
+    endwhile
+  else
+    while (foldclosed(start) != -1)
+      let start = start - 1
+    endwhile
+  endif
+  call cursor(start, 0)
+endfunction
+nmap ]z :cal GoToOpenFold("next")
+nmap [z :cal GoToOpenFold("prev")
 
 " Deoplete
 "let g:deoplete#enable_at_startup = 1
@@ -586,7 +666,7 @@ endfunction
 "endf
 let g:tagbar_status_func = 'TagbarStatusFn'
 "let g:tagbar_status_func = 'Nope'
-"au VimEnter * TagbarToggle
+"au VimEnter * nested :TagbarOpen
 nnoremap <silent> <F2> :TagbarToggle<CR>
 inoremap <silent> <F2> <C-o>:TagbarToggle<CR>
 set updatetime=200
@@ -646,4 +726,19 @@ au BufNewFile,BufRead *.gv set filetype=dot
 " Scrolling
 "au BufRead * set scroll=20
 set scrolloff=5
+
+" UntiSnips
+"let g:UltiSnipsExpandTrigger="<C-i>"
+
+" Jenkinsfile indentation
+au FileType Jenkinsfile setlocal ts=2 sts=2 sw=2 expandtab
+
+" Limit syntax highlight
+set synmaxcol=160
+
+" Rainbow parentheses
+"au VimEnter * RainbowParenthesesToggle
+"au Syntax * RainbowParenthesesLoadRound
+"au Syntax * RainbowParenthesesLoadSquare
+"au Syntax * RainbowParenthesesLoadBraces
 

@@ -147,9 +147,9 @@ for s = 1, screen.count() do
         --left_layout:add(spacer)
 
         --right_layout:add(clay)
-        --local systray = wibox.widget.systray()
-        --systray:set_base_size(12)
-        --right_layout:add(wibox.container.margin(systray, 0, 6, 2, 0))
+        local systray = wibox.widget.systray()
+        systray:set_base_size(12)
+        right_layout:add(wibox.container.margin(systray, 0, 6, 2, 0))
 
         right_layout:add(spacer)
         right_layout:add(cpuwidget)
@@ -273,12 +273,12 @@ local clientkeys = awful.util.table.join(
 )
 
 -- Bind all key numbers to tags.
-for key, _ in pairs({Q=1, W=2, I=3, M=4, A=5, G=6}) do
+for key, tag_name in pairs({Q='Q', W='W', I='I', E='I', M='M', T='M'}) do
     globalkeys = awful.util.table.join(
         globalkeys,
         awful.key({super}, key:lower(), function()
             for _, tag in pairs(awful.tag.gettags(mouse.screen)) do
-                if tag.name == key then
+                if tag.name == tag_name then
                     awful.tag.viewonly(tag)
                 end
             end
