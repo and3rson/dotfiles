@@ -1,5 +1,5 @@
 #!/bin/sh
-#!/usr/bin/env vim
+#!/usr/bin/env nvim
 #! This is a bash script that executes itself as a vimscript to do its work
 #! Based on _v by Magnus Woldrich: https://github.com/trapd00r/utils/blob/master/_v
 
@@ -72,7 +72,7 @@
   if ! mkdir ${mkdir_options} ${tmp_dir}; then
     echo Could not create temporary directory ${tmp_dir} >&2
     exit 1
-  fi 
+  fi
 
   trap "rm -rf ${tmp_dir}" HUP INT QUIT ILL TRAP KILL BUS TERM
   tmp_file=${tmp_dir}/vimcat

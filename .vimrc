@@ -106,6 +106,9 @@ Plugin 'stephpy/vim-yaml'
 " Godot GDScript
 Plugin 'calviken/vim-gdscript3'
 
+" Python better code folding
+Plugin 'tmhedberg/SimpylFold'
+
 call vundle#end()                    " required
 
 filetype on
@@ -135,7 +138,7 @@ set guioptions-=L  "remove left-hand scroll bar
 set guifont=DejaVu\ Sans\ Mono\ 9
 
 " One extra char at the end of the line
-set virtualedit=onemore
+"set virtualedit=onemore
 
 set splitbelow
 set splitright
@@ -285,7 +288,8 @@ augroup END
 
 " Vertical sep
 "set fillchars+=vert:\ " Stuff
-set fillchars+=vert:\│,stl:\ ,stlnc:\ ,fold:\―"
+"set fillchars+=vert:\│,stl:\ ,stlnc:\ ,fold:\―"
+set fillchars+=vert:\ ,stl:\ ,stlnc:\ ,fold:\―"
 "set fillchars+=vert:\|
 
 " │
@@ -296,7 +300,9 @@ hi CursorLine ctermbg=235 " cterm=underline
 hi CursorColumn ctermbg=235
 "hi StatusLine ctermfg=233
 "hi StatusLineNC ctermbg=None ctermfg=240 cterm=None
-hi MatchParen ctermfg=magenta ctermbg=none
+
+"hi MatchParen ctermfg=magenta ctermbg=none
+
 hi CursorLineNr ctermfg=119 ctermbg=235 cterm=bold
 
 " https://stackoverflow.com/a/19594724/3455614
@@ -427,18 +433,19 @@ let g:CursorColumnI = 0 "the cursor column position in INSERT
 
 fu! InsertEnterHook()
     ":set norelativenumber
-    hi BufTabLineActive ctermbg=161 ctermfg=255 cterm=bold
-    hi BufTabLineCurrent ctermbg=161 ctermfg=255 cterm=bold
+    "hi BufTabLineActive ctermbg=161 ctermfg=255 cterm=bold
+    "hi BufTabLineCurrent ctermbg=161 ctermfg=255 cterm=bold
     hi CursorLineNr ctermfg=161
     let g:CursorColumnI = col('.')
 endf
 
 fu! InsertLeaveHook()
     ":set relativenumber
-    hi BufTabLineActive ctermbg=118 ctermfg=0 cterm=bold
-    hi BufTabLineCurrent ctermbg=118 ctermfg=0 cterm=bold
+    "hi BufTabLineActive ctermbg=118 ctermfg=0 cterm=bold
+    "hi BufTabLineCurrent ctermbg=118 ctermfg=0 cterm=bold
     hi CursorLineNr ctermfg=118
-    if col('.') != g:CursorColumnI | call cursor(0, col('.')+1) | endif
+    " Back to true mode.
+    "if col('.') != g:CursorColumnI | call cursor(0, col('.')+1) | endif
 endf
 
 au InsertEnter * call InsertEnterHook()
@@ -466,7 +473,7 @@ let g:buftabline_indicators = 1
 let g:buftabline_seperators = 1
 hi BufTabLineFill ctermbg=233
 hi BufTabLineCurrent ctermbg=118 ctermfg=0 cterm=bold
-hi BufTabLineActive ctermbg=118 ctermfg=0 cterm=bold
+"hi BufTabLineActive ctermbg=118 ctermfg=0 cterm=bold
 hi BufTabLineHidden ctermbg=238
 
 " ALE
@@ -521,6 +528,7 @@ source $HOME/.vim/scripts/astloc.vim
 source $HOME/.vim/scripts/statusline.vim
 source $HOME/.vim/scripts/compl.vim
 source $HOME/.vim/scripts/hi_yaml.vim
+source $HOME/.vim/scripts/utils.vim
 "source $HOME/.vim/scripts/cute.vim
 "source $HOME/.vim/scripts/termrun.vim
 "pyfile $HOME/.vim/scripts/compl.py
@@ -538,6 +546,7 @@ source $HOME/.vim/scripts/hi_yaml.vim
 " Nope, let's use it!
 nnoremap <space> za
 vnoremap <space> zf
+"nnoremap <M-space> zA
 set foldmethod=indent
 set foldnestmax=2
 
@@ -547,10 +556,19 @@ fu! FoldText()
     "return l:indent_str . getline(v:foldstart)
     "return getline(v:foldstart) . '    (' . string(v:foldend - v:foldstart - 1) . ' more lines)'
     return getline(v:foldstart) . '    [' . repeat('+', v:foldend - v:foldstart) . '] '
+    "let width = GetWindowWidth()
+    "let line = getline(v:foldstart)
+    "if len(line) > width - 16
+    "    let line = strpart(line, 0, width - 16) . '~'
+    "endif
+    "return printf('%-' . (width - 15) . 's%15s', line, '+' . (v:foldend - v:foldstart) . ' ')
 endf
+
 set foldtext=FoldText()
 hi FoldColumn ctermfg=245 ctermbg=235
 set foldcolumn=1
+"hi Folded ctermfg=241 ctermbg=16
+"hi Folded ctermfg=67 ctermbg=16
 
 function! GoToOpenFold(direction)
   let start = line('.')
@@ -742,3 +760,7 @@ set synmaxcol=160
 "au Syntax * RainbowParenthesesLoadSquare
 "au Syntax * RainbowParenthesesLoadBraces
 
+" SimpylFold
+let g:SimpylFold_docstring_preview = 0
+let g:SimpylFold_fold_docstring = 0
+let g:SimpylFold_fold_import = 0

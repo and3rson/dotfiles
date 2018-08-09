@@ -552,3 +552,5 @@ endif
 
 let b:current_syntax = "python"
 
+"setlocal foldmethod=syntax
+"setlocal foldtext=substitute(getline(v:foldstart),'\\t','\ \ \ \ ','g')
