@@ -51,9 +51,9 @@ theme.fg_cpu = '#74AEAB'
 --theme.accent_color = '#44ff77'
 
 theme.useless_gap   = dpi(0)
-theme.border_width  = dpi(0)
+theme.border_width  = 1
 theme.border_normal = "#000000"
-theme.border_focus  = "#535d6c"
+theme.border_focus  = theme.bg_focus
 theme.border_marked = "#91231c"
 theme.systray_icon_spacing = 2
 

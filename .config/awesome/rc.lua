@@ -254,6 +254,8 @@ local globalkeys = awful.util.table.join(
         print(awful.screen.focused().index, '->', index)
         awful.client.movetoscreen(client, index)
     end),
+    awful.key({super}, "j", function () awful.client.focus.byidx(1) end),
+    awful.key({super}, "k", function () awful.client.focus.byidx(-1) end),
 
     -- NetworkManager DMenu
     awful.key({super}, "n", function() awful.util.spawn('networkmanager_dmenu') end),
@@ -338,6 +340,10 @@ awful.rules.rules = {
         properties = { screen = 1, tag = "W" }
     },
     {
+        rule = { class = "Firefox" },
+        properties = { screen = 1, tag = "W" }
+    },
+    {
         rule_any = { class = {"TelegramDesktop", "IRCCloud", "ViberPC"} },
         properties = { screen = 1, tag = "I" }
     },
@@ -417,8 +423,26 @@ client.connect_signal("manage", function (c, startup)
     end
 end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+client.connect_signal("focus", function(c)
+    local current_tag = awful.tag.selected(c.screen)
+    local count = 0
+    for _, client in pairs(current_tag:clients()) do
+        count = count + 1
+    end
+    for _, client in pairs(current_tag:clients()) do
+        if count > 1 then
+            client.border_width = 1
+        else
+            client.border_width = 0
+        end
+    end
+    c.border_color = beautiful.border_focus
+    --c.border_width = 1
+end)
+client.connect_signal("unfocus", function(c)
+    c.border_color = beautiful.border_normal
+    --c.border_width = 0
+end)
 -- }}}
 
 --awful.util.spawn('chromium')

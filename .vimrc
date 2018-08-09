@@ -107,7 +107,7 @@ Plugin 'stephpy/vim-yaml'
 Plugin 'calviken/vim-gdscript3'
 
 " Python better code folding
-Plugin 'tmhedberg/SimpylFold'
+"Plugin 'tmhedberg/SimpylFold'
 
 call vundle#end()                    " required
 
@@ -289,7 +289,7 @@ augroup END
 " Vertical sep
 "set fillchars+=vert:\ " Stuff
 "set fillchars+=vert:\│,stl:\ ,stlnc:\ ,fold:\―"
-set fillchars+=vert:\ ,stl:\ ,stlnc:\ ,fold:\―"
+set fillchars+=vert:\ ,stl:\ ,stlnc:\ ,fold:\ "
 "set fillchars+=vert:\|
 
 " │
@@ -555,7 +555,17 @@ fu! FoldText()
     "let l:indent_str = repeat(' ', l:indent)
     "return l:indent_str . getline(v:foldstart)
     "return getline(v:foldstart) . '    (' . string(v:foldend - v:foldstart - 1) . ' more lines)'
-    return getline(v:foldstart) . '    [' . repeat('+', v:foldend - v:foldstart) . '] '
+    let width = GetWindowWidth()
+
+    "let str = getline(v:foldstart) . '    ' . repeat('+', v:foldend - v:foldstart) . ' '
+    ""let str = str . repeat('·', float2nr(ceil((width - len(str)) / 1.0)))
+    "return str
+
+    let str = getline(v:foldstart)
+    let amount = repeat('+', v:foldend - v:foldstart)
+
+    return printf('%-'.(width - len(amount) - 3).'s%'.len(amount).'s', str, amount)
+
     "let width = GetWindowWidth()
     "let line = getline(v:foldstart)
     "if len(line) > width - 16
@@ -568,7 +578,9 @@ set foldtext=FoldText()
 hi FoldColumn ctermfg=245 ctermbg=235
 set foldcolumn=1
 "hi Folded ctermfg=241 ctermbg=16
-"hi Folded ctermfg=67 ctermbg=16
+hi Folded ctermfg=67 ctermbg=16
+
+au FileType javascript setlocal foldmethod=marker foldmarker={,}
 
 function! GoToOpenFold(direction)
   let start = line('.')
