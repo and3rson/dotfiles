@@ -247,8 +247,8 @@ function make_prompt() {
                 if [[ "$CURRENT" != "$COUNT" ]]
                 then
                     fgcol 32
-                    echo -n " ${PART::3}"
-                    if [[ "${#PART}" -gt "3" ]]
+                    echo -n " ${PART::5}"
+                    if [[ "${#PART}" -gt "5" ]]
                     then
                         echo -n "$ELLIPSIS"
                     fi

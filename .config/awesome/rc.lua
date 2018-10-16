@@ -235,6 +235,10 @@ local globalkeys = awful.util.table.join(
     awful.key({}, 'XF86MonBrightnessUp', function() awful.util.spawn('xbacklight +10%') end),
     awful.key({}, 'XF86MonBrightnessDown', function() awful.util.spawn('xbacklight -10%') end),
 
+    awful.key({}, 'XF86AudioPlay', function() awful.util.spawn_with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.clay /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause') end),
+    awful.key({}, 'XF86AudioNext', function() awful.util.spawn_with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.clay /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next') end),
+    awful.key({}, 'XF86AudioPrev', function() awful.util.spawn_with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.clay /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous') end),
+
     -- Lock screen
     awful.key({ctrl, alt}, 'l', function() awful.util.spawn('/sh/i3lock.sh') end),
 
@@ -336,15 +340,11 @@ awful.rules.rules = {
         properties = { screen = 1, tag = "Q" }
     },
     {
-        rule = { class = "Chromium" },
+        rule_any = { class = {"Chromium", "Firefox"} },
         properties = { screen = 1, tag = "W" }
     },
     {
-        rule = { class = "Firefox" },
-        properties = { screen = 1, tag = "W" }
-    },
-    {
-        rule_any = { class = {"TelegramDesktop", "IRCCloud", "ViberPC"} },
+        rule_any = { class = {"TelegramDesktop", "IRCCloud", "ViberPC", "Slack"} },
         properties = { screen = 1, tag = "I" }
     },
     {
@@ -423,21 +423,28 @@ client.connect_signal("manage", function (c, startup)
     end
 end)
 
-client.connect_signal("focus", function(c)
-    local current_tag = awful.tag.selected(c.screen)
+function configure_borders(t)
     local count = 0
-    for _, client in pairs(current_tag:clients()) do
+    for _, client in pairs(t:clients()) do
         count = count + 1
     end
-    for _, client in pairs(current_tag:clients()) do
-        if count > 1 then
-            client.border_width = 1
+    for _, client in pairs(t:clients()) do
+        if count > 1 and t.layout.name ~= 'max' then
+            client.border_width = 2
         else
             client.border_width = 0
         end
     end
+end
+
+client.connect_signal("focus", function(c)
+    local current_tag = awful.tag.selected(c.screen)
+    configure_borders(current_tag)
     c.border_color = beautiful.border_focus
     --c.border_width = 1
+end)
+tag.connect_signal('property::layout', function(t)
+    configure_borders(t)
 end)
 client.connect_signal("unfocus", function(c)
     c.border_color = beautiful.border_normal

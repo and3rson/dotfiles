@@ -51,8 +51,10 @@ then
     blueman-applet &
 
     termite --class HomeTerm -e /sh/stmux.sh &
-    chromium &
+    #chromium &
+    firefox-developer-edition &
     telegram-desktop &
+    slack &
     irccloud &
     #evolution &
     #gpmdp &

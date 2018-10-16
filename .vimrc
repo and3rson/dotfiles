@@ -31,7 +31,7 @@ Plugin 'scrooloose/nerdcommenter'
 "Plugin 'python-mode/python-mode'
 "Plugin 'tpope/vim-fugitive'
 
-Plugin 'ap/vim-buftabline'
+"Plugin 'ap/vim-buftabline'
 
 "Plugin 'ctrlpvim/ctrlp.vim'
 "Plugin 'tacahiroy/ctrlp-funky'
@@ -61,6 +61,8 @@ Plugin 'w0rp/ale'
 
 Plugin 'airblade/vim-gitgutter'
 "Plugin 'kshenoy/vim-signature'
+"Plugin 'mhinz/vim-signify'
+"Plugin 'jeetsukumaran/vim-markology'
 
 Plugin 'ervandew/supertab'
 
@@ -74,7 +76,7 @@ Plugin 'ervandew/supertab'
 Plugin 'ap/vim-css-color'
 Plugin 'osyo-manga/vim-over'
 
-"Plugin 'tmux-plugins/vim-tmux'
+Plugin 'tmux-plugins/vim-tmux'
 
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
@@ -108,6 +110,11 @@ Plugin 'calviken/vim-gdscript3'
 
 " Python better code folding
 "Plugin 'tmhedberg/SimpylFold'
+
+" TypeScript
+Plugin 'leafgarland/typescript-vim'
+
+"Plugin 'chriskempson/base16-vim'
 
 call vundle#end()                    " required
 
@@ -143,21 +150,22 @@ set guifont=DejaVu\ Sans\ Mono\ 9
 set splitbelow
 set splitright
 
-nnoremap <End> g$
+nnoremap <End> $
 
 set number
-set relativenumber
+"set relativenumber
 
 set whichwrap+=<,>,h,l,[,]
 
 " Timeouts
-set timeoutlen=0 ttimeoutlen=10
+"set timeoutlen=0 ttimeoutlen=10
+set timeoutlen=500 ttimeoutlen=10
 
 " Switch buffers
-nnoremap <silent> <ESC>[5;2~ :bp<CR>
-nnoremap <silent> <ESC>[6;2~ :bn<CR>
-inoremap <silent> <ESC>[5;2~ <ESC>:bp<CR>
-inoremap <silent> <ESC>[6;2~ <ESC>:bn<CR>
+"nnoremap <silent> <ESC>[5;2~ :bp<CR>
+"nnoremap <silent> <ESC>[6;2~ :bn<CR>
+"inoremap <silent> <ESC>[5;2~ <ESC>:bp<CR>
+"inoremap <silent> <ESC>[6;2~ <ESC>:bn<CR>
 
 " Switch buffers (NeoVIM)
 nnoremap <silent> <S-PageUp> :bp<CR>
@@ -166,10 +174,10 @@ inoremap <silent> <S-PageUp> <ESC>:bp<CR>
 inoremap <silent> <S-PageDown> <ESC>:bn<CR>
 
 " Jump words
-nnoremap <silent> <ESC>[1;5D b
-nnoremap <silent> <ESC>[1;5C w
-inoremap <silent> <ESC>[1;5D <C-o>b
-inoremap <silent> <ESC>[1;5C <C-o>w
+"nnoremap <silent> <ESC>[1;5D b
+"nnoremap <silent> <ESC>[1;5C w
+"inoremap <silent> <ESC>[1;5D <C-o>b
+"inoremap <silent> <ESC>[1;5C <C-o>w
 
 " Move lines
 nnoremap <silent> <C-Up> :call feedkeys(line('.') == 1 ? '' : '"mddk"mP')<CR>
@@ -261,10 +269,10 @@ set wildmenu
 " Smart home
 noremap <expr> <silent> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
 imap <silent> <Home> <C-O><Home>
-nmap <silent> <Esc>OH <Home>
-nmap <silent> <Esc>OF <End>
-imap <silent> <Esc>OH <C-o><Home>
-imap <silent> <Esc>OF <C-o><End>
+"nmap <silent> <Esc>OH <Home>
+"nmap <silent> <Esc>OF <End>
+"imap <silent> <Esc>OH <C-o><Home>
+"imap <silent> <Esc>OF <C-o><End>
 
 " Delete words
 inoremap <C-h> <C-W>
@@ -289,21 +297,22 @@ augroup END
 " Vertical sep
 "set fillchars+=vert:\ " Stuff
 "set fillchars+=vert:\│,stl:\ ,stlnc:\ ,fold:\―"
-set fillchars+=vert:\ ,stl:\ ,stlnc:\ ,fold:\ "
+set fillchars+=vert:\ ,stl:\ ,stlnc:\ ,fold:\ ,eob:\ "
 "set fillchars+=vert:\|
 
 " │
 
 " Cursor
 
-hi CursorLine ctermbg=235 " cterm=underline
-hi CursorColumn ctermbg=235
+hi CursorLine ctermbg=234 " cterm=underline
+hi CursorColumn ctermbg=234
 "hi StatusLine ctermfg=233
 "hi StatusLineNC ctermbg=None ctermfg=240 cterm=None
 
 "hi MatchParen ctermfg=magenta ctermbg=none
 
-hi CursorLineNr ctermfg=119 ctermbg=235 cterm=bold
+"hi CursorLineNr ctermfg=119 ctermbg=235 cterm=bold
+hi CursorLineNr ctermfg=81 ctermbg=235 cterm=bold
 
 " https://stackoverflow.com/a/19594724/3455614
 " Dim inactive windows using 'colorcolumn' setting
@@ -347,7 +356,7 @@ hi Error ctermbg=197 ctermfg=255 cterm=bold,underline
 "hi Repeat cterm=underline
 "hi Function cterm=underline
 hi Include cterm=bold ctermfg=154
-hi MatchParen ctermfg=197
+hi MatchParen ctermfg=197 ctermbg=NONE cterm=bold,underline
 
 " Highlight selected word
 "hi Selected ctermbg=94 ctermfg=none
@@ -366,14 +375,14 @@ hi MatchParen ctermfg=197
 "autocmd CursorMoved * call s:HighlightWordUnderCursor()
 
 " Split
-hi VertSplit ctermbg=235
+hi VertSplit ctermbg=none
 "hi VertSplit ctermbg=none
 
 " Indentation
 set tabstop=4 softtabstop=4 shiftwidth=4
 
 " Chars
-set list listchars=tab: ,trail:·,extends:»,precedes:«,nbsp:×
+set list listchars=tab:▏ ,trail:·,extends:»,precedes:«,nbsp:×
 " 
 
 let g:indent_guides_enable_on_vim_startup=1
@@ -443,7 +452,8 @@ fu! InsertLeaveHook()
     ":set relativenumber
     "hi BufTabLineActive ctermbg=118 ctermfg=0 cterm=bold
     "hi BufTabLineCurrent ctermbg=118 ctermfg=0 cterm=bold
-    hi CursorLineNr ctermfg=118
+    "hi CursorLineNr ctermfg=118
+    hi CursorLineNr ctermfg=81
     " Back to true mode.
     "if col('.') != g:CursorColumnI | call cursor(0, col('.')+1) | endif
 endf
@@ -469,12 +479,14 @@ nnoremap <Tab> <C-W>w
 
 " BufTabLine
 
+let g:buftabline_show = 2
+let g:buftabline_numbers = 1
 let g:buftabline_indicators = 1
-let g:buftabline_seperators = 1
-hi BufTabLineFill ctermbg=233
-hi BufTabLineCurrent ctermbg=118 ctermfg=0 cterm=bold
+let g:buftabline_separators = 0
+hi BufTabLineFill ctermbg=235
+hi BufTabLineCurrent ctermbg=33 ctermfg=255 cterm=bold
 "hi BufTabLineActive ctermbg=118 ctermfg=0 cterm=bold
-hi BufTabLineHidden ctermbg=238
+hi BufTabLineHidden ctermbg=235
 
 " ALE
 let g:ale_linters = {
@@ -513,9 +525,10 @@ hi ALEError ctermbg=197 ctermfg=255 cterm=bold,underline
 hi ALEErrorSign ctermbg=235 ctermfg=197
 
 " GitGutter
-let g:gitgutter_realtime = 0
+let g:gitgutter_realtime = 1
 let g:gitgutter_eager = 0
 set signcolumn=yes
+au BufWritePost,InsertLeave,TextChanged * :GitGutter
 "let g:gitgutter_sign_column_always = 1
 
 " Sexy replace
@@ -526,9 +539,11 @@ source $HOME/.vim/scripts/signs.vim
 "source $HOME/.vim/scripts/fastescape.vim
 source $HOME/.vim/scripts/astloc.vim
 source $HOME/.vim/scripts/statusline.vim
+source $HOME/.vim/scripts/tabline.vim
 source $HOME/.vim/scripts/compl.vim
 source $HOME/.vim/scripts/hi_yaml.vim
 source $HOME/.vim/scripts/utils.vim
+source $HOME/.vim/scripts/autocursor.vim
 "source $HOME/.vim/scripts/cute.vim
 "source $HOME/.vim/scripts/termrun.vim
 "pyfile $HOME/.vim/scripts/compl.py
@@ -547,7 +562,8 @@ source $HOME/.vim/scripts/utils.vim
 nnoremap <space> za
 vnoremap <space> zf
 "nnoremap <M-space> zA
-set foldmethod=indent
+"set foldmethod=indent
+set foldmethod=manual
 set foldnestmax=2
 
 fu! FoldText()
@@ -576,7 +592,7 @@ endf
 
 set foldtext=FoldText()
 hi FoldColumn ctermfg=245 ctermbg=235
-set foldcolumn=1
+set foldcolumn=2
 "hi Folded ctermfg=241 ctermbg=16
 hi Folded ctermfg=67 ctermbg=16
 
@@ -623,7 +639,7 @@ nnoremap <silent> <M-l>      :Lines<CR>
 fu! s:fzf_statusline()
   " Override statusline as you like
   "highlight fzf1 ctermfg=161 ctermbg=251
-  hi link fzf1 StatusBarVisual
+  hi link fzf1 StatusBarVisualInv
   "highlight fzf2 ctermfg=23 ctermbg=251
   hi link fzf2 StatusBarVisualInv
   "highlight fzf3 ctermfg=237 ctermbg=251
@@ -678,6 +694,7 @@ let g:tagbar_show_visibility = 1
 let g:tagbar_silent = 1
 let g:tagbar_show_linenumbers = 0
 let g:tagbar_left = 1
+let g:tagbar_autoshowtag = 1
 "let g:tagbar_iconchars = ['-', '|']
 "let g:tagbar_autopreview = 1
 fu! TagbarStatusFn(current, sort, fname, flags, ...) abort
@@ -776,3 +793,16 @@ set synmaxcol=160
 let g:SimpylFold_docstring_preview = 0
 let g:SimpylFold_fold_docstring = 0
 let g:SimpylFold_fold_import = 0
+
+" Text display tweaks
+set display=lastline,msgsep,uhex
+set numberwidth=5
+
+" History length
+set history=1000
+
+" Disable netRW
+let loaded_netrwPlugin = 1
+
+" Shada config
+set shada=!,'100,<50,s10,h,:500,@500,/500

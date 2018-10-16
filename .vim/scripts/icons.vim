@@ -1,5 +1,6 @@
 " \ 'default': '',
 "\ 'default': ''
+            "\ 'default': '',
 let g:ic = {
             \ 'insert': '',
             \ 'replace': '',
@@ -8,7 +9,7 @@ let g:ic = {
             \ 'javascript': '',
             \ 'markdown': '',
             \ 'haskell': '',
-            \ 'default': '',
+            \ 'default': '',
             \ 'go': '',
             \ 'cpp': '',
             \ 'c++': '',
@@ -22,7 +23,8 @@ let g:ic = {
             \ 'db': '',
             \ 'sql': '',
             \ 'dump': '',
-            \ 'code': ''
+            \ 'code': '',
+            \ 'make': ''
             \ }
 "'',
 
