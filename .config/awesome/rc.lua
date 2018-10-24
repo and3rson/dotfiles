@@ -265,7 +265,14 @@ local globalkeys = awful.util.table.join(
     awful.key({super}, "n", function() awful.util.spawn('networkmanager_dmenu') end),
 
     -- Screenshot
-    awful.key({super}, "p", function() awful.util.spawn('/sh/sshot.sh') end)
+    awful.key({super}, "p", function() awful.util.spawn('/sh/sshot.sh') end),
+
+    -- HPC YouTube player control
+    awful.key({super}, ",", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "prev"}\'') end),
+    awful.key({super}, ".", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "play"}\'') end),
+    awful.key({super}, "/", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "next"}\'') end)
+    --awful.key({super, 'shift'}, ",", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "seek_backward"}\'') end),
+    --awful.key({super, 'shift'}, "/", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "seek_forward"}\'') end)
 
     --awful.key({ super }, "p", function() menubar.show() end)
 )

@@ -12,7 +12,7 @@ endf
 
 fu GetBuffers()
     let l:result = []
-    let l:buffers = filter(range(1, bufnr('$')), 'bufexists(v:val) && buflisted(v:val) && "quickfix" !=? getbufvar(v:val, "&buftype") && "netrw" != getbufvar(v:val, "&filetype") && "" != getbufvar(v:val, "&filetype")')
+    let l:buffers = filter(range(1, bufnr('$')), 'bufexists(v:val) && buflisted(v:val) && "quickfix" !=? getbufvar(v:val, "&buftype") && "netrw" != getbufvar(v:val, "&filetype")')
 	let l:current_buffer = bufnr('%')
     for l:buffer in l:buffers
         "let l:path_parts = split(fnamemodify(bufname(l:buffer), ':p'), '/')

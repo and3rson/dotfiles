@@ -52,7 +52,7 @@ Plugin 'Yggdroot/indentLine'
 Plugin 'w0rp/ale'
 
 " Slow returns
-"Plugin 'Vimjas/vim-python-pep8-indent'
+Plugin 'Vimjas/vim-python-pep8-indent'
 
 "Plugin 'ryanoasis/vim-devicons'
 
@@ -491,12 +491,13 @@ hi BufTabLineHidden ctermbg=235
 " ALE
 let g:ale_linters = {
             \'javascript': ['eslint'],
-            \'python': ['flake8', 'pylint']
+            \'python': ['pylint']
             \}
-" \'python': ['flake8']
+"\'python': ['flake8', 'pylint']
+"\'python': ['flake8']
 
-nnoremap <silent> ; :ALEPrevious<CR>
-nnoremap <silent> ' :ALENext<CR>
+nnoremap <silent> ; :lprev<CR>
+nnoremap <silent> ' :lnext<CR>
 
 let g:ale_sign_error = ' '
 let g:ale_sign_warning = ' '
@@ -507,7 +508,7 @@ let g:ale_lint_on_save = 0
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 0
 
-let g:ale_python_pylint_options = '-j4 -E'
+let g:ale_python_pylint_options = '-j2 --load-plugins pylint_django'
 
 nmap <silent> <F5> :ALELint<CR>
 

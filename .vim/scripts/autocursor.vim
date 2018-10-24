@@ -16,7 +16,10 @@ fu! ACSavePos(pos)
         return
     endi
     let l:filename = expand('%:p')
-    let g:CURSORPOS[l:filename] = a:pos
+    try
+        let g:CURSORPOS[l:filename] = a:pos
+    cat
+    endt
 endf
 
 au BufReadPost * :call ACInit()
