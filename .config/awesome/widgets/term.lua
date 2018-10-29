@@ -2,6 +2,7 @@ local wibox = require('wibox')
 local watch = require("awful.widget.watch")
 local beautiful = require("beautiful")
 local gears = require("gears")
+local utils = require("../utils")
 
 local CMD = [[stat -f / --format "%b %a %s"]]
 
@@ -13,7 +14,7 @@ local progressbar = wibox.widget {
     color=beautiful.fg_term,
     widget=wibox.widget.progressbar,
     margins={
-        bottom=14
+        top=22
     }
 }
 
@@ -24,8 +25,9 @@ local df_widget = wibox.widget{
 }
 
 local update_widget = function()
-    local temp = tonumber(io.lines('/sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_input')()) / 1000
-    local temp_max = tonumber(io.lines('/sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_max')()) / 1000
+    local temp = tonumber(utils.getline('/sys/class/thermal/thermal_zone0/temp')) / 1000
+    local temp_max = 100
+    --local temp_max = tonumber(io.lines('/sys/devices/platform/coretemp.0/hwmon/hwmon2/temp1_max')()) / 1000
     --local parts = stdout:gmatch('%S+')
     --local blocks_total = tonumber(parts())
     --local blocks_free = tonumber(parts())
@@ -33,10 +35,7 @@ local update_widget = function()
 
     local percentage = temp / temp_max * 100
 
-    df_widget.markup = string.format(
-        '<span color="' .. beautiful.fg_term .. '">%d°C</span>',
-        temp
-    )
+    df_widget.markup = '<span color="' .. beautiful.fg_term .. '">' .. temp .. '°C</span>'
     progressbar.value = percentage
 end
 

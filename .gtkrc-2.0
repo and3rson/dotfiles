@@ -11,6 +11,6 @@ gtk-font-name="DejaVu Sans 10"
 
 include "/home/anderson/.gtkrc.mine"
 
-gtk-icon-theme-name = "elementary"
+gtk-icon-theme-name = "Numix-Circle"
 
 # -- THEME AUTO-WRITTEN DO NOT EDIT

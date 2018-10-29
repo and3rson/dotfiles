@@ -7,6 +7,7 @@ let g:ic = {
             \ 'python': '',
             \ 'vim': '',
             \ 'javascript': '',
+            \ 'javascript.jsx': '',
             \ 'markdown': '',
             \ 'haskell': '',
             \ 'default': '',
@@ -24,7 +25,10 @@ let g:ic = {
             \ 'sql': '',
             \ 'dump': '',
             \ 'code': '',
-            \ 'make': ''
+            \ 'make': '',
+            \ 'css': '',
+            \ 'html': '',
+            \ 'lua': ''
             \ }
 "'',
 

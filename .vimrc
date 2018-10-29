@@ -423,7 +423,7 @@ set nobackup
 :command SudoW w !sudo tee %
 
 " Clipboard fix
-set clipboard=unnamedplus
+set clipboard^=unnamed,unnamedplus
 
 " Remove trailing whitespaces
 fu CleanUp()

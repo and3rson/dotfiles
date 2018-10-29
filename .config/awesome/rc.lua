@@ -40,6 +40,7 @@ local volume = require("widgets.volume")
 local date = require("widgets.date")
 local battery = require("widgets.battery")
 local term = require("widgets.term")
+local fan = require("widgets.fan")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -119,7 +120,7 @@ local wiboxes = {}
 
 for s = 1, screen.count() do
     -- Create the wibox
-    local mywibox = awful.wibar({ position = "top", screen = s, height = 16 })
+    local mywibox = awful.wibar({ position = "top", screen = s, height = 24 })
     wiboxes[s] = mywibox
 
     local layout = wibox.layout.align.horizontal()
@@ -139,16 +140,16 @@ for s = 1, screen.count() do
 
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then
-        left_layout:add(wibox.container.margin(
-            clay,
-            3, 3, 0, 0
-        ))
+        --left_layout:add(wibox.container.margin(
+        --    clay,
+        --    3, 3, 0, 0
+        --))
         --left_layout:add(clay)
         --left_layout:add(spacer)
 
         --right_layout:add(clay)
         local systray = wibox.widget.systray()
-        systray:set_base_size(12)
+        systray:set_base_size(24)
         right_layout:add(wibox.container.margin(systray, 0, 6, 2, 0))
 
         right_layout:add(spacer)
@@ -156,14 +157,20 @@ for s = 1, screen.count() do
         right_layout:add(spacer)
         right_layout:add(memwidget)
         right_layout:add(spacer)
+        --right_layout:add(fan)
+        --right_layout:add(spacer)
         right_layout:add(term)
         right_layout:add(spacer)
         right_layout:add(volume)
     end
     right_layout:add(spacer)
-    right_layout:add(date)
-    right_layout:add(spacer)
     right_layout:add(battery)
+    right_layout:add(spacer)
+    --right_layout:add(date)
+    right_layout:add(wibox.container.margin(
+        date,
+        0, 8, 0, 0
+    ))
 
     layout:set_left(left_layout)
     layout:set_right(right_layout)

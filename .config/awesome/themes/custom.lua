@@ -15,7 +15,7 @@ local this_dir = home_dir .. '.config/awesome/themes/'
 local theme = {}
 
 --theme.font          = "DejaVuSansMono Nerd Font 9"
-theme.font          = "RobotoMono Nerd Font Medium 8"
+theme.font          = "RobotoMono Nerd Font Medium 10"
 --theme.font          = "SauceCodePro Nerd Font Medium 9"
 --theme.font          = "Pixeled 5"
 --theme.font          = "Symtext 8"
@@ -43,7 +43,9 @@ theme.fg_focus      = "#FFFFFF"
 theme.fg_urgent     = "#ffffff"
 theme.fg_minimize   = "#ffffff"
 
-theme.fg_battery = '#FF0087'
+theme.fg_battery = '#44B7F7'
+theme.fg_battery_warning = '#FF0087'
+theme.fg_battery_charging = '#00FF5F'
 theme.fg_date = '#00FF5F'
 theme.fg_volume = '#44B7F7'
 theme.fg_term = '#44B7F7'
@@ -65,7 +67,7 @@ theme.tooltip_fg=theme.fg_normal
 --theme.taglist_disable_icon = true
 theme.taglist_fg_empty = '#444444'
 theme.taglist_spacing = 0
-theme.taglist_font = 'Roboto 8'
+theme.taglist_font = 'Roboto 10'
 
 
 -- There are other variable sets

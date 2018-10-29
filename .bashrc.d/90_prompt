@@ -196,9 +196,10 @@ function make_prompt() {
     function ret_part() {
         if [[ "$RETCODE" != "0" ]]
         then
+            #&& [[ "$RETCODE" != "130" ]]
             PRINTED=$((PRINTED+1))
             #fb 255 160
-            fb 160 234 1
+            fb 255 160 1
             echo -en " $RETCODE $RST"
             echo -en "\[$txtrst\]"
         fi

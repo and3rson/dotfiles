@@ -41,11 +41,14 @@ export LANG=uk_UA.UTF8
 if [[ -z "$1" ]]
 then
     echo Starting AwesomeWM
-    start-pulseaudio-x11-mod
+    start-pulseaudio-x11 &
     compton --config ~/.compton.conf -b -f
     xbanish &
     ~/.config/qtile/bin/kbfix.sh
     ~/.config/qtile/bin/set_bg.sh
+
+    xinput set-prop 'TPPS/2 IBM TrackPoint' 323 -0.5
+    synclient CoastingSpeed=0 VertScrollDelta=200 HorizScrollDelta=200
 
     nm-applet &
     blueman-applet &

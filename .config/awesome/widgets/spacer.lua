@@ -13,5 +13,5 @@ local spacer_widget = wibox.widget{
 --)
 return wibox.container.margin(
     wibox.widget{},
-    6, 6, 0, 0
+    10, 10, 0, 0
 )
