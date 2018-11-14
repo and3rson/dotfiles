@@ -24,16 +24,19 @@ local cpugraph_widget = wibox.widget {
     --color = '#74aeab',
     --color = '#7777FF',
     color = beautiful.fg_cpu,
-    background_color = beautiful.bg_normal,
+    background_color = '#00000000',
     --background_color = "#1e252c",
-    forced_width = 25,
+    --border_width = 1,
+    --border_color = beautiful.fg_cpu,
+    forced_width = 32,
+    --forced_height = 12,
     step_width = 1,
-    step_spacing = 1,
+    step_spacing = 2,
     widget = wibox.widget.graph
 }
 
--- mirros and pushs up a bit
-local cpu_widget = wibox.container.margin(wibox.container.mirror(cpugraph_widget, { horizontal = true }), 0, 1, 0, 2)
+-- mirror and pushs up a bit
+local cpu_widget = wibox.container.margin(wibox.container.mirror(cpugraph_widget, { horizontal = true }), 0, 1, 0, 0)
 
 local total_prev = 0
 local idle_prev = 0

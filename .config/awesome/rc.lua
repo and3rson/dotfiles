@@ -19,10 +19,6 @@ local menubar = require("menubar")
 -- {{{ Variable definitions
 beautiful.init("/home/anderson/.config/awesome/themes/custom.lua")
 
-beautiful.taglist_squares_sel = beautiful.taglist_squares_unsel_empty
-beautiful.taglist_squares_unsel = beautiful.taglist_squares_unsel_empty
-beautiful.taglist_squares_sel_empty = beautiful.taglist_squares_unsel_empty
-
 -- Naughty config
 naughty.config.padding = 20
 naughty.config.spacing = 10
@@ -31,16 +27,20 @@ naughty.config.presets.critical.bg = beautiful.bg_focus
 
 -- Widgets
 local spacer = require("widgets.spacer")
+local taglistline = require("widgets.taglistline")
 local clay = require("widgets.clay")
 local cpuwidget = require("widgets.cpuwidget")
 local memwidget = require("widgets.memwidget")
 local volume = require("widgets.volume")
---local openweathermap = require("widgets.openweathermap")
+local openweathermap = require("widgets.openweathermap")
 --local df = require("widgets.df")
 local date = require("widgets.date")
 local battery = require("widgets.battery")
 local term = require("widgets.term")
-local fan = require("widgets.fan")
+--local fan = require("widgets.fan")
+local bbswitch = require("widgets.bbswitch")
+local brightness = require("widgets.brightness")
+local ping = require("widgets.ping")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -96,10 +96,11 @@ awful.screen.connect_for_each_screen(function(s)
     -- Tags.
     local screen_tags
     if s.index == 1 then
-        screen_tags = {'Q', 'W', 'I', 'M'}
+        screen_tags = {'Q', 'W', 'I', 'M', 'A'}
     else
         screen_tags = {'X'}
     end
+    --icons = ''
     for i, char in pairs(screen_tags) do
         local sel = i == 1
         awful.tag.add(char, {
@@ -107,13 +108,40 @@ awful.screen.connect_for_each_screen(function(s)
             --icon='/home/anderson/.icons/tags/bullet.png',
             selected=sel,
             screen=s,
-            layout=layouts[1]
+            layout=layouts[1],
+            --icon='',
+            icon='/home/anderson/.icons/q.png',
+            icon_only=true
         })
     end
-end)
 
--- Menubar configuration
-menubar.utils.terminal = terminal -- Set the terminal for applications that require it
+    local update_tag_icons = function ()
+        -- get a list of all tags
+        local atags = awful.tag.gettags(s)
+        -- set the standard icon
+        for i, t in ipairs(atags) do
+            awful.tag.seticon('/home/anderson/.icons/tags/' .. t.name:lower() .. '_empty.png', t)
+            --if t.selected then
+            --    awful.tag.seticon('/home/anderson/.config/awesome/themes/layouts/' .. t.layout.name .. '_active.png', t)
+            --else
+            --    awful.tag.seticon('/home/anderson/.config/awesome/themes/layouts/' .. t.layout.name .. '_inactive.png', t)
+            --end
+        end
+        -- get a list of all running clients
+        local clist = client.get(s)
+        for i, c in ipairs(clist) do
+            -- get the tags on which the client is displayed
+            local ctags = c:tags()
+            for i, t in ipairs(ctags) do
+                awful.tag.seticon('/home/anderson/.icons/tags/' .. t.name:lower() .. '.png', t)
+            end
+        end
+    end
+    s:connect_signal("tag::history::update", update_tag_icons)
+    tag.connect_signal("property::layout", update_tag_icons)
+    tag.connect_signal("tagged", update_tag_icons)
+    tag.connect_signal("untagged", update_tag_icons)
+end)
 
 -- Wiboxes
 local wiboxes = {}
@@ -124,55 +152,53 @@ for s = 1, screen.count() do
     wiboxes[s] = mywibox
 
     local layout = wibox.layout.align.horizontal()
+    layout.expand = 'none'
     mywibox:set_widget(layout)
 
     local left_layout = wibox.layout.fixed.horizontal()
-    --left_layout:add(awful.widget.layoutbox(s))
-
-    left_layout:add(wibox.container.margin(
-        awful.widget.layoutbox(s),
-        0, 3, 0, 0
-    ))
 
     if s == 1 then
-        left_layout:add(awful.widget.taglist(s, awful.widget.taglist.filter.all, nil))
+        left_layout:add(wibox.widget{
+            taglistline(s, 2),
+            layout=wibox.layout.stack
+        })
     end
 
     local right_layout = wibox.layout.fixed.horizontal()
+    local center_layout = wibox.layout.fixed.horizontal()
+    center_layout:add(date)
     if s == 1 then
-        --left_layout:add(wibox.container.margin(
-        --    clay,
-        --    3, 3, 0, 0
-        --))
-        --left_layout:add(clay)
-        --left_layout:add(spacer)
-
-        --right_layout:add(clay)
         local systray = wibox.widget.systray()
-        systray:set_base_size(24)
-        right_layout:add(wibox.container.margin(systray, 0, 6, 2, 0))
+        systray:set_base_size(20)
+        right_layout:add(wibox.container.margin(systray, 2, 2, 2, 2))
 
         right_layout:add(spacer)
         right_layout:add(cpuwidget)
         right_layout:add(spacer)
         right_layout:add(memwidget)
         right_layout:add(spacer)
+        right_layout:add(bbswitch)
+        right_layout:add(spacer)
+        right_layout:add(openweathermap)
+        right_layout:add(spacer)
+        right_layout:add(ping)
+        right_layout:add(spacer)
         --right_layout:add(fan)
         --right_layout:add(spacer)
+        right_layout:add(brightness)
+        right_layout:add(spacer)
         right_layout:add(term)
         right_layout:add(spacer)
         right_layout:add(volume)
+        --right_layout:add(awful.widget.clienticon())
     end
     right_layout:add(spacer)
     right_layout:add(battery)
     right_layout:add(spacer)
-    --right_layout:add(date)
-    right_layout:add(wibox.container.margin(
-        date,
-        0, 8, 0, 0
-    ))
+    right_layout:add(date)
 
     layout:set_left(left_layout)
+    --layout:set_middle(center_layout)
     layout:set_right(right_layout)
 end
 
@@ -199,13 +225,6 @@ awful.screen.focus = function(index)
     end)
 end
 
--- Mouse bindings
-root.buttons(awful.util.table.join(
-    --awful.button({ }, 3, function () mymainmenu:toggle() end),
-    --awful.button({ }, 4, awful.tag.viewnext),
-    --awful.button({ }, 5, awful.tag.viewprev)
-))
-
 local alt_tab = function ()
     local current_screen = awful.screen.focused().index
     local next_screen = current_screen + 1
@@ -217,10 +236,6 @@ end
 
 -- Key bindings
 local globalkeys = awful.util.table.join(
-    -- Switch tag
-    awful.key({super}, "Page_Up", awful.tag.viewprev),
-    awful.key({super}, "Page_Down", awful.tag.viewnext),
-
     -- Switch screen
     awful.key({alt}, "Tab", alt_tab),
     awful.key({super}, "Tab", alt_tab),
@@ -235,13 +250,15 @@ local globalkeys = awful.util.table.join(
     -- Run rofi
     awful.key({super}, "r", function() awful.util.spawn('rofi -show run -terminal termite') end),
 
+    -- Volume control
     awful.key({}, 'XF86AudioRaiseVolume', function() volume.increase_volume() end),
     awful.key({}, 'XF86AudioLowerVolume', function() volume.decrease_volume() end),
 
     -- Backlight
-    awful.key({}, 'XF86MonBrightnessUp', function() awful.util.spawn('xbacklight +10%') end),
-    awful.key({}, 'XF86MonBrightnessDown', function() awful.util.spawn('xbacklight -10%') end),
+    awful.key({}, 'XF86MonBrightnessUp', function() brightness.increase() end),
+    awful.key({}, 'XF86MonBrightnessDown', function() brightness.decrease() end),
 
+    -- Media keys
     awful.key({}, 'XF86AudioPlay', function() awful.util.spawn_with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.clay /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause') end),
     awful.key({}, 'XF86AudioNext', function() awful.util.spawn_with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.clay /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next') end),
     awful.key({}, 'XF86AudioPrev', function() awful.util.spawn_with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.clay /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous') end),
@@ -262,11 +279,12 @@ local globalkeys = awful.util.table.join(
         if index == 0 then
             index = screen:count()
         end
-        print(awful.screen.focused().index, '->', index)
         awful.client.movetoscreen(client, index)
     end),
     awful.key({super}, "j", function () awful.client.focus.byidx(1) end),
+    awful.key({super}, "Page_Up", function () awful.client.focus.byidx(1) end),
     awful.key({super}, "k", function () awful.client.focus.byidx(-1) end),
+    awful.key({super}, "Page_Down", function () awful.client.focus.byidx(-1) end),
 
     -- NetworkManager DMenu
     awful.key({super}, "n", function() awful.util.spawn('networkmanager_dmenu') end),
@@ -278,22 +296,20 @@ local globalkeys = awful.util.table.join(
     awful.key({super}, ",", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "prev"}\'') end),
     awful.key({super}, ".", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "play"}\'') end),
     awful.key({super}, "/", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "next"}\'') end)
-    --awful.key({super, 'shift'}, ",", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "seek_backward"}\'') end),
-    --awful.key({super, 'shift'}, "/", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "seek_forward"}\'') end)
 
-    --awful.key({ super }, "p", function() menubar.show() end)
+    --awful.key({ super }, "x", function() menubar.show() end)
 )
 
 local clientkeys = awful.util.table.join(
     awful.key({alt}, 'F4', function(c) c:kill() end),
     awful.key({super}, "f",      function (c) c.fullscreen = not c.fullscreen  end),
-    --awful.key({super}, "p",  awful.client.floating.toggle                     ),
-    awful.key({super}, "o",      awful.client.movetoscreen                        ),
-    awful.key({super}, "t",      function (c) c.ontop = not c.ontop            end)
+    awful.key({super}, "x",  awful.client.floating.toggle),
+    awful.key({super}, "o",      awful.client.movetoscreen)
+    --awful.key({super}, "t",      function (c) c.ontop = not c.ontop end)
 )
 
 -- Bind all key numbers to tags.
-for key, tag_name in pairs({Q='Q', W='W', I='I', E='I', M='M', T='M'}) do
+for key, tag_name in pairs({Q='Q', W='W', I='I', E='I', M='M', T='M', A='A', G='A'}) do
     globalkeys = awful.util.table.join(
         globalkeys,
         awful.key({super}, key:lower(), function()
@@ -364,15 +380,7 @@ awful.rules.rules = {
     {
         rule_any = { class = {"Evolution"} },
         properties = { screen = 1, tag = "M" }
-    },
-    --{
-    --    --rule_any = { class = {"Google Play Music Desktop Player"} },
-    --    rule_any = { class = {"Clay"} },
-    --    properties = { tag = "A" }
-    --},
-    -- Set Firefox to always map on tags number 2 of screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { tag = tags[1][2] } },
+    }
 }
 -- }}}
 
@@ -389,51 +397,6 @@ client.connect_signal("manage", function (c, startup)
             awful.placement.no_overlap(c)
             awful.placement.no_offscreen(c)
         end
-    end
-
-    local titlebars_enabled = false
-    if titlebars_enabled and (c.type == "normal" or c.type == "dialog") then
-        -- buttons for the titlebar
-        local buttons = awful.util.table.join(
-                awful.button({ }, 1, function()
-                    client.focus = c
-                    c:raise()
-                    awful.mouse.client.move(c)
-                end),
-                awful.button({ }, 3, function()
-                    client.focus = c
-                    c:raise()
-                    awful.mouse.client.resize(c)
-                end)
-                )
-
-        -- Widgets that are aligned to the left
-        local left_layout = wibox.layout.fixed.horizontal()
-        left_layout:add(awful.titlebar.widget.iconwidget(c))
-        left_layout:buttons(buttons)
-
-        -- Widgets that are aligned to the right
-        local right_layout = wibox.layout.fixed.horizontal()
-        right_layout:add(awful.titlebar.widget.floatingbutton(c))
-        right_layout:add(awful.titlebar.widget.maximizedbutton(c))
-        right_layout:add(awful.titlebar.widget.stickybutton(c))
-        right_layout:add(awful.titlebar.widget.ontopbutton(c))
-        right_layout:add(awful.titlebar.widget.closebutton(c))
-
-        -- The title goes in the middle
-        local middle_layout = wibox.layout.flex.horizontal()
-        local title = awful.titlebar.widget.titlewidget(c)
-        title:set_align("center")
-        middle_layout:add(title)
-        middle_layout:buttons(buttons)
-
-        -- Now bring it all together
-        local layout = wibox.layout.align.horizontal()
-        layout:set_left(left_layout)
-        layout:set_right(right_layout)
-        layout:set_middle(middle_layout)
-
-        awful.titlebar(c):set_widget(layout)
     end
 end)
 

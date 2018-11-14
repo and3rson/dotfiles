@@ -106,9 +106,9 @@ def compl_run():
             continue
         import_args = re.findall('import ' + m, src)
         if import_args:
-            result.append(dict(word=m, menu=import_args[0].strip().strip(':'), kind='d'))
+            result.append(dict(word=m, menu=import_args[0].strip().strip(':'), kind='m'))
             continue
-        result.append(dict(word=m, kind='v'))
+        result.append(dict(word=m, kind=''))
     result = sorted(result, key=lambda x: levenshtein(base, x if isinstance(x, str) else x['word']))
     vim.command('let b:compl_result = ' + str(list(result)))
 EOF

@@ -4,7 +4,7 @@ fu! ACInit()
     endi
     let l:filename = expand('%:p')
     if ! has_key(g:CURSORPOS, l:filename)
-        let g:CURSORPOS[l:filename] = {}
+        let g:CURSORPOS[l:filename] = [0, 0, 0, 0]
     else
         let [l:_, l:line, l:col, l:_] = g:CURSORPOS[l:filename]
         call cursor(l:line, l:col)

@@ -1,11 +1,11 @@
 ! Unmap capslock
-clear Lock
-keycode 66 = Hyper_L
+!clear Lock
+!keycode 66 = Hyper_L
 
-! Leave mod4 as windows key _only_
-remove mod4 = Hyper_L
+!! Leave mod4 as windows key _only_
+!remove mod4 = Hyper_L
 
-! Set mod5 to capslock
-add mod5 = Hyper_L
+!! Set mod5 to capslock
+!add mod5 = Hyper_L
 
 ! keycode 33 lock = KP_Up

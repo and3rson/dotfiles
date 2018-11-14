@@ -1,26 +1,26 @@
-hi! StatusBarInsertInv ctermbg=235 ctermfg=197
+hi! StatusBarInsertInv ctermbg=233 ctermfg=197
 " Visual
-hi! StatusBarNormalInv ctermbg=235 ctermfg=81
+hi! StatusBarNormalInv ctermbg=233 ctermfg=81
 "hi! StatusBarVisual ctermbg=32 ctermfg=0
 "hi! StatusBarVisualInv ctermbg=234 ctermfg=32
 " Normal
-hi! StatusBarVisualInv ctermbg=235 ctermfg=118
+hi! StatusBarVisualInv ctermbg=233 ctermfg=118
 " Replace
-hi! StatusBarReplaceInv ctermbg=235 ctermfg=222
+hi! StatusBarReplaceInv ctermbg=233 ctermfg=222
 " Terminal
-hi! StatusBarTerminalInv ctermbg=235 ctermfg=57
+hi! StatusBarTerminalInv ctermbg=233 ctermfg=57
 " Inactive
 "hi! StatusBarInactive ctermfg=238 ctermbg=232
 "hi! StatusBarInactiveInv ctermfg=248 ctermbg=232
 " Text
 "hi! StatusBarText ctermfg=33 ctermbg=234
-hi! StatusBarText ctermfg=248 ctermbg=235
-hi! StatusBarTextInv ctermfg=232 ctermbg=235
+hi! StatusBarText ctermfg=248 ctermbg=233
+hi! StatusBarTextInv ctermfg=232 ctermbg=233
 " Error parts
-hi! StatusBarWarning ctermfg=3 ctermbg=235 cterm=bold
-hi! StatusBarError ctermfg=1 ctermbg=235 cterm=bold
+hi! StatusBarWarning ctermfg=3 ctermbg=233 cterm=bold
+hi! StatusBarError ctermfg=1 ctermbg=233 cterm=bold
 
-hi! StatusLine ctermfg=248 ctermbg=235 cterm=none
+hi! StatusLine ctermfg=248 ctermbg=233 cterm=none
 hi! StatusLineNC ctermfg=242 ctermbg=233 cterm=none
 
 " PieCrumbs

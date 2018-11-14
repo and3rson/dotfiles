@@ -39,4 +39,5 @@ alias pull='git pull'
 alias push='git push'
 alias merge='git merge'
 alias vim='nvim'
+alias yay='yay --editmenu --nodiffmenu'
 

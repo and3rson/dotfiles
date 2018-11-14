@@ -11,10 +11,10 @@ then
     if [[ $NVIDIA_LIBGL -eq 0 ]]
     then
         # NVIDIA LIBGL
-        xrandr --setprovideroutputsource modesetting NVIDIA-0
-        xrandr --setprovideroffloadsink nouveau Intel
+        xrandr --setprovideroutputsource modesetting nvidia-0
+        xrandr --setprovideroffloadsink nouveau intel
         xrandr --auto
-        xrandr --output VGA-1-0 --addmode VGA-1-0 1920x1080
+        xrandr --output vga-1-0 --addmode vga-1-0 1920x1080
     else
         # MESA WITH BUMBLEBEE
     #   echo a
@@ -24,6 +24,15 @@ then
 
 fi
 # setxkbmap 'us,ru,ua' -option grp:lalt_lshift_toggle -option numpad:microsoft
+
+
+#xrandr --setprovideroutputsource modesetting NVIDIA-0
+#xrandr --auto
+
+#xrandr --setprovideroutputsource modesetting nvidia-0
+#xrandr --setprovideroffloadsink nouveau intel
+#xrandr --auto
+#xrandr --output vga-1-0 --addmode vga-1-0 1920x1080
 
 dbus-update-activation-environment --all
 
@@ -42,12 +51,14 @@ if [[ -z "$1" ]]
 then
     echo Starting AwesomeWM
     start-pulseaudio-x11 &
-    compton --config ~/.compton.conf -b -f
+    compton --config ~/.compton.conf -b -f --backend glx
     xbanish &
+    #xcape -e 'Overlay1_Enable=Escape'
     ~/.config/qtile/bin/kbfix.sh
     ~/.config/qtile/bin/set_bg.sh
 
-    xinput set-prop 'TPPS/2 IBM TrackPoint' 323 -0.5
+    #xinput set-prop 'TPPS/2 IBM TrackPoint' 323 -0.5
+    xinput set-prop 'TPPS/2 IBM TrackPoint' 273 1.6
     synclient CoastingSpeed=0 VertScrollDelta=200 HorizScrollDelta=200
 
     nm-applet &

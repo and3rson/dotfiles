@@ -20,6 +20,8 @@
 
 #feh --bg-fill ~/.wallpapers/new3/wallhaven-319318.png
 #feh --bg-fill ~/.wallpapers/ut3/1.png
-feh --bg-fill ~/.wallpapers/ut4/ut99_red3.png
+#feh --bg-fill ~/.wallpapers/ut4/ut99_red3.png
+#feh --bg-fill ~/.wallpapers/arch/simple-blue.png
+feh --bg-fill ~/.wallpapers/arch/arch-orangeneon.png
 #echo bg set2
 

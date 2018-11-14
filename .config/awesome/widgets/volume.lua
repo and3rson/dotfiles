@@ -2,6 +2,7 @@ local awful = require('awful')
 local wibox = require('wibox')
 local gears = require('gears')
 local beautiful = require('beautiful')
+local utils = require('../utils')
 
 local ICONS = {
     speaker='',
@@ -23,9 +24,9 @@ local volume_widget = wibox.widget{
     max_value=100,
     value=0,
     shape=gears.shape.bar,
-    background_color=beautiful.bg_minimize,
+    background_color=beautiful.bg_minimize .. '80',
     --color=beautiful.bg_focus,
-    color=beautiful.fg_volume,
+    color=beautiful.fg_volume .. '80',
     --color=beautiful.fg_normal,
     --color='#7777FF',
     --border_color=beautiful.bg_minimize,
@@ -33,11 +34,12 @@ local volume_widget = wibox.widget{
     --ticks=true,
     --ticks_size=2,
     --ticks_gap=1,
-    margins={
-        top=22,
-        --top=7,
-        --bottom=6
-    }
+    margins=beautiful.progressbar_margins
+    --margins={
+    --    top=23,
+    --    --top=7,
+    --    --bottom=6
+    --}
 }
 
 local volume_value = wibox.widget{
@@ -66,9 +68,9 @@ local update_widget = function()
     else
         icon_str = ICONS.speaker
     end
-    icon.markup = '<span size="2000"> </span><span color="' .. beautiful.fg_volume .. '" size="14000">' .. icon_str .. '</span>'
+    icon.markup = '<span size="2000"> </span><span color="' .. beautiful.fg_volume .. '" size="16000">' .. icon_str .. '</span>'
     volume_widget.value = value
-    volume_value.markup = '<span color="' .. beautiful.fg_volume .. '">' .. value .. '%</span>'
+    volume_value.markup = '<span color="' .. '#FFFFFF'.. '">' .. value .. '%</span>'
     --widget.markup = '<b><span>  ' .. value .. '</span></b>'
 end
 
@@ -78,22 +80,21 @@ local modify_volume = function(diff)
     update_widget()
 end
 
+update_widget()
+
 gears.timer {
     timeout=1,
     autostart=true,
     callback=update_widget
 }
 
-local row = wibox.layout.fixed.horizontal()
-row.spacing = 4
-local widget = wibox.widget{
-    volume_widget,
+local widget = utils.make_row{
+    icon,
     wibox.widget{
-        icon,
-        volume_value,
-        layout=row
+        volume_widget,
+        wibox.container.margin(volume_value, 8, 8),
+        layout=wibox.layout.stack
     },
-    layout=wibox.layout.stack
 }
 
 widget.increase_volume = function() modify_volume(2) end

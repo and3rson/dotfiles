@@ -4,6 +4,7 @@
 
 local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
+local gears = require('gears')
 local dpi = xresources.apply_dpi
 
 local gfs = require("gears.filesystem")
@@ -15,7 +16,7 @@ local this_dir = home_dir .. '.config/awesome/themes/'
 local theme = {}
 
 --theme.font          = "DejaVuSansMono Nerd Font 9"
-theme.font          = "RobotoMono Nerd Font Medium 10"
+theme.font          = "RobotoMono Nerd Font Medium 9"
 --theme.font          = "SauceCodePro Nerd Font Medium 9"
 --theme.font          = "Pixeled 5"
 --theme.font          = "Symtext 8"
@@ -24,7 +25,7 @@ theme.font          = "RobotoMono Nerd Font Medium 10"
 --theme.pixel_font    = "Pixellari 9"
 
 --theme.bg_normal     = "#2D2D2D"
-theme.bg_normal     = "#080808"
+theme.bg_normal     = "#000000"
 --theme.bg_normal     = "#080202"
 --theme.bg_focus      = "#D64937"
 theme.bg_focus      = "#4499BB"
@@ -32,21 +33,28 @@ theme.bg_focus      = "#4499BB"
 --theme.bg_focus = '#44ff77'
 theme.bg_urgent     = "#000000"
 theme.bg_minimize   = "#444444"
-theme.bg_systray    = theme.bg_normal
+--theme.bg_systray    = theme.bg_normal
+theme.bg_systray    = '#00000000'
 
 --theme.fg_normal     = "#CACAC0"
 --theme.fg_soft       = "#888888"
 --theme.fg_normal     = "#CACAC0"
 theme.fg_normal     = "#C0C0C0"
-theme.fg_bright     = "#FFFFFF"
+theme.fg_bright     = "#44B7F7"
 theme.fg_focus      = "#FFFFFF"
-theme.fg_urgent     = "#ffffff"
+theme.fg_urgent     = "#FF0087"
 theme.fg_minimize   = "#ffffff"
 
+theme.fg_ping = '#44B7F7'
+theme.fg_ping_warning = '#FF0087'
 theme.fg_battery = '#44B7F7'
 theme.fg_battery_warning = '#FF0087'
 theme.fg_battery_charging = '#00FF5F'
-theme.fg_date = '#00FF5F'
+--theme.fg_date = '#00FF5F'
+theme.fg_date = '#44B7F7'
+theme.fg_date_today = '#000000'
+theme.bg_date_today = '#FF0087'
+--theme.fg_date = '#44B7F7'
 theme.fg_volume = '#44B7F7'
 theme.fg_term = '#44B7F7'
 theme.fg_mem = '#00FF5F'
@@ -63,12 +71,22 @@ theme.systray_icon_spacing = 2
 
 theme.tooltip_bg=theme.bg_normal
 theme.tooltip_fg=theme.fg_normal
+theme.tooltip_font = 'DejaVuSansMono Nerd Font 9'
 
 --theme.taglist_disable_icon = true
-theme.taglist_fg_empty = '#444444'
+theme.taglist_fg_empty = '#222222'
+theme.taglist_bg_focus = '#55555500'
 theme.taglist_spacing = 0
-theme.taglist_font = 'Roboto 10'
+theme.taglist_font = 'RobotoMono Nerd Font Medium 10'
+--theme.taglist_font = 'Pixellari 12'
+--theme.taglist_shape_focus = gears.arrow()
+--theme.taglist_shape_border_width_focus = 3
+--theme.taglist_shape_border_color_focus = '#FF0000'
 
+--theme.progressbar_margins = {bottom=23}
+--theme.progressbar_margins = {bottom=3, top=3}
+theme.progressbar_margins = {bottom=0, top=0}
+--theme.progressbar_margins = {bottom=2, top=20}
 
 -- There are other variable sets
 -- overriding the default one when
@@ -84,7 +102,7 @@ theme.taglist_font = 'Roboto 10'
 --theme.taglist_bg_focus = "#ff0000"
 
 -- Generate taglist squares:
-local taglist_square_size = dpi(4)
+local taglist_square_size = 24  -- dpi(24)
 theme.taglist_squares_sel = theme_assets.taglist_squares_sel(
     taglist_square_size, theme.fg_normal
 )
@@ -147,9 +165,15 @@ theme.wallpapers = {
     --'/home/anderson/.wallpapers/ut3/1.png',
     --'/home/anderson/.wallpapers/ut3/1blue.png',
     --'/home/anderson/.wallpapers/ut3/1.png',
-    '/home/anderson/.wallpapers/ut4/ut99_red3.png',
-    '/home/anderson/.wallpapers/ut4/ut99_red3.png',
-    '/home/anderson/.wallpapers/ut4/ut99_red3.png',
+    --'/home/anderson/.wallpapers/ut4/ut99_red3.png',
+    --'/home/anderson/.wallpapers/ut4/ut99_red3.png',
+    --'/home/anderson/.wallpapers/ut4/ut99_red3.png',
+    '/home/anderson/.wallpapers/arch/arch-orangeneon.png',
+    '/home/anderson/.wallpapers/arch/arch-orangeneon.png',
+    '/home/anderson/.wallpapers/arch/arch-orangeneon.png',
+    --'/home/anderson/.wallpapers/arch/simple-blue.png',
+    --'/home/anderson/.wallpapers/arch/simple-blue.png',
+    --'/home/anderson/.wallpapers/arch/simple-blue.png',
 }
 
 --theme.wallpaper = '/home/anderson/.wallpapers/ut3/1full.jpg'

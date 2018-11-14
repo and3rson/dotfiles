@@ -23,57 +23,17 @@ set t_Co=256
 call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
-
 Plugin 'scrooloose/nerdcommenter'
-
-"Plugin 'mitsuhiko/vim-python-combined'  " Combined Python 2/3 for Vim
-"Plugin 'davidhalter/jedi-vim'
-"Plugin 'python-mode/python-mode'
-"Plugin 'tpope/vim-fugitive'
-
-"Plugin 'ap/vim-buftabline'
-
-"Plugin 'ctrlpvim/ctrlp.vim'
-"Plugin 'tacahiroy/ctrlp-funky'
-
-"Plugin 'michaeljsmith/vim-indent-object'
-"Plugin 'nathanaelkane/vim-indent-guides'
-"Plugin 'thaerkh/vim-indentguides'
-"let g:indentguides_spacechar = '┆'
-
 Plugin 'Yggdroot/indentLine'
-
-"Plugin 'honza/vim-snippets'
-"Plugin 'SirVer/ultisnips'
-
-"Plugin 'hdima/python-syntax'
-
-"Plugin 'vim-syntastic/syntastic'
 Plugin 'w0rp/ale'
 
 " Slow returns
 Plugin 'Vimjas/vim-python-pep8-indent'
-
-"Plugin 'ryanoasis/vim-devicons'
-
-"Plugin 'and3rson/piecrumbs'
-"Plugin 'tomtom/tcomment_vim'
-
 Plugin 'airblade/vim-gitgutter'
-"Plugin 'kshenoy/vim-signature'
-"Plugin 'mhinz/vim-signify'
-"Plugin 'jeetsukumaran/vim-markology'
-
 Plugin 'ervandew/supertab'
 
-"Plugin 'Valloric/YouCompleteMe'
-
-"Plugin 'nvie/vim-flake8'
-
-"Plugin 'scrooloose/vim-nerdtree'
-"Plugin 'nerdtree'
-
-Plugin 'ap/vim-css-color'
+"Plugin 'ap/vim-css-color'
+Plugin 'chrisbra/Colorizer'
 Plugin 'osyo-manga/vim-over'
 
 Plugin 'tmux-plugins/vim-tmux'
@@ -81,7 +41,7 @@ Plugin 'tmux-plugins/vim-tmux'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 
-"Plugin 'Shougo/deoplete.nvim'
+Plugin 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 "Plugin 'joeytwiddle/sexy_scroller.vim'
 Plugin 'mhinz/vim-startify'
@@ -113,6 +73,10 @@ Plugin 'calviken/vim-gdscript3'
 
 " TypeScript
 Plugin 'leafgarland/typescript-vim'
+
+" Hex mode
+Plugin 'fidian/hexmode'
+"Plugin 'mattn/vim-xxdcursor'
 
 "Plugin 'chriskempson/base16-vim'
 
@@ -312,7 +276,8 @@ hi CursorColumn ctermbg=234
 "hi MatchParen ctermfg=magenta ctermbg=none
 
 "hi CursorLineNr ctermfg=119 ctermbg=235 cterm=bold
-hi CursorLineNr ctermfg=81 ctermbg=235 cterm=bold
+hi CursorLineNr ctermfg=81 ctermbg=234 cterm=bold
+hi LineNr ctermbg=234 ctermfg=239
 
 " https://stackoverflow.com/a/19594724/3455614
 " Dim inactive windows using 'colorcolumn' setting
@@ -430,7 +395,7 @@ fu CleanUp()
     %s/\s\+$//e
     " |norm!``
 endf
-au BufWritePre * call CleanUp()
+au BufWritePre * if !&bin | call CleanUp() | endi
 
 ":set noeol
 ":set nofixeol
@@ -508,7 +473,8 @@ let g:ale_lint_on_save = 0
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 0
 
-let g:ale_python_pylint_options = '-j2 --load-plugins pylint_django'
+"let g:ale_python_pylint_options = '-j2 --load-plugins pylint_django'
+let g:ale_python_pylint_options = '-j2'
 
 nmap <silent> <F5> :ALELint<CR>
 
@@ -517,20 +483,23 @@ nmap <silent> <F5> :ALELint<CR>
 
 noremap <silent> <A-e> :lopen<CR>
 
-hi ALEWarning ctermbg=190 ctermfg=235
+hi ALEWarning ctermbg=190 ctermfg=233
 "hi ALEWarning cterm=reverse
-hi ALEWarningSign ctermbg=235 ctermfg=190
+hi ALEWarningSign ctermbg=233 ctermfg=190
 "hi ALEError ctermbg=197 ctermfg=255
 hi ALEError ctermbg=197 ctermfg=255 cterm=bold,underline
 "hi ALEError cterm=reverse
-hi ALEErrorSign ctermbg=235 ctermfg=197
+hi ALEErrorSign ctermbg=233 ctermfg=197
 
 " GitGutter
 let g:gitgutter_realtime = 1
 let g:gitgutter_eager = 0
+let g:gitgutter_max_signs=1000
 set signcolumn=yes
 au BufWritePost,InsertLeave,TextChanged * :GitGutter
 "let g:gitgutter_sign_column_always = 1
+" Disable for binary mode
+au BufReadPre * if &bin | :GitGutterDisable
 
 " Sexy replace
 :map <C-f> :OverCommandLine<CR>:
@@ -545,6 +514,7 @@ source $HOME/.vim/scripts/compl.vim
 source $HOME/.vim/scripts/hi_yaml.vim
 source $HOME/.vim/scripts/utils.vim
 source $HOME/.vim/scripts/autocursor.vim
+source $HOME/.vim/scripts/xxdcursor.vim
 "source $HOME/.vim/scripts/cute.vim
 "source $HOME/.vim/scripts/termrun.vim
 "pyfile $HOME/.vim/scripts/compl.py
@@ -592,8 +562,8 @@ fu! FoldText()
 endf
 
 set foldtext=FoldText()
-hi FoldColumn ctermfg=245 ctermbg=235
-set foldcolumn=2
+hi FoldColumn ctermfg=245 ctermbg=233
+"set foldcolumn=2
 "hi Folded ctermfg=241 ctermbg=16
 hi Folded ctermfg=67 ctermbg=16
 
@@ -771,6 +741,9 @@ let g:ale_python_flake8_executable = $VIRTUAL_ENV . '/bin/flake8'
 " GraphViz
 au BufNewFile,BufRead *.gv set filetype=dot
 
+" Muttrc
+au BufNewFile,BufRead *.muttrc set filetype=muttrc
+
 " Scrolling
 "au BufRead * set scroll=20
 set scrolloff=5
@@ -782,7 +755,7 @@ set scrolloff=5
 au FileType Jenkinsfile setlocal ts=2 sts=2 sw=2 expandtab
 
 " Limit syntax highlight
-set synmaxcol=160
+set synmaxcol=250
 
 " Rainbow parentheses
 "au VimEnter * RainbowParenthesesToggle
@@ -807,3 +780,10 @@ let loaded_netrwPlugin = 1
 
 " Shada config
 set shada=!,'100,<50,s10,h,:500,@500,/500
+
+" Colorizer
+let g:colorizer_auto_filetype='css,html,lua'
+
+" Hex mode
+let g:hexmode_xxd_options = '-g 1'
+

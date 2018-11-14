@@ -12,17 +12,20 @@ local icon = wibox.widget{
 local memgraph_widget = wibox.widget {
     max_value = 100,
     color = beautiful.fg_mem,
-    background_color = beautiful.bg_normal,
+    background_color = '#00000000',
     --color = '#7777FF',
     --background_color = "#1e252c",
-    forced_width = 25,
+    --border_width = 1,
+    --border_color = beautiful.fg_mem,
+    forced_width = 32,
+    --forced_height = 12,
     step_width = 1,
-    step_spacing = 1,
+    step_spacing = 2,
     widget = wibox.widget.graph
 }
 
--- mirros and pushs up a bit
-local mem_widget = wibox.container.margin(wibox.container.mirror(memgraph_widget, { horizontal = true }), 0, 1, 0, 2)
+-- mirror and pushs up a bit
+local mem_widget = wibox.container.margin(wibox.container.mirror(memgraph_widget, { horizontal = true }), 0, 1, 0, 0)
 
 local total_prev = 0
 local idle_prev = 0

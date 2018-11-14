@@ -10,15 +10,22 @@ local progressbar = wibox.widget {
     forced_width=10,
     max_value=100,
     value=0,
-    background_color=beautiful.bg_minimize,
-    color=beautiful.fg_term,
+    background_color=beautiful.bg_minimize .. '80',
+    color=beautiful.fg_term .. '80',
     widget=wibox.widget.progressbar,
-    margins={
-        top=22
-    }
+    margins=beautiful.progressbar_margins
+    --margins={
+    --    top=23
+    --}
 }
 
-local df_widget = wibox.widget{
+local icon = wibox.widget{
+    paddings=2,
+    markup='<span color="' .. beautiful.fg_term .. '"><span size="12000"></span></span>',
+    widget=wibox.widget.textbox
+}
+
+local widget = wibox.widget{
     paddings=2,
     markup='~',
     widget=wibox.widget.textbox
@@ -35,7 +42,7 @@ local update_widget = function()
 
     local percentage = temp / temp_max * 100
 
-    df_widget.markup = '<span color="' .. beautiful.fg_term .. '">' .. temp .. '°C</span>'
+    widget.markup = '<span color="#FFFFFF">' .. temp .. '°C</span>'
     progressbar.value = percentage
 end
 
@@ -45,9 +52,12 @@ gears.timer {
     callback=update_widget
 }
 
-return wibox.widget{
-    progressbar,
-    df_widget,
-    layout=wibox.layout.stack
-}
+return utils.make_row({
+    icon,
+    wibox.widget({
+        progressbar,
+        wibox.container.margin(widget, 4, 4),
+        layout=wibox.layout.stack
+    })
+})
 

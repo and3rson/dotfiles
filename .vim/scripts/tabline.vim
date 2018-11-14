@@ -1,4 +1,4 @@
-hi! TabLineNormal ctermbg=235 ctermfg=255
+hi! TabLineNormal ctermbg=233 ctermfg=255
 hi! TabLineActive ctermbg=33 ctermfg=255 cterm=bold
 
 fu TabLineIcon(filetype)
@@ -37,8 +37,10 @@ fu GetBuffers()
                     \ 'type': l:type,
                     \ 'icon': TabLineIcon(l:type),
                     \ 'unnamed': l:unnamed,
-                    \ 'modified': getbufvar(l:buffer, '&modified')
+                    \ 'modified': getbufvar(l:buffer, '&modified'),
+                    \ 'width': len(l:name) + 4
                     \ })
+                    " "width" is a predicted rendered width (including icon)
     endfo
     for l:buffer in l:result
         if len(l:buffer.name) > 25
@@ -48,10 +50,48 @@ fu GetBuffers()
     return l:result
 endf
 
+fu GetCurrentIndex(buffers)
+    for l:index in range(len(a:buffers))
+        if a:buffers[l:index].is_current
+            return l:index
+        endi
+    endfo
+    return 0
+endf
+
+fu Overflows(buffers)
+    let l:cols = &columns - 6  " 3 chars reserved for ellipsis on each side of the tabline
+    let l:width = 0
+    for l:buffer in a:buffers
+        let l:width += l:buffer.width
+    endfo
+    return l:width > l:cols
+endf
+
+fu CollapseBuffers(buffers)
+    let l:buffers = copy(a:buffers)
+    let l:left = 0
+    let l:right = 0
+    while Overflows(l:buffers)
+        if GetCurrentIndex(l:buffers) > len(l:buffers) / 2
+            let l:left += 1
+            call remove(l:buffers, 0)
+        else
+            let l:right += 1
+            call remove(l:buffers, -1)
+        endi
+    endw
+    return [l:buffers, l:left, l:right]
+endf
+
 fu RenderTabLine()
     let l:tabline = ''
     let l:tabline .= '%#TabLineNormal#'
     let l:buffers = GetBuffers()
+    let [l:buffers, l:left, l:right] = CollapseBuffers(l:buffers)
+    if l:left
+        let l:tabline .= printf('%2d ', l:left)
+    endi
 	for l:buffer in l:buffers
 		if l:buffer.is_current
 			let l:tabline .= '%#TabLineActive#'
@@ -64,8 +104,12 @@ fu RenderTabLine()
         endi
         "let l:tabline .= ' '
 	endfo
+    "let l:tabline .= '%<'
 	let l:tabline .= '%#TabLineNormal#'
     let l:tabline .= '%='
+    if l:right
+        let l:tabline .= printf(' %2d', l:right)
+    endi
     "let l:tabline .= ' %L'
     "let l:tabline .= ' %R'
     "let l:tabline .= ' %Y '
