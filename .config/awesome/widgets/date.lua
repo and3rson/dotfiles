@@ -68,8 +68,8 @@ watch(CMD, 1, update_widget, {date_icon, date_widget, date_progressbar})
 local widget = wibox.widget{
     --date_progressbar,
     wibox.widget{
-        date_icon,
-        date_widget,
+        wibox.layout.margin(date_icon, 0, 0, 0, 4),
+        wibox.layout.margin(date_widget, 0, 0, 0, 2),
         layout=wibox.layout.fixed.horizontal
     },
     layout=wibox.layout.stack

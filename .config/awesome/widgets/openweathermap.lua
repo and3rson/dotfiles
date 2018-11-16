@@ -7,14 +7,13 @@ local utils = require("utils")
 local owfont = require('../owfont')
 --local http = require("socket.http")
 
-local APPID = '5041ca48d55a6669fe8b41ad1a8af753'
-local CITY = 'Lviv,Ukraine'
-local LANG='ua'
-local URL = 'http://api.openweathermap.org/data/2.5/weather?appid=' .. APPID .. '&q=' .. CITY .. '&lang=' .. LANG
-local CACHE_DIR = gears.filesystem.get_cache_dir() .. 'weather_icons/'
-local DEFAULT_ICON = '/usr/share/icons/gnome/48x48/status/weather-few-clouds-night.png'
+local IPINFO_TOKEN = '7a7b7d106c9490'
+local IPINFO_URL = 'http://ipinfo.io/?token=' .. IPINFO_TOKEN
+local OWM_APPID = '5041ca48d55a6669fe8b41ad1a8af753'
+local OWM_LANG = 'ua'
+local OWM_URL = 'http://api.openweathermap.org/data/2.5/weather?appid=' .. OWM_APPID .. '&q=%s&lang=' .. OWM_LANG
 
-gears.filesystem.make_directories(CACHE_DIR)
+--gears.filesystem.make_directories(CACHE_DIR)
 
 local weather_data = nil
 
@@ -25,11 +24,6 @@ local openweathermap_widget = wibox.widget{
     widget=wibox.widget.textbox
 }
 
---local icon = wibox.widget{
---    paddings=2,
---    markup='<span color="' .. beautiful.fg_term .. '"><span size="12000"></span></span>',
---    widget=wibox.widget.textbox
---}
 local icon_widget = wibox.widget{
     --forced_width=24,
     --forced_height=24,
@@ -37,37 +31,26 @@ local icon_widget = wibox.widget{
     widget=wibox.widget.textbox
 }
 
---local icon_widget = wibox.widget{
---    forced_width=24,
---    forced_height=24,
---    widget=wibox.widget.imagebox
---}
-
-local fetch_icon = function(code)
-    local filename = CACHE_DIR .. code .. '.png'
-    awful.spawn.easy_async('wget http://openweathermap.org/img/w/' .. code .. '.png -O ' .. filename, function()
-        icon_widget.image = filename
-    end)
-end
-
 local fetch_weather = function()
-    awful.spawn.easy_async('curl "' .. URL .. '"', function(stdout, stderr, reason, exit_code)
+    awful.spawn.easy_async('curl "' .. IPINFO_URL .. '"', function(stdout, stderr, reason, exit_code)
         if exit_code ~= 0 then
             weather_timer.timeout = 5
             weather_timer:again()
-            --require('gears').timer.start_new(5, fetch_weather)
             return
         else
             weather_timer.timeout = 900
             weather_timer:again()
-            --require('gears').timer.start_new(1, fetch_weather)
         end
         local data = json.decode(stdout)
-        weather_data = data
-        local temp = tonumber(data.main.temp) - 273.15
-        openweathermap_widget.markup = '<span color="#FFFFFF">' .. math.floor(temp) .. '°C</span>'
-        icon_widget.markup = '<span size="16000" color="' .. beautiful.fg_bright .. '">' .. utf8.char(owfont[data.weather[1].id]) .. '</span>'
-        --fetch_icon(data.weather[1].icon)
+        local location = data.city .. ',' .. data.country
+        awful.spawn.easy_async('curl "' .. OWM_URL:format(location) .. '"', function(stdout, stderr, reason, exit_code)
+            local data = json.decode(stdout)
+            weather_data = data
+            local temp = tonumber(data.main.temp) - 273.15
+            openweathermap_widget.markup = '<span color="#FFFFFF">' .. data.name .. ', ' .. math.floor(temp) .. '°C</span>'
+            icon_widget.markup = '<span size="16000" color="' .. beautiful.fg_bright .. '">' .. utf8.char(owfont[data.weather[1].id]) .. '</span>'
+            --fetch_icon(data.weather[1].icon)
+        end)
     end)
     return false
 end
@@ -110,7 +93,7 @@ weather_timer = gears.timer.start_new(0, fetch_weather)
 widget = utils.make_row{
     --wibox.container.margin(icon, 0, 4, 2, 0),
     icon_widget,
-    openweathermap_widget
+    wibox.layout.margin(openweathermap_widget, 0, 0, 0, 2)
 }
 widget_t = awful.tooltip{
     objects={widget},

@@ -89,10 +89,10 @@ gears.timer {
 }
 
 local widget = utils.make_row{
-    icon,
+    wibox.layout.margin(icon, 0, 0, 0, 2),
     wibox.widget{
         --volume_widget,
-        wibox.container.margin(volume_value, 0, 0),
+        wibox.container.margin(volume_value, 0, 0, 0, 2),
         layout=wibox.layout.stack
     },
 }

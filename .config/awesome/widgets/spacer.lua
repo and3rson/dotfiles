@@ -15,6 +15,6 @@ local wibox = require('wibox')
 --)
 return wibox.container.margin(
     wibox.widget{},
-    8, 8, 0, 0,
+    10, 10, 0, 0,
     'FF0000'
 )

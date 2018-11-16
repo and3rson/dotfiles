@@ -56,8 +56,8 @@ then
     compton --config ~/.compton.conf -b -f
     xbanish &
     #xcape -e 'Overlay1_Enable=Escape'
-    ~/.config/qtile/bin/kbfix.sh
-    ~/.config/qtile/bin/set_bg.sh
+    ~/.scripts/kbfix.sh
+    ~/.scripts/set_bg.sh
 
     #xinput set-prop 'TPPS/2 IBM TrackPoint' 323 -0.5
     xinput set-prop 'TPPS/2 IBM TrackPoint' 'Device Accel Constant Deceleration' 1.8

@@ -1,5 +1,6 @@
 [options]
-font = DejaVuSansMono Nerd Font 8
+font = RobotoMono Nerd Font 8
+;font = DejaVuSansMono Nerd Font 8
 # font = BitstreamVeraSansMono Nerd Font 9
 # font = BitstreamVeraSansMono 9
 icon_name = terminal

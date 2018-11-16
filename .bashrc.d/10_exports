@@ -1,11 +1,10 @@
 #!/bin/bash
 
-PATH="/sh:/bin:/usr/local/bin:/sbin:/usr/local/sbin:/usr/bin/core_perl"
 export EDITOR="nvim"
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on'
-export PATH="/home/anderson/.npm-packages/bin:$PATH:/home/anderson/.gem/ruby/2.4.0/bin:/home/anderson/.config/qtile/bin:/usr/lib/jvm/java-8-jdk/jre/bin:/opt/android-sdk/tools"
+export PATH="$PATH:$HOME/.scripts:/sh"
 export GOPATH="/home/anderson/src/go"
-export PATH="/usr/bin/vendor_perl/:$PATH"
+#export PATH="/usr/bin/vendor_perl/:$PATH"
 # export PATH="/usr/share/perl5/vendor_perl/auto/share/dist/Cope:$PATH"
 # export TERM=screen-256color
 # export COPE=1
@@ -15,8 +14,6 @@ export ANDROID_EMULATOR_USE_SYSTEM_LIBS=1
 export STEAM_RUNTIME=0
 
 export DMENU_STYLE="-fn 'DejaVu Sans Mono-10' -sb '#F05040' -sf '#000' -nb black -dim 0.5"
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
 
 export FZF_DEFAULT_COMMAND='ag -g . --ignore __pycache__ --ignore .git --ignore "*".pyc'
 

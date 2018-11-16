@@ -15,9 +15,9 @@ local this_dir = home_dir .. '.config/awesome/themes/'
 
 local theme = {}
 
-theme.font          = "DejaVuSansMono Nerd Font 9"
---theme.font          = "M+ 1m regular 10"
---theme.font          = "RobotoMono Nerd Font Medium 9"
+--theme.font          = "DejaVuSansMono Nerd Font 9"
+--theme.font          = "M+ 1p regular 10"
+theme.font          = "RobotoMono Nerd Font Regular 9"
 --theme.font          = "SauceCodePro Nerd Font Medium 9"
 --theme.font          = "Pixeled 5"
 --theme.font          = "Symtext 8"
@@ -64,7 +64,8 @@ theme.fg_ping = "#D64937"
 theme.fg_ping_warning = '#FF0087'
 theme.fg_battery = "#D64937"
 theme.fg_battery_warning = '#FF0087'
-theme.fg_battery_charging = '#00FF5F'
+--theme.fg_battery_charging = '#00FF5F'
+theme.fg_battery_charging = '#D64937'
 --theme.fg_date = '#00FF5F'
 theme.fg_date = "#D64937"
 theme.fg_date_today = '#000000'

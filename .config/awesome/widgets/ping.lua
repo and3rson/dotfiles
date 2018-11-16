@@ -90,16 +90,22 @@ gears.timer{
 --awful.widget.watch('fping -c1 -t500 google.com', 2, update_widget)
 
 local widget = utils.make_row({
-    icon_widget,
+    wibox.layout.margin(icon_widget, 0, 0, 0, 2),
     wibox.widget({
         --progressbar,
         wibox.container.margin(
-            utils.make_row({
-                row1_widget,
-                row2_widget
-            }),
-            4,
-            4
+            wibox.layout.margin(
+                utils.make_row({
+                    row1_widget,
+                    row2_widget
+                }),
+                0,
+                0,
+                0,
+                2
+            ),
+            0,
+            0
         ),
         layout=wibox.layout.stack
     })

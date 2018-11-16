@@ -162,18 +162,18 @@ watch(CMD, 5, update_widget, {battery_widget, battery_icon, battery_value, batte
 
 return wibox.widget{
     utils.make_row{
-        battery_icon,
+        wibox.layout.margin(battery_icon, 0, 0, 0, 2),
         wibox.widget{
-            battery_widget,
-            wibox.container.margin(
-                battery_value,
+            --battery_widget,
+            --wibox.container.margin(
+                wibox.layout.margin(battery_value, 0, 0, 0, 2),
                 --utils.make_col({
                 --    battery_value,
                 --    battery_state
                 --}),
-                8,
-                8
-            ),
+                --8,
+                --8
+            --),
             layout=wibox.layout.stack
         },
     },
