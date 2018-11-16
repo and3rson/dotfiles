@@ -11,7 +11,7 @@ local ICONS = {
     discharging={
         icons={'', '', '', '', '', '', '', '', '', ''},
         count=10,
-        icon_size=10000
+        icon_size=13000
     },
     charging={
         icons={''},
@@ -135,8 +135,12 @@ local update_widget = function(widgets, stdout, _, _, _)
     widgets[1].color = color .. '80'
     widgets[1].value = n
     widgets[2].markup = '<span color="' .. color .. '">' .. '<span size="' .. icon_set.icon_size .. '">' .. icon .. '</span></span>'
-    widgets[3].markup = '<span color="' .. '#FFFFFF' .. '" size="8000">' .. charge .. '</span>'
-    widgets[4].markup = '<span color="#FFFFFF" size="8000">' .. status .. '</span>'
+    --if charging then
+    --    widgets[3].markup = '<span color="' .. '#FFFFFF' .. '" size="10000">  </span>'
+    --else
+        widgets[3].markup = '<span color="' .. '#FFFFFF' .. '" size="10000">' .. charge .. '</span>'
+    --end
+    widgets[4].markup = '<span color="#FFFFFF" size="10000">' .. status .. '</span>'
     --n, _ = charge:gsub("%%", "")
     --n = tonumber(n)
     --local style = ''
@@ -162,10 +166,11 @@ return wibox.widget{
         wibox.widget{
             battery_widget,
             wibox.container.margin(
-                utils.make_col({
-                    battery_value,
-                    battery_state
-                }),
+                battery_value,
+                --utils.make_col({
+                --    battery_value,
+                --    battery_state
+                --}),
                 8,
                 8
             ),

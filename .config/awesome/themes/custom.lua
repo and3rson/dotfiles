@@ -15,8 +15,8 @@ local this_dir = home_dir .. '.config/awesome/themes/'
 
 local theme = {}
 
---theme.font          = "DejaVuSansMono Nerd Font 9"
-theme.font          = "RobotoMono Nerd Font Medium 9"
+theme.font          = "DejaVuSansMono Nerd Font 9"
+--theme.font          = "RobotoMono Nerd Font Medium 9"
 --theme.font          = "SauceCodePro Nerd Font Medium 9"
 --theme.font          = "Pixeled 5"
 --theme.font          = "Symtext 8"
@@ -40,23 +40,37 @@ theme.bg_systray    = '#00000000'
 --theme.fg_soft       = "#888888"
 --theme.fg_normal     = "#CACAC0"
 theme.fg_normal     = "#C0C0C0"
-theme.fg_bright     = "#44B7F7"
+theme.fg_bright     = "#D64937"
 theme.fg_focus      = "#FFFFFF"
 theme.fg_urgent     = "#FF0087"
 theme.fg_minimize   = "#ffffff"
 
-theme.fg_ping = '#44B7F7'
+--theme.fg_ping = '#44B7F7'
+--theme.fg_ping_warning = '#FF0087'
+--theme.fg_battery = '#44B7F7'
+--theme.fg_battery_warning = '#FF0087'
+--theme.fg_battery_charging = '#00FF5F'
+----theme.fg_date = '#00FF5F'
+--theme.fg_date = '#44B7F7'
+--theme.fg_date_today = '#000000'
+--theme.bg_date_today = '#FF0087'
+----theme.fg_date = '#44B7F7'
+--theme.fg_volume = '#44B7F7'
+--theme.fg_term = '#44B7F7'
+--theme.fg_mem = '#00FF5F'
+--theme.fg_cpu = '#74AEAB'
+theme.fg_ping = "#D64937"
 theme.fg_ping_warning = '#FF0087'
-theme.fg_battery = '#44B7F7'
+theme.fg_battery = "#D64937"
 theme.fg_battery_warning = '#FF0087'
 theme.fg_battery_charging = '#00FF5F'
 --theme.fg_date = '#00FF5F'
-theme.fg_date = '#44B7F7'
+theme.fg_date = "#D64937"
 theme.fg_date_today = '#000000'
-theme.bg_date_today = '#FF0087'
+theme.bg_date_today = '#D64937'
 --theme.fg_date = '#44B7F7'
-theme.fg_volume = '#44B7F7'
-theme.fg_term = '#44B7F7'
+theme.fg_volume = "#D64937"
+theme.fg_term = "#D64937"
 theme.fg_mem = '#00FF5F'
 theme.fg_cpu = '#74AEAB'
 
@@ -84,8 +98,8 @@ theme.taglist_font = 'RobotoMono Nerd Font Medium 10'
 --theme.taglist_shape_border_color_focus = '#FF0000'
 
 --theme.progressbar_margins = {bottom=23}
---theme.progressbar_margins = {bottom=3, top=3}
-theme.progressbar_margins = {bottom=0, top=0}
+theme.progressbar_margins = {bottom=3, top=3}
+--theme.progressbar_margins = {bottom=0, top=0}
 --theme.progressbar_margins = {bottom=2, top=20}
 
 -- There are other variable sets

@@ -51,15 +51,25 @@ if [[ -z "$1" ]]
 then
     echo Starting AwesomeWM
     start-pulseaudio-x11 &
-    compton --config ~/.compton.conf -b -f --backend glx
+    #compton --config ~/.compton.conf -b -f --backend glx --blur-background --blur-kern=3x3gaussian --inactive-dim-fixed
+    compton --config ~/.compton.conf -b -f
     xbanish &
     #xcape -e 'Overlay1_Enable=Escape'
     ~/.config/qtile/bin/kbfix.sh
     ~/.config/qtile/bin/set_bg.sh
 
     #xinput set-prop 'TPPS/2 IBM TrackPoint' 323 -0.5
-    xinput set-prop 'TPPS/2 IBM TrackPoint' 273 1.6
-    synclient CoastingSpeed=0 VertScrollDelta=200 HorizScrollDelta=200
+    xinput set-prop 'TPPS/2 IBM TrackPoint' 'Device Accel Constant Deceleration' 1.8
+    xinput set-prop 'TPPS/2 IBM TrackPoint' 'Device Accel Velocity Scaling' 5
+
+    xinput set-prop "TPPS/2 IBM TrackPoint" "Evdev Wheel Emulation" 1
+    xinput set-prop "TPPS/2 IBM TrackPoint" "Evdev Wheel Emulation Button" 2
+    xinput set-prop "TPPS/2 IBM TrackPoint" "Evdev Wheel Emulation Timeout" 200
+
+    xinput set-prop "TPPS/2 IBM TrackPoint" "Evdev Wheel Emulation Axes" 6 7 4 5
+
+
+    synclient CoastingSpeed=0 VertScrollDelta=500 HorizScrollDelta=500
 
     nm-applet &
     blueman-applet &

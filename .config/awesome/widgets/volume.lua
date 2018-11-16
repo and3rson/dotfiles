@@ -34,12 +34,12 @@ local volume_widget = wibox.widget{
     --ticks=true,
     --ticks_size=2,
     --ticks_gap=1,
-    margins=beautiful.progressbar_margins
-    --margins={
-    --    top=23,
-    --    --top=7,
-    --    --bottom=6
-    --}
+    --margins=beautiful.progressbar_margins
+    margins={
+        bottom=22,
+        --top=7,
+        --bottom=6
+    }
 }
 
 local volume_value = wibox.widget{
@@ -68,7 +68,7 @@ local update_widget = function()
     else
         icon_str = ICONS.speaker
     end
-    icon.markup = '<span size="2000"> </span><span color="' .. beautiful.fg_volume .. '" size="16000">' .. icon_str .. '</span>'
+    icon.markup = '<span size="2000"> </span><span color="' .. beautiful.fg_volume .. '" size="14000">' .. icon_str .. '</span>'
     volume_widget.value = value
     volume_value.markup = '<span color="' .. '#FFFFFF'.. '">' .. value .. '%</span>'
     --widget.markup = '<b><span>  ' .. value .. '</span></b>'

@@ -30,7 +30,7 @@ local icon_widget = wibox.widget({
 local row1_widget = wibox.widget({
     paddings=2,
     markup='checking',
-    forced_width=48,
+    forced_width=52,
     align='left',
     widget=wibox.widget.textbox
 })
@@ -45,13 +45,17 @@ local row2_widget = wibox.widget({
 
 local update_widget = function(widget, stdout)
     awful.spawn.easy_async('nmcli -m multiline -o -t d show ' .. DEVICE, function(stdout, stderr, reason, exit_code)
-        local conn = '(Unknown)'
+        local conn = nil
         for key, value in stdout:gmatch('(%S+):(%S+)') do
             if key == 'GENERAL.CONNECTION' then
                 conn = value
             end
         end
-        row2_widget.markup = '<span color="#FFFFFF" size="8000">' .. conn .. '</span>'
+        if conn == nil then
+            row2_widget.markup = '<span color="' .. beautiful.fg_ping_warning .. '">@ unknown</span>'
+        else
+            row2_widget.markup = '<span color="#FFFFFF">@ ' .. conn .. '</span>'
+        end
         awful.spawn.easy_async('fping -c1 -t500 google.com', function(stdout, stderr, reason, exit_code)
             local latency = stdout:match('([0-9\\.]+) ms')
             if latency ~= nil then
@@ -60,18 +64,18 @@ local update_widget = function(widget, stdout)
             if latency == nil or latency > 100 then
                 if latency ~= nil then
                     latency = math.min(latency, 999)
-                    row1_widget.markup = '<span color="' .. '#FFFFFF' .. '" size="8000">' .. latency .. ' ms</span>'
+                    row1_widget.markup = '<span color="' .. beautiful.fg_ping_warning .. '">' .. latency .. ' ms</span>'
                 else
-                    row1_widget.markup = '<span color="' .. '#FFFFFF' .. '" size="8000">offline</span>'
+                    row1_widget.markup = '<span color="' .. beautiful.fg_ping_warning .. '">offline</span>'
                 end
                 progressbar.color = beautiful.fg_ping_warning .. '80'
                 progressbar.value = 100
-                icon_widget.markup = '<span color="' .. beautiful.fg_ping .. '" size="16000"></span>'
+                icon_widget.markup = '<span color="' .. beautiful.fg_ping_warning .. '" size="14000"></span>'
             else
-                row1_widget.markup = '<span color="' .. '#FFFFFF' .. '" size="8000">' .. latency .. ' ms</span>'
+                row1_widget.markup = '<span color="' .. '#FFFFFF' .. '">' .. latency .. ' ms</span>'
                 progressbar.color = beautiful.fg_ping .. '80'
                 progressbar.value = latency
-                icon_widget.markup = '<span color="' .. beautiful.fg_ping .. '" size="16000"></span>'
+                icon_widget.markup = '<span color="' .. beautiful.fg_ping .. '" size="14000"></span>'
             end
         end)
     end)
@@ -88,9 +92,9 @@ gears.timer{
 local widget = utils.make_row({
     icon_widget,
     wibox.widget({
-        progressbar,
+        --progressbar,
         wibox.container.margin(
-            utils.make_col({
+            utils.make_row({
                 row1_widget,
                 row2_widget
             }),

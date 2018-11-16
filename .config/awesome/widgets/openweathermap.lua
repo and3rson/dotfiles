@@ -4,6 +4,7 @@ local gears = require("gears")
 local beautiful = require("beautiful")
 local json = require("json")
 local utils = require("utils")
+local owfont = require('../owfont')
 --local http = require("socket.http")
 
 local APPID = '5041ca48d55a6669fe8b41ad1a8af753'
@@ -30,10 +31,17 @@ local openweathermap_widget = wibox.widget{
 --    widget=wibox.widget.textbox
 --}
 local icon_widget = wibox.widget{
-    forced_width=24,
-    forced_height=24,
-    widget=wibox.widget.imagebox
+    --forced_width=24,
+    --forced_height=24,
+    markup='~',
+    widget=wibox.widget.textbox
 }
+
+--local icon_widget = wibox.widget{
+--    forced_width=24,
+--    forced_height=24,
+--    widget=wibox.widget.imagebox
+--}
 
 local fetch_icon = function(code)
     local filename = CACHE_DIR .. code .. '.png'
@@ -58,7 +66,8 @@ local fetch_weather = function()
         weather_data = data
         local temp = tonumber(data.main.temp) - 273.15
         openweathermap_widget.markup = '<span color="#FFFFFF">' .. math.floor(temp) .. '°C</span>'
-        fetch_icon(data.weather[1].icon)
+        icon_widget.markup = '<span size="18000" color="' .. beautiful.fg_bright .. '">' .. utf8.char(owfont[data.weather[1].id]) .. '</span>'
+        --fetch_icon(data.weather[1].icon)
     end)
     return false
 end

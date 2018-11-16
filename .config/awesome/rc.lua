@@ -36,9 +36,10 @@ local openweathermap = require("widgets.openweathermap")
 --local df = require("widgets.df")
 local date = require("widgets.date")
 local battery = require("widgets.battery")
+--local assault = require("widgets.assault")
 local term = require("widgets.term")
 --local fan = require("widgets.fan")
-local bbswitch = require("widgets.bbswitch")
+--local bbswitch = require("widgets.bbswitch")
 local brightness = require("widgets.brightness")
 local ping = require("widgets.ping")
 
@@ -177,18 +178,18 @@ for s = 1, screen.count() do
         right_layout:add(spacer)
         right_layout:add(memwidget)
         right_layout:add(spacer)
-        right_layout:add(bbswitch)
-        right_layout:add(spacer)
+        --right_layout:add(bbswitch)
+        --right_layout:add(spacer)
         right_layout:add(openweathermap)
         right_layout:add(spacer)
         right_layout:add(ping)
         right_layout:add(spacer)
         --right_layout:add(fan)
         --right_layout:add(spacer)
-        right_layout:add(brightness)
-        right_layout:add(spacer)
-        right_layout:add(term)
-        right_layout:add(spacer)
+        --right_layout:add(brightness)
+        --right_layout:add(spacer)
+        --right_layout:add(term)
+        --right_layout:add(spacer)
         right_layout:add(volume)
         --right_layout:add(awful.widget.clienticon())
     end
@@ -196,6 +197,14 @@ for s = 1, screen.count() do
     right_layout:add(battery)
     right_layout:add(spacer)
     right_layout:add(date)
+    --right_layout:add(assault({
+    --    normal_color=beautiful.fg_battery,
+    --    critical_color=beautiful.fg_battery_warning,
+    --    charging_color=beautiful.fg_battery_charging,
+    --    stroke_width=1,
+    --    font='DejaVu Sans Mono Bold 10',
+    --    peg_width=2
+    --}))
 
     layout:set_left(left_layout)
     --layout:set_middle(center_layout)
