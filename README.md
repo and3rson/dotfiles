@@ -20,7 +20,6 @@ Those are my dotfiles.
   - readline ([.inputrc](https://www.gnu.org/software/bash/manual/html_node/Readline-Init-File-Syntax.html#Readline-Init-File-Syntax))
   - [dunst](https://dunst-project.org/)
   - [hexchat](https://hexchat.github.io/)
-  - [qtile](http://www.qtile.org/)
   - [GTK 2](https://www.gtk.org/)
   - wallpapers
 
