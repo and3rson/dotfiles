@@ -68,7 +68,7 @@ local update_widget = function()
     else
         icon_str = ICONS.speaker
     end
-    icon.markup = '<span size="2000"> </span><span color="' .. beautiful.fg_volume .. '" size="14000">' .. icon_str .. '</span>'
+    icon.markup = '<span size="2000"> </span><span color="' .. beautiful.fg_volume .. '" size="12000">' .. icon_str .. '</span>'
     volume_widget.value = value
     volume_value.markup = '<span color="' .. '#FFFFFF'.. '">' .. value .. '%</span>'
     --widget.markup = '<b><span>  ' .. value .. '</span></b>'
@@ -91,8 +91,8 @@ gears.timer {
 local widget = utils.make_row{
     icon,
     wibox.widget{
-        volume_widget,
-        wibox.container.margin(volume_value, 8, 8),
+        --volume_widget,
+        wibox.container.margin(volume_value, 0, 0),
         layout=wibox.layout.stack
     },
 }

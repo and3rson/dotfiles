@@ -21,7 +21,7 @@ hi! StatusBarWarning ctermfg=3 ctermbg=233 cterm=bold
 hi! StatusBarError ctermfg=1 ctermbg=233 cterm=bold
 
 hi! StatusLine ctermfg=248 ctermbg=233 cterm=none
-hi! StatusLineNC ctermfg=242 ctermbg=233 cterm=none
+hi! StatusLineNC ctermfg=238 ctermbg=none cterm=none
 
 " PieCrumbs
 hi! PieClass ctermfg=197 ctermbg=235 cterm=bold

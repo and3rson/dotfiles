@@ -52,6 +52,7 @@ then
     echo Starting AwesomeWM
     start-pulseaudio-x11 &
     #compton --config ~/.compton.conf -b -f --backend glx --blur-background --blur-kern=3x3gaussian --inactive-dim-fixed
+    # https://github.com/tryone144/compton
     compton --config ~/.compton.conf -b -f
     xbanish &
     #xcape -e 'Overlay1_Enable=Escape'
@@ -68,6 +69,7 @@ then
 
     xinput set-prop "TPPS/2 IBM TrackPoint" "Evdev Wheel Emulation Axes" 6 7 4 5
 
+    xinput set-prop 'TPPS/2 IBM TrackPoint' 'Evdev Wheel Emulation Inertia' 25
 
     synclient CoastingSpeed=0 VertScrollDelta=500 HorizScrollDelta=500
 

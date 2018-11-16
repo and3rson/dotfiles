@@ -4,7 +4,8 @@ local wibox = require('wibox')
 local watch = require("awful.widget.watch")
 local beautiful = require("beautiful")
 
-local CMD = [[date +"%a ─ %d %b ─ %H:%M"]]
+local CMD = [[date +"%d %b ─ %H:%M"]]
+--local CMD = [[date +"%a ─ %d %b ─ %H:%M"]]
 --local CMD = [[date +"%d %B %Y, %H:%M"]]
 --local CMD = [[date +"%d %B %Y, %H:%M"]]
 
@@ -46,16 +47,16 @@ local update_widget = function(widget, stdout, _, _, _)
     if hour < 6 or hour >= 18 then
         icon_name = 'night'
         --icon_color = '#AAAAFF'
-        icon_color = beautiful.fg_date
+        icon_color = '#FFFFFF'
     else
         icon_name = 'day'
         --icon_color = beautiful.fg_normal
         --icon_color = '#FFFF77'
-        icon_color = beautiful.fg_date
+        icon_color = '#FFFFFF'
     end
     --icon_color = beautiful.bg_focus
     --icon_color = beautiful.fg_normal
-    widget[1].markup = '<span size="2000"> </span><span color="' .. icon_color .. '" size="14000">' .. ICONS[icon_name] .. '</span> '
+    widget[1].markup = '<span size="2000"> </span><span color="' .. beautiful.fg_date .. '" size="14000">' .. ICONS[icon_name] .. '</span> '
     widget[2].markup = '<span color="' .. icon_color .. '">' .. stdout .. '  </span>'
     widget[3].value = hour
 end

@@ -185,7 +185,8 @@ function make_prompt() {
             else
                 echo -n " (detached$C)"
             fi
-            fb 32 234
+            #fb 32 234
+            fb 203 234
             echo -n "  $HASH"
             fb 241 234
             echo -n " ($AUTHOR: $MESSAGE)"
@@ -247,7 +248,8 @@ function make_prompt() {
                 CURRENT=$((CURRENT+1))
                 if [[ "$CURRENT" != "$COUNT" ]]
                 then
-                    fgcol 32
+                    #fgcol 32
+                    fgcol 203
                     echo -n " ${PART::5}"
                     if [[ "${#PART}" -gt "5" ]]
                     then
@@ -265,7 +267,8 @@ function make_prompt() {
                 #    echo -n "$PWD_SEP"
                 #    #fb 32 234 0 -
                 else
-                    fgcol 32
+                    #fgcol 32
+                    fgcol 203
                     echo -n " ${PART}"
                 fi
             done
@@ -312,11 +315,14 @@ function make_prompt() {
                 #NUM2=8
                 BG=$((((NUM1%7)+1)*36-20 + NUM2%9))
                 fb $BG 234
-                echo -n "$i "
+                #echo -n "$i "
+                echo -n "${i::5}"
                 #echo $N $COUNT
                 if [[ "$N" != "$COUNT" ]]
                 then
-                    echo -n " " # "
+                    fb 238 234
+                    echo -en " / "
+                    #echo -n " " # "
                 fi
                 #echo -n a $i b
                 #echo -n 1${i}${i}2
@@ -346,7 +352,7 @@ function make_prompt() {
     ret_part
     #end_part
     brk
-    pwd_part
+    pwd_part_old
     #end_part
     #dollar_part
     echo -n " $RST "

@@ -16,7 +16,7 @@ local ICONS = {
     charging={
         icons={''},
         count=1,
-        icon_size=16000
+        icon_size=10000
     }
     --charging={
     --    icons={'', '', '', '', '', '', ''},

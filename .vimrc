@@ -261,7 +261,8 @@ augroup END
 " Vertical sep
 "set fillchars+=vert:\ " Stuff
 "set fillchars+=vert:\│,stl:\ ,stlnc:\ ,fold:\―"
-set fillchars+=vert:\ ,stl:\ ,stlnc:\ ,fold:\ ,eob:\ "
+"set fillchars+=vert:\ ,stl:\ ,stlnc:\ ,fold:\ ,eob:\ "
+set fillchars+=vert:\ ,stl:\ ,stlnc:\ ,fold:\ ,eob:~
 "set fillchars+=vert:\|
 
 " │
