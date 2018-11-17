@@ -273,7 +273,7 @@ local globalkeys = awful.util.table.join(
     awful.key({}, 'XF86AudioPrev', function() awful.util.spawn_with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.clay /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous') end),
 
     -- Lock screen
-    awful.key({ctrl, alt}, 'l', function() awful.util.spawn('/sh/i3lock.sh') end),
+    awful.key({ctrl, alt}, 'l', function() awful.util.spawn('i3lock.sh') end),
 
     -- Notifications
     awful.key({super}, 'Escape', function() naughty.destroy_all_notifications() end),
@@ -299,7 +299,7 @@ local globalkeys = awful.util.table.join(
     awful.key({super}, "n", function() awful.util.spawn('networkmanager_dmenu') end),
 
     -- Screenshot
-    awful.key({super}, "p", function() awful.util.spawn('/sh/sshot.sh') end),
+    awful.key({super}, "p", function() awful.util.spawn('sshot.sh') end),
 
     -- HPC YouTube player control
     awful.key({super}, ",", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "prev"}\'') end),
