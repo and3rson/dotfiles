@@ -169,7 +169,7 @@ inoremap <C-p> <C-X><C-U>
 set completefunc=Compl
 
 " Completion tweaks
-"inoremap <expr> <Esc>      pumvisible() ? "\<C-o>\<Esc>" : "\<Esc>"
+inoremap <expr> <Esc>      pumvisible() ? "\<C-o>\<Esc>" : "\<Esc>"
 inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
 "inoremap <expr> <Down>     pumvisible() ? "\<C-n>" : "\<Down>"
 "inoremap <expr> <Up>       pumvisible() ? "\<C-p>" : "\<Up>"

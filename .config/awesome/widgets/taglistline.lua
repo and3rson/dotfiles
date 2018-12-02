@@ -18,11 +18,11 @@ function taglistline:draw(_, cr, width, height)
     local count = 0
     for _, _ in pairs(self.screen.tags) do count = count + 1 end
     local tag_width = width / count
-    cr:set_source(gears.color(beautiful.fg_bright))
+    cr:set_source(gears.color(beautiful.bg_focus))
     for index, tag in pairs(self.screen.tags) do
         if tag.selected then
             local start = (index - 1) * tag_width
-            start = tonumber(string.format('%.1f', (start + last_pos) / 2))
+            start = tonumber(string.format('%.1f', (start + last_pos * 3) / 4))
             if start == last_pos then
                 if self.t.started then self.t:stop() end
             else
@@ -51,7 +51,7 @@ function taglistline:draw(_, cr, width, height)
             local center = (index - 1) * tag_width + (tag_width + self.margin - 1) / 2
             local left = center - ((client_count - 1) / 2) * 4 + ((i - 1) * 4)
             cr:move_to(left, 0)
-            cr:line_to(left, 3)
+            cr:line_to(left, 2)
             cr:stroke()
         end
     end

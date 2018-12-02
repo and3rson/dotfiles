@@ -27,6 +27,17 @@ esac
 #     [ "$(awk '$5=="/" {print $1}' </proc/1/mountinfo)" != "$(awk '$5=="/" {print $1}' </proc/$$/mountinfo)" ] && return 0 || return 1
 # }
 
+fetch_cursor_position() {
+  local pos
+
+  IFS='[;' read -p $'\e[6n' -d R -a pos -rs || echo "failed with error: $? ; ${pos[*]}"
+  #echo "${pos[1]}:${pos[2]}"
+  echo "${pos[2]}"
+}
+
+chars_remaining() {
+    echo $((`tput cols` - `fetch_cursor_position`))
+}
 
 function make_prompt() {
     RETCODE=$?
@@ -73,9 +84,25 @@ function make_prompt() {
         printf -v "LAST_FORE_MOD" "$FORE_MOD"
     }
 
+    function hr_line() {
+        #fb 32 234
+        if [[ "$RETCODE" != "0" ]]
+        then
+            fb 160
+        else
+            fb 236
+        fi
+        S=`printf "%$(tput cols)s\r"`
+        #echo $S
+        echo -n ${S// /─}
+    }
+
     function brk() {
         if [ "$PRINTED" -gt 0 ]
         then
+            #fb 32 234
+            #echo -en '\e[K\e[0m'
+            #printf "%`chars_remaining`s" | tr ' ' '-'
             printf -v "LAST_BACK" ""
             #echo -e "\e[0;42m\e[K asd"
             echo
@@ -143,9 +170,9 @@ function make_prompt() {
             then
                 BRANCH="${BRANCH::23}$ELLIPSIS"
             fi
-            if [ "${#MESSAGE}" -gt 20 ]
+            if [ "${#MESSAGE}" -gt 30 ]
             then
-                MESSAGE="${MESSAGE::19}$ELLIPSIS"
+                MESSAGE="${MESSAGE::29}$ELLIPSIS"
             fi
             if [ "$OUT" == "" ]
             then
@@ -202,8 +229,12 @@ function make_prompt() {
             #fb 255 160
             fb 255 160 1
             echo -en " $RETCODE $RST"
-            echo -en "\[$txtrst\]"
+            fb 160
+        else
+            fb 234
         fi
+        #echo -en "\ue0b0"
+        #echo -en "\[$txtrst\]"
     }
 
     function dirs_part() {
@@ -316,7 +347,17 @@ function make_prompt() {
                 BG=$((((NUM1%7)+1)*36-20 + NUM2%9))
                 fb $BG 234
                 #echo -n "$i "
-                echo -n "${i::5}"
+                i_len=${#i}
+                i=${i::5}
+                if [[ "$i_len" -gt "5" ]]
+                then
+                    i="$i"
+                fi
+                #if [[ "$i" == "~" ]]
+                #then
+                #    i="ﰣ"
+                #fi
+                echo -n "$i"
                 #echo $N $COUNT
                 if [[ "$N" != "$COUNT" ]]
                 then
@@ -342,6 +383,7 @@ function make_prompt() {
         echo -n ' $'
     }
 
+    #hr_line
     ssh_part
     #date_part
     venv_part

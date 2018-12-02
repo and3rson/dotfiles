@@ -1,4 +1,5 @@
 !tango color scheme
+!Xft.dpi: 124
 xterm*color0: #1e1e1e
 xterm*color1: #cc0000
 xterm*color2: #4e9a06

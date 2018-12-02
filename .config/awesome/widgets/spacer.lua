@@ -13,8 +13,10 @@ local wibox = require('wibox')
 --    spacer_widget,
 --    1, 1, 0, 0
 --)
-return wibox.container.margin(
-    wibox.widget{},
-    10, 10, 0, 0,
-    'FF0000'
-)
+return function()
+    return wibox.container.margin(
+        wibox.widget{},
+        12, 12, 0, 0,
+        'FF0000'
+    )
+end

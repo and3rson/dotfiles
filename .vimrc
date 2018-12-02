@@ -15,6 +15,9 @@ let g:python_highlight_indent_errors = 1
 let g:python_space_error_highlight = 1
 
 let g:python_self_cls_highlight = 1
+let g:pymode_python = 'python3'
+
+"let g:python_host_prog='/usr/bin/python'
 
 set rtp+=~/.vim/bundle/Vundle.vim
 set rtp+=~/.vim/scripts
@@ -79,6 +82,9 @@ Plugin 'fidian/hexmode'
 "Plugin 'mattn/vim-xxdcursor'
 
 "Plugin 'chriskempson/base16-vim'
+
+" Python
+Plugin 'python-mode/python-mode'
 
 call vundle#end()                    " required
 
@@ -788,3 +794,42 @@ let g:colorizer_auto_filetype='css,html,lua'
 " Hex mode
 let g:hexmode_xxd_options = '-g 1'
 
+" Python-mode
+let g:pymode_rope = 1
+let g:pymode_doc = 1
+let g:pymode_doc_bind = '<C-k>'
+let g:pymode_rope_completion = 1
+let g:pymode_rope_complete_on_dot = 0
+let g:pymode_rope_completion_bind = '<C-Space>'
+let g:pymode_rope_lookup_project = 1
+let g:pymode_rope_goto_definition_bind = '<Return>'
+let g:pymode_quickfix_minheight = 6
+let g:pymode_quickfix_maxheight = 8
+let g:pymode_options_max_line_length = 120
+let g:pymode_lint_options_pep8 = {'max_line_length': g:pymode_options_max_line_length}
+let g:pymode_lint_options_pylint = {'max-line-length': g:pymode_options_max_line_length}
+let g:pymode_syntax_all = 1
+let g:pymode_rope_goto_definition_cmd = 'vnew'
+
+fu! PreviewWindowOpened()
+    for nr in range(1, winnr('$'))
+        if getwinvar(nr, "&pvw") == 1
+            " found a preview
+            return 1
+        endif
+    endfor
+    return 0
+endfun
+
+fu! TogglePyDoc()
+    if PreviewWindowOpened()
+        pclose
+    else
+        call pymode#doc#find()
+    endi
+endfun
+
+nmap K :call TogglePyDoc()<CR>
+
+" https://github.com/python-mode/python-mode/issues/384#issuecomment-38399715
+set completeopt=menu

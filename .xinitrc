@@ -58,10 +58,11 @@ then
     #xcape -e 'Overlay1_Enable=Escape'
     ~/.scripts/kbfix.sh
     ~/.scripts/set_bg.sh
+    xsetroot -cursor_name X_cursor
 
     #xinput set-prop 'TPPS/2 IBM TrackPoint' 323 -0.5
     xinput set-prop 'TPPS/2 IBM TrackPoint' 'Device Accel Constant Deceleration' 1.8
-    xinput set-prop 'TPPS/2 IBM TrackPoint' 'Device Accel Velocity Scaling' 5
+    xinput set-prop 'TPPS/2 IBM TrackPoint' 'Device Accel Velocity Scaling' 20
 
     xinput set-prop "TPPS/2 IBM TrackPoint" "Evdev Wheel Emulation" 1
     xinput set-prop "TPPS/2 IBM TrackPoint" "Evdev Wheel Emulation Button" 2
@@ -76,7 +77,7 @@ then
     nm-applet &
     blueman-applet &
 
-    termite --class HomeTerm -e /sh/stmux.sh &
+    termite --class HomeTerm -e ~/.scripts/stmux.sh &
     #chromium &
     firefox-developer-edition &
     telegram-desktop &

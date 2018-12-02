@@ -2,7 +2,7 @@
 
 set -e
 
-export DISPLAY=:0
+# export DISPLAY=:0
 export HOME=/home/anderson
 #export XAUTHORITY=/home/anderson/.Xauthority
 

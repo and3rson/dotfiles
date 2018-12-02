@@ -28,14 +28,15 @@ naughty.config.presets.critical.bg = beautiful.bg_focus
 -- Widgets
 local spacer = require("widgets.spacer")
 local taglistline = require("widgets.taglistline")
-local clay = require("widgets.clay")
+--local clay = require("widgets.clay")
 local cpuwidget = require("widgets.cpuwidget")
 local memwidget = require("widgets.memwidget")
-local volume = require("widgets.volume")
+local volume_widget = require("widgets.volume")()
 local openweathermap = require("widgets.openweathermap")
 --local df = require("widgets.df")
 local date = require("widgets.date")
 local battery = require("widgets.battery")
+--local battery2 = require("widgets.battery2")
 --local assault = require("widgets.assault")
 local term = require("widgets.term")
 --local fan = require("widgets.fan")
@@ -167,36 +168,38 @@ for s = 1, screen.count() do
 
     local right_layout = wibox.layout.fixed.horizontal()
     local center_layout = wibox.layout.fixed.horizontal()
-    center_layout:add(date)
+    center_layout:add(date())
     if s == 1 then
         local systray = wibox.widget.systray()
         systray:set_base_size(20)
         right_layout:add(wibox.container.margin(systray, 2, 2, 2, 2))
 
-        right_layout:add(spacer)
-        right_layout:add(cpuwidget)
-        right_layout:add(spacer)
-        right_layout:add(memwidget)
-        right_layout:add(spacer)
+        right_layout:add(spacer())
+        right_layout:add(cpuwidget())
+        right_layout:add(spacer())
+        right_layout:add(memwidget())
+        right_layout:add(spacer())
         --right_layout:add(bbswitch)
         --right_layout:add(spacer)
-        right_layout:add(openweathermap)
-        right_layout:add(spacer)
-        right_layout:add(ping)
-        right_layout:add(spacer)
+        right_layout:add(openweathermap())
+        right_layout:add(spacer())
+        right_layout:add(ping())
+        right_layout:add(spacer())
         --right_layout:add(fan)
         --right_layout:add(spacer)
-        --right_layout:add(brightness)
-        --right_layout:add(spacer)
-        --right_layout:add(term)
-        --right_layout:add(spacer)
-        right_layout:add(volume)
+        right_layout:add(brightness())
+        right_layout:add(spacer())
+        right_layout:add(term())
+        right_layout:add(spacer())
+        right_layout:add(volume_widget)
         --right_layout:add(awful.widget.clienticon())
     end
-    right_layout:add(spacer)
-    right_layout:add(battery)
-    right_layout:add(spacer)
-    right_layout:add(date)
+    right_layout:add(spacer())
+    right_layout:add(battery())
+    --right_layout:add(spacer)
+    --right_layout:add(battery2)
+    right_layout:add(spacer())
+    right_layout:add(date())
     --right_layout:add(assault({
     --    normal_color=beautiful.fg_battery,
     --    critical_color=beautiful.fg_battery_warning,
@@ -260,8 +263,8 @@ local globalkeys = awful.util.table.join(
     awful.key({super}, "r", function() awful.util.spawn('rofi -show run -terminal termite') end),
 
     -- Volume control
-    awful.key({}, 'XF86AudioRaiseVolume', function() volume.increase_volume() end),
-    awful.key({}, 'XF86AudioLowerVolume', function() volume.decrease_volume() end),
+    awful.key({}, 'XF86AudioRaiseVolume', function() volume_widget.increase_volume() end),
+    awful.key({}, 'XF86AudioLowerVolume', function() volume_widget.decrease_volume() end),
 
     -- Backlight
     awful.key({}, 'XF86MonBrightnessUp', function() brightness.increase() end),
@@ -273,7 +276,7 @@ local globalkeys = awful.util.table.join(
     awful.key({}, 'XF86AudioPrev', function() awful.util.spawn_with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.clay /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous') end),
 
     -- Lock screen
-    awful.key({ctrl, alt}, 'l', function() awful.util.spawn('i3lock.sh') end),
+    awful.key({ctrl, alt}, 'l', function() awful.util.spawn('/home/anderson/.scripts/i3lock.sh') end),
 
     -- Notifications
     awful.key({super}, 'Escape', function() naughty.destroy_all_notifications() end),
@@ -299,7 +302,7 @@ local globalkeys = awful.util.table.join(
     awful.key({super}, "n", function() awful.util.spawn('networkmanager_dmenu') end),
 
     -- Screenshot
-    awful.key({super}, "p", function() awful.util.spawn('sshot.sh') end),
+    awful.key({super}, "p", function() awful.util.spawn('/home/anderson/.scripts/sshot.sh') end),
 
     -- HPC YouTube player control
     awful.key({super}, ",", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "prev"}\'') end),
