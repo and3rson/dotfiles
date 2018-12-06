@@ -258,6 +258,7 @@ local globalkeys = awful.util.table.join(
     -- Standard program
     awful.key({super}, "Return", function () awful.util.spawn(terminal) end),
     awful.key({super, ctrl}, "r", awesome.restart),
+    awful.key({super, ctrl}, "q", awesome.quit),
 
     -- Run rofi
     awful.key({super}, "r", function() awful.util.spawn('rofi -show run -terminal termite') end),

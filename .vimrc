@@ -44,7 +44,7 @@ Plugin 'tmux-plugins/vim-tmux'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 
-Plugin 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"Plugin 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
 "Plugin 'joeytwiddle/sexy_scroller.vim'
 Plugin 'mhinz/vim-startify'
@@ -84,7 +84,8 @@ Plugin 'fidian/hexmode'
 "Plugin 'chriskempson/base16-vim'
 
 " Python
-Plugin 'python-mode/python-mode'
+"Plugin 'python-mode/python-mode'
+Plugin 'davidhalter/jedi-vim'
 
 call vundle#end()                    " required
 
@@ -104,7 +105,10 @@ let g:molokai_original = 1
 let g:rehash256 = 1
 colorscheme molokai
 
-set tabstop=4 softtabstop=0 expandtab shiftwidth=4 smarttab
+set tabstop=4 softtabstop=4 expandtab shiftwidth=4 smarttab
+
+" Let's try this.
+noremap - :
 
 " Gui
 set guioptions-=m  "remove menu bar
@@ -121,6 +125,10 @@ set splitbelow
 set splitright
 
 nnoremap <End> $
+
+" Move to next/prev non-whitespace line
+nnoremap } /^\S<cr>:nohlsearch<cr>
+nnoremap { ?^\S<cr>:nohlsearch<cr>
 
 set number
 "set relativenumber
@@ -202,8 +210,10 @@ map <PageDown> <C-d>
 "map <PageUp> 10<Up>
 "map <PageDown> 10<Down>
 
-"map <S-Up> <C-y>
-"map <S-Down> <C-e>
+map <S-Up> <C-y>
+map <S-Down> <C-e>
+"map <S-Up> {
+"map <S-Down> }
 
 " Ctrl-P
 let g:ctrlp_funky_syntax_highlight = 1
@@ -350,9 +360,6 @@ hi MatchParen ctermfg=197 ctermbg=NONE cterm=bold,underline
 hi VertSplit ctermbg=none
 "hi VertSplit ctermbg=none
 
-" Indentation
-set tabstop=4 softtabstop=4 shiftwidth=4
-
 " Chars
 set list listchars=tab:▏ ,trail:·,extends:»,precedes:«,nbsp:×
 " 
@@ -410,14 +417,14 @@ au BufWritePre * if !&bin | call CleanUp() | endi
 " Allow switching to other buffer if current buffer has unsaved changes
 set hidden
 
-let g:CursorColumnI = 0 "the cursor column position in INSERT
+"let g:CursorColumnI = 0 "the cursor column position in INSERT
 
 fu! InsertEnterHook()
     ":set norelativenumber
     "hi BufTabLineActive ctermbg=161 ctermfg=255 cterm=bold
     "hi BufTabLineCurrent ctermbg=161 ctermfg=255 cterm=bold
     hi CursorLineNr ctermfg=161
-    let g:CursorColumnI = col('.')
+    "let g:CursorColumnI = col('.')
 endf
 
 fu! InsertLeaveHook()
@@ -432,7 +439,7 @@ endf
 
 au InsertEnter * call InsertEnterHook()
 au InsertLeave * call InsertLeaveHook()
-au CursorMovedI * let CursorColumnI = col('.')
+"au CursorMovedI * let CursorColumnI = col('.')
 
 "let &t_EI .= "\<Esc>[2 q\<Esc>]12;green\x7"
 "let &t_SI .= "\<Esc>[2 q\<Esc>]12;red\x7"
@@ -471,8 +478,10 @@ let g:ale_linters = {
 nnoremap <silent> ; :lprev<CR>
 nnoremap <silent> ' :lnext<CR>
 
-let g:ale_sign_error = ' '
-let g:ale_sign_warning = ' '
+"let g:ale_sign_error = ' '
+"let g:ale_sign_warning = ' '
+let g:ale_sign_error = ' E'
+let g:ale_sign_warning = ' W'
 let g:ale_lint_delay = 500
 let g:ale_lint_on_enter = 0
 let g:ale_lint_on_filetype_changed = 0
@@ -482,6 +491,7 @@ let g:ale_lint_on_insert_leave = 0
 
 "let g:ale_python_pylint_options = '-j2 --load-plugins pylint_django'
 let g:ale_python_pylint_options = '-j2'
+let g:ale_python_pylint_change_directory = 0
 
 nmap <silent> <F5> :ALELint<CR>
 
@@ -492,11 +502,11 @@ noremap <silent> <A-e> :lopen<CR>
 
 hi ALEWarning ctermbg=190 ctermfg=233
 "hi ALEWarning cterm=reverse
-hi ALEWarningSign ctermbg=233 ctermfg=190
+hi ALEWarningSign ctermbg=234 ctermfg=190
 "hi ALEError ctermbg=197 ctermfg=255
 hi ALEError ctermbg=197 ctermfg=255 cterm=bold,underline
 "hi ALEError cterm=reverse
-hi ALEErrorSign ctermbg=233 ctermfg=197
+hi ALEErrorSign ctermbg=234 ctermfg=197
 
 " GitGutter
 let g:gitgutter_realtime = 1
@@ -517,7 +527,7 @@ source $HOME/.vim/scripts/signs.vim
 source $HOME/.vim/scripts/astloc.vim
 source $HOME/.vim/scripts/statusline.vim
 source $HOME/.vim/scripts/tabline.vim
-source $HOME/.vim/scripts/compl.vim
+"source $HOME/.vim/scripts/compl.vim
 source $HOME/.vim/scripts/hi_yaml.vim
 source $HOME/.vim/scripts/utils.vim
 source $HOME/.vim/scripts/autocursor.vim
@@ -607,8 +617,12 @@ nmap [z :cal GoToOpenFold("prev")
             "\ )
 
 " FZF
-nnoremap <silent> <C-p>      :Files<CR>
-nnoremap <silent> <M-p>      :Files<CR>
+function! FindGitRoot()
+    return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
+endfunction
+
+nnoremap <silent> <C-p>      :execute 'Files' FindGitRoot()<CR>
+nnoremap <silent> <M-p>      :execute 'Files' FindGitRoot()<CR>
 nnoremap <silent> <C-l>      :Lines<CR>
 nnoremap <silent> <M-l>      :Lines<CR>
 
@@ -810,6 +824,7 @@ let g:pymode_lint_options_pep8 = {'max_line_length': g:pymode_options_max_line_l
 let g:pymode_lint_options_pylint = {'max-line-length': g:pymode_options_max_line_length}
 let g:pymode_syntax_all = 1
 let g:pymode_rope_goto_definition_cmd = 'vnew'
+let g:pymode_options_colorcolumn = 0
 
 fu! PreviewWindowOpened()
     for nr in range(1, winnr('$'))
@@ -829,7 +844,49 @@ fu! TogglePyDoc()
     endi
 endfun
 
-nmap K :call TogglePyDoc()<CR>
+"nmap K :call TogglePyDoc()<CR>
 
 " https://github.com/python-mode/python-mode/issues/384#issuecomment-38399715
 set completeopt=menu
+
+" Jedi
+let g:jedi#show_call_signatures = 2
+let g:jedi#show_call_signatures_delay = 500
+let g:jedi#popup_select_first = 0
+let g:jedi#max_doc_height = 15
+let g:jedi#rename_command = '<C-r>'
+let g:jedi#usages_command = '<C-n>'
+let g:jedi#popup_on_dot = 0
+let g:jedi#popup_select_first = 0
+let g:jedi#use_splits_not_buffers = 'bottom'
+let g:jedi#smart_auto_mappings = 0
+let g:jedi#fuzzy_completion = 1
+au FileType python :py3 from jedi import settings; settings.fuzzy_completion = 1
+"let g:jedi#godo_command = '<C-g>'
+nmap <silent> <C-g> :call jedi#goto()<CR>
+let g:SuperTabDefaultCompletionType = "context"
+let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&contextfunc']
+"let g:SuperTabContextDiscoverDiscovery = ["&omnifunc:", "&completefunc:"]
+
+au TextChangedI,CursorMovedI * :call jedi#show_call_signatures()
+
+hi TabLine ctermbg=236 ctermfg=red
+
+" More obvious active windows. Neovim rocks!
+hi! NormalNC ctermfg=240 ctermbg=none cterm=none
+augroup BgHighlight
+    autocmd!
+    "autocmd WinEnter * set nu
+    "autocmd WinLeave * set nonu
+    autocmd WinEnter * set winhl=
+    autocmd WinLeave * set winhl=Normal:NormalNC
+augroup END
+
+" Conceal tweaks for jedi signature display
+hi jediFat ctermfg=203 ctermbg=234 cterm=bold,underline
+"hi jediFatSymbol ctermfg=234 ctermbg=234
+"au BufRead *.py :syn match jediFatSymbol "\*_\*" contained  " conceal
+
+" Autostart
+"au VimEnter * if eval('@%') == '' | :Files
+

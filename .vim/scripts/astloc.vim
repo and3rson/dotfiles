@@ -61,7 +61,7 @@ def astloc_run():
 EOF
 endfunction
 
-function ASTLoc()
+function ASTLoc(a, b, c)
     if ! exists('g:ast_loc_initialized')
         call ASTLocInit()
     endif

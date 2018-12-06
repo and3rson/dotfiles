@@ -72,7 +72,12 @@ then
 
     xinput set-prop 'TPPS/2 IBM TrackPoint' 'Evdev Wheel Emulation Inertia' 25
 
-    synclient CoastingSpeed=0 VertScrollDelta=500 HorizScrollDelta=500
+
+    #xinput set-prop 'SynPS/2 Synaptics TouchPad' 'Synaptics Scrolling Distance' 20 20
+    synclient CoastingSpeed=0 VertScrollDelta=500 HorizScrollDelta=500 HorizTwoFingerScroll=1
+    xinput set-prop 'SynPS/2 Synaptics TouchPad' 'Synaptics Circular Scrolling' 0
+    xinput set-prop 'SynPS/2 Synaptics TouchPad' 'Synaptics Circular Scrolling Trigger' 2
+
 
     nm-applet &
     blueman-applet &

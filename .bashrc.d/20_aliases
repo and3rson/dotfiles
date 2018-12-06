@@ -3,6 +3,7 @@
 alias sudo='sudo '
 alias ls='ls --color'
 alias ll='ls -l --group-directories-first'
+alias la='ls -la'
 alias lz='ll -Shr'
 alias lzd='ll -Sh'
 #alias ll="$HOME/.gem/ruby/2.4.0/bin/colorls -l"

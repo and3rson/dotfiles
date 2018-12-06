@@ -1,0 +1,9 @@
+/* Jupyter cell is in normal mode when code mirror */
+.edit_mode .cell.selected .CodeMirror-focused.cm-fat-cursor {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+/* Jupyter cell is in insert mode when code mirror */
+.edit_mode .cell.selected .CodeMirror-focused:not(.cm-fat-cursor) {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+

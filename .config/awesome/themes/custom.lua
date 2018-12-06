@@ -176,6 +176,10 @@ theme.titlebar_maximized_button_focus_active  = themes_path.."default/titlebar/m
 
 --theme.wallpaper = themes_path.."zenburn/background.png"
 --theme.wallpaper = '/home/anderson/.wallpapers/new3/wallhaven-319318.png'
+local wp = '/home/anderson/.wallpapers/astro-parking.png'
+--local wp = '/home/anderson/.wallpapers/332450.jpg'
+--local wp = '/home/anderson/.wallpapers/cyberpunk/cropped-1920-1080-872313.png'
+--local wp = '/home/anderson/.wallpapers/cyberpunk/xE3J4MZ.jpg'
 theme.wallpapers = {
     --'/home/anderson/.wallpapers/ut3/1.png',
     --'/home/anderson/.wallpapers/ut3/1blue.png',
@@ -183,12 +187,15 @@ theme.wallpapers = {
     --'/home/anderson/.wallpapers/ut4/ut99_red3.png',
     --'/home/anderson/.wallpapers/ut4/ut99_red3.png',
     --'/home/anderson/.wallpapers/ut4/ut99_red3.png',
-    '/home/anderson/.wallpapers/arch/arch-orangeneon.png',
-    '/home/anderson/.wallpapers/arch/arch-orangeneon.png',
-    '/home/anderson/.wallpapers/arch/arch-orangeneon.png',
+    --'/home/anderson/.wallpapers/arch/arch-orangeneon.png',
+    --'/home/anderson/.wallpapers/arch/arch-orangeneon.png',
+    --'/home/anderson/.wallpapers/arch/arch-orangeneon.png',
     --'/home/anderson/.wallpapers/arch/simple-blue.png',
     --'/home/anderson/.wallpapers/arch/simple-blue.png',
     --'/home/anderson/.wallpapers/arch/simple-blue.png',
+    wp,
+    wp,
+    wp,
 }
 
 --theme.wallpaper = '/home/anderson/.wallpapers/ut3/1full.jpg'

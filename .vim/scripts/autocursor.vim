@@ -28,5 +28,7 @@ fu! ACSavePos(pos)
     endt
 endf
 
-au BufReadPost * :call ACInit()
-au CursorMoved,CursorMovedI * :call ACSavePos(getpos('.'))
+aug AutoCursor
+    au BufReadPost * :call ACInit()
+    au CursorMoved,CursorMovedI * :call ACSavePos(getpos('.'))
+aug END

@@ -21,11 +21,11 @@ hi! StatusBarWarning ctermfg=3 ctermbg=233 cterm=bold
 hi! StatusBarError ctermfg=1 ctermbg=233 cterm=bold
 
 hi! StatusLine ctermfg=248 ctermbg=233 cterm=none
-hi! StatusLineNC ctermfg=238 ctermbg=none cterm=none
+hi! StatusLineNC ctermfg=238 ctermbg=233 cterm=none
 
 " PieCrumbs
-hi! PieClass ctermfg=197 ctermbg=235 cterm=bold
-hi! PieFunction ctermfg=154 ctermbg=235
+hi! PieClass ctermfg=197 ctermbg=233 cterm=bold
+hi! PieFunction ctermfg=154 ctermbg=233
 
 "\ 'n': '',
 "\ 'i': '',
@@ -102,22 +102,34 @@ fu! AleWarnings(bufnr, mode, is_active_window) abort
     let l:counts = ale#statusline#Count(a:bufnr)
     let l:errors = l:counts.error + l:counts.style_error
     let l:warnings = l:counts.total - l:errors
-    let l:msg = l:is_checking == 0 ? (l:warnings == 0 ? '' : (' ' . l:warnings)) : ' ' . RotateIcon()
-    if len(l:msg)
-        return g:sep . '%#StatusBarWarning#' . l:msg . '%#StatusBarText#'
+    let l:msg = ''
+    if l:is_checking
+        let l:msg = '%#StatusBarText# ' . ' …'
+    else
+        if l:warnings
+            let l:msg = '%#StatusBarWarning# ' . printf('%2d', l:warnings)
+        else
+            let l:msg = '%#StatusBarText# ' . ' —'
+        endi
     endi
-    return ''
+    return g:sep . l:msg . '%#StatusBarText#'
 endf
 
 fu! AleErrors(bufnr, mode, is_active_window) abort
     let l:is_checking = ale#engine#IsCheckingBuffer(bufnr(''))
     let l:counts = ale#statusline#Count(a:bufnr)
     let l:errors = l:counts.error + l:counts.style_error
-    let l:msg = l:is_checking == 0 ? (l:errors == 0 ? '' : (' ' . l:errors)) : ' ' . RotateIcon()
-    if len(l:msg)
-        return g:sep . '%#StatusBarError#' . l:msg . '%#StatusBarText#'
+    let l:msg = ''
+    if l:is_checking
+        let l:msg = '%#StatusBarText# ' . ' …'
+    else
+        if l:errors
+            let l:msg = '%#StatusBarError# ' . printf('%2d', l:errors)
+        else
+            let l:msg = '%#StatusBarText# ' . ' —'
+        endi
     endi
-    return ''
+    return g:sep . l:msg . '%#StatusBarText#'
 endf
 
 fu! LinterStatus(bufnr, mode, is_active_window) abort
@@ -157,9 +169,13 @@ set lazyredraw
 
 let g:active_winnr = winnr()
 
-fu! PieCrumbs(show_signatures)
+fu! PieCrumbs(bufnr, mode, is_active_window)
+    if getbufvar(a:bufnr, '&filetype') != 'python'
+        return ''
+    endi
     let result = ''
-    if a:show_signatures
+    let l:show_signatures = 0
+    if l:show_signatures
         let regexp = '\(def\|class\) \([a-zA-Z_]*\)\(\(:\|([^:]*)\):\)'
     else
         let regexp = '\(def\|class\) \([a-zA-Z_]*\)[(:]'
@@ -194,7 +210,7 @@ fu! PieCrumbs(show_signatures)
         return ''
     endif
     call reverse(path)
-    let result .= '%#StatusBarText#  '
+    let result .= '%#StatusBarText# '
     let is_first = 1
     for part in path
         if is_first == 1
@@ -213,7 +229,7 @@ fu! PieCrumbs(show_signatures)
         endif
         let result .= part[1]
         "let remaining = PieCrumbsPrintTrimmed(remaining, part[1])
-        let result .= a:show_signatures ? part[2] : '()'
+        let result .= l:show_signatures ? part[2] : '()'
         "echohl Normal
         "let remaining = PieCrumbsPrintTrimmed(remaining, part[2])
     endfor
@@ -274,7 +290,7 @@ fu! FileAndMode(bufnr, m, is_active_window)
     let l:filetype = getbufvar(a:bufnr, '&filetype')
     let l:file_icon = FileIcon(l:filetype)
     let s .= '%' . title_hi . ' ' . ((a:m == 'n') ? l:file_icon : g:mode_map[a:m]) . ' '
-    let s .= '%' . title_hi . '%<%f %m'
+    let s .= '%' . title_hi . '%<%f%m '
     return s
 endf
 
@@ -284,6 +300,7 @@ endf
 
 let g:status_bar = [
             \ 'FileAndMode',
+            \ 'PieCrumbs',
             \ 'Spacer',
             \ 'FileType',
             \ 'BufNr',
@@ -337,20 +354,21 @@ fu! StatusBar(winid)
     for l:fn in g:status_bar
         let s .= call(l:fn, [l:bufnr, l:m, l:is_active_window])
     endfo
+    let s .= ' '
     return l:s
 endf
 
-let g:rotate_state = 0
- let g:rotate_icons = ['—', '\', '|', '/']
-"let g:rotate_icons = ['◜', '◝', '◞', '◟']
-fu Rotate(timer)
-    let g:rotate_state = g:rotate_state + 1
-endf
-fu RotateIcon()
-    return g:rotate_icons[g:rotate_state % 4]
-endf
+"let g:rotate_state = 0
+" let g:rotate_icons = ['—', '\', '|', '/']
+""let g:rotate_icons = ['◜', '◝', '◞', '◟']
+"fu Rotate(timer)
+"    let g:rotate_state = g:rotate_state + 1
+"endf
+"fu RotateIcon()
+"    return g:rotate_icons[g:rotate_state % 4]
+"endf
 
-call timer_start(100, 'Rotate', {'repeat': -1})
+"call timer_start(100, 'Rotate', {'repeat': -1})
 
 set laststatus=2
 fu InitStatusBar()
