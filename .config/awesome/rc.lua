@@ -28,7 +28,7 @@ naughty.config.presets.critical.bg = beautiful.bg_focus
 -- Widgets
 local spacer = require("widgets.spacer")
 local taglistline = require("widgets.taglistline")
---local clay = require("widgets.clay")
+local clay = require("widgets.clay")
 local cpuwidget = require("widgets.cpuwidget")
 local memwidget = require("widgets.memwidget")
 local volume_widget = require("widgets.volume")()
@@ -164,6 +164,8 @@ for s = 1, screen.count() do
             taglistline(s, 2),
             layout=wibox.layout.stack
         })
+        left_layout:add(spacer())
+        left_layout:add(clay())
     end
 
     local right_layout = wibox.layout.fixed.horizontal()
@@ -224,14 +226,14 @@ awful.screen.focus = function(index)
     original_focus(index)
     local mywibox = wiboxes[index]
     -- Blink twice (change color 4 times)
-    mywibox.bg = '#D64937'
+    mywibox.bg = beautiful.bg_lit
     local i = 3
     gears.timer.start_new(0.04, function()
         i = i - 1
         if i % 2 == 1 then
-            mywibox.bg = '#D64937'
+            mywibox.bg = beautiful.bg_lit
         else
-            mywibox.bg = nil
+            mywibox.bg = beautiful.bg_normal
         end
         return i > 0
     end)

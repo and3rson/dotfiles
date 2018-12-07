@@ -13,6 +13,7 @@ return function()
     local memgraph_widget = wibox.widget {
         max_value = 100,
         color = beautiful.fg_mem_graph,
+        background_color = '#00000000',
         --color = '#7777FF',
         --background_color = "#1e252c",
         --border_width = 1,
@@ -69,7 +70,7 @@ return function()
     layout.spacing = 8
     local widget = wibox.widget{
         --icon,
-        mem_widget,
+        wibox.container.mirror(mem_widget, {vertical=true}),
         layout=layout
     }
     return widget

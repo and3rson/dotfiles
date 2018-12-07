@@ -1,21 +1,10 @@
-hi! StatusBarInsertInv ctermbg=233 ctermfg=197
-" Visual
-hi! StatusBarNormalInv ctermbg=233 ctermfg=81
-"hi! StatusBarVisual ctermbg=32 ctermfg=0
-"hi! StatusBarVisualInv ctermbg=234 ctermfg=32
-" Normal
-hi! StatusBarVisualInv ctermbg=233 ctermfg=118
-" Replace
-hi! StatusBarReplaceInv ctermbg=233 ctermfg=222
-" Terminal
-hi! StatusBarTerminalInv ctermbg=233 ctermfg=57
-" Inactive
-"hi! StatusBarInactive ctermfg=238 ctermbg=232
-"hi! StatusBarInactiveInv ctermfg=248 ctermbg=232
-" Text
-"hi! StatusBarText ctermfg=33 ctermbg=234
+hi! StatusBarInsert ctermbg=233 ctermfg=197
+hi! StatusBarNormal ctermbg=233 ctermfg=81
+hi! StatusBarCommand ctermbg=233 ctermfg=32
+hi! StatusBarVisual ctermbg=233 ctermfg=118
+hi! StatusBarReplace ctermbg=233 ctermfg=222
+hi! StatusBarTerminal ctermbg=233 ctermfg=57
 hi! StatusBarText ctermfg=248 ctermbg=233
-hi! StatusBarTextInv ctermfg=232 ctermbg=233
 " Error parts
 hi! StatusBarWarning ctermfg=3 ctermbg=233 cterm=bold
 hi! StatusBarError ctermfg=1 ctermbg=233 cterm=bold
@@ -32,7 +21,7 @@ hi! PieFunction ctermfg=154 ctermbg=233
 "\ 'R': '',
 let g:mode_map = {
     \ '__': '',
-    \ 'n': '',
+    \ 'n': g:ic.vim,
     \ 'i': g:ic.insert,
     \ 'R': g:ic.replace,
     \ 'c': g:ic.code,
@@ -263,34 +252,49 @@ fu! Branch(bufnr, mode, is_active_window)
 endf
 
 fu! FilePos(bufnr, mode, is_active_window)
-    return g:sep . '%03l:%03c / %03L'
+    "return g:sep . '%03l:%03c / %03L'
+    return g:sep . '%03l/%03L'
 endf
 
 fu! BufNr(bufnr, mode, is_active_window)
     "return g:sep . ' ' . a:bufnr . ':' . a:mode . ' '
-    return g:sep . '' . a:bufnr . '/' . a:mode
+    return g:sep . '#' . a:bufnr . g:sep . a:mode
 endf
+
+let g:statusbar_highlights = {
+            \ 'n': 'StatusBarNormal',
+            \ 'c': 'StatusBarCommand',
+            \ 'i': 'StatusBarInsert',
+            \ 'R': 'StatusBarReplace',
+            \ 'v': 'StatusBarVisual',
+            \ 'V': 'StatusBarVisual',
+            \ nr2char(22): 'StatusBarVisual',
+            \ 't': 'StatusBarTerminal'
+            \ }
 
 fu! FileAndMode(bufnr, m, is_active_window)
     let s = ''
-    let title_hi = '#StatusBarNormalInv#'
     if a:is_active_window
-        if (a:m ==# 'i')
-            let title_hi = '#StatusBarInsertInv#'
-        elseif (a:m ==# 'R')
-            let title_hi = '#StatusBarReplaceInv#'
-        elseif (a:m ==# 'v' || a:m ==# 'V' || a:m ==# nr2char(22))
-            let title_hi = '#StatusBarVisualInv#'
-        elseif (a:m ==# 't')
-            let title_hi = '#StatusBarTerminalInv#'
-        endif
+        let title_hi = '%#' . g:statusbar_highlights[a:m] . '#'
     else
-        let title_hi = '#StatusBarInactiveInv#'
+        let title_hi = '%#StatusBarInactive#'
     endif
     let l:filetype = getbufvar(a:bufnr, '&filetype')
     let l:file_icon = FileIcon(l:filetype)
-    let s .= '%' . title_hi . ' ' . ((a:m == 'n') ? l:file_icon : g:mode_map[a:m]) . ' '
-    let s .= '%' . title_hi . '%<%f%m '
+
+    let l:flags = ''
+    if getbufvar(a:bufnr, '&modified')
+        let l:flags .= '[M]'
+    endi
+    if getbufvar(a:bufnr, '&readonly')
+        let l:flags .= '[RO]'
+    endi
+    if ! getbufvar(a:bufnr, '&modifiable')
+        let l:flags .= '[-M]'
+    endi
+
+    let s .= title_hi . ' ' . ((a:m == 'n' || a:m == 'c') ? l:file_icon : g:mode_map[a:m]) . ' '
+    let s .= title_hi . '%<%f:%l:%c' . l:flags . ' '
     return s
 endf
 

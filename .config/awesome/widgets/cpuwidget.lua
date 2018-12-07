@@ -86,7 +86,7 @@ return function()
     layout.spacing = 8
     local widget = wibox.widget{
         --icon,
-        cpu_widget,
+        wibox.container.mirror(cpu_widget, {vertical=true}),
         layout=layout
     }
     return widget

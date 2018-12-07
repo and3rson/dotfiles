@@ -1,6 +1,6 @@
----------------------------
--- Default awesome theme --
----------------------------
+--------------------------
+-- Custom awesome theme --
+--------------------------
 
 local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
@@ -19,7 +19,8 @@ theme.font = "RobotoMono Nerd Font Regular 9"
 --theme.font = "RobotoMono Nerd Font Medium 9"
 
 theme.fg_normal = '#A0A0A0'
-theme.bg_normal = '#000000'
+theme.bg_normal = '#000000CC'
+theme.bg_lit = '#D6493780'
 theme.fg_icon = '#D64937'
 --theme.fg_icon = '#FFFFFF'
 theme.fg_text = theme.fg_normal
@@ -42,6 +43,9 @@ theme.bg_weak = "#222222"
 --theme.fg_term = '#44B7F7'
 --theme.fg_mem = '#00FF5F'
 --theme.fg_cpu = '#74AEAB'
+
+theme.fg_clay_paused = theme.fg_normal
+theme.fg_clay_playing = theme.fg_icon
 
 theme.fg_owm_icon = theme.fg_icon
 theme.fg_owm_text = theme.fg_text

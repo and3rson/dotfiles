@@ -399,7 +399,9 @@ set noswapfile
 set nobackup
 
 " Sudo write
-:command SudoW w !sudo tee %
+let $SUDO_ASKPASS=$HOME . '/.scripts/rofi-askpass.sh'
+"command SudoW w !sudo -A tee %
+"cmap w!! :SudoW<CR>
 
 " Clipboard fix
 set clipboard^=unnamed,unnamedplus
