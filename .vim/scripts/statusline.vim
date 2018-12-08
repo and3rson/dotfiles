@@ -4,7 +4,7 @@ hi! StatusBarCommand ctermbg=233 ctermfg=32
 hi! StatusBarVisual ctermbg=233 ctermfg=118
 hi! StatusBarReplace ctermbg=233 ctermfg=222
 hi! StatusBarTerminal ctermbg=233 ctermfg=57
-hi! StatusBarText ctermfg=248 ctermbg=233
+hi! StatusBarText ctermbg=233 ctermfg=248
 " Error parts
 hi! StatusBarWarning ctermfg=3 ctermbg=233 cterm=bold
 hi! StatusBarError ctermfg=1 ctermbg=233 cterm=bold

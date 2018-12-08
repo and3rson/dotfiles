@@ -28,6 +28,7 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'Yggdroot/indentLine'
+"Plugin 'nathanaelkane/vim-indent-guides'
 Plugin 'w0rp/ale'
 
 " Slow returns
@@ -117,6 +118,12 @@ set guioptions-=r  "remove right-hand scroll bar
 set guioptions-=L  "remove left-hand scroll bar
 
 set guifont=DejaVu\ Sans\ Mono\ 9
+
+" Italics
+"let &t_ZH="^[[3m"
+"let &t_ZR="^[[23m"
+set t_ZH=[3m
+set t_ZR=[23m
 
 " One extra char at the end of the line
 "set virtualedit=onemore
@@ -295,6 +302,7 @@ hi CursorColumn ctermbg=234
 "hi CursorLineNr ctermfg=119 ctermbg=235 cterm=bold
 hi CursorLineNr ctermfg=81 ctermbg=234 cterm=bold
 hi LineNr ctermbg=234 ctermfg=239
+"hi LineNr ctermbg=none ctermfg=239
 
 " https://stackoverflow.com/a/19594724/3455614
 " Dim inactive windows using 'colorcolumn' setting
@@ -339,6 +347,8 @@ hi Error ctermbg=197 ctermfg=255 cterm=bold,underline
 "hi Function cterm=underline
 hi Include cterm=bold ctermfg=154
 hi MatchParen ctermfg=197 ctermbg=NONE cterm=bold,underline
+
+hi Special cterm=italic
 
 " Highlight selected word
 "hi Selected ctermbg=94 ctermfg=none
@@ -482,14 +492,19 @@ nnoremap <silent> ' :lnext<CR>
 
 "let g:ale_sign_error = ' '
 "let g:ale_sign_warning = ' '
-let g:ale_sign_error = ' E'
-let g:ale_sign_warning = ' W'
+let g:ale_sign_error = 'E>'
+let g:ale_sign_warning = 'E>'
 let g:ale_lint_delay = 500
 let g:ale_lint_on_enter = 0
 let g:ale_lint_on_filetype_changed = 0
 let g:ale_lint_on_save = 0
 let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 0
+let g:ale_cursor_detail = 0
+let g:ale_writegood_use_global = 1
+
+let g:ale_virtualtext_cursor = 1
+let g:ale_virtualtext_prefix = ' # '
 
 "let g:ale_python_pylint_options = '-j2 --load-plugins pylint_django'
 let g:ale_python_pylint_options = '-j2'
@@ -502,13 +517,16 @@ nmap <silent> <F5> :ALELint<CR>
 
 noremap <silent> <A-e> :lopen<CR>
 
-hi ALEWarning ctermbg=190 ctermfg=233
+hi ALEWarning ctermbg=190 ctermfg=233 cterm=bold
 "hi ALEWarning cterm=reverse
 hi ALEWarningSign ctermbg=234 ctermfg=190
 "hi ALEError ctermbg=197 ctermfg=255
 hi ALEError ctermbg=197 ctermfg=255 cterm=bold,underline
 "hi ALEError cterm=reverse
-hi ALEErrorSign ctermbg=234 ctermfg=197
+hi ALEErrorSign ctermbg=234 ctermfg=197 cterm=bold
+
+hi ALEVirtualTextError ctermfg=197
+hi ALEVirtualTextWarning ctermfg=190
 
 " GitGutter
 let g:gitgutter_realtime = 1

@@ -22,7 +22,7 @@ case $(tty) in /dev/tty[0-9]*)
 esac
 
 export TTY=0
-export TERM=screen-256color
+export TERM=my-256color
 
 # GPG
 export GPG_TTY=$(tty)
