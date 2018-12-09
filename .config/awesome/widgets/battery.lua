@@ -12,7 +12,7 @@ return function()
         discharging={
             icons={'', '', '', '', '', '', '', '', '', ''},
             count=10,
-            icon_size=13000
+            icon_size=11000
         },
         charging={
             icons={''},

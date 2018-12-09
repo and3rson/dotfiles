@@ -34,11 +34,14 @@ Plugin 'w0rp/ale'
 " Slow returns
 Plugin 'Vimjas/vim-python-pep8-indent'
 Plugin 'airblade/vim-gitgutter'
+Plugin 'tpope/vim-fugitive'
 Plugin 'ervandew/supertab'
 
 "Plugin 'ap/vim-css-color'
 Plugin 'chrisbra/Colorizer'
 Plugin 'osyo-manga/vim-over'
+"Plugin 'haya14busa/incsearch.vim'
+"Plugin 'haya14busa/incsearch-fuzzy.vim'
 
 Plugin 'tmux-plugins/vim-tmux'
 
@@ -67,7 +70,7 @@ Plugin 'martinda/Jenkinsfile-vim-syntax'
 " Faster YAML syntax
 Plugin 'stephpy/vim-yaml'
 
-"Plugin 'kien/rainbow_parentheses.vim'
+Plugin 'kien/rainbow_parentheses.vim'
 
 " Godot GDScript
 Plugin 'calviken/vim-gdscript3'
@@ -87,6 +90,9 @@ Plugin 'fidian/hexmode'
 " Python
 "Plugin 'python-mode/python-mode'
 Plugin 'davidhalter/jedi-vim'
+
+" Motion
+Plugin 'easymotion/vim-easymotion'
 
 call vundle#end()                    " required
 
@@ -507,7 +513,8 @@ let g:ale_virtualtext_cursor = 1
 let g:ale_virtualtext_prefix = ' # '
 
 "let g:ale_python_pylint_options = '-j2 --load-plugins pylint_django'
-let g:ale_python_pylint_options = '-j2'
+let g:ale_python_pylint_options = "-j2"
+"let g:ale_python_pylint_options = "-j2 --init-hook='import sys; sys.path.append(\".\")'"
 let g:ale_python_pylint_change_directory = 0
 
 nmap <silent> <F5> :ALELint<CR>
@@ -799,10 +806,29 @@ au FileType Jenkinsfile setlocal ts=2 sts=2 sw=2 expandtab
 set synmaxcol=250
 
 " Rainbow parentheses
-"au VimEnter * RainbowParenthesesToggle
-"au Syntax * RainbowParenthesesLoadRound
-"au Syntax * RainbowParenthesesLoadSquare
-"au Syntax * RainbowParenthesesLoadBraces
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
+
+let g:rbpt_colorpairs = reverse([
+    \ ['red',         'firebrick3'],
+    \ ['darkcyan',    'SeaGreen3'],
+    \ ['darkgreen',   'RoyalBlue3'],
+    \ ['blue',        'SeaGreen3'],
+    \ ['brown',       'RoyalBlue3'],
+    \ ['darkgray',    'DarkOrchid3'],
+    \ ['darkgreen',   'firebrick3'],
+    \ ['darkcyan',    'RoyalBlue3'],
+    \ ['darkred',     'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['brown',       'firebrick3'],
+    \ ['gray',        'RoyalBlue3'],
+    \ ['black',       'SeaGreen3'],
+    \ ['darkmagenta', 'DarkOrchid3'],
+    \ ['Darkblue',    'firebrick3'],
+    \ ['darkred',     'DarkOrchid3'],
+    \ ])
 
 " SimpylFold
 let g:SimpylFold_docstring_preview = 0
@@ -828,6 +854,7 @@ let g:colorizer_auto_filetype='css,html,lua'
 " Hex mode
 let g:hexmode_xxd_options = '-g 1'
 
+" Python
 " Python-mode
 let g:pymode_rope = 1
 let g:pymode_doc = 1
@@ -845,26 +872,6 @@ let g:pymode_lint_options_pylint = {'max-line-length': g:pymode_options_max_line
 let g:pymode_syntax_all = 1
 let g:pymode_rope_goto_definition_cmd = 'vnew'
 let g:pymode_options_colorcolumn = 0
-
-fu! PreviewWindowOpened()
-    for nr in range(1, winnr('$'))
-        if getwinvar(nr, "&pvw") == 1
-            " found a preview
-            return 1
-        endif
-    endfor
-    return 0
-endfun
-
-fu! TogglePyDoc()
-    if PreviewWindowOpened()
-        pclose
-    else
-        call pymode#doc#find()
-    endi
-endfun
-
-"nmap K :call TogglePyDoc()<CR>
 
 " https://github.com/python-mode/python-mode/issues/384#issuecomment-38399715
 set completeopt=menu
@@ -886,7 +893,6 @@ au FileType python :py3 from jedi import settings; settings.fuzzy_completion = 1
 nmap <silent> <C-g> :call jedi#goto()<CR>
 let g:SuperTabDefaultCompletionType = "context"
 let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&contextfunc']
-"let g:SuperTabContextDiscoverDiscovery = ["&omnifunc:", "&completefunc:"]
 
 au TextChangedI,CursorMovedI * :call jedi#show_call_signatures()
 
@@ -907,6 +913,26 @@ hi jediFat ctermfg=203 ctermbg=234 cterm=bold,underline
 "hi jediFatSymbol ctermfg=234 ctermbg=234
 "au BufRead *.py :syn match jediFatSymbol "\*_\*" contained  " conceal
 
-" Autostart
-"au VimEnter * if eval('@%') == '' | :Files
+" Startify
+let g:startify_files_number = 20
+let g:startify_bookmarks = [{'c': '~/.vimrc'}]
+let g:startify_padding_left = 4
+
+let g:startify_lists = [
+            \ { 'header': ['  MRU'], 'type': 'files' },
+            \ { 'header': ['  Bookmarks'], 'type': 'bookmarks' },
+            \ ]
+"            \ { 'header': ['   MRU '. getcwd()], 'type': 'dir' },
+"            \ { 'header': ['   Sessions'],       'type': 'sessions' },
+"            \ { 'header': ['   Commits'],        'type': function('s:list_commits') },
+
+" Easy motion
+nmap <C-j> <Plug>(easymotion-prefix)
+nmap <Leader><Leader> <Plug>(easymotion-prefix)
+
+" Incsearch
+"call incsearch#call(incsearch#config#fuzzy#make())
+"map z/  <Plug>(incsearch-fuzzy)
+"map z?  <Plug>(incsearch-fuzzy?)
+"map zg/ <Plug>(incsearch-fuzzy-stay)
 

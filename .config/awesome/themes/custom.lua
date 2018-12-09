@@ -16,6 +16,8 @@ local this_dir = home_dir .. '.config/awesome/themes/'
 local theme = {}
 
 theme.font = "RobotoMono Nerd Font Regular 9"
+--theme.font = "Nimbus Sans Regular 9"
+theme.font = "Roboto Medium 10"
 --theme.font = "RobotoMono Nerd Font Medium 9"
 
 theme.fg_normal = '#A0A0A0'

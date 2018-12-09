@@ -55,7 +55,7 @@ return function()
                 weather_data = data
                 local temp = tonumber(data.main.temp) - 273.15
                 openweathermap_widget.markup = '<span color="' .. beautiful.fg_owm_text .. '">' .. data.name .. ', ' .. math.floor(temp) .. '°C</span>'
-                icon_widget.markup = '<span size="16000" color="' .. beautiful.fg_owm_icon .. '">' .. utf8.char(owfont[data.weather[1].id]) .. '</span>'
+                icon_widget.markup = '<span size="12000" color="' .. beautiful.fg_owm_icon .. '">' .. utf8.char(owfont[data.weather[1].id]) .. '</span>'
                 --fetch_icon(data.weather[1].icon)
             end)
         end)
