@@ -70,7 +70,8 @@ Plugin 'martinda/Jenkinsfile-vim-syntax'
 " Faster YAML syntax
 Plugin 'stephpy/vim-yaml'
 
-Plugin 'kien/rainbow_parentheses.vim'
+"Plugin 'kien/rainbow_parentheses.vim'
+Plugin 'luochen1990/rainbow'
 
 " Godot GDScript
 Plugin 'calviken/vim-gdscript3'
@@ -90,6 +91,7 @@ Plugin 'fidian/hexmode'
 " Python
 "Plugin 'python-mode/python-mode'
 Plugin 'davidhalter/jedi-vim'
+Plugin 'heavenshell/vim-pydocstring'
 
 " Motion
 Plugin 'easymotion/vim-easymotion'
@@ -150,7 +152,7 @@ set whichwrap+=<,>,h,l,[,]
 
 " Timeouts
 "set timeoutlen=0 ttimeoutlen=10
-set timeoutlen=500 ttimeoutlen=10
+set timeoutlen=300 ttimeoutlen=10
 
 " Switch buffers
 "nnoremap <silent> <ESC>[5;2~ :bp<CR>
@@ -183,8 +185,8 @@ nnoremap <M-s> :w<CR>
 inoremap <M-s> <C-o>:w<CR>
 
 " Unmap "s" anc "c"
-map s <Nop>
-map c <Nop>
+"map s <Nop>
+"map c <Nop>
 
 " Delete buffer
 nnoremap <silent> <M-x>      :bd<CR>
@@ -352,7 +354,8 @@ hi Error ctermbg=197 ctermfg=255 cterm=bold,underline
 "hi Repeat cterm=underline
 "hi Function cterm=underline
 hi Include cterm=bold ctermfg=154
-hi MatchParen ctermfg=197 ctermbg=NONE cterm=bold,underline
+"hi MatchParen ctermfg=197 ctermbg=NONE cterm=inverse,bold,underline
+hi MatchParen ctermbg=197 cterm=bold,underline
 
 hi Special cterm=italic
 
@@ -574,8 +577,8 @@ source $HOME/.vim/scripts/xxdcursor.vim
 "set nofoldenable
 "set foldlevelstart=99
 " Nope, let's use it!
-nnoremap <space> za
-vnoremap <space> zf
+"nnoremap <space> za
+"vnoremap <space> zf
 "nnoremap <M-space> zA
 "set foldmethod=indent
 set foldmethod=manual
@@ -806,10 +809,10 @@ au FileType Jenkinsfile setlocal ts=2 sts=2 sw=2 expandtab
 set synmaxcol=250
 
 " Rainbow parentheses
-au VimEnter * RainbowParenthesesToggle
-au Syntax * RainbowParenthesesLoadRound
-au Syntax * RainbowParenthesesLoadSquare
-au Syntax * RainbowParenthesesLoadBraces
+"au VimEnter * RainbowParenthesesToggle
+"au Syntax * RainbowParenthesesLoadRound
+"au Syntax * RainbowParenthesesLoadSquare
+"au Syntax * RainbowParenthesesLoadBraces
 
 let g:rbpt_colorpairs = reverse([
     \ ['red',         'firebrick3'],
@@ -830,6 +833,11 @@ let g:rbpt_colorpairs = reverse([
     \ ['darkred',     'DarkOrchid3'],
     \ ])
 
+" Rainbow
+let g:rainbow_active = 1
+let g:rainbow_conf = {
+            \ 'ctermfgs': ['darkcyan', 'red', 'darkblue', 'blue'],
+            \ }
 " SimpylFold
 let g:SimpylFold_docstring_preview = 0
 let g:SimpylFold_fold_docstring = 0
@@ -914,20 +922,28 @@ hi jediFat ctermfg=203 ctermbg=234 cterm=bold,underline
 "au BufRead *.py :syn match jediFatSymbol "\*_\*" contained  " conceal
 
 " Startify
-let g:startify_files_number = 20
+let g:startify_files_number = 10
 let g:startify_bookmarks = [{'c': '~/.vimrc'}]
 let g:startify_padding_left = 4
+let g:startify_fortune_use_unicode = 1
+let g:startify_session_remove_lines = ['setlocal', 'winheight']
+let g:startify_custom_indices =
+            \ map(range(0, g:startify_files_number - 1), 'string(v:val)') +
+            \ map(range(90, 99), 'string(v:val)')
 
 let g:startify_lists = [
             \ { 'header': ['  MRU'], 'type': 'files' },
             \ { 'header': ['  Bookmarks'], 'type': 'bookmarks' },
+            \ { 'header': ['  Sessions'], 'type': 'sessions' },
             \ ]
 "            \ { 'header': ['   MRU '. getcwd()], 'type': 'dir' },
 "            \ { 'header': ['   Sessions'],       'type': 'sessions' },
 "            \ { 'header': ['   Commits'],        'type': function('s:list_commits') },
 
 " Easy motion
-nmap <C-j> <Plug>(easymotion-prefix)
+nmap s <Plug>(easymotion-bd-w)
+nmap S <Plug>(easymotion-bd-jk)
+nmap c <Plug>(easymotion-s2)
 nmap <Leader><Leader> <Plug>(easymotion-prefix)
 
 " Incsearch
@@ -935,4 +951,8 @@ nmap <Leader><Leader> <Plug>(easymotion-prefix)
 "map z/  <Plug>(incsearch-fuzzy)
 "map z?  <Plug>(incsearch-fuzzy?)
 "map zg/ <Plug>(incsearch-fuzzy-stay)
+
+" Pydocstring
+let g:pydocstring_enable_mapping = 0
+let g:pydocstring_templates_dir = $HOME . '/.vim/templates/pydocstring/'
 
