@@ -18,10 +18,10 @@ return function()
         --background_color = "#1e252c",
         --border_width = 1,
         --border_color = beautiful.fg_mem,
-        forced_width = 32,
+        forced_width = 48,
         --forced_height = 12,
         step_width = 1,
-        step_spacing = 2,
+        step_spacing = 1,
         widget = wibox.widget.graph
     }
 
@@ -40,7 +40,7 @@ return function()
     end
 
     gears.timer {
-        timeout=0.2,
+        timeout=0.1,
         autostart=true,
         callback=function()
             local lines = {}
@@ -66,11 +66,14 @@ return function()
         end
     }
 
-    local layout = wibox.layout.fixed.horizontal()
+    --local layout = wibox.layout.fixed.horizontal()
+    local layout = wibox.layout.stack
     layout.spacing = 8
     local widget = wibox.widget{
         --icon,
-        wibox.container.mirror(mem_widget, {vertical=true}),
+        --wibox.container.mirror(cpu_widget, {vertical=true}),
+        wibox.container.margin(mem_widget, 0, 0, 0, 12),
+        wibox.container.mirror(wibox.container.margin(mem_widget, 0, 0, 0, 12), {vertical=true}),
         layout=layout
     }
     return widget
