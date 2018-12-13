@@ -107,7 +107,7 @@
     history_length = 20
 
     # Display indicators for URLs (U) and actions (A).
-    show_indicators = no
+    show_indicators = yes
 
     # The height of a single line.  If the height is smaller than the
     # font height, it will get raised to the font height.
@@ -139,10 +139,11 @@
     startup_notification = false
 
     # dmenu path.
-    dmenu = /usr/bin/dmenu -p dunst:
+    #dmenu = /usr/bin/dmenu -p dunst:
+    dmenu = /home/anderson/.scripts/dmenu.sh
 
     # Browser for opening urls in context menu.
-    browser = /usr/bin/chromium
+    browser = /usr/bin/firefox-developer-edition
 
     # Align icons left/right/off
     icon_position = left
@@ -174,7 +175,7 @@
     history = ctrl+grave
 
     # Context menu.
-    context = ctrl+shift+period
+    context = ctrl+Escape
 
 [urgency_low]
     # IMPORTANT: colors have to be defined in quotation marks.

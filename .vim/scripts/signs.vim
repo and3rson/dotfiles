@@ -3,7 +3,8 @@
 "unmap m
 "hi link Mark LineNr
 let ctermbg = matchstr(execute('hi LineNr'), 'ctermbg=\zs\S*')
-exe 'hi Mark cterm=bold ctermfg=154 ctermbg=' . ctermbg
+"exe 'hi Mark cterm=bold ctermfg=154 ctermbg=' . ctermbg
+exe 'hi Mark cterm=bold ctermfg=154 ctermbg=234'
 exe 'hi MarkLine ctermbg=236'
 " . ctermbg
 

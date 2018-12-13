@@ -15,9 +15,10 @@ local this_dir = home_dir .. '.config/awesome/themes/'
 
 local theme = {}
 
-theme.font = "RobotoMono Nerd Font Regular 9"
+--theme.font = "RobotoMono Nerd Font Medium 10"
+theme.font = "DejavuSansMono Nerd Font Medium 9"
 --theme.font = "Nimbus Sans Regular 9"
-theme.font = "Roboto Medium 10"
+--theme.font = "Roboto Medium 10"
 --theme.font = "RobotoMono Nerd Font Medium 9"
 
 theme.fg_normal = '#A0A0A0'
@@ -29,7 +30,7 @@ theme.fg_text = theme.fg_normal
 theme.fg_graph = theme.fg_text
 theme.bg_focus = "#D64937"
 theme.bg_urgent = "#000000"
-theme.bg_weak = "#222222"
+theme.bg_weak = "#555555"
 
 --theme.fg_ping = '#44B7F7'
 --theme.fg_ping_warning = '#FF0087'

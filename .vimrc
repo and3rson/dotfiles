@@ -14,7 +14,7 @@ let g:pymode_python = 'python3'
 "let g:python_host_prog='/usr/bin/python'
 " }}}
 
-" {Plugins} {{{
+" Plugins {{{
 set runtimepath+=~/.vim/bundle/Vundle.vim
 set runtimepath+=+=~/.vim/scripts
 set runtimepath+=+=/usr/share/vim/vimfiles/plugin
@@ -211,7 +211,6 @@ inoremap <C-h> <C-W>
 inoremap <M-BS> <C-W>
 
 " Unindent
-
 nnoremap <S-Tab> <<
 inoremap <S-Tab> <C-d>
 
@@ -507,6 +506,10 @@ hi ALEErrorSign ctermbg=234 ctermfg=197 cterm=bold
 hi ALEVirtualTextError ctermfg=197
 hi ALEVirtualTextWarning ctermfg=190
 
+aug ALEAutoLint
+    au! BufRead,BufWrite * :ALELint
+aug END
+
 " }}}
 " GitGutter {{{
 let g:gitgutter_realtime = 1
@@ -523,24 +526,6 @@ aug END
 " }}}
 " Sexy replace {{{
 :map <C-f> :OverCommandLine<CR>:
-" }}}
-" Plugins {{{
-for f in split(glob('~/.vim/scripts/*.vim'), '\n')
-  exe 'source' f
-endfor
-"source $HOME/.vim/scripts/astloc.vim
-"source $HOME/.vim/scripts/autocursor.vim
-""source $HOME/.vim/scripts/compl.vim
-""source $HOME/.vim/scripts/cute.vim
-""source $HOME/.vim/scripts/fastescape.vim
-"source $HOME/.vim/scripts/hi_yaml.vim
-"source $HOME/.vim/scripts/icons.vim
-"source $HOME/.vim/scripts/signs.vim
-"source $HOME/.vim/scripts/statusline.vim
-"source $HOME/.vim/scripts/tabline.vim
-""source $HOME/.vim/scripts/termrun.vim
-"source $HOME/.vim/scripts/utils.vim
-"source $HOME/.vim/scripts/xxdcursor.vim
 " }}}
 " Folding {{{
 " Disable folding
@@ -567,8 +552,10 @@ fu! FoldText()
     "return str
 
     let code = getline(v:foldstart)
-    if match(code, '^" .* {' . '{{$') == 0
-        let code = code[2:-5]
+    let matches = matchlist(code, '^\("\|--\|#\) \(.*\) {' . '{{$')
+    if len(matches)
+        let code = matches[2]
+        "let code = code[2:-5]
     endi
     "
     "let matches = matchlist(code, '{\(\S\+\)}')
@@ -865,12 +852,22 @@ hi TabLine ctermbg=236 ctermfg=red
 
 " More obvious active windows. Neovim rocks!
 hi! NormalNC ctermfg=240 ctermbg=none cterm=none
+"hi! LineNrNC ctermbg=none
+"hi! SignColumnNC ctermbg=none
+"hi! IdentifierNC ctermfg=100
+"hi! StatementNC ctermfg=89
+"hi! SpecialNC ctermfg=25
+"hi! PreProcNC ctermfg=65
+
 aug BgHighlight
     au!
     "autocmd WinEnter * set nu
     "autocmd WinLeave * set nonu
     au WinEnter * set winhl=
     au WinLeave * set winhl=Normal:NormalNC
+    " ,LineNr:LineNrNC,SignColumn:SignColumnNC
+    " ,Identifier:IdentifierNC
+    " ,Statement:StatementNC,Special:SpecialNC,PreProc:PreProcNC
 aug END
 
 " Conceal tweaks for jedi signature display
@@ -909,8 +906,45 @@ nmap c <Plug>(easymotion-s2)
 nmap w <Plug>(easymotion-overwin-w)
 nmap <Leader><Leader> <Plug>(easymotion-prefix)
 
+hi EasyMotionTarget ctermfg=196 cterm=bold
+hi EasyMotionTarget2First ctermfg=196 cterm=bold
+hi EasyMotionTarget2FirstDefault ctermfg=green cterm=bold
+hi EasyMotionTarget2Second ctermfg=11 cterm=bold
+hi EasyMotionTarget2SecondDefault ctermfg=11 cterm=bold
+
+"let g:EasyMotion_keys = 'bceimnopqrtuvwxyz0123456789lkjhgfdsa;'
+let g:EasyMotion_keys = 'asdfghjkl;bceimnopqrtuvwxyz'
+" '0123456789'
+let g:EasyMotion_do_shade = 1
+let g:EasyMotion_grouping = 2
+let g:EasyMotion_use_upper = 1
+"let g:EasyMotion_prompt = '{n}>>> '
+let g:EasyMotion_prompt = '@ '
+"let g:EasyMotion_add_search_history = 0
+let g:EasyMotion_verbose = 0
+
 " }}}
 " Pydocstring {{{
 let g:pydocstring_enable_mapping = 0
 let g:pydocstring_templates_dir = $HOME . '/.vim/templates/pydocstring/'
 " }}}
+
+" Scripts {{{
+for f in split(glob('~/.vim/scripts/*.vim'), '\n')
+  exe 'source' f
+endfor
+"source $HOME/.vim/scripts/astloc.vim
+"source $HOME/.vim/scripts/autocursor.vim
+""source $HOME/.vim/scripts/compl.vim
+""source $HOME/.vim/scripts/cute.vim
+""source $HOME/.vim/scripts/fastescape.vim
+"source $HOME/.vim/scripts/hi_yaml.vim
+"source $HOME/.vim/scripts/icons.vim
+"source $HOME/.vim/scripts/signs.vim
+"source $HOME/.vim/scripts/statusline.vim
+"source $HOME/.vim/scripts/tabline.vim
+""source $HOME/.vim/scripts/termrun.vim
+"source $HOME/.vim/scripts/utils.vim
+"source $HOME/.vim/scripts/xxdcursor.vim
+" }}}
+

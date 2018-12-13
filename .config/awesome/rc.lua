@@ -1,4 +1,5 @@
 -- My AwesomeWM config
+-- vim:foldmethod=marker
 -- luacheck: ignore dbus
 -- luacheck: globals root awesome screen dbus client mouse
 local gears = require("gears")
@@ -16,16 +17,18 @@ dbus = _dbus
 --local naughty = require("naughty")
 local menubar = require("menubar")
 
--- {{{ Variable definitions
+-- Variable definitions {{{
 beautiful.init("/home/anderson/.config/awesome/themes/custom.lua")
+-- }}}
 
--- Naughty config
+-- Naughty config {{{
 naughty.config.padding = 20
 naughty.config.spacing = 10
 naughty.config.defaults.border_width = 0
 naughty.config.presets.critical.bg = beautiful.bg_focus
+-- }}}
 
--- Widgets
+-- Widgets {{{
 local spacer = require("widgets.spacer")
 local taglistline = require("widgets.taglistline")
 local clay = require("widgets.clay")
@@ -43,8 +46,9 @@ local term = require("widgets.term")
 --local bbswitch = require("widgets.bbswitch")
 local brightness = require("widgets.brightness")
 local ping = require("widgets.ping")
+-- }}}
 
--- {{{ Error handling
+-- Error handling {{{
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
 --if awesome.startup_errors then
@@ -73,22 +77,21 @@ do
 end
 -- }}}
 
+-- General veriables {{{
 -- This is used later as the default terminal and editor to run.
 local terminal = "termite"
+-- }}}
 
--- Modifier keys.
-local alt = "Mod1"
-local super = "Mod4"
-local ctrl = "Ctrl"
-
+-- Layouts {{{
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
 {
     awful.layout.suit.max,
     awful.layout.suit.fair
 }
+-- }}}
 
--- Wallpaper & tags for each screen.
+-- Wallpaper & tags for each screen. {{{
 awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper.
     if beautiful.wallpapers then
@@ -145,7 +148,9 @@ awful.screen.connect_for_each_screen(function(s)
     tag.connect_signal("untagged", update_tag_icons)
 end)
 
--- Wiboxes
+-- }}}
+
+-- Wiboxes {{{
 local wiboxes = {}
 
 for s = 1, screen.count() do
@@ -216,7 +221,9 @@ for s = 1, screen.count() do
     layout:set_right(right_layout)
 end
 
--- Visual effect when switching screens
+-- }}}
+
+-- Visual effect when switching screens {{{
 local original_focus = awful.screen.focus
 
 awful.screen.focus = function(index)
@@ -248,7 +255,14 @@ local alt_tab = function ()
     awful.screen.focus(next_screen)
 end
 
--- Key bindings
+-- }}}
+
+-- Key bindings {{{
+-- Modifier keys.
+local alt = "Mod1"
+local super = "Mod4"
+local ctrl = "Ctrl"
+
 local globalkeys = awful.util.table.join(
     -- Switch screen
     awful.key({alt}, "Tab", alt_tab),
@@ -350,7 +364,9 @@ for i = 1, 9 do
         end)
     )
 end
+-- }}}
 
+-- Mouse buttons {{{
 local clientbuttons = awful.util.table.join(
     awful.button({}, 1, function (c) client.focus = c; c:raise() end),
     awful.button({super}, 1, awful.mouse.client.move),
@@ -360,7 +376,7 @@ local clientbuttons = awful.util.table.join(
 root.keys(globalkeys)
 -- }}}
 
--- {{{ Rules
+-- Window matching rules {{{
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
     -- All clients will match this rule.
@@ -399,7 +415,7 @@ awful.rules.rules = {
 }
 -- }}}
 
--- {{{ Signals
+-- Signals {{{
 -- Signal function to execute when a new client appears.
 client.connect_signal("manage", function (c, startup)
     if not startup then

@@ -31,7 +31,7 @@ return function()
     local row1_widget = wibox.widget({
         paddings=2,
         markup='checking',
-        forced_width=42,
+        --forced_width=42,
         align='left',
         widget=wibox.widget.textbox
     })
@@ -44,7 +44,7 @@ return function()
         widget=wibox.widget.textbox
     })
 
-    local update_widget = function(widget, stdout)
+    local update_network = function(widget, stdout)
         awful.spawn.easy_async('nmcli -m multiline -o -t d show ' .. DEVICE, function(stdout, stderr, reason, exit_code)
             local conn = nil
             for key, value in stdout:gmatch('(%S+):(%S+)') do
@@ -57,43 +57,51 @@ return function()
             else
                 row2_widget.markup = '<span color="' .. beautiful.fg_ping_text .. '">@ ' .. conn .. '</span>'
             end
-            awful.spawn.easy_async('fping -c1 -t500 google.com', function(stdout, stderr, reason, exit_code)
-                local latency = stdout:match('([0-9\\.]+) ms')
+        end)
+    end
+    local update_ping = function(widget, stdout)
+        awful.spawn.easy_async('fping -c1 -t500 google.com', function(stdout, stderr, reason, exit_code)
+            local latency = stdout:match('([0-9\\.]+) ms')
+            if latency ~= nil then
+                latency = math.floor(tonumber(latency))
+            end
+            if latency == nil or latency >= 100 then
                 if latency ~= nil then
-                    latency = math.floor(tonumber(latency))
-                end
-                if latency == nil or latency >= 100 then
-                    if latency ~= nil then
-                        latency = math.min(latency, 999)
-                        --row1_widget.markup = '<span color="' .. beautiful.fg_ping_warning .. '">' .. string.format('%.1f', latency) .. ' ms</span>'
-                        row1_widget.markup = '<span color="' .. beautiful.fg_ping_warning .. '">' .. latency .. ' ms</span>'
-                    else
-                        row1_widget.markup = '<span color="' .. beautiful.fg_ping_warning .. '">offline</span>'
-                    end
-                    progressbar.color = beautiful.fg_ping_warning .. '80'
-                    progressbar.value = 100
-                    icon_widget.markup = '<span color="' .. beautiful.fg_ping_warning .. '" size="14000"></span>'
+                    latency = math.min(latency, 99)
+                    --row1_widget.markup = '<span color="' .. beautiful.fg_ping_warning .. '">' .. string.format('%.1f', latency) .. ' ms</span>'
+                    row1_widget.markup = '<span color="' .. beautiful.fg_ping_warning .. '">' .. latency .. 'ms</span>'
                 else
-                    local latency_str = 'a'
-                    --if latency < 10 then
-                    --    latency_str = string.format('%.3f', latency)
-                    --else
-                    --    latency_str = string.format('%.2f', latency)
-                    --end
-                    row1_widget.markup = '<span color="' .. beautiful.fg_ping_text .. '">' .. latency .. ' ms</span>'
-                    progressbar.color = beautiful.fg_ping_text
-                    progressbar.value = latency
-                    icon_widget.markup = '<span color="' .. beautiful.fg_ping_icon .. '" size="14000"></span>'
+                    row1_widget.markup = '<span color="' .. beautiful.fg_ping_warning .. '">offline</span>'
                 end
-            end)
+                progressbar.color = beautiful.fg_ping_warning
+                progressbar.value = 100
+                icon_widget.markup = '<span color="' .. beautiful.fg_ping_warning .. '" size="14000"></span>'
+            else
+                local latency_str = 'a'
+                --if latency < 10 then
+                --    latency_str = string.format('%.3f', latency)
+                --else
+                --    latency_str = string.format('%.2f', latency)
+                --end
+                row1_widget.markup = '<span color="' .. beautiful.fg_ping_text .. '">' .. string.format('%-2d', latency) .. 'ms</span>'
+                progressbar.color = beautiful.fg_ping_text
+                progressbar.value = latency
+                icon_widget.markup = '<span color="' .. beautiful.fg_ping_icon .. '" size="14000"></span>'
+            end
         end)
     end
 
-    update_widget()
+    update_network()
+    update_ping()
+    gears.timer{
+        timeout=5,
+        autostart=true,
+        callback=update_network
+    }
     gears.timer{
         timeout=2,
         autostart=true,
-        callback=update_widget
+        callback=update_ping
     }
     --awful.widget.watch('fping -c1 -t500 google.com', 2, update_widget)
 

@@ -1,5 +1,7 @@
 #!/bin/bash
+# vim:foldmethod=marker
 
+# Configs {{{
 #ARROW=`echo -e "\ue0b0 "`
 #ARROW=`echo -e "\ue0bc "`
 ARROW=`echo -e ""`
@@ -20,13 +22,9 @@ SPACE=`echo -e "\u00B7"`
 case $(tty) in /dev/tty[0-9]*)
     ARROW=''; HOUSE=''; ROOT='' ;;
 esac
+# }}}
 
-
-# function is_chroot()
-# {
-#     [ "$(awk '$5=="/" {print $1}' </proc/1/mountinfo)" != "$(awk '$5=="/" {print $1}' </proc/$$/mountinfo)" ] && return 0 || return 1
-# }
-
+# Utils {{{
 fetch_cursor_position() {
   local pos
 
@@ -38,10 +36,12 @@ fetch_cursor_position() {
 chars_remaining() {
     echo $((`tput cols` - `fetch_cursor_position`))
 }
+# }}}
 
 function make_prompt() {
     RETCODE=$?
     #START=$(echo -en "\uF2D0")
+    RST="\[\e[0m\]"
     START=""
     STAR=$(echo -en "\uF005")
     PULSE=$(echo -en "\uE234")
@@ -56,11 +56,11 @@ function make_prompt() {
 
     PRINTED=0
 
-    function fgcol() {
+    function fgcol() { # {{{
         echo -n "\[\e[38;5;$1m\]"
-    }
+    } # }}}
 
-    function fb() {
+    function fb() { # {{{
         FORE=$1
         BACK=$2
         FORE_MOD=${3:-0}
@@ -82,9 +82,9 @@ function make_prompt() {
         printf -v "LAST_BACK" "$BACK"
         printf -v "LAST_FORE" "$FORE"
         printf -v "LAST_FORE_MOD" "$FORE_MOD"
-    }
+    } # }}}
 
-    function hr_line() {
+    function hr_line() { # {{{
         #fb 32 234
         if [[ "$RETCODE" != "0" ]]
         then
@@ -95,9 +95,9 @@ function make_prompt() {
         S=`printf "%$(tput cols)s\r"`
         #echo $S
         echo -n ${S// /─}
-    }
+    } # }}}
 
-    function brk() {
+    function brk() { # {{{
         if [ "$PRINTED" -gt 0 ]
         then
             #fb 32 234
@@ -107,32 +107,25 @@ function make_prompt() {
             #echo -e "\e[0;42m\e[K asd"
             echo
         fi
-    }
+    } # }}}
 
-    #function back() {
-        #echo "$LAST_FORE_MOD;38;5;${LAST_FORE}m"
-        #echo -n "\[\e[48;5;$1m\]\[\e[$LAST_FORE_MOD;38;5;${LAST_FORE}m\]"
-    #}
-
-    RST="\[\e[0m\]"
-
-    function ssh_part() {
+    function ssh_part() { # {{{
         if ! [[ -z "$SSH_CONNECTION" ]]
         then
             PRINTED=$((PRINTED+1))
             fb 202 234
             echo -n " @ $(hostname) $RST"
         fi
-    }
+    } # }}}
 
-    function date_part() {
+    function date_part() { # {{{
         #fb 255 125
         fb 32 234
         #date +" $START %H:%M:%S $RST" | tr -d '\n'
         date +" %H:%M:%S $RST" | tr -d '\n'
-    }
+    } # }}}
 
-    function venv_part() {
+    function venv_part() { # {{{
         if [[ ! -z "$VIRTUAL_ENV" ]]
         then
             PRINTED=$((PRINTED+1))
@@ -153,9 +146,9 @@ function make_prompt() {
         #    #echo -en "$VIRTUAL_ENV $RST" | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
         #    echo -en " $PY_ICON env! $RST"
         fi
-    }
+    } # }}}
 
-    function git_part() {
+    function git_part() { # {{{
         BRANCH="$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>&1)"
         if [[ "$?" -eq "0" ]]
         then
@@ -202,7 +195,7 @@ function make_prompt() {
                 echo -n "  $TAG"
                 if [[ "$COUNT" != "" ]]
                 then
-                    echo -n "+$COUNT"
+                    echo -n " (+$COUNT)"
                 fi
             fi
             fb $COLOR 234 1
@@ -216,12 +209,12 @@ function make_prompt() {
             fb 203 234
             echo -n "  $HASH"
             fb 241 234
-            echo -n " ($AUTHOR: $MESSAGE)"
+            #echo -n " ($AUTHOR: $MESSAGE)"
             echo -n " $RST"
         fi
-    }
+    } # }}}
 
-    function ret_part() {
+    function ret_part() { # {{{
         if [[ "$RETCODE" != "0" ]]
         then
             #&& [[ "$RETCODE" != "130" ]]
@@ -235,30 +228,34 @@ function make_prompt() {
         fi
         #echo -en "\ue0b0"
         #echo -en "\[$txtrst\]"
-    }
+    } # }}}
 
-    function dirs_part() {
-        fb 255 31
+    function dirs_part() { # {{{
+        PRINTED=$((PRINTED+1))
+        fb 31 234
         DIRS=$(find . -maxdepth 1 ! -path . -type d | wc -l)
         echo -en " \uE5FF $DIRS $RST"
-    }
+    } # }}}
 
-    function files_part() {
-        fb 255 28  # 64
+    function files_part() { # {{{
+        PRINTED=$((PRINTED+1))
+        fb 28 234 # 64
         FILES=$(find . -maxdepth 1 -type f -printf "%s\n")
         SIZE=$(echo $FILES | tr ' ' '+' | bc)
         SIZE=${SIZE:-0}
         SIZE=$(numfmt --to=iec-i --suffix=B --format="%.2f" $SIZE | sed -re "s/,00//g;s/([0-9])([A-Z])/\1 \2/g")
         # | tr -d "\n"
         echo -en " \uF15B $(echo $FILES | wc -w) ($SIZE) $RST"
-    }
+    } # }}}
 
-    function free_part() {
-        fb 0 71
-        echo -n " $(df -h / --output=avail | tail -n 1 | tr -d "\n ")iB free "
-    }
+    function free_part() { # {{{
+        PRINTED=$((PRINTED+1))
+        fb 71 234
+        #echo -n "$(df -h / --output=avail | tail -n 1 | tr -d "\n ")iB free "
+        echo -n " $(df -h / --output=avail | tail -n 1 | tr -d "\n ") free "
+    } # }}}
 
-    function pwd_part() {
+    function pwd_part() { # {{{
         #SPACE=`echo -e '\u2026'`
         fb 32 234 # 255 27 1
         #fb 197 234 # 255 27 1
@@ -304,9 +301,9 @@ function make_prompt() {
                 fi
             done
         fi
-    }
+    } # }}}
 
-    function pwd_part_old() {
+    function pwd_part_old() { # {{{
         #fb 255 27 1
         if [[ "$PWD" == "/" ]]
         then
@@ -348,11 +345,13 @@ function make_prompt() {
                 fb $BG 234
                 #echo -n "$i "
                 i_len=${#i}
-                i=${i::5}
-                if [[ "$i_len" -gt "5" ]]
-                then
-                    i="$i"
-                fi
+                #i=${i::5}
+                #
+                #if [[ "$i_len" -gt "5" ]]
+                #then
+                #    i="$i"
+                #fi
+                #
                 #if [[ "$i" == "~" ]]
                 #then
                 #    i="ﰣ"
@@ -371,17 +370,16 @@ function make_prompt() {
             done
             IFS=$OLD_IFS
         fi
-    }
+    } # }}}
 
-
-    function end_part() {
+    function end_part() { # {{{
         fb 255
-    }
+    } # }}}
 
-    function dollar_part() {
+    function dollar_part() { # {{{
         fb 32 0 1 -
         echo -n ' $'
-    }
+    } # }}}
 
     #hr_line
     ssh_part
@@ -390,7 +388,7 @@ function make_prompt() {
     git_part
     #dirs_part
     #files_part
-    #free_part
+    free_part
     ret_part
     #end_part
     brk

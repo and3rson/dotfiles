@@ -98,7 +98,7 @@ fu! AleWarnings(bufnr, mode, is_active_window) abort
         if l:warnings
             let l:msg = '%#StatusBarWarning# ' . printf('%2d', l:warnings)
         else
-            let l:msg = '%#StatusBarText# ' . ' —'
+            let l:msg = '%#StatusBarText# ' . ' 0'  " ' —'
         endi
     endi
     return g:sep . l:msg . '%#StatusBarText#'
@@ -115,7 +115,7 @@ fu! AleErrors(bufnr, mode, is_active_window) abort
         if l:errors
             let l:msg = '%#StatusBarError# ' . printf('%2d', l:errors)
         else
-            let l:msg = '%#StatusBarText# ' . ' —'
+            let l:msg = '%#StatusBarText# ' . ' 0'  " ' —'
         endi
     endi
     return g:sep . l:msg . '%#StatusBarText#'
@@ -310,8 +310,8 @@ let g:status_bar = [
             \ 'BufNr',
             \ 'FilePos',
             \ 'CharCode',
+            \ 'AleErrors',
             \ 'AleWarnings',
-            \ 'AleErrors'
             \ ]
 
 fu! StatusBar(winid)

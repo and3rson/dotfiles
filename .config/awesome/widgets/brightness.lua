@@ -41,7 +41,7 @@ local init = function()
 
         local icon = ICONS[math.floor(ratio * (ICONS_COUNT - 1)) + 1]
 
-        icon_widget.markup = '<span color="' .. beautiful.fg_icon .. '" size="16000">' .. icon .. '</span>'
+        icon_widget.markup = '<span color="' .. beautiful.fg_icon .. '" size="12000">' .. icon .. '</span>'
         text_widget.markup = '<span color="' .. beautiful.fg_text .. '">' .. math.floor(ratio * 100) .. '%</span>'
         progressbar.value = ratio * 100
     end

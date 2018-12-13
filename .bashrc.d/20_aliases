@@ -42,3 +42,5 @@ alias merge='git merge'
 alias vim='nvim'
 alias yay='yay --editmenu --nodiffmenu'
 
+alias ddiso='sudo dd bs=4M oflag=sync status=progress'
+
