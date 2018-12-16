@@ -2,6 +2,8 @@
 " Preconfiguration {{{
 scriptencoding utf-8
 
+set t_Co=256
+
 set nocompatible
 
 let g:python_highlight_all = 1
@@ -11,103 +13,112 @@ let g:python_space_error_highlight = 1
 
 let g:python_self_cls_highlight = 1
 let g:pymode_python = 'python3'
+
+" Theme config
+let g:molokai_original = 1
+let g:rehash256 = 1
+
 "let g:python_host_prog='/usr/bin/python'
 " }}}
 
-" Plugins {{{
-set runtimepath+=~/.vim/bundle/Vundle.vim
-set runtimepath+=+=~/.vim/scripts
-set runtimepath+=+=/usr/share/vim/vimfiles/plugin
-set t_Co=256
-call vundle#begin()
+" Plug {{{
+call plug#begin('~/.vim/plugged')
+    Plug 'tomasr/molokai'
+call plug#end()
 
-Plugin 'VundleVim/Vundle.vim'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'Yggdroot/indentLine'
-"Plugin 'nathanaelkane/vim-indent-guides'
-Plugin 'w0rp/ale'
+colorscheme molokai
+filetype on
+filetype plugin on
+filetype plugin indent on
+syntax enable
 
-" Slow returns
-Plugin 'Vimjas/vim-python-pep8-indent'
-Plugin 'airblade/vim-gitgutter'
-Plugin 'tpope/vim-fugitive'
-Plugin 'ervandew/supertab'
+call plug#begin('~/.vim/plugged')
+    Plug 'VundleVim/Vundle.vim'
+    Plug 'scrooloose/nerdcommenter'
+    Plug 'Yggdroot/indentLine'
+    "Plugin 'nathanaelkane/vim-indent-guides'
+    Plug 'w0rp/ale'
 
-"Plugin 'ap/vim-css-color'
-Plugin 'chrisbra/Colorizer'
-Plugin 'osyo-manga/vim-over'
-"Plugin 'haya14busa/incsearch.vim'
-"Plugin 'haya14busa/incsearch-fuzzy.vim'
+    " Slow returns
+    Plug 'Vimjas/vim-python-pep8-indent'
+    Plug 'airblade/vim-gitgutter'
+    Plug 'tpope/vim-fugitive'
+    Plug 'ervandew/supertab'
 
-Plugin 'tmux-plugins/vim-tmux'
+    "Plugin 'ap/vim-css-color'
+    Plug 'chrisbra/Colorizer'
+    Plug 'osyo-manga/vim-over'
+    "Plugin 'haya14busa/incsearch.vim'
+    "Plugin 'haya14busa/incsearch-fuzzy.vim'
 
-Plugin 'junegunn/fzf'
-Plugin 'junegunn/fzf.vim'
+    Plug 'tmux-plugins/vim-tmux'
 
-"Plugin 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    Plug 'junegunn/fzf'
+    Plug 'junegunn/fzf.vim'
 
-"Plugin 'joeytwiddle/sexy_scroller.vim'
-Plugin 'mhinz/vim-startify'
+    "Plugin 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
-"Plugin 'wkentaro/conque.vim'
-"Plugin 'christoomey/vim-tmux-navigator'
-"Plugin 'jpalardy/vim-slime'
+    "Plugin 'joeytwiddle/sexy_scroller.vim'
+    Plug 'mhinz/vim-startify'
 
-Plugin 'majutsushi/tagbar'
-"Plugin 'calebsmith/vim-lambdify'
-"Plugin 'ehamberg/vim-cute-python'
+    "Plugin 'wkentaro/conque.vim'
+    "Plugin 'christoomey/vim-tmux-navigator'
+    "Plugin 'jpalardy/vim-slime'
 
-" Syntax files
-Plugin 'pangloss/vim-javascript'
-Plugin 'mxw/vim-jsx'
-Plugin 'chr4/nginx.vim'
-Plugin 'martinda/Jenkinsfile-vim-syntax'
+    Plug 'majutsushi/tagbar'
+    "Plugin 'calebsmith/vim-lambdify'
+    "Plugin 'ehamberg/vim-cute-python'
 
-" Faster YAML syntax
-Plugin 'stephpy/vim-yaml'
+    " Syntax files
+    Plug 'pangloss/vim-javascript'
+    Plug 'mxw/vim-jsx'
+    Plug 'chr4/nginx.vim'
+    Plug 'martinda/Jenkinsfile-vim-syntax'
 
-"Plugin 'kien/rainbow_parentheses.vim'
-Plugin 'luochen1990/rainbow'
+    " Faster YAML syntax
+    Plug 'stephpy/vim-yaml'
 
-" Godot GDScript
-Plugin 'calviken/vim-gdscript3'
+    "Plugin 'kien/rainbow_parentheses.vim'
+    Plug 'luochen1990/rainbow'
 
-" Python better code folding
+    " Godot GDScript
+    Plug 'calviken/vim-gdscript3'
 
-" TypeScript
-Plugin 'leafgarland/typescript-vim'
+    " Python better code folding
 
-" Hex mode
-Plugin 'fidian/hexmode'
-"Plugin 'mattn/vim-xxdcursor'
+    " TypeScript
+    Plug 'leafgarland/typescript-vim'
 
-"Plugin 'chriskempson/base16-vim'
+    " Hex mode
+    Plug 'fidian/hexmode'
+    "Plugin 'mattn/vim-xxdcursor'
 
-" Python
-"Plugin 'python-mode/python-mode'
-Plugin 'davidhalter/jedi-vim'
-Plugin 'heavenshell/vim-pydocstring'
+    "Plugin 'chriskempson/base16-vim'
 
-" Motion
-Plugin 'easymotion/vim-easymotion'
+    " Python
+    "Plugin 'python-mode/python-mode'
+    Plug 'davidhalter/jedi-vim'
+    Plug 'heavenshell/vim-pydocstring'
 
-call vundle#end()                    " required
+    " Motion
+    Plug 'easymotion/vim-easymotion'
 
+    " Custom plugins
+    Plug '~/.vim/plugins/icons'
+    Plug '~/.vim/plugins/utils'
+    Plug '~/.vim/plugins/autocursor'
+    Plug '~/.vim/plugins/hi_yaml'
+    Plug '~/.vim/plugins/icons'
+    Plug '~/.vim/plugins/signs'
+    Plug '~/.vim/plugins/statusline'
+    Plug '~/.vim/plugins/tabline'
+
+call plug#end()                    " required
 " }}}
 
 " Internals (hotkeys, highlights, vim configs) {{{
 
 set nowrap
-filetype on
-filetype plugin on
-filetype plugin indent on
-
-syntax enable
-
-" Theme
-let g:molokai_original = 1
-let g:rehash256 = 1
-colorscheme molokai
 
 set tabstop=4 softtabstop=4 expandtab shiftwidth=4 smarttab
 
@@ -134,7 +145,7 @@ set t_ZR=[23m
 set splitbelow
 set splitright
 
-nnoremap <End> $
+nnoremap <End> g$
 
 " Move to next/prev non-whitespace line
 nnoremap } /^\S<cr>:nohlsearch<cr>
@@ -217,6 +228,10 @@ inoremap <S-Tab> <C-d>
 " Switch between windows using Tab
 nnoremap <Tab> <C-W>w
 
+" Word jumps in normal mode
+nnoremap <C-Left> b
+nnoremap <C-Right> e
+
 " Show cursor line, hide cursor column
 set cursorline
 set nocursorcolumn
@@ -266,6 +281,12 @@ let loaded_netrwPlugin = 1
 " Shada config
 set shada=!,'100,<50,s10,h,:500,@500,/500
 
+" Color column
+set colorcolumn=80,100,120
+
+" Word jump config
+"set iskeyword=@,48-57
+
 " }}}
 
 " Colors {{{
@@ -293,9 +314,11 @@ hi Error ctermbg=197 ctermfg=255 cterm=bold,underline
 "hi Function cterm=underline
 hi Include cterm=bold ctermfg=154
 "hi MatchParen ctermfg=197 ctermbg=NONE cterm=inverse,bold,underline
-hi MatchParen ctermbg=197 cterm=bold,underline
+hi MatchParen ctermfg=197 ctermbg=none cterm=bold,underline
 
 hi Special cterm=italic
+
+hi ColorColumn ctermbg=235
 
 " Highlight selected word
 "hi Selected ctermbg=94 ctermfg=none
@@ -477,8 +500,8 @@ let g:ale_lint_on_insert_leave = 0
 let g:ale_cursor_detail = 0
 let g:ale_writegood_use_global = 1
 
-let g:ale_virtualtext_cursor = 1
-let g:ale_virtualtext_prefix = ' # '
+"let g:ale_virtualtext_cursor = 1
+"let g:ale_virtualtext_prefix = ' # '
 
 "let g:ale_python_pylint_options = '-j2 --load-plugins pylint_django'
 let g:ale_python_pylint_options = '-j2'
@@ -503,11 +526,56 @@ hi ALEError ctermbg=197 ctermfg=255 cterm=bold,underline
 "hi ALEError cterm=reverse
 hi ALEErrorSign ctermbg=234 ctermfg=197 cterm=bold
 
-hi ALEVirtualTextError ctermfg=197
-hi ALEVirtualTextWarning ctermfg=190
+hi ALEVirtualTextError ctermfg=197 cterm=bold
+hi ALEVirtualTextWarning ctermfg=197 cterm=bold
+"hi ALEVirtualTextWarning ctermfg=190 cterm=bold,underline
+
+let g:ale_annotations_ns_id = nvim_create_namespace('ALEAnnotations')
+
+fu! ClearALEAnnotations()
+    call nvim_buf_clear_highlight(bufnr('%'), g:ale_annotations_ns_id, 0, -1)
+endf
+
+fu! ShowALEAnnotations()
+    for l:info in g:ale_buffer_info[bufnr('%')].loclist
+        let l:class = 'ALEVirtualTextError'
+        let l:prefix = 'EE'
+        if l:info.type ==# 'W'
+            let l:class = 'ALEVirtualTextWarning'
+            let l:prefix = 'WW'
+        endi
+        let l:meta = ''
+        if has_key(l:info, 'linter_name')
+            let l:meta = l:info.linter_name
+        end
+        if has_key(l:info, 'code')
+            if len(l:meta)
+                let l:meta .= '/'
+            end
+            let l:meta .= l:info.code
+        end
+        if len(l:meta)
+            let l:meta .= ': '
+        end
+        "\ [[' ', 'Normal'], ['[' . l:prefix . '] ' . l:meta . l:info.text, l:class]],
+        call nvim_buf_set_virtual_text(
+                    \ bufnr('%'),
+                    \ g:ale_annotations_ns_id,
+                    \ l:info.lnum - 1,
+                    \ [
+                    \   [' ' . b:NERDCommenterDelims.left, 'Comment'],
+                    \   ['[' . l:prefix . ']', l:class],
+                    \   [' ' . l:meta . l:info.text, 'Comment']
+                    \ ],
+                    \ {}
+                    \ )
+    endfo
+endf
 
 aug ALEAutoLint
     au! BufRead,BufWrite * :ALELint
+    au! User ALELintPre :call ClearALEAnnotations()
+    au! User ALELintPost :call ShowALEAnnotations()
 aug END
 
 " }}}
@@ -836,7 +904,7 @@ let g:jedi#rename_command = '<C-r>'
 let g:jedi#usages_command = '<C-n>'
 let g:jedi#popup_on_dot = 0
 let g:jedi#popup_select_first = 0
-let g:jedi#use_splits_not_buffers = 'bottom'
+let g:jedi#use_splits_not_buffers = 'right'
 let g:jedi#smart_auto_mappings = 0
 let g:jedi#fuzzy_completion = 1
 aug PythonJediConfig
@@ -863,8 +931,8 @@ aug BgHighlight
     au!
     "autocmd WinEnter * set nu
     "autocmd WinLeave * set nonu
-    au WinEnter * set winhl=
-    au WinLeave * set winhl=Normal:NormalNC
+    au WinEnter * setlocal winhl=
+    au WinLeave * setlocal winhl=Normal:NormalNC
     " ,LineNr:LineNrNC,SignColumn:SignColumnNC
     " ,Identifier:IdentifierNC
     " ,Statement:StatementNC,Special:SpecialNC,PreProc:PreProcNC
@@ -903,7 +971,7 @@ nmap c <Plug>(easymotion-s2)
 "nmap w <Plug>(easymotion-overwin-f)
 "nmap w <Plug>(easymotion-overwin-f2)
 "nmap w <Plug>(easymotion-overwin-line)
-nmap w <Plug>(easymotion-overwin-w)
+"nmap w <Plug>(easymotion-overwin-w)
 nmap <Leader><Leader> <Plug>(easymotion-prefix)
 
 hi EasyMotionTarget ctermfg=196 cterm=bold
@@ -929,22 +997,4 @@ let g:pydocstring_enable_mapping = 0
 let g:pydocstring_templates_dir = $HOME . '/.vim/templates/pydocstring/'
 " }}}
 
-" Scripts {{{
-for f in split(glob('~/.vim/scripts/*.vim'), '\n')
-  exe 'source' f
-endfor
-"source $HOME/.vim/scripts/astloc.vim
-"source $HOME/.vim/scripts/autocursor.vim
-""source $HOME/.vim/scripts/compl.vim
-""source $HOME/.vim/scripts/cute.vim
-""source $HOME/.vim/scripts/fastescape.vim
-"source $HOME/.vim/scripts/hi_yaml.vim
-"source $HOME/.vim/scripts/icons.vim
-"source $HOME/.vim/scripts/signs.vim
-"source $HOME/.vim/scripts/statusline.vim
-"source $HOME/.vim/scripts/tabline.vim
-""source $HOME/.vim/scripts/termrun.vim
-"source $HOME/.vim/scripts/utils.vim
-"source $HOME/.vim/scripts/xxdcursor.vim
-" }}}
 

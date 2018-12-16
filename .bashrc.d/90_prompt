@@ -201,13 +201,15 @@ function make_prompt() {
             fb $COLOR 234 1
             if [[ "$BRANCH" != "HEAD" ]]
             then
-                echo -n " $GIT $BRANCH$C"
+                #echo -n " $GIT $BRANCH$C"
+                echo -n " $BRANCH$C"
             else
                 echo -n " (detached$C)"
             fi
             #fb 32 234
             fb 203 234
-            echo -n "  $HASH"
+            #echo -n "  $HASH"
+            echo -n " $HASH"
             fb 241 234
             #echo -n " ($AUTHOR: $MESSAGE)"
             echo -n " $RST"
@@ -249,10 +251,14 @@ function make_prompt() {
     } # }}}
 
     function free_part() { # {{{
-        PRINTED=$((PRINTED+1))
         fb 71 234
+        if [[ "$PRINTED" == "0" ]]
+        then
+            echo -n ' '
+        fi
+        PRINTED=$((PRINTED+1))
         #echo -n "$(df -h / --output=avail | tail -n 1 | tr -d "\n ")iB free "
-        echo -n " $(df -h / --output=avail | tail -n 1 | tr -d "\n ") free "
+        echo -n "$(df -h / --output=avail | tail -n 1 | tr -d "\n ") free "
     } # }}}
 
     function pwd_part() { # {{{

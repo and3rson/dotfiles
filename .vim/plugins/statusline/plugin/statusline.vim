@@ -1,3 +1,6 @@
+" vim:foldmethod=marker
+scriptencoding utf-8
+" Highlights {{{
 hi! StatusBarInsert ctermbg=233 ctermfg=197
 hi! StatusBarNormal ctermbg=233 ctermfg=81
 hi! StatusBarCommand ctermbg=233 ctermfg=32
@@ -15,10 +18,9 @@ hi! StatusLineNC ctermfg=238 ctermbg=233 cterm=none
 " PieCrumbs
 hi! PieClass ctermfg=197 ctermbg=233 cterm=bold
 hi! PieFunction ctermfg=154 ctermbg=233
+" }}}
 
-"\ 'n': '',
-"\ 'i': '',
-"\ 'R': '',
+" Mode icons {{{
 let g:mode_map = {
     \ '__': '',
     \ 'n': g:ic.vim,
@@ -35,10 +37,9 @@ let g:mode_map = {
     \ }
 "let g:sep = ' ⎪ '
 let g:sep = '  '
+" }}}
 
-set noshowmode
-
-" Char code
+" Char code {{{
 fu! CharCode(bufnr, mode, is_active_window)
     return g:sep . '%02B'
     "echo getbufline(a:bufnr, '.')
@@ -57,14 +58,8 @@ fu! CharCode(bufnr, mode, is_active_window)
 
     "return printf("%s (0x%04x)", char, code)
 endf
-
-fu! Clamp(smin, smax, dmin, dmax, value)
-    let smin = a:smin * 1.0
-    let smax = a:smax * 1.0
-    let k = (a:value - smin) / (smax - smin)
-    return a:dmin + (a:dmax - a:dmin) * k
-endf
-
+" }}}
+" Scroll progress {{{
 fu! ScrollProgress(bufnr, mode, is_active_window)
     let base = 0x2581
     let base = 0x2588
@@ -79,13 +74,15 @@ fu! ScrollProgress(bufnr, mode, is_active_window)
     let s .= '⎸'
     return s
 endf
-
+" }}}
+" ALE status {{{
 fu! AleStatus(bufnr, mode, is_active_window) abort
     let l:is_checking = ale#engine#IsCheckingBuffer(bufnr(''))
 
     return l:is_checking == 0 ? '' : (g:sep . '...')
 endf
-
+" }}}
+" ALE warnings {{{
 fu! AleWarnings(bufnr, mode, is_active_window) abort
     let l:is_checking = ale#engine#IsCheckingBuffer(bufnr(''))
     let l:counts = ale#statusline#Count(a:bufnr)
@@ -103,7 +100,8 @@ fu! AleWarnings(bufnr, mode, is_active_window) abort
     endi
     return g:sep . l:msg . '%#StatusBarText#'
 endf
-
+" }}}
+" ALE errors {{{
 fu! AleErrors(bufnr, mode, is_active_window) abort
     let l:is_checking = ale#engine#IsCheckingBuffer(bufnr(''))
     let l:counts = ale#statusline#Count(a:bufnr)
@@ -120,7 +118,8 @@ fu! AleErrors(bufnr, mode, is_active_window) abort
     endi
     return g:sep . l:msg . '%#StatusBarText#'
 endf
-
+" }}}
+" Linter status {{{
 fu! LinterStatus(bufnr, mode, is_active_window) abort
     let l:counts = ale#statusline#Count(bufnr(''))
 
@@ -133,31 +132,20 @@ fu! LinterStatus(bufnr, mode, is_active_window) abort
     \   all_errors
     \)
 endf
-
+" }}}
+" File icon {{{
 fu! FileIcon(filetype)
     return has_key(g:ic, a:filetype) ? g:ic[a:filetype] : g:ic.default
 endf
-
+" }}}
+" File type {{{
 fu! FileType(bufnr, mode, is_active_window)
     return getbufvar(a:bufnr, '&filetype')
     "let ft = &filetype
     "return has_key(g:abbr, ft) ? g:abbr[ft] : ft
 endf
-
-"call SetStatusLineColor('n')
-
-let g:winid = win_getid()
-fu! SLEnter()
-    let g:winid = win_getid()
-endf
-
-"hi StatusLine ctermfg=255 cterm=None gui=None ctermbg=None
-
-" !!!
-set lazyredraw
-
-let g:active_winnr = winnr()
-
+" }}}
+" PieCrumbs {{{
 fu! PieCrumbs(bufnr, mode, is_active_window)
     if getbufvar(a:bufnr, '&filetype') != 'python'
         return ''
@@ -224,7 +212,8 @@ fu! PieCrumbs(bufnr, mode, is_active_window)
     endfor
     return result
 endf
-
+" }}}
+" TagBarLoc {{{
 fu! TagBarLoc(bufnr, mode, is_active_window)
     let tag = tagbar#currenttag('%s', '', 'f')
     if strlen(tag) == 0
@@ -232,7 +221,8 @@ fu! TagBarLoc(bufnr, mode, is_active_window)
     endif
     return ' > ' . tag
 endf
-
+" }}}
+" Current branch {{{
 fu! Branch(bufnr, mode, is_active_window)
     " expand('%:p:h')
     " let head = system('git -C ' . shellescape(a:file) . ' rev-parse --symbolic-full-name --abbrev-ref HEAD')
@@ -240,7 +230,7 @@ fu! Branch(bufnr, mode, is_active_window)
     " if v:shell_error != 0
     "     let head = ''
     " endif
-    let head = fugitive#head(8)
+    let head = fugitive#Head(8, getbufvar(a:bufnr, 'git_dir'))
     if strlen(head)
         if strlen(head) > 16
             let head = head[:15] . '>'
@@ -250,17 +240,20 @@ fu! Branch(bufnr, mode, is_active_window)
     endif
     return ''
 endf
-
+" }}}
+" File position {{{
 fu! FilePos(bufnr, mode, is_active_window)
     "return g:sep . '%03l:%03c / %03L'
     return g:sep . '%03l/%03L'
 endf
-
+" }}}
+" Buffer number {{{
 fu! BufNr(bufnr, mode, is_active_window)
     "return g:sep . ' ' . a:bufnr . ':' . a:mode . ' '
     return g:sep . '#' . a:bufnr . g:sep . a:mode
 endf
-
+" }}}
+" File and mode {{{
 let g:statusbar_highlights = {
             \ 'n': 'StatusBarNormal',
             \ 'c': 'StatusBarCommand',
@@ -297,16 +290,19 @@ fu! FileAndMode(bufnr, m, is_active_window)
     let s .= title_hi . '%<%f:%l:%c' . l:flags . ' '
     return s
 endf
-
+" }}}
+" Spacer {{{
 fu! Spacer(bufnr, m, is_active_window)
     return '%*%='
 endf
+" }}}
 
 let g:status_bar = [
             \ 'FileAndMode',
             \ 'PieCrumbs',
             \ 'Spacer',
             \ 'FileType',
+            \ 'Branch',
             \ 'BufNr',
             \ 'FilePos',
             \ 'CharCode',
@@ -331,30 +327,6 @@ fu! StatusBar(winid)
     else
         let l:m = 'n'
     endi
-    "let s .= '%*%<%f'
-    "let s .= '%*'
-
-    "let s .= TagBarLoc()
-    "if a:file_type ==# 'python'
-    "    "let s .= ' ' . ASTLoc()
-    "    let s .= PieCrumbs(1) . ' %#StatusBarText#'
-    "endif
-    "let s .= '%='
-    "let s .= 'A=' . win_getid() . ' C=' . a:winid
-    "" let s .= '%#StatusBarText#'
-    "let s .= ' ' . FileIcon() . '  ' . FileType() . ' '
-    "let s .= ' ' . ScrollProgress() . ' '
-    "let s .= FileType()
-    "let s .= BufNr(bufnr, m)
-    ""let s .= g:sep . ' ' . a:file_type . ' '
-    ""let s .= Branch()
-    "let s .= FilePos()
-    "let s .= CharCode(bufnr)
-    ""let s .= AleStatus(bufnr)
-    "let s .= AleWarnings(bufnr)
-    "let s .= AleErrors(bufnr)
-    ""let s .= color . g:rotate_icons[g:rotate_state % 4] . ' '
-    "let s .= end
     for l:fn in g:status_bar
         let s .= call(l:fn, [l:bufnr, l:m, l:is_active_window])
     endfo
@@ -362,29 +334,33 @@ fu! StatusBar(winid)
     return l:s
 endf
 
-"let g:rotate_state = 0
-" let g:rotate_icons = ['—', '\', '|', '/']
-""let g:rotate_icons = ['◜', '◝', '◞', '◟']
-"fu Rotate(timer)
-"    let g:rotate_state = g:rotate_state + 1
-"endf
-"fu RotateIcon()
-"    return g:rotate_icons[g:rotate_state % 4]
-"endf
+fu! Clamp(smin, smax, dmin, dmax, value)
+    let smin = a:smin * 1.0
+    let smax = a:smax * 1.0
+    let k = (a:value - smin) / (smax - smin)
+    return a:dmin + (a:dmax - a:dmin) * k
+endf
 
-"call timer_start(100, 'Rotate', {'repeat': -1})
+let g:winid = win_getid()
+fu! SLEnter()
+    let g:winid = win_getid()
+endf
 
+let g:active_winnr = winnr()
+
+set lazyredraw
+set noshowmode
 set laststatus=2
+
 fu InitStatusBar()
-    if &filetype == 'tagbar'
+    if &filetype ==? 'tagbar'
         return
     endif
     let &l:statusline='%!StatusBar('.win_getid().')'
 endf
-au VimEnter,WinNew,BufEnter * call InitStatusBar()
-au VimEnter,WinEnter,BufEnter * call SLEnter()
-au FileType qf call InitStatusBar()
-au FileType tagbar call InitStatusBar()
-"au VimEnter,WinNew * setlocal statusline=%!StatusBar(win_getid())
-"set statusline=%!StatusBar()
-
+aug StatusLine
+    au VimEnter,WinNew,BufEnter * call InitStatusBar()
+    au VimEnter,WinEnter,BufEnter * call SLEnter()
+    au FileType qf call InitStatusBar()
+    au FileType tagbar call InitStatusBar()
+aug END
