@@ -1,20 +1,27 @@
 [user]
-	email = a@dun.ai
-	name = Andrew Dunai
+    email = a@dun.ai
+    name = Andrew Dunai
     # signingkey = 7FA9F240665038B6
-	signingkey = 58184B850FE18BA6
+    signingkey = 58184B850FE18BA6
 
 [alias]
-	st = status
-	co = checkout
-	br = branch
+    st = status
+    co = checkout
+    br = branch
     spull = submodule update --init --recursive
     commit = commit -S
+
 [core]
-	pager = less
+    pager = less
+
 [color]
-	ui = true
+    ui = true
+
 [merge]
-	tool = meld
+    tool = meld
+
 [diff]
-	tool = meld
+    tool = meld
+
+[commit]
+    gpgsign = true
