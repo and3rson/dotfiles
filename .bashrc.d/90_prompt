@@ -258,7 +258,7 @@ function make_prompt() {
         fi
         PRINTED=$((PRINTED+1))
         #echo -n "$(df -h / --output=avail | tail -n 1 | tr -d "\n ")iB free "
-        echo -n "$(df -h / --output=avail | tail -n 1 | tr -d "\n ") free "
+        echo -n "$(df -h . --output=avail | tail -n 1 | tr -d "\n ") free "
     } # }}}
 
     function pwd_part() { # {{{

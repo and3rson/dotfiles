@@ -179,7 +179,7 @@ for s = 1, screen.count() do
     if s == 1 then
         local systray = wibox.widget.systray()
         systray:set_base_size(20)
-        systray.forced_width = 0
+        --systray.forced_width = 0
         right_layout:add(wibox.container.margin(systray, 2, 2, 2, 2))
 
         right_layout:add(spacer())
@@ -406,7 +406,7 @@ awful.rules.rules = {
         properties = { screen = 1, tag = "W" }
     },
     {
-        rule_any = { class = {"TelegramDesktop", "IRCCloud", "ViberPC", "Slack"} },
+        rule_any = { class = {"TelegramDesktop", "IRCCloud", "ViberPC", "Slack", "discord"} },
         properties = { screen = 1, tag = "I" }
     },
     {

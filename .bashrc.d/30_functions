@@ -34,3 +34,8 @@ function feh() {
     fi
     sxiv $path
 }
+
+function tg() {
+    curl "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" -H 'Content-Type: application/json' -d '{"text": "'"$@"'", "chat_id": "84560715"}'
+}
+

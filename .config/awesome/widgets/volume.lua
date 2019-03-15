@@ -59,6 +59,9 @@ return function()
         f:close()
 
         default_sink = stdout:match('set%-default%-sink (%S+)\n')
+        if default_sink == nil then
+            return
+        end
         volume = stdout:match('set%-sink%-volume ' .. default_sink:gsub('%.', '%%.'):gsub('%-', '%%-') .. ' (%S+)\n')
         volume = tonumber(volume)
         local value = math.floor(volume / 0x10000 * 100)

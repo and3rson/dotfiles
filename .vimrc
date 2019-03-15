@@ -62,7 +62,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'mhinz/vim-startify'
 
     "Plugin 'wkentaro/conque.vim'
-    "Plugin 'christoomey/vim-tmux-navigator'
+    "Plug 'christoomey/vim-tmux-navigator'
     "Plugin 'jpalardy/vim-slime'
 
     Plug 'majutsushi/tagbar'
@@ -112,6 +112,8 @@ call plug#begin('~/.vim/plugged')
     Plug '~/.vim/plugins/signs'
     Plug '~/.vim/plugins/statusline'
     Plug '~/.vim/plugins/tabline'
+    "Plug '~/.vim/plugins/hi_godot'
+    "Plug '~/.vim/plugins/pyxl'
 
 call plug#end()                    " required
 " }}}
@@ -237,7 +239,8 @@ set cursorline
 set nocursorcolumn
 
 " Fill chars
-set fillchars+=vert:\ ,stl:\ ,stlnc:\ ,fold:\ ,eob:~
+"set fillchars+=vert:\ ,stl:\ ,stlnc:\ ,fold:\ ,eob:\ "
+set fillchars+=stl:\ ,stlnc:\ ,fold:\-,msgsep:+,eob:\ "
 " Chars
 set list listchars=tab:▏ ,trail:·,extends:»,precedes:«,nbsp:×
 " 
@@ -251,7 +254,7 @@ let $SUDO_ASKPASS=$HOME . '/.scripts/rofi-askpass.sh'
 "cmap w!! :SudoW<CR>
 "
 " Cursor blinking & look
-set guicursor=n-v-c-sm:block-blinkon100,i-ci-ve:ver25-blinkon100,r-cr-o:hor20-blinkon100
+set guicursor=n-v-c-sm:block-blinkwait100-blinkon100-blinkoff100,i-ci-ve:ver25-blinkwait100-blinkon100-blinkoff100,r-cr-o:hor20-blinkwait100-blinkon100-blinkoff100
 
 " Detect hi groups
 map <F10> :echo "hi<" . synIDattr(synID(line("."),col("."),1),"name") . '> trans<'
@@ -265,8 +268,13 @@ let g:python_host_prog='/usr/bin/python'
 "au BufRead * set scroll=20
 set scrolloff=5
 
+" Window size
+aug EqualWindows
+    au VimResized * :wincmd =
+aug END
+
 " Limit syntax highlight
-set synmaxcol=250
+set synmaxcol=140
 
 " Text display tweaks
 set display=lastline,msgsep,uhex
@@ -282,7 +290,8 @@ let loaded_netrwPlugin = 1
 set shada=!,'100,<50,s10,h,:500,@500,/500
 
 " Color column
-set colorcolumn=80,100,120
+"set colorcolumn=80,100,120
+set colorcolumn=100
 
 " Word jump config
 "set iskeyword=@,48-57
@@ -337,8 +346,8 @@ hi ColorColumn ctermbg=235
 "autocmd CursorMoved * call s:HighlightWordUnderCursor()
 
 " Split
-hi VertSplit ctermbg=none
 "hi VertSplit ctermbg=none
+hi VertSplit ctermbg=234 ctermfg=none
 " }}}
 
 " NERD Commenter {{{
@@ -518,11 +527,13 @@ nmap <silent> <F5> :ALELint<CR>
 
 noremap <silent> <A-e> :lopen<CR>
 
-hi ALEWarning ctermbg=190 ctermfg=233 cterm=bold
+"hi ALEWarning ctermbg=190 ctermfg=233 cterm=bold
+hi ALEWarning cterm=underline
 "hi ALEWarning cterm=reverse
 hi ALEWarningSign ctermbg=234 ctermfg=190
 "hi ALEError ctermbg=197 ctermfg=255
-hi ALEError ctermbg=197 ctermfg=255 cterm=bold,underline
+"hi ALEError ctermbg=197 ctermfg=255 cterm=bold,underline
+hi ALEError cterm=underline
 "hi ALEError cterm=reverse
 hi ALEErrorSign ctermbg=234 ctermfg=197 cterm=bold
 
@@ -987,7 +998,7 @@ let g:EasyMotion_do_shade = 1
 let g:EasyMotion_grouping = 2
 let g:EasyMotion_use_upper = 1
 "let g:EasyMotion_prompt = '{n}>>> '
-let g:EasyMotion_prompt = '@ '
+let g:EasyMotion_prompt = '{n}> '
 "let g:EasyMotion_add_search_history = 0
 let g:EasyMotion_verbose = 0
 
