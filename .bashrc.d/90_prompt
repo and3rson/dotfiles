@@ -158,7 +158,7 @@ function make_prompt() {
             HASH=${INFO[0]}
             AUTHOR=${INFO[1]}
             MESSAGE=${INFO[2]}
-            OUT=$(git status -s 2>&1)
+            #OUT=$(git status -s 2>&1)
             if [ "${#BRANCH}" -gt 24 ]
             then
                 BRANCH="${BRANCH::23}$ELLIPSIS"
@@ -167,14 +167,15 @@ function make_prompt() {
             then
                 MESSAGE="${MESSAGE::29}$ELLIPSIS"
             fi
-            if [ "$OUT" == "" ]
-            then
-                COLOR=41
-                C=''
-            else
-                COLOR=3
-                C='!'
-            fi
+            COLOR=41
+            #if [ "$OUT" == "" ]
+            #then
+            #    COLOR=41
+            #    C=''
+            #else
+            #    COLOR=3
+            #    C='!'
+            #fi
             DESCRIBE=`git describe --tags 2> /dev/null`
             TAG=""
             COUNT=""
@@ -394,7 +395,7 @@ function make_prompt() {
     git_part
     #dirs_part
     #files_part
-    free_part
+    #free_part
     ret_part
     #end_part
     brk

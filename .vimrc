@@ -112,6 +112,7 @@ call plug#begin('~/.vim/plugged')
     Plug '~/.vim/plugins/signs'
     Plug '~/.vim/plugins/statusline'
     Plug '~/.vim/plugins/tabline'
+    Plug '~/.vim/plugins/pds'
     "Plug '~/.vim/plugins/hi_godot'
     "Plug '~/.vim/plugins/pyxl'
 
@@ -585,8 +586,8 @@ endf
 
 aug ALEAutoLint
     au! BufRead,BufWrite * :ALELint
-    au! User ALELintPre :call ClearALEAnnotations()
-    au! User ALELintPost :call ShowALEAnnotations()
+    "au! User ALELintPre :call ClearALEAnnotations()
+    "au! User ALELintPost :call ShowALEAnnotations()
 aug END
 
 " }}}
@@ -1007,5 +1008,6 @@ let g:EasyMotion_verbose = 0
 let g:pydocstring_enable_mapping = 0
 let g:pydocstring_templates_dir = $HOME . '/.vim/templates/pydocstring/'
 " }}}
-
-
+" PDS {{{
+nnoremap <silent> <M-d> :call PDS()<CR>
+" }}}
