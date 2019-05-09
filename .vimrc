@@ -497,10 +497,10 @@ let g:ale_linters = {
 nnoremap <silent> ; :lprev<CR>
 nnoremap <silent> ' :lnext<CR>
 
-"let g:ale_sign_error = ' '
-"let g:ale_sign_warning = ' '
-let g:ale_sign_error = 'E>'
-let g:ale_sign_warning = 'E>'
+let g:ale_sign_error = ''
+let g:ale_sign_warning = ''
+"let g:ale_sign_error = 'EE'
+"let g:ale_sign_warning = 'EE'
 let g:ale_lint_delay = 500
 let g:ale_lint_on_enter = 0
 let g:ale_lint_on_filetype_changed = 0
@@ -529,13 +529,13 @@ nmap <silent> <F5> :ALELint<CR>
 noremap <silent> <A-e> :lopen<CR>
 
 "hi ALEWarning ctermbg=190 ctermfg=233 cterm=bold
-hi ALEWarning cterm=underline
-"hi ALEWarning cterm=reverse
+"hi ALEWarning cterm=underline
+hi ALEWarning cterm=reverse ctermfg=red
 hi ALEWarningSign ctermbg=234 ctermfg=190
 "hi ALEError ctermbg=197 ctermfg=255
 "hi ALEError ctermbg=197 ctermfg=255 cterm=bold,underline
-hi ALEError cterm=underline
-"hi ALEError cterm=reverse
+"hi ALEError cterm=underline
+hi ALEError cterm=reverse ctermfg=red
 hi ALEErrorSign ctermbg=234 ctermfg=197 cterm=bold
 
 hi ALEVirtualTextError ctermfg=197 cterm=bold
@@ -916,7 +916,7 @@ let g:jedi#rename_command = '<C-r>'
 let g:jedi#usages_command = '<C-n>'
 let g:jedi#popup_on_dot = 0
 let g:jedi#popup_select_first = 0
-let g:jedi#use_splits_not_buffers = 'right'
+" let g:jedi#use_splits_not_buffers = 'right'
 let g:jedi#smart_auto_mappings = 0
 let g:jedi#fuzzy_completion = 1
 aug PythonJediConfig

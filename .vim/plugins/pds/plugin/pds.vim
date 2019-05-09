@@ -27,7 +27,9 @@ fu! PDS()
         call add(l:docstring, '')
         call add(l:docstring, '')
         for l:arg in l:args
-            call add(l:docstring, ':param ' . l:arg . ': ' . l:arg)
+            if l:arg != 'self'
+                call add(l:docstring, ':param ' . l:arg . ':')
+            endi
         endfo
         if l:matches[1] == 'def'
             call add(l:docstring, ':return: None')

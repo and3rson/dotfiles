@@ -297,9 +297,9 @@ fu! Spacer(bufnr, m, is_active_window)
 endf
 " }}}
 
+            "\ 'PieCrumbs',
 let g:status_bar = [
             \ 'FileAndMode',
-            \ 'PieCrumbs',
             \ 'Spacer',
             \ 'FileType',
             \ 'Branch',

@@ -31,7 +31,7 @@ return function()
         --border_color = beautiful.fg_cpu,
         forced_width = 48,
         --forced_height = 12,
-        step_width = 1,
+        step_width = 2,
         step_spacing = 1,
         widget = wibox.widget.graph
     }
@@ -43,7 +43,7 @@ return function()
     local idle_prev = 0
 
     gears.timer {
-        timeout=0.1,
+        timeout=0.25,
         autostart=true,
         callback=function()
             local lines = {}

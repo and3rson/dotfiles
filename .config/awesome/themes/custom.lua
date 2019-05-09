@@ -22,7 +22,7 @@ theme.font = "DejavuSansMono Nerd Font Medium 11"
 --theme.font = "RobotoMono Nerd Font Medium 9"
 
 theme.fg_normal = '#A0A0A0'
-theme.bg_normal = '#000000CC'
+theme.bg_normal = '#000000E5'
 theme.bg_lit = '#D6493780'
 --theme.fg_icon = '#D64937'
 theme.fg_icon = '#FFFFFF'
