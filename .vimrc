@@ -648,9 +648,10 @@ fu! FoldText()
     "if len(matches)
     "    let code = matches[1]
     "endi
-    let lines = printf('%d lines', v:foldend - v:foldstart)
+    let lines = printf('%7d lines', v:foldend - v:foldstart)
+    let pluses = repeat('+', min([v:foldend - v:foldstart, 32]))
 
-    return printf('%-' . (width - len(lines) - 3) . 's %s', code, lines)
+    return printf('%-' . (width - len(lines) - 3 - len(pluses) - 1) . 's %s %s', code, pluses, lines)
 
     "return printf('%-'.(width - len(amount) - 3).'s%'.len(amount).'s', str, lines)
     "let amount = repeat('+', v:foldend - v:foldstart)
@@ -671,8 +672,9 @@ hi FoldColumn ctermfg=245 ctermbg=233
 "hi Folded ctermfg=67 ctermbg=16
 hi Folded ctermfg=67 ctermbg=0 cterm=italic
 
-aug JSFolds
-    au FileType javascript setlocal foldmethod=marker foldmarker={,}
+aug CustomFolds
+    "au FileType javascript setlocal foldmethod=marker foldmarker={,}
+    "au FileType tmux setlocal foldmethod=marker
 aug END
 
 function! GoToOpenFold(direction)
