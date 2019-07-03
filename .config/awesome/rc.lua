@@ -29,23 +29,23 @@ naughty.config.presets.critical.bg = beautiful.bg_focus
 -- }}}
 
 -- Widgets {{{
-local spacer = require("widgets.spacer")
-local taglistline = require("widgets.taglistline")
-local clay = require("widgets.clay")
-local cpuwidget = require("widgets.cpuwidget")
-local memwidget = require("widgets.memwidget")
+--local spacer = require("widgets.spacer")
+--local taglistline = require("widgets.taglistline")
+--local clay = require("widgets.clay")
+--local cpuwidget = require("widgets.cpuwidget")
+--local memwidget = require("widgets.memwidget")
 local volume_widget = require("widgets.volume")()
-local openweathermap = require("widgets.openweathermap")
---local df = require("widgets.df")
-local date = require("widgets.date")
-local battery = require("widgets.battery")
---local battery2 = require("widgets.battery2")
---local assault = require("widgets.assault")
-local term = require("widgets.term")
---local fan = require("widgets.fan")
---local bbswitch = require("widgets.bbswitch")
-local brightness = require("widgets.brightness")
-local ping = require("widgets.ping")
+--local openweathermap = require("widgets.openweathermap")
+----local df = require("widgets.df")
+--local date = require("widgets.date")
+--local battery = require("widgets.battery")
+----local battery2 = require("widgets.battery2")
+----local assault = require("widgets.assault")
+--local term = require("widgets.term")
+----local fan = require("widgets.fan")
+----local bbswitch = require("widgets.bbswitch")
+--local brightness = require("widgets.brightness")
+--local ping = require("widgets.ping")
 -- }}}
 
 -- Error handling {{{
@@ -156,6 +156,7 @@ local wiboxes = {}
 for s = 1, screen.count() do
     -- Create the wibox
     local mywibox = awful.wibar({ position = "top", screen = s, height = 24 })
+    mywibox.visible = false
     wiboxes[s] = mywibox
 
     local layout = wibox.layout.align.horizontal()
@@ -164,50 +165,48 @@ for s = 1, screen.count() do
 
     local left_layout = wibox.layout.fixed.horizontal()
 
-    if s == 1 then
-        left_layout:add(wibox.widget{
-            taglistline(s, 2),
-            layout=wibox.layout.stack
-        })
-        left_layout:add(spacer())
-        left_layout:add(clay())
-    end
+    --if s == 1 then
+    --    left_layout:add(wibox.widget{
+    --        taglistline(s, 2),
+    --        layout=wibox.layout.stack
+    --    })
+    --    left_layout:add(spacer())
+    --    left_layout:add(clay())
+    --end
 
     local right_layout = wibox.layout.fixed.horizontal()
     local center_layout = wibox.layout.fixed.horizontal()
-    center_layout:add(date())
+    --center_layout:add(date())
     if s == 1 then
         local systray = wibox.widget.systray()
         systray:set_base_size(20)
         --systray.forced_width = 0
         right_layout:add(wibox.container.margin(systray, 2, 2, 2, 2))
 
-        right_layout:add(spacer())
-        right_layout:add(cpuwidget())
-        right_layout:add(spacer())
-        right_layout:add(memwidget())
-        right_layout:add(spacer())
-        --right_layout:add(bbswitch)
-        --right_layout:add(spacer)
-        right_layout:add(openweathermap())
-        right_layout:add(spacer())
-        right_layout:add(ping())
-        right_layout:add(spacer())
-        --right_layout:add(fan)
-        --right_layout:add(spacer)
-        right_layout:add(brightness())
-        right_layout:add(spacer())
-        right_layout:add(term())
-        right_layout:add(spacer())
+        --right_layout:add(spacer())
+        --right_layout:add(cpuwidget())
+        --right_layout:add(spacer())
+        --right_layout:add(memwidget())
+        --right_layout:add(spacer())
+        ----right_layout:add(bbswitch)
+        ----right_layout:add(spacer)
+        --right_layout:add(openweathermap())
+        --right_layout:add(spacer())
+        --right_layout:add(ping())
+        --right_layout:add(spacer())
+        ----right_layout:add(fan)
+        ----right_layout:add(spacer)
+        --right_layout:add(brightness())
+        --right_layout:add(spacer())
+        --right_layout:add(term())
+        --right_layout:add(spacer())
         right_layout:add(volume_widget)
-        --right_layout:add(awful.widget.clienticon())
     end
-    right_layout:add(spacer())
-    right_layout:add(battery())
-    --right_layout:add(spacer)
-    --right_layout:add(battery2)
-    right_layout:add(spacer())
-    right_layout:add(date())
+    --right_layout:add(spacer())
+    --right_layout:add(battery())
+    --right_layout:add(spacer())
+    --right_layout:add(date())
+
     --right_layout:add(assault({
     --    normal_color=beautiful.fg_battery,
     --    critical_color=beautiful.fg_battery_warning,
@@ -318,6 +317,9 @@ local globalkeys = awful.util.table.join(
 
     -- NetworkManager DMenu
     awful.key({super}, "n", function() awful.util.spawn('networkmanager_dmenu') end),
+
+    -- Bluetooth menu
+    awful.key({super}, "b", function() awful.util.spawn('blueman-manager') end),
 
     -- Screenshot
     awful.key({super}, "p", function() awful.util.spawn('/home/anderson/.scripts/sshot.sh') end),

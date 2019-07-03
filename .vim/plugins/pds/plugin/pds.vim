@@ -44,7 +44,7 @@ fu! PDS()
             let l:lineno = l:lineno + 1
         endfo
         call cursor(l:initial_lineno + 2, 1)
-        call feedkeys('i    ')
+        call feedkeys('i' . repeat(' ', l:indent + 4))
     endi
 endf
 

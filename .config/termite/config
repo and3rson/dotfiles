@@ -10,7 +10,7 @@ highlight =
 
 [colors]
 # background = rgba(0, 0, 0, 0.83)
-background = rgba(0, 0, 0, 0.9)
+background = rgba(0, 0, 0, 0.85)
 ;background = rgba(0, 0, 0, 0.5)
 # foreground = rgba(0, 255, 0, 1)
 # highlight=

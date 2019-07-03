@@ -103,6 +103,9 @@ call plug#begin('~/.vim/plugged')
     " Motion
     Plug 'easymotion/vim-easymotion'
 
+    " Local vim settings
+    Plug 'embear/vim-localvimrc'
+
     " Custom plugins
     Plug '~/.vim/plugins/icons'
     Plug '~/.vim/plugins/utils'
@@ -225,8 +228,8 @@ inoremap <C-h> <C-W>
 inoremap <M-BS> <C-W>
 
 " Unindent
-nnoremap <S-Tab> <<
-inoremap <S-Tab> <C-d>
+"nnoremap <S-Tab> <<
+"inoremap <S-Tab> <C-d>
 
 " Switch between windows using Tab
 nnoremap <Tab> <C-W>w
@@ -348,7 +351,7 @@ hi ColorColumn ctermbg=235
 
 " Split
 "hi VertSplit ctermbg=none
-hi VertSplit ctermbg=234 ctermfg=none
+hi VertSplit ctermbg=234 ctermfg=242
 " }}}
 
 " NERD Commenter {{{
@@ -509,9 +512,11 @@ let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 0
 let g:ale_cursor_detail = 0
 let g:ale_writegood_use_global = 1
+let g:ale_echo_cursor = 0
 
-"let g:ale_virtualtext_cursor = 1
-"let g:ale_virtualtext_prefix = ' # '
+let g:ale_virtualtext_cursor = 1
+let g:ale_virtualtext_prefix = ' *** '
+"let g:ale_cursor_detail = 1
 
 "let g:ale_python_pylint_options = '-j2 --load-plugins pylint_django'
 let g:ale_python_pylint_options = '-j2'
@@ -530,7 +535,7 @@ noremap <silent> <A-e> :lopen<CR>
 
 "hi ALEWarning ctermbg=190 ctermfg=233 cterm=bold
 "hi ALEWarning cterm=underline
-hi ALEWarning cterm=reverse ctermfg=red
+hi ALEWarning cterm=reverse ctermfg=yellow
 hi ALEWarningSign ctermbg=234 ctermfg=190
 "hi ALEError ctermbg=197 ctermfg=255
 "hi ALEError ctermbg=197 ctermfg=255 cterm=bold,underline
@@ -539,7 +544,7 @@ hi ALEError cterm=reverse ctermfg=red
 hi ALEErrorSign ctermbg=234 ctermfg=197 cterm=bold
 
 hi ALEVirtualTextError ctermfg=197 cterm=bold
-hi ALEVirtualTextWarning ctermfg=197 cterm=bold
+hi ALEVirtualTextWarning ctermfg=yellow cterm=bold
 "hi ALEVirtualTextWarning ctermfg=190 cterm=bold,underline
 
 let g:ale_annotations_ns_id = nvim_create_namespace('ALEAnnotations')
@@ -586,6 +591,7 @@ endf
 
 aug ALEAutoLint
     au! BufRead,BufWrite * :ALELint
+    "au! BufRead,BufWrite,TextChanged,InsertLeave * :ALELint
     "au! User ALELintPre :call ClearALEAnnotations()
     "au! User ALELintPost :call ShowALEAnnotations()
 aug END
@@ -908,6 +914,7 @@ let g:pymode_options_colorcolumn = 0
 set completeopt=menu
 
 " Jedi
+"let g:jedi#auto_initialization = 0
 let g:jedi#show_call_signatures = 2
 let g:jedi#show_call_signatures_delay = 500
 let g:jedi#popup_select_first = 0
@@ -921,7 +928,7 @@ let g:jedi#smart_auto_mappings = 0
 let g:jedi#fuzzy_completion = 1
 aug PythonJediConfig
     au FileType python :py3 from jedi import settings; settings.fuzzy_completion = 1
-    au TextChangedI,CursorMovedI * :call jedi#show_call_signatures()
+    "au TextChangedI,CursorMovedI * :call jedi#show_call_signatures()
 aug end
 "let g:jedi#godo_command = '<C-g>'
 nmap <silent> <C-g> :call jedi#goto()<CR>
@@ -931,7 +938,7 @@ let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&contextfunc']
 hi TabLine ctermbg=236 ctermfg=red
 
 " More obvious active windows. Neovim rocks!
-hi! NormalNC ctermfg=240 ctermbg=none cterm=none
+"hi! NormalNC ctermfg=240 ctermbg=none cterm=none
 "hi! LineNrNC ctermbg=none
 "hi! SignColumnNC ctermbg=none
 "hi! IdentifierNC ctermfg=100
@@ -943,8 +950,11 @@ aug BgHighlight
     au!
     "autocmd WinEnter * set nu
     "autocmd WinLeave * set nonu
-    au WinEnter * setlocal winhl=
-    au WinLeave * setlocal winhl=Normal:NormalNC
+
+    " Tired of this
+    "au WinEnter * setlocal winhl=
+    "au WinLeave * setlocal winhl=Normal:NormalNC
+
     " ,LineNr:LineNrNC,SignColumn:SignColumnNC
     " ,Identifier:IdentifierNC
     " ,Statement:StatementNC,Special:SpecialNC,PreProc:PreProcNC
@@ -965,6 +975,7 @@ let g:startify_session_remove_lines = ['setlocal', 'winheight']
 let g:startify_custom_indices =
             \ map(range(0, g:startify_files_number - 1), 'string(v:val)') +
             \ map(range(90, 99), 'string(v:val)')
+let g:startify_change_to_dir = 0
 
 let g:startify_lists = [
             \ { 'header': ['  MRU'], 'type': 'files' },
@@ -1010,4 +1021,8 @@ let g:pydocstring_templates_dir = $HOME . '/.vim/templates/pydocstring/'
 " }}}
 " PDS {{{
 nnoremap <silent> <M-d> :call PDS()<CR>
+" }}}
+" Local VimRC {{{
+"let g:localvimrc_sandbox = 0
+let g:localvimrc_ask = 0
 " }}}

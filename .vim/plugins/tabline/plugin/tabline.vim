@@ -24,7 +24,7 @@ fu GetBuffers()
             let l:name = l:path_parts[-1]
             call remove(l:path_parts, -1)
             if len(l:path_parts) > 0
-                let l:name = l:path_parts[-1] . '/' . l:name
+                let l:name = l:path_parts[-1][:2] . '/' . l:name
                 call remove(l:path_parts, -1)
             endi
         el

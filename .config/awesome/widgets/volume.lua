@@ -86,11 +86,11 @@ return function()
 
     update_widget()
 
-    gears.timer {
-        timeout=1,
-        autostart=true,
-        callback=update_widget
-    }
+    --gears.timer {
+    --    timeout=1,
+    --    autostart=true,
+    --    callback=update_widget
+    --}
 
     local widget = utils.make_row{
         wibox.layout.margin(icon, 0, 0, 0, 2),

@@ -45,6 +45,9 @@ return function()
             end
             local data = json.decode(stdout)
             local city, _ = data.city:gsub('\'', '')
+            if city == 'Lvov' then
+                city = 'Lviv'
+            end
             local location = city .. ',' .. data.country
             awful.spawn.easy_async('curl "' .. OWM_URL:format(location) .. '"', function(stdout, stderr, reason, exit_code)
                 local data = json.decode(stdout)
