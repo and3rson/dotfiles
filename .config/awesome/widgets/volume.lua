@@ -81,6 +81,8 @@ return function()
     local modify_volume = function(diff)
         volume = math.floor(volume + diff / 100 * 0x10000)
         awful.spawn.with_line_callback('pacmd set-sink-volume ' .. default_sink .. ' ' .. string.format('0x%x', math.floor(volume)), {})
+        local volume_text = math.floor(volume / 0x10000 * 100) .. '%'
+        awful.spawn('/home/anderson/.scripts/osd.sh "' .. volume_text .. '"')
         update_widget()
     end
 

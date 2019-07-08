@@ -17,6 +17,7 @@ then
     xcape -e 'Overlay1_Enable=Escape' -t 90
     ~/.scripts/init_kb.sh
     ~/.scripts/init_mouse.sh
+    ~/.scripts/not.py &
 
     # Daemons
     start-pulseaudio-x11 &

@@ -327,7 +327,10 @@ local globalkeys = awful.util.table.join(
     -- HPC YouTube player control
     awful.key({super}, ",", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "prev"}\'') end),
     awful.key({super}, ".", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "play"}\'') end),
-    awful.key({super}, "/", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "next"}\'') end)
+    awful.key({super}, "/", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "next"}\'') end),
+
+    -- Vim edit
+    awful.key({super}, "e", function() awful.util.spawn('/home/anderson/.scripts/vime.sh') end)
 
     --awful.key({ super }, "x", function() menubar.show() end)
 )
@@ -341,7 +344,7 @@ local clientkeys = awful.util.table.join(
 )
 
 -- Bind all key numbers to tags.
-for key, tag_name in pairs({Q='Q', W='W', I='I', E='I', M='M', T='M', A='A', G='A'}) do
+for key, tag_name in pairs({Q='Q', W='W', I='I', M='M', T='M', A='A', G='A'}) do
     globalkeys = awful.util.table.join(
         globalkeys,
         awful.key({super}, key:lower(), function()
@@ -414,6 +417,10 @@ awful.rules.rules = {
     {
         rule_any = { class = {"Evolution"} },
         properties = { screen = 1, tag = "M" }
+    },
+    {
+        rune_any = { class = {'Not'} },
+        properties = { sticky = true, ontop = true, focusable = false, tag = "M" }
     }
 }
 -- }}}
@@ -431,6 +438,16 @@ client.connect_signal("manage", function (c, startup)
             awful.placement.no_overlap(c)
             awful.placement.no_offscreen(c)
         end
+
+        --naughty.notify({ preset = naughty.config.presets.critical,
+        --                 title = c.role,
+        --                 text = 'foo' })
+        --if c.role == 'Not' then
+        --    c.focusable = false
+        --    c.focus = false
+        --    c.sticky = true
+        --    --c:lower()
+        --end
     end
 end)
 
