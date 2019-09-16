@@ -41,7 +41,7 @@ let g:sep = '  '
 
 " Char code {{{
 fu! CharCode(bufnr, mode, is_active_window)
-    return g:sep . '%02B'
+    return g:sep . '0x%02B'
     "echo getbufline(a:bufnr, '.')
     "let char = matchstr(getbufline(a:bufnr, '.'), '\%' . col('.') . 'c.')
     "let code = char2nr(char)
@@ -296,16 +296,30 @@ fu! Spacer(bufnr, m, is_active_window)
     return '%*%='
 endf
 " }}}
+" Locinfo {{{
+"au BufRead,BufWrite *.go :GoLint
+fu! FileAndMode(bufnr, m, is_active_window)
+    if getbufvar(a:bufnr, '&filetype') == 'go'
+
+    endi
+    return ''
+endf
+" }}}
 
             "\ 'PieCrumbs',
+            "
+            "\ 'Branch',
+            "\ 'BufNr',
+            "
+            "\ 'CharCode',
+            "\ 'LocInfo',
 let g:status_bar = [
             \ 'FileAndMode',
             \ 'Spacer',
             \ 'FileType',
-            \ 'Branch',
-            \ 'BufNr',
+            \
             \ 'FilePos',
-            \ 'CharCode',
+            \
             \ 'AleErrors',
             \ 'AleWarnings',
             \ ]

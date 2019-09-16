@@ -1,7 +1,9 @@
-hi! TabLineNormal ctermbg=234 ctermfg=255
+"hi! TabLineNormal ctermbg=234 ctermfg=255
+hi! TabLineNormal ctermbg=none ctermfg=255
 "hi! TabLineActive ctermbg=33 ctermfg=255 cterm=bold
-hi! TabLineActive ctermfg=203 ctermbg=238 cterm=bold
-"hi! TabLineActive ctermfg=234 ctermbg=203 cterm=bold
+"hi! TabLineActive ctermfg=255 ctermbg=197 cterm=bold
+hi! TabLineActive ctermfg=255 ctermbg=240 cterm=bold
+"hi! TabLineActive ctermfg=234 ctermbg=197 cterm=bold
 
 fu TabLineIcon(filetype)
     return has_key(g:ic, a:filetype) ? g:ic[a:filetype] : g:ic.default

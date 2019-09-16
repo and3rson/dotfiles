@@ -4,7 +4,6 @@
 
 local theme_assets = require("beautiful.theme_assets")
 local xresources = require("beautiful.xresources")
-local gears = require('gears')
 local dpi = xresources.apply_dpi
 
 local gfs = require("gears.filesystem")
@@ -85,7 +84,7 @@ theme.fg_cpu_warning = theme.bg_focus
 --theme.accent_color = '#44ff77'
 
 theme.useless_gap   = dpi(0)
-theme.border_width  = 1
+theme.border_width  = 2
 theme.border_normal = "#000000"
 theme.border_focus  = theme.bg_focus
 theme.border_marked = "#91231c"
@@ -96,8 +95,8 @@ theme.tooltip_fg=theme.fg_normal
 theme.tooltip_font = 'DejaVuSansMono Nerd Font 9'
 
 --theme.taglist_disable_icon = true
-theme.taglist_fg_empty = '#222222'
-theme.taglist_bg_focus = '#55555500'
+theme.taglist_fg_empty = '#666666'
+theme.taglist_bg_focus = '#55555580'
 theme.taglist_spacing = 0
 theme.taglist_font = 'RobotoMono Nerd Font Medium 10'
 --theme.taglist_font = 'Pixellari 12'
@@ -182,8 +181,13 @@ theme.titlebar_maximized_button_normal_active = themes_path.."default/titlebar/m
 theme.titlebar_maximized_button_focus_active  = themes_path.."default/titlebar/maximized_focus_active.png"
 
 --theme.wallpaper = themes_path.."zenburn/background.png"
---theme.wallpaper = '/home/anderson/.wallpapers/new3/wallhaven-319318.png'
-local wp = '/home/anderson/.wallpapers/astro-parking.png'
+--local wp = '/home/anderson/.wallpapers/new3/wallhaven-319318.png'
+--local wp = '/home/anderson/.wallpapers/astro-parking.png'
+--local wp = '/home/anderson/.wallpapers/ng1/121406.jpg'
+--local wp = '/home/anderson/.wallpapers/ng1/121410.jpg'
+--local wp = '/home/anderson/.wallpapers/rainbow-colors-blurred.jpg'
+--local wp = '/home/anderson/.wallpapers/doom-ng/slayer.jpg'
+local wp = '/home/anderson/.wallpapers/lights1920.png'
 --local wp = '/home/anderson/.wallpapers/332450.jpg'
 --local wp = '/home/anderson/.wallpapers/cyberpunk/cropped-1920-1080-872313.png'
 --local wp = '/home/anderson/.wallpapers/cyberpunk/xE3J4MZ.jpg'

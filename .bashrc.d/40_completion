@@ -1,13 +1,27 @@
 #!/bin/bash
 
-if [[ "$SH" != "zsh" ]]
-then
-    _run()
-    {
-        local cur=${COMP_WORDS[COMP_CWORD]}
-        local conns=`ls --color=never $HOME/.run`
-        COMPREPLY=( $(compgen -W "$conns" -- $cur) )
-    }
-    complete -F _run run
-fi
+#if [[ "$SH" != "zsh" ]]
+#then
+#    _run()
+#    {
+#        #unset 'COMP_WORDS[1]'
+#        COMP_WORDS[0]=kubectl
+#        COMP_WORDS=( "${COMP_WORDS[@]:0:1}" "-n" "${COMP_WORDS[@]:1}" )
+#        COMP_CWORD=$((COMP_CWORD + 1))
+#        COMP_LINE="kubectl -n ${COMP_LINE:4}"
+#        echo
+#        echo
+#        echo ${COMP_WORDS[@]}.$COMP_LINE.${COMP_WORDS[COMP_CWORD]}
+#        echo
+#        echo
+#        #echo -- ${COMP_WORDS[@]} : $COMP_CWORD --
+#        #local cur=${COMP_WORDS[COMP_CWORD]}
+#        #local conns=`ls --color=never $HOME/.run`
+#        #COMPREPLY=( $(compgen -W "$conns" -- $cur) )
+#        source /usr/share/bash-completion/completions/kubectl
+#        __start_kubectl
+#    }
+#    complete -o default -F _run run
+#    #complete -F _run run
+#fi
 

@@ -25,15 +25,15 @@ function cd() {
 #     /usr/bin/feh --scale-down --auto-zoom --magick-timeout 5 "${@}"
 # }
 
-function feh() {
-    if [[ -z "$1" ]]
-    then
-        path="*"
-    else
-        path="$1"
-    fi
-    sxiv $path
-}
+#function feh() {
+#    if [[ -z "$1" ]]
+#    then
+#        path="*"
+#    else
+#        path="$1"
+#    fi
+#    sxiv $path
+#}
 
 function tg() {
     curl "https://api.telegram.org/bot${ARCHER_TG_TOKEN}/sendMessage" -H 'Content-Type: application/json' -d '{"text": "'"$@"'", "chat_id": "84560715"}'

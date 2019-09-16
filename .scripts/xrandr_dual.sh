@@ -9,7 +9,7 @@ else
     POS="left-of"
 fi
 echo $POS
-xrandr --output HDMI1 --auto --output HDMI1 --$POS eDP1
+xrandr --output HDMI-1 --auto --output HDMI-1 --$POS eDP-1
 
-$PWD/set_bg.sh
+#$PWD/set_bg.sh
 

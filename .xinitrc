@@ -17,7 +17,7 @@ then
     xcape -e 'Overlay1_Enable=Escape' -t 90
     ~/.scripts/init_kb.sh
     ~/.scripts/init_mouse.sh
-    ~/.scripts/not.py &
+    #python3 ~/.scripts/not.py &
 
     # Daemons
     start-pulseaudio-x11 &
@@ -29,8 +29,11 @@ then
     termite --class HomeTerm -e ~/.scripts/stmux.sh &
     firefox-developer-edition &
     telegram-desktop &
-    #slack &
+    slack &
     #irccloud &
+    /opt/Todoist/todoist &
+
+    systemctl --user start not
 
     awesome > ~/.awesome.log
 else

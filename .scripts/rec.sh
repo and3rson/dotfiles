@@ -16,6 +16,8 @@ read X Y W H <<< "${VARS[*]}"
 
 #sleep 1
 
+sleep 0.5
+
 #CMD="recordmydesktop --channels 2 --freq 44100 -x $X -y $Y --width $W -height $H --fps 30 --overwrite -o $FNAME_OGV --stop-shortcut Control+s"
 CMD="recordmydesktop --device pulse -x $X -y $Y --width $W -height $H --fps 30 --overwrite -o $FNAME_OGV --stop-shortcut Control+s"
 echo $CMD

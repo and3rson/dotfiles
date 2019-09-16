@@ -18,25 +18,32 @@ let g:pymode_python = 'python3'
 let g:molokai_original = 1
 let g:rehash256 = 1
 
+let g:sublimemonokai_term_italic = 1
+
 "let g:python_host_prog='/usr/bin/python'
 " }}}
 
 " Plug {{{
 call plug#begin('~/.vim/plugged')
     Plug 'tomasr/molokai'
+    "Plug 'dikiaap/minimalist'
+    "Plug 'ErichDonGubler/vim-sublime-monokai'
 call plug#end()
 
 colorscheme molokai
+"colorscheme minimalist
+"colorscheme sublimemonokai
 filetype on
 filetype plugin on
 filetype plugin indent on
 syntax enable
 
 call plug#begin('~/.vim/plugged')
+    "Plug 'dikiaap/minimalist'
     Plug 'VundleVim/Vundle.vim'
     Plug 'scrooloose/nerdcommenter'
     Plug 'Yggdroot/indentLine'
-    "Plugin 'nathanaelkane/vim-indent-guides'
+    "Plug 'nathanaelkane/vim-indent-guides'
     Plug 'w0rp/ale'
 
     " Slow returns
@@ -56,6 +63,9 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/fzf'
     Plug 'junegunn/fzf.vim'
 
+    " Ack (must be loaded AFTER fzf)
+    "Plug 'mileszs/ack.vim'
+
     "Plugin 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 
     "Plugin 'joeytwiddle/sexy_scroller.vim'
@@ -67,7 +77,7 @@ call plug#begin('~/.vim/plugged')
 
     Plug 'majutsushi/tagbar'
     "Plugin 'calebsmith/vim-lambdify'
-    "Plugin 'ehamberg/vim-cute-python'
+    "Plug 'ehamberg/vim-cute-python'
 
     " Syntax files
     Plug 'pangloss/vim-javascript'
@@ -99,6 +109,9 @@ call plug#begin('~/.vim/plugged')
     "Plugin 'python-mode/python-mode'
     Plug 'davidhalter/jedi-vim'
     Plug 'heavenshell/vim-pydocstring'
+
+    " Go
+    Plug 'fatih/vim-go'
 
     " Motion
     Plug 'easymotion/vim-easymotion'
@@ -278,7 +291,7 @@ aug EqualWindows
 aug END
 
 " Limit syntax highlight
-set synmaxcol=140
+set synmaxcol=200
 
 " Text display tweaks
 set display=lastline,msgsep,uhex
@@ -295,7 +308,7 @@ set shada=!,'100,<50,s10,h,:500,@500,/500
 
 " Color column
 "set colorcolumn=80,100,120
-set colorcolumn=100
+set colorcolumn=120,160
 
 " Word jump config
 "set iskeyword=@,48-57
@@ -314,7 +327,7 @@ hi CursorColumn ctermbg=234
 
 "hi CursorLineNr ctermfg=119 ctermbg=235 cterm=bold
 hi CursorLineNr ctermfg=81 ctermbg=234 cterm=bold
-hi LineNr ctermbg=234 ctermfg=239
+hi LineNr ctermbg=234 ctermfg=242
 "hi LineNr ctermbg=none ctermfg=239
 
 " Molokai theme patches
@@ -490,9 +503,13 @@ aug END
 let g:piecrumbs_glue = '  '
 " }}}
 " ALE {{{
+" TODO: Do not rewrite existing linters config?
+"let g:ale_linters.javascript = ['eslint']
+"let g:ale_linters.python = ['pylint']
 let g:ale_linters = {
             \'javascript': ['eslint'],
-            \'python': ['pylint']
+            \'python': ['pylint'],
+            \'go': ['gofmt', 'golint', 'go vet']
             \}
 "\'python': ['flake8', 'pylint']
 "\'python': ['flake8']
@@ -500,6 +517,7 @@ let g:ale_linters = {
 nnoremap <silent> ; :lprev<CR>
 nnoremap <silent> ' :lnext<CR>
 
+let g:ale_open_list = 0
 let g:ale_sign_error = ''
 let g:ale_sign_warning = ''
 "let g:ale_sign_error = 'EE'
@@ -512,10 +530,10 @@ let g:ale_lint_on_text_changed = 'never'
 let g:ale_lint_on_insert_leave = 0
 let g:ale_cursor_detail = 0
 let g:ale_writegood_use_global = 1
-let g:ale_echo_cursor = 0
+let g:ale_echo_cursor = 1
 
-let g:ale_virtualtext_cursor = 1
-let g:ale_virtualtext_prefix = ' *** '
+"let g:ale_virtualtext_cursor = 1
+"let g:ale_virtualtext_prefix = ' *** '
 "let g:ale_cursor_detail = 1
 
 "let g:ale_python_pylint_options = '-j2 --load-plugins pylint_django'
@@ -549,6 +567,8 @@ hi ALEVirtualTextWarning ctermfg=yellow cterm=bold
 
 let g:ale_annotations_ns_id = nvim_create_namespace('ALEAnnotations')
 
+hi VirtualError ctermfg=244 cterm=underline
+
 fu! ClearALEAnnotations()
     call nvim_buf_clear_highlight(bufnr('%'), g:ale_annotations_ns_id, 0, -1)
 endf
@@ -581,8 +601,8 @@ fu! ShowALEAnnotations()
                     \ l:info.lnum - 1,
                     \ [
                     \   [' ' . b:NERDCommenterDelims.left, 'Comment'],
-                    \   ['[' . l:prefix . ']', l:class],
-                    \   [' ' . l:meta . l:info.text, 'Comment']
+                    \   ['[' . l:prefix . '] ', l:class],
+                    \   [l:meta . l:info.text, 'VirtualError']
                     \ ],
                     \ {}
                     \ )
@@ -592,9 +612,11 @@ endf
 aug ALEAutoLint
     au! BufRead,BufWrite * :ALELint
     "au! BufRead,BufWrite,TextChanged,InsertLeave * :ALELint
-    "au! User ALELintPre :call ClearALEAnnotations()
-    "au! User ALELintPost :call ShowALEAnnotations()
+    au! User ALELintPre :call ClearALEAnnotations()
+    au! User ALELintPost :call ShowALEAnnotations()
 aug END
+
+"let g:ale_go_golint_executable = '...'
 
 " }}}
 " GitGutter {{{
@@ -741,6 +763,8 @@ aug END
 
 "com! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 com! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, {'options': ['--reverse', '--preview', 'highlight -O xterm256 --style molokai --force -n {}']}, <bang>0)
+
+nnoremap <silent> <M-f> :Rg<CR>
 
 "let g:fzf_files_options = '--prefiew "cat {}"'
 
@@ -933,7 +957,7 @@ aug PythonJediConfig
     "au TextChangedI,CursorMovedI * :call jedi#show_call_signatures()
 aug end
 "let g:jedi#godo_command = '<C-g>'
-nmap <silent> <C-g> :call jedi#goto()<CR>
+au FileType python nmap <silent> <C-g> :call jedi#goto()<CR>
 let g:SuperTabDefaultCompletionType = 'context'
 let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&contextfunc']
 
@@ -963,10 +987,21 @@ aug BgHighlight
 aug END
 
 " Conceal tweaks for jedi signature display
-hi jediFat ctermfg=203 ctermbg=234 cterm=bold,underline
+hi jediFat ctermfg=197 ctermbg=234 cterm=bold,underline
 "hi jediFatSymbol ctermfg=234 ctermbg=234
 "au BufRead *.py :syn match jediFatSymbol "\*_\*" contained  " conceal
 
+" }}}
+" Go {{{
+au FileType go nmap <silent> <C-g> :GoDef<CR>
+let g:go_fmt_fail_silently = 1  " Do not open loclist
+let g:go_lint_fail_silently = 1  " Do not open loclist
+let g:go_list_height = 0
+let g:go_list_autoclose = 1
+"let g:go_metalinter_autosave = 0
+"au CursorMoved *.go :GoInfo
+"au BufRead,BufWrite *.go :GoLint
+au FileType go nnoremap <silent> w :GoInfo<CR>
 " }}}
 " Startify {{{
 let g:startify_files_number = 10
@@ -990,9 +1025,11 @@ let g:startify_lists = [
 
 " }}}
 " Easy motion {{{
-nmap s <Plug>(easymotion-bd-w)
-nmap S <Plug>(easymotion-bd-jk)
-nmap c <Plug>(easymotion-s2)
+"nmap s <Plug>(easymotion-bd-w)
+"nmap S <Plug>(easymotion-bd-jk)
+"nmap c <Plug>(easymotion-s2)
+nmap c <Plug>(easymotion-bd-w)
+
 "nmap w <Plug>(easymotion-overwin-f)
 "nmap w <Plug>(easymotion-overwin-f2)
 "nmap w <Plug>(easymotion-overwin-line)
@@ -1007,6 +1044,8 @@ hi EasyMotionTarget2SecondDefault ctermfg=11 cterm=bold
 
 "let g:EasyMotion_keys = 'bceimnopqrtuvwxyz0123456789lkjhgfdsa;'
 let g:EasyMotion_keys = 'asdfghjkl;bceimnopqrtuvwxyz'
+let g:EasyMotion_keys = 'ahsjdkflgbceimnopqrtuvwxyz'
+let g:EasyMotion_keys = 'aishdpqnemw'
 " '0123456789'
 let g:EasyMotion_do_shade = 1
 let g:EasyMotion_grouping = 2

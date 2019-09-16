@@ -2,8 +2,8 @@
 
 export EDITOR="nvim"
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on'
-export PATH="$PATH:$HOME/.scripts:/sh"
 export GOPATH="/home/anderson/src/go"
+export PATH="$PATH:$HOME/.scripts:/sh:$GOPATH/bin"
 #export PATH="/usr/bin/vendor_perl/:$PATH"
 # export PATH="/usr/share/perl5/vendor_perl/auto/share/dist/Cope:$PATH"
 # export TERM=screen-256color

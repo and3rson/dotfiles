@@ -23,5 +23,6 @@
 #feh --bg-fill ~/.wallpapers/ut4/ut99_red3.png
 #feh --bg-fill ~/.wallpapers/arch/simple-blue.png
 feh --bg-fill ~/.wallpapers/arch/arch-orangeneon.png
+feh --bg-fill ~/.wallpapers/lights1920.png
 #echo bg set2
 
