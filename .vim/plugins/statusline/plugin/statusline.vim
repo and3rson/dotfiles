@@ -298,12 +298,12 @@ endf
 " }}}
 " Locinfo {{{
 "au BufRead,BufWrite *.go :GoLint
-fu! FileAndMode(bufnr, m, is_active_window)
-    if getbufvar(a:bufnr, '&filetype') == 'go'
+"fu! FileAndMode(bufnr, m, is_active_window)
+"    if getbufvar(a:bufnr, '&filetype') == 'go'
 
-    endi
-    return ''
-endf
+"    endi
+"    return ''
+"endf
 " }}}
 
             "\ 'PieCrumbs',
