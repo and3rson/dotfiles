@@ -84,7 +84,7 @@ theme.fg_cpu_warning = theme.bg_focus
 --theme.accent_color = '#44ff77'
 
 theme.useless_gap   = dpi(0)
-theme.border_width  = 2
+theme.border_width  = 0
 theme.border_normal = "#000000"
 theme.border_focus  = theme.bg_focus
 theme.border_marked = "#91231c"
@@ -188,6 +188,8 @@ theme.titlebar_maximized_button_focus_active  = themes_path.."default/titlebar/m
 --local wp = '/home/anderson/.wallpapers/rainbow-colors-blurred.jpg'
 --local wp = '/home/anderson/.wallpapers/doom-ng/slayer.jpg'
 local wp = '/home/anderson/.wallpapers/lights1920.png'
+--local wp = '/home/anderson/.wallpapers/sw/thefuture.jpg'
+--local wp = '/home/anderson/.wallpapers/sw/isnow.jpg'
 --local wp = '/home/anderson/.wallpapers/332450.jpg'
 --local wp = '/home/anderson/.wallpapers/cyberpunk/cropped-1920-1080-872313.png'
 --local wp = '/home/anderson/.wallpapers/cyberpunk/xE3J4MZ.jpg'

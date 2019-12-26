@@ -78,17 +78,17 @@ function strength() {
 # }}}
 
 # Clay {{{
-if [[ -f /tmp/clay.json ]]
-then
-    #CLAY_STR=`cat /tmp/clay.json | jq -r '.artist + " - " + .title + " [" + .progress_str + " / " + .length_str + "]"'`
-    #normal "$CLAY_STR"
-    TRACK_STR=`cat /tmp/clay.json | jq -r '.artist + " - " + .title'`
-    PROGRESS_STR=`cat /tmp/clay.json | jq -r '"[" + .progress_str + " / " + .length_str + "]"'`
-    strong "\uFC58 "
-    normal "$TRACK_STR "
-    warn "$PROGRESS_STR"
-    sep
-fi
+#if [[ -f /tmp/clay.json ]]
+#then
+#    #CLAY_STR=`cat /tmp/clay.json | jq -r '.artist + " - " + .title + " [" + .progress_str + " / " + .length_str + "]"'`
+#    #normal "$CLAY_STR"
+#    TRACK_STR=`cat /tmp/clay.json | jq -r '.artist + " - " + .title'`
+#    PROGRESS_STR=`cat /tmp/clay.json | jq -r '"[" + .progress_str + " / " + .length_str + "]"'`
+#    strong "\uFC58 "
+#    normal "$TRACK_STR "
+#    warn "$PROGRESS_STR"
+#    sep
+#fi
 # }}}
 # Current dir {{{
 #echo -n "#{pane_current_path}"
@@ -106,6 +106,23 @@ else
 fi
 sep
 # }}}
+# Keyboard layout {{{
+#LAYOUT=`xkblayout-state print %n`
+LAYOUT=`xkblayout-state print %s`
+#if [[ -f /tmp/kblayout.txt ]]
+#then
+#    PREV=`cat /tmp/kblayout.txt`
+#else
+#    PREV=''
+#fi
+#if [[ "$LAYOUT" != "$PREV" ]]
+#then
+#    echo $LAYOUT > /tmp/kblayout.txt
+#    ~/.scripts/not.sh "{\"icon_code\":61724,\"message\":\"$LAYOUT\",\"submessage\":\"\",\"timeout\":0.3}"
+#fi
+normal $LAYOUT
+sep
+# }}}
 # Volume {{{
 DUMP=`pacmd dump`
 [[ $DUMP =~ set-default-sink\ ([a-zA-Z0-9_\.-]+) ]]
@@ -116,10 +133,12 @@ VOLUME=${BASH_REMATCH[1]}
 if [[ $SINK == *"bluez"* ]]
 then
     ICON='\uF7CA'
+    ICON_CODE=$((0xF7CA))
 else
     #ICON='\uF027'
     #ICON='\uF886'
     ICON='\uFC58'
+    ICON_CODE=$((0xFC58))
 fi
 
 strong "$ICON "
@@ -130,7 +149,8 @@ PREV=`cat /tmp/sink.txt 2> /dev/null || true`
 
 if [[ "$SINK" != "$PREV" ]]
 then
-    ~/.scripts/not.sh "`echo -e $ICON`~$SINK~0.5"
+    #~/.scripts/not.sh "`echo -e $ICON`~$SINK~0.5"
+    ~/.scripts/not.sh "{\"icon_code\":$ICON_CODE,\"message\":\"\",\"submessage\":\"$SINK\",\"timeout\":0.5}"
     echo $SINK > /tmp/sink.txt
 fi
 
@@ -156,7 +176,7 @@ fi
 cpu_fraction=$E
 ch=`strength $cpu_fraction`
 touch /tmp/cpu_graph.txt
-graph=`tail /tmp/cpu_graph.txt -c 15`
+graph=`tail /tmp/cpu_graph.txt -c 9`
 graph="$graph$ch"
 echo -n $graph > /tmp/cpu_graph.txt
 
@@ -165,12 +185,12 @@ echo -n $graph > /tmp/cpu_graph.txt
 
 if (( $E > 50 ))
 then
-    warn "\uE266  "
+    #warn "\uE266  "
     warn $graph
     #warn `tail -c32 /tmp/cpu.txt`
     warn " `printf %3s $cpu_fraction%`"
 else
-    strong "\uE266  "
+    #strong "\uE266  "
     strong $graph
     #strong `tail -c32 /tmp/cpu.txt`
     normal " `printf %3s $cpu_fraction%`"
@@ -182,18 +202,18 @@ IFS=' ' read total used <<< `free -b | sed '2q;d' | awk '{print $2" "$3}'`
 mem_fraction=$((used*100/total))
 ch=`strength $mem_fraction`
 touch /tmp/mem_graph.txt
-graph=`tail /tmp/mem_graph.txt -c 15`
+graph=`tail /tmp/mem_graph.txt -c 9`
 graph="$graph$ch"
 echo -n $graph > /tmp/mem_graph.txt
 if (( $mem_fraction > 50 ))
 then
     #warn "\uF85A "
-    warn "\uF471  "
+    #warn "\uF471  "
     warn "$graph"
     warn " `printf %3s $mem_fraction%`"
 else
     #strong "\uF85A "
-    strong "\uF471  "
+    #strong "\uF471  "
     strong "$graph"
     normal " `printf %3s $mem_fraction%`"
 fi
@@ -206,10 +226,10 @@ sep
 #sep
 # }}}
 # Core temp {{{
-TEMP=$((`cat /sys/class/thermal/thermal_zone0/temp` / 1000))
-strong "\uF2CB "
-normal "$TEMP\u00B0C"
-sep
+#TEMP=$((`cat /sys/class/thermal/thermal_zone0/temp` / 1000))
+#strong "\uF2CB "
+#normal "$TEMP\u00B0C"
+#sep
 # }}}
 # Power status {{{
 BATT=`acpi -b`
@@ -230,7 +250,7 @@ CHARGE_ALIGNED=`printf %-3d $CHARGE`
 if (( $CHARGE < 10 )) && (( $CHARGING == 0 ))
 then
     warn "$ICON $CHARGE_ALIGNED%"
-    ~/.scripts/not.sh "! $CHARGE"
+    ~/.scripts/not.sh "{\"message\":\"$CHARGE\"}"
 else
     strong "$ICON "
     normal "$CHARGE_ALIGNED%"
@@ -240,9 +260,12 @@ sep
 # Date {{{
 if (( $ANSI ))
 then
-    DATE=`date +"%a, %d %b, %H:%M:%S"`
+    #DATE=`date +"%a, %d %b, %H:%M:%S"`
+    DATE=`date +"%H:%M"`
 else
-    DATE=`date +"%a, %d %b, %H:%M:%S" | sed -re "s/([0-9]+:[0-9]+)/#[fg=colour$STRONG_COLOR,bold]\1\#[default,fg=colour$NORMAL_COLOR]/g"`
+    #DATE=`date +"%a, %d %b, %H:%M:%S" | sed -re "s/([0-9]+:[0-9]+)/#[fg=colour$STRONG_COLOR,bold]\1\#[default,fg=colour$NORMAL_COLOR]/g"`
+    #DATE=`date +"%H:%M" | sed -re "s/([0-9]+:[0-9]+)/#[fg=colour$STRONG_COLOR,bold]\1\#[default,fg=colour$NORMAL_COLOR]/g"`
+    DATE=`date +"%H:%M"`
 fi
 HOUR=`date +"%I" | sed -re 's/^0//g'`
 if (( $HOUR == 12 ))
@@ -251,7 +274,7 @@ then
 fi
 CHR=$((0xE381+HOUR))
 ICON=$(printf "\u"`printf %x $CHR`)
-strong $ICON
-normal " $DATE"
+#strong "$ICON "
+normal "$DATE"
 #echo -en " #[default,fg=colour$NORMAL_COLOR]$DATE#[default]"
 # }}}

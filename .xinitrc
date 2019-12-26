@@ -11,7 +11,7 @@ then
 
     # https://github.com/tryone144/compton
     #compton --config ~/.compton.conf -b -f --backend glx --blur-background --blur-kern=3x3gaussian --inactive-dim-fixed
-    compton --config ~/.compton.conf -b -f
+    picom --config ~/.compton.conf -b -f
     xbanish &
     xsetroot -cursor_name X_cursor
     xcape -e 'Overlay1_Enable=Escape' -t 90

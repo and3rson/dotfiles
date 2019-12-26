@@ -15,6 +15,8 @@ PARAMS=(
     --layoutcolor=1177ff40
     --datestr="%d %B %Y"
 )
+WP="/home/anderson/.wallpapers/lights1920.png"
+#WP="/home/anderson/.wallpapers/sw/isnow.jpg"
 
 #SSNAME="/tmp/screenshot.jpg"
 
@@ -29,5 +31,5 @@ PARAMS=(
 #i3lock ${PARAMS[@]} -B 5
 #sleep 0.2
 
-i3lock ${PARAMS[@]} -t -i /home/anderson/.wallpapers/lights1920.png
+i3lock ${PARAMS[@]} -t -i ${WP}
 sleep 0.2
