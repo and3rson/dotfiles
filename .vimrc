@@ -1067,3 +1067,8 @@ nnoremap <silent> <M-d> :call PDS()<CR>
 "let g:localvimrc_sandbox = 0
 let g:localvimrc_ask = 0
 " }}}
+" Java {{{
+aug JavaCustom
+    au BufNewFile,BufRead *.jad set filetype=java
+aug END
+" }}}

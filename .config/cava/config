@@ -22,7 +22,7 @@
 # The number of bars (0-200). 0 sets it to auto (fill up console).
 # Bars' width and space between bars in number of characters.
 ; bars = 0
-bar_width = 1
+bar_width = 2
 bar_spacing = 1
 
 
@@ -65,8 +65,8 @@ bar_spacing = 1
 # 'noncurses' is for systems that does not suport ncurses.
 # 'raw' is a 16 bit data stream of the bar heights that can be used to send to other applications.
 # 'raw' defaults to 200 bars, which can be adjusted in the 'bars' option above.
-; method = ncurses
-method = raw
+method = ncurses
+; method = raw
 
 # Visual channels. Can be 'stereo' or 'mono'.
 # 'stereo' mirrors both channels with low frequencies in center.

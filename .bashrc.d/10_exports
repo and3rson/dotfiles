@@ -30,6 +30,9 @@ export TERM=screen-256color
 # GPG
 export GPG_TTY=$(tty)
 
+# GPMDP
+export GPMDP_API_PORT=5673
+
 case $(tty) in /dev/tty[0-9]*)
     export TTY=1 ;;
 esac

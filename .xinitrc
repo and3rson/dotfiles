@@ -32,6 +32,9 @@ then
     slack &
     #irccloud &
     /opt/Todoist/todoist &
+    #~/.scripts/media_notifier.sh &
+    export GPMDP_API_PORT=5673 gpmdp &
+    #termite -c ~/.config/termite/config.cava -e cava &
 
     systemctl --user start not
 

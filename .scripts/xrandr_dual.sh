@@ -16,7 +16,8 @@ then
 else
     ROT="normal"
 fi
-xrandr --output HDMI-1 --auto --output HDMI-1 --$POS eDP-1 --rotate $ROT
+xrandr --output HDMI1 --auto --output HDMI1 --$POS eDP1 --rotate $ROT
+synclient AccelFactor=0.015
 #xrandr --output eDP-1 --pos 1920x1080+1920+840
 
 #xrandr --output HDMI-1 --auto --pos 1920x1080+0+0 --rotate left

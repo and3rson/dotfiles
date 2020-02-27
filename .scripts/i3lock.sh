@@ -1,35 +1,30 @@
 #!/bin/bash
-
-PARAMS=(
-    --indicator
-    --keylayout=0
-    -k
-    --insidecolor=000000c0
-    --radius 120
-    --ring-width=10
-    --datecolor=1177ff40
-    --timecolor=1177ffff
-    --linecolor=1177ff00
-    --ringcolor=1177ff80
-    --keyhlcolor=1177ffff
-    --layoutcolor=1177ff40
-    --datestr="%d %B %Y"
-)
-WP="/home/anderson/.wallpapers/lights1920.png"
-#WP="/home/anderson/.wallpapers/sw/isnow.jpg"
-
-#SSNAME="/tmp/screenshot.jpg"
-
-#for pid in `pidof -x i3lock`; do
-#    if [[ "$pid" != "$$" ]]
-#    then
-#        echo "Already running"
-#        exit 1
-#    fi
-#done
-
-#i3lock ${PARAMS[@]} -B 5
-#sleep 0.2
-
-i3lock ${PARAMS[@]} -t -i ${WP}
-sleep 0.2
+WALLPAPER="$HOME/.wallpapers/lights1920.png"
+insidecolor=00000000
+ringcolor=ffffff10
+keyhlcolor=ff0033ff
+bshlcolor=ff0033ff
+separatorcolor=00000000
+insidevercolor=00000000
+insidewrongcolor=ff0033ff
+ringvercolor=ff0033ff
+ringwrongcolor=ff0033ff
+verifcolor=ffffff80
+timecolor=ffffffff
+datecolor=ffffffff
+loginbox=00000066
+font="Sans"
+locktext='Who are you?'
+i3lock \
+    -t -i "$WALLPAPER" \
+    --timepos='x+110:h-70' \
+    --datepos='x+43:h-45' \
+    --clock --date-align 1 --datestr "$locktext" \
+    --insidecolor=$insidecolor --ringcolor=$ringcolor --line-uses-inside \
+    --keyhlcolor=$keyhlcolor --bshlcolor=$bshlcolor --separatorcolor=$separatorcolor \
+    --insidevercolor=$insidevercolor --insidewrongcolor=$insidewrongcolor \
+    --ringvercolor=$ringvercolor --ringwrongcolor=$ringwrongcolor --indpos='x+280:h-70' \
+    --radius=20 --ring-width=4 --veriftext='' --wrongtext='' \
+    --verifcolor="$verifcolor" --timecolor="$timecolor" --datecolor="$datecolor" \
+    --time-font="$font" --date-font="$font" --layout-font="$font" --verif-font="$font" --wrong-font="$font" \
+    --noinputtext='' --force-clock --pass-media-keys $lockargs

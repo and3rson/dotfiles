@@ -23,7 +23,7 @@ local menubar = require("menubar")
 beautiful.init("/home/anderson/.config/awesome/themes/custom.lua")
 -- }}}
 -- Local includes {{{
-local volume = require("utils.volume")
+--local volume = require("utils.volume")
 local tags_fn = require("utils.tags")
 -- }}}
 
@@ -70,7 +70,22 @@ local layouts =
 }
 -- }}}
 
+-- Global tags definition {{{
+local all_tags = {'Q', 'W', 'I', 'M', 'A'}
+-- }}}
+
 -- qTile-like tag switching {{{
+local sort_tags = function()
+    for s = 1, screen.count() do
+        for i, name in pairs(all_tags) do
+            local tag = awful.tag.find_by_name(name)
+            if tag then
+                awful.tag.move(i, tag)
+            end
+            --for
+        end
+    end
+end
 local activate_tag = function(name)
     local tag = tags_fn.find_by_name(name)
     if tag.screen ~= awful.screen.focused() then
@@ -92,10 +107,14 @@ local activate_tag = function(name)
         -- Tag found on current screen
     end
     tag:view_only()
+    --sort_tags()
 end
 -- }}}
 
--- Wallpapers & tags for each screen. {{{
+-- Wallpapers, tags & wiboxes for each screen. {{{
+local volume
+local tray
+local first_screen
 awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper.
     if beautiful.wallpapers then
@@ -103,7 +122,7 @@ awful.screen.connect_for_each_screen(function(s)
     end
 
     if s.index == 1 then
-        for i, char in pairs({'Q', 'W', 'I', 'M', 'A'}) do
+        for i, char in pairs(all_tags) do
             local sel = i == 1
             awful.tag.add(char, {
                 selected=sel,
@@ -114,6 +133,71 @@ awful.screen.connect_for_each_screen(function(s)
         screen[s].tags[1]:view_only()
         awful.screen.focus(1)
     end
+
+    s.mytaglist = awful.widget.taglist {
+        screen  = s,
+        filter  = awful.widget.taglist.filter.all
+    }
+
+    s.panel = awful.wibar({
+        position="top",
+        screen=s,
+        ontop=true,
+        --bg='#00000000',
+        height=20,
+        stretch=true
+    })
+    first_screen = s
+    local config
+    if s.index == 1 then
+        volume = require('widgets.volume')(s)
+        tray = wibox.widget.systray()
+        tray.visible = false
+        config = {
+            layout=wibox.layout.align.horizontal,
+            {
+                layout=wibox.layout.fixed.horizontal,
+                s.mytaglist
+            },
+            nil,
+            {
+                layout=wibox.layout.fixed.horizontal,
+                require('widgets.gpmdp'),
+                require('widgets.spacer')(),
+                require('widgets.openweathermap')(),
+                require('widgets.spacer')(),
+                require('widgets.ping')(),
+                require('widgets.spacer')(),
+                volume,
+                require('widgets.spacer')(),
+                require('widgets.cpuwidget')(s),
+                require('widgets.spacer')(),
+                require('widgets.memwidget')(s),
+                require('widgets.spacer')(),
+                require('widgets.term')(),
+                require('widgets.spacer')(),
+                require('widgets.battery')(),
+                require('widgets.spacer')(),
+                require('widgets.date')(),
+                tray,
+            }
+        }
+    else
+        config = {
+            layout=wibox.layout.align.horizontal,
+            {
+                layout=wibox.layout.fixed.horizontal,
+                s.mytaglist
+            },
+            nil,
+            {
+            layout=wibox.layout.fixed.horizontal,
+                require('widgets.date')(),
+            }
+        }
+    end
+    s.panel:setup(config)
+    --s.panel:struts({left=0, right=0, top=0, bottom=0})
 end)
 -- }}}
 
@@ -156,9 +240,24 @@ local globalkeys = awful.util.table.join(
     awful.key({}, 'XF86MonBrightnessDown', function() awful.util.spawn('xbacklight -dec 10') end),
 
     -- Media keys
-    awful.key({}, 'XF86AudioPlay', function() awful.util.spawn_with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.clay /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause') end),
-    awful.key({}, 'XF86AudioNext', function() awful.util.spawn_with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.clay /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next') end),
-    awful.key({}, 'XF86AudioPrev', function() awful.util.spawn_with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.clay /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous') end),
+    --awful.key({}, 'XF86AudioPlay', function()
+    --    awful.util.spawn_with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.clay /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause')
+    --    awful.util.spawn_with_shell('curl 127.0.0.1:9191/media -F action=play-pause')
+    --end),
+    --awful.key({}, 'XF86AudioNext', function()
+    --    awful.util.spawn_with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.clay /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next')
+    --    awful.util.spawn_with_shell('curl 127.0.0.1:9191/media -F action=next')
+    --end),
+    --awful.key({}, 'XF86AudioPrev', function()
+    --    awful.util.spawn_with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.clay /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous')
+    --    awful.util.spawn_with_shell('curl 127.0.0.1:9191/media -F action=prev')
+    --end),
+    --awful.key({super}, '[', function()
+    --    awful.util.spawn_with_shell('curl 127.0.0.1:9191/media -F action=seek-backward')
+    --end),
+    --awful.key({super}, ']', function()
+    --    awful.util.spawn_with_shell('curl 127.0.0.1:9191/media -F action=seek-forward')
+    --end),
 
     -- Lock screen
     awful.key({ctrl, alt}, 'l', function() awful.util.spawn('/home/anderson/.scripts/i3lock.sh') end),
@@ -195,10 +294,16 @@ local globalkeys = awful.util.table.join(
     -- Screenshot
     awful.key({super}, "p", function() awful.util.spawn('/home/anderson/.scripts/sshot.sh') end),
 
+    -- System tray toggle
+    awful.key({super}, "=", function() tray.visible = not tray.visible end),
+
+    -- Panel toggle
+    awful.key({super}, "-", function() first_screen.panel.visible = not first_screen.panel.visible end),
+
     -- HPC YouTube player control
-    awful.key({super}, ",", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "prev"}\'') end),
-    awful.key({super}, ".", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "play"}\'') end),
-    awful.key({super}, "/", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "next"}\'') end),
+    --awful.key({super}, ",", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "prev"}\'') end),
+    --awful.key({super}, ".", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "play"}\'') end),
+    --awful.key({super}, "/", function() awful.util.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "next"}\'') end),
 
     -- Vim edit
     awful.key({super}, "e", function() awful.util.spawn('/home/anderson/.scripts/vime.sh') end)
@@ -278,7 +383,7 @@ awful.rules.rules = {
         properties = { screen = 1, tag = "Q" }
     },
     {
-        rule_any = { class = {"Chromium", "Firefox", "firefoxdeveloperedition"} },
+        rule_any = { class = {"Chromium", "Firefox", "Navigator", "firefoxdeveloperedition"} },
         properties = { screen = 1, tag = "W" }
     },
     {
@@ -286,7 +391,7 @@ awful.rules.rules = {
         properties = { screen = 1, tag = "I" }
     },
     {
-        rule_any = { class = {"Evolution", "Steam", "Wine", "minecraft-launcher", "Minecraft 1.14.4"} },
+        rule_any = { class = {"Evolution", "Steam", "Wine", "minecraft-launcher", "Minecraft 1.14.4", "Google Play Music Desktop Player"} },
         properties = { screen = 1, tag = "M" }
     },
     {
@@ -296,6 +401,10 @@ awful.rules.rules = {
     {
         rune_any = { class = {'Not'} },
         properties = { sticky = true, ontop = true, focusable = false, tag = "M" }
+    },
+    {
+        rule_any = { name = {'cava'} },
+        properties = { focusable = false, below = true }
     }
 }
 -- }}}

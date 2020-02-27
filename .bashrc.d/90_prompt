@@ -310,6 +310,56 @@ function make_prompt() {
         fi
     } # }}}
 
+    function pwd_part_monocolor() { # {{{
+        #SPACE=`echo -e '\u2026'`
+        fb 32 234 # 255 27 1
+        #fb 197 234 # 255 27 1
+        DIR=${PWD/$HOME/$HOUSE\/}
+        DIR=${DIR/\//}
+        DIR=${DIR// /$SPACE}
+        IFS='/'
+        PARTS=($DIR)
+        CURRENT=0
+        COUNT=${#PARTS[@]}
+        if [[ "$PWD" == "/" ]]
+        then
+            fgcol 238
+            echo -en " / $RST"
+        else
+            for PART in ${PARTS[@]}
+            do
+                CURRENT=$((CURRENT+1))
+                if [[ "$CURRENT" != "$COUNT" ]]
+                then
+                    #fgcol 32
+                    fgcol 203
+                    #fgcol 255
+                    echo -n " $PART"
+                    #echo -n " ${PART::5}"
+                    #if [[ "${#PART}" -gt "5" ]]
+                    #then
+                    #    echo -n "$ELLIPSIS"
+                    #fi
+                    echo -n " "
+                    fgcol 238
+                    echo -n "$PWD_SEP"
+                #elif [[ "$CURRENT" != "$COUNT" ]]
+                #then
+                #    fgcol 32
+                #    echo -n " ${PART::3} "
+                #    #fgcol 42
+                #    fgcol 238
+                #    echo -n "$PWD_SEP"
+                #    #fb 32 234 0 -
+                else
+                    #fgcol 32
+                    fgcol 203
+                    echo -n " ${PART}"
+                fi
+            done
+        fi
+    } # }}}
+
     function pwd_part_old() { # {{{
         #fb 255 27 1
         if [[ "$PWD" == "/" ]]
@@ -399,7 +449,9 @@ function make_prompt() {
     ret_part
     #end_part
     brk
-    pwd_part_old
+    pwd_part_monocolor
+    #pwd_part
+    #pwd_part_old
     #end_part
     #dollar_part
     echo -n " $RST "

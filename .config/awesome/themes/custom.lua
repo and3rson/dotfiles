@@ -14,20 +14,23 @@ local this_dir = home_dir .. '.config/awesome/themes/'
 
 local theme = {}
 
---theme.font = "RobotoMono Nerd Font Medium 10"
-theme.font = "DejavuSansMono Nerd Font Medium 11"
---theme.font = "Nimbus Sans Regular 9"
---theme.font = "Roboto Medium 10"
---theme.font = "RobotoMono Nerd Font Medium 9"
+--theme.font = "RobotoMono Nerd Font 9"
+--theme.font = "DejavuSansMono Nerd Font Medium 10"
+--theme.font = "Nimbus Sans Regular 11"
+--theme.font = "Roboto Regular 11"
+--theme.font = "RobotoMono Nerd Font 10"
+theme.font = "RobotoMono Nerd Font 9"
 
-theme.fg_normal = '#A0A0A0'
-theme.bg_normal = '#000000E5'
-theme.bg_lit = '#D6493780'
---theme.fg_icon = '#D64937'
+theme.fg_normal = '#FFFFFFC0'
+theme.bg_normal = '#000000'
+--theme.bg_lit = '#D6493780'
+theme.bg_lit = '#FF004480'
+--theme.fg_icon = '#FF0044'
 theme.fg_icon = '#FFFFFF'
 theme.fg_text = theme.fg_normal
 theme.fg_graph = theme.fg_text
-theme.bg_focus = "#D64937"
+--theme.bg_focus = "#D64937"
+theme.bg_focus = "#FF0044"
 theme.bg_urgent = "#000000"
 theme.bg_weak = "#555555"
 
@@ -49,34 +52,39 @@ theme.bg_weak = "#555555"
 theme.fg_clay_paused = theme.fg_normal
 theme.fg_clay_playing = theme.fg_icon
 
-theme.fg_owm_icon = theme.fg_icon
-theme.fg_owm_text = theme.fg_text
+theme.fg_owm_icon = '#FFBA68' -- theme.fg_icon
+theme.fg_owm_text = '#FFBA68' -- theme.fg_text
 
-theme.fg_ping_icon = theme.fg_icon
-theme.fg_ping_text = theme.fg_text
+theme.fg_ping_icon = '#77FF00' -- theme.fg_icon
+theme.fg_ping_text = '#77FF00' -- theme.fg_text
 theme.fg_ping_warning = theme.bg_focus
 
 theme.fg_battery_icon = theme.fg_icon
 theme.fg_battery_text = theme.fg_text
 theme.fg_battery_warning = theme.bg_focus
-theme.fg_battery_charging = '#00FF5F'
+theme.fg_battery_charging = '#77FF00'
 
 theme.fg_date_icon = theme.fg_icon
 theme.fg_date_text = theme.fg_text
 theme.fg_date_today = theme.bg_normal
 theme.bg_date_today = theme.bg_focus
 
-theme.fg_volume_icon = theme.fg_icon
-theme.fg_volume_text = theme.fg_text
+theme.fg_volume_icon = "#FF7700" -- theme.fg_icon
+theme.fg_volume_text = "#FF7700" -- theme.fg_text
 
 theme.fg_term_icon = theme.fg_icon
 theme.fg_term_text = theme.fg_text
 
-theme.fg_mem_graph = theme.fg_graph
+theme.fg_mem_graph = '#77FF00' -- theme.fg_graph
 theme.fg_mem_warning = theme.bg_focus
 
-theme.fg_cpu_graph = theme.fg_graph
+theme.fg_cpu_graph = '#00AAFF' -- theme.fg_graph
 theme.fg_cpu_warning = theme.bg_focus
+
+theme.fg_gpmdp_playing = '#77FF00'
+--theme.fg_gpmdp_paused = '#FF0044'
+theme.fg_gpmdp_paused = '#FFAA00'
+
 --
 --theme.fg_mem = '#00FF5F'
 --theme.fg_cpu = '#74AEAB'
@@ -95,10 +103,12 @@ theme.tooltip_fg=theme.fg_normal
 theme.tooltip_font = 'DejaVuSansMono Nerd Font 9'
 
 --theme.taglist_disable_icon = true
-theme.taglist_fg_empty = '#666666'
-theme.taglist_bg_focus = '#55555580'
-theme.taglist_spacing = 0
+
+--theme.taglist_fg_empty = '#666666'
+--theme.taglist_bg_focus = '#55555580'
+--theme.taglist_spacing = 0
 theme.taglist_font = 'RobotoMono Nerd Font Medium 10'
+
 --theme.taglist_font = 'Pixellari 12'
 --theme.taglist_shape_focus = gears.arrow()
 --theme.taglist_shape_border_width_focus = 3
@@ -123,13 +133,13 @@ theme.progressbar_margins = {bottom=23}
 --theme.taglist_bg_focus = "#ff0000"
 
 -- Generate taglist squares:
-local taglist_square_size = 24  -- dpi(24)
-theme.taglist_squares_sel = theme_assets.taglist_squares_sel(
-    taglist_square_size, theme.fg_normal
-)
-theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(
-    taglist_square_size, theme.fg_normal
-)
+--local taglist_square_size = 24  -- dpi(24)
+--theme.taglist_squares_sel = theme_assets.taglist_squares_sel(
+--    taglist_square_size, theme.fg_normal
+--)
+--theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(
+--    taglist_square_size, theme.fg_normal
+--)
 
 -- Variables set for theming notifications:
 -- notification_font

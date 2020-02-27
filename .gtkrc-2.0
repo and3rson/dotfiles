@@ -1,5 +1,5 @@
 # -- THEME AUTO-WRITTEN DO NOT EDIT
-include "/usr/share/themes/Numix/gtk-2.0/gtkrc"
+include "/home/anderson/.local/share/themes/numix-gtk-theme-dark/gtk-2.0/gtkrc"
 
 style "user-font" {
 	font_name = "DejaVu Sans 10"
