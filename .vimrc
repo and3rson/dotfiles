@@ -225,8 +225,9 @@ nnoremap <silent> <M-r> <C-r>
 nnoremap <silent> r <C-r>
 
 " Quick open .vimrc
-nnoremap <silent> <M-c> :e ~/.vimrc<CR>
+" nnoremap <silent> <M-c> :e ~/.vimrc<CR>
 nnoremap <silent> <M-c> :nohlsearch<CR>
+nnoremap <esc> :nohlsearch<CR><esc>
 
 " Smart home
 noremap <expr> <silent> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
@@ -368,9 +369,14 @@ hi VertSplit ctermbg=234 ctermfg=242
 " }}}
 
 " NERD Commenter {{{
-let g:NERDCompactSexyComs = 0
+let g:NERDSpaceDelims = 1
+let g:NERDCompactSexyComs = 1
 let g:NERDDefaultAlign = 'left'
 "let g:NERDCustomDelimiters = {'python': {'leftAlt': '"""', 'rightAlt': '"""', 'left': '# '}}
+"let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' } }
+let g:NERDAltDelims_c = 1
+let g:NERDAltDelims_cpp = 0
+let g:NERDTrimTrailingWhitespace = 1
 
 nnoremap <silent> <M-/> :call NERDComment(0, "toggle")<CR><CR>
 "vnoremap <silent> <C-_> :call NERDComment(0, "alignleft")<CR><CR>
@@ -1071,4 +1077,17 @@ let g:localvimrc_ask = 0
 aug JavaCustom
     au BufNewFile,BufRead *.jad set filetype=java
 aug END
+" }}}
+" Templates {{{
+fu! FormatTemplate()
+    let l:user = getenv('USER')
+    exe '%s/%USER%/' . $USER . '/eg'
+    echo $USER
+    let l:here = search('%HERE%')
+    exe ':' . l:here
+    if l:here != 0
+        :d
+    endi
+endf
+au BufNewFile *.py 0r ~/.vim/skeletons/skeleton.py | call FormatTemplate()
 " }}}

@@ -65,12 +65,15 @@ theme.fg_battery_warning = theme.bg_focus
 theme.fg_battery_charging = '#77FF00'
 
 theme.fg_date_icon = theme.fg_icon
-theme.fg_date_text = theme.fg_text
+theme.fg_date_text = '#00FF5F'
 theme.fg_date_today = theme.bg_normal
 theme.bg_date_today = theme.bg_focus
 
-theme.fg_volume_icon = "#FF7700" -- theme.fg_icon
-theme.fg_volume_text = "#FF7700" -- theme.fg_text
+-- theme.fg_volume_icon = "#FF7700" -- theme.fg_icon
+-- theme.fg_volume_text = "#FF7700" -- theme.fg_text
+theme.fg_volume_icon = "#BB66FF" -- theme.fg_icon
+theme.fg_volume_text = "#BB66FF" -- theme.fg_text
+theme.fg_volume_muted = theme.bg_focus
 
 theme.fg_term_icon = theme.fg_icon
 theme.fg_term_text = theme.fg_text
@@ -84,6 +87,9 @@ theme.fg_cpu_warning = theme.bg_focus
 theme.fg_gpmdp_playing = '#77FF00'
 --theme.fg_gpmdp_paused = '#FF0044'
 theme.fg_gpmdp_paused = '#FFAA00'
+
+theme.fg_mqtt_ok = '#77FF00'
+theme.fg_mqtt_warning = theme.bg_focus
 
 --
 --theme.fg_mem = '#00FF5F'

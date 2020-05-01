@@ -18,6 +18,8 @@ local naughty = require("naughty")
 dbus = _dbus
 --local naughty = require("naughty")
 local menubar = require("menubar")
+local utils = require('utils')
+local socket = require('socket')
 -- }}}
 -- Theme {{{
 beautiful.init("/home/anderson/.config/awesome/themes/custom.lua")
@@ -111,11 +113,62 @@ local activate_tag = function(name)
 end
 -- }}}
 
--- Wallpapers, tags & wiboxes for each screen. {{{
+-- Wallpapers, tags, wiboxes & other stuff for each screen. {{{
 local volume
 local tray
 local first_screen
 awful.screen.connect_for_each_screen(function(s)
+    -- Panel color timer.
+    local color_started = 0
+    local color_from = '#000000FF'
+    local color_to = '#000000FF'
+    local duration = 0.15
+    local panel_color_timer
+    panel_color_timer = gears.timer{
+        timeout=0.01,
+        autostart=false,
+        call_now=false,
+        callback=function()
+            local time_passed = socket.gettime() - color_started
+            local progress = time_passed / duration
+            local color
+            if progress >= 1 then
+                color = color_to
+                if panel_color_timer.started then
+                    panel_color_timer:stop()
+                end
+            else
+                color = utils.mix_colors(color_from, color_to, progress)
+            end
+            print(progress, color)
+            s.panel.bg = color
+        end,
+        single_shot=false
+    }
+    s.panel_color_timer = panel_color_timer
+    s.panel_color_start = function(new_color_to)
+        print('C', color_from, color_to)
+        if color_from ~= nil then
+            local time_passed = socket.gettime() - color_started
+            local progress = time_passed / duration
+            local color
+            if progress >= 1 then
+                color = color_to
+                if panel_color_timer.started then
+                    panel_color_timer:stop()
+                end
+            else
+                color = utils.mix_colors(color_from, color_to, progress)
+            end
+            color_from = color
+        else
+            color_from = color_to
+        end
+        color_to = new_color_to
+        color_started = socket.gettime()
+        panel_color_timer:again()
+    end
+
     -- Wallpaper.
     if beautiful.wallpapers then
         gears.wallpaper.maximized(beautiful.wallpapers[s.index], s, false)
@@ -123,21 +176,24 @@ awful.screen.connect_for_each_screen(function(s)
 
     if s.index == 1 then
         for i, char in pairs(all_tags) do
+            print(i, char)
             local sel = i == 1
             awful.tag.add(char, {
                 selected=sel,
-                screen=i,
-                layout=layouts[1]
+                -- screen=i,  -- Meant 1?
+                layout=layouts[1],
+                icon_only=true,
+                icon='/home/anderson/.icons/bullet.png'
             })
         end
         screen[s].tags[1]:view_only()
         awful.screen.focus(1)
     end
 
-    s.mytaglist = awful.widget.taglist {
-        screen  = s,
-        filter  = awful.widget.taglist.filter.all
-    }
+    -- s.mytaglist = awful.widget.taglist {
+    --     screen  = s,
+    --     filter  = awful.widget.taglist.filter.all
+    -- }
 
     s.panel = awful.wibar({
         position="top",
@@ -154,32 +210,50 @@ awful.screen.connect_for_each_screen(function(s)
         tray = wibox.widget.systray()
         tray.visible = false
         config = {
-            layout=wibox.layout.align.horizontal,
+            layout=wibox.layout.ratio.horizontal,
+            id='ratio',
             {
                 layout=wibox.layout.fixed.horizontal,
-                s.mytaglist
-            },
-            nil,
-            {
-                layout=wibox.layout.fixed.horizontal,
+                -- s.mytaglist,
+                -- require('widgets.spacer')(),
                 require('widgets.gpmdp'),
-                require('widgets.spacer')(),
-                require('widgets.openweathermap')(),
-                require('widgets.spacer')(),
-                require('widgets.ping')(),
-                require('widgets.spacer')(),
-                volume,
-                require('widgets.spacer')(),
-                require('widgets.cpuwidget')(s),
-                require('widgets.spacer')(),
-                require('widgets.memwidget')(s),
-                require('widgets.spacer')(),
-                require('widgets.term')(),
-                require('widgets.spacer')(),
-                require('widgets.battery')(),
-                require('widgets.spacer')(),
-                require('widgets.date')(),
-                tray,
+            },
+            {
+                layout=wibox.layout.align.horizontal,
+                expand='outside',
+                nil,
+                {
+                    layout=wibox.layout.fixed.horizontal,
+                    require('widgets.date')(),
+                    require('widgets.spacer')(),
+                    require('widgets.openweathermap')(),
+                },
+                nil,
+            },
+            -- nil,
+            {
+                layout=wibox.layout.align.horizontal,
+                nil,
+                nil,
+                {
+                    layout=wibox.layout.fixed.horizontal,
+                    -- require('widgets.spacer')(),
+                    -- require('widgets.mqtt')(s),
+                    -- require('widgets.spacer')(),
+                    require('widgets.ping')(s),
+                    require('widgets.spacer')(),
+                    volume,
+                    require('widgets.spacer')(),
+                    require('widgets.cpuwidget')(s),
+                    require('widgets.spacer')(),
+                    require('widgets.memwidget')(s),
+                    require('widgets.spacer')(),
+                    -- require('widgets.term')(),
+                    -- require('widgets.spacer')(),
+                    require('widgets.battery')(),
+                    -- require('widgets.spacer')(),
+                    tray,
+                }
             }
         }
     else
@@ -187,7 +261,7 @@ awful.screen.connect_for_each_screen(function(s)
             layout=wibox.layout.align.horizontal,
             {
                 layout=wibox.layout.fixed.horizontal,
-                s.mytaglist
+                -- s.mytaglist
             },
             nil,
             {
@@ -197,6 +271,9 @@ awful.screen.connect_for_each_screen(function(s)
         }
     end
     s.panel:setup(config)
+    s.panel.ratio:ajust_ratio(2, 0.4, 0.2, 0.4)
+    s.panel.ratio.inner_fill_strategy = 'justify'
+    -- s.panel:ajust_ratio(2, 0.25, 0.5, 0.25)
     --s.panel:struts({left=0, right=0, top=0, bottom=0})
 end)
 -- }}}
@@ -234,6 +311,8 @@ local globalkeys = awful.util.table.join(
     -- Volume control
     awful.key({}, 'XF86AudioRaiseVolume', function() volume.modify_volume(2) end),
     awful.key({}, 'XF86AudioLowerVolume', function() volume.modify_volume(-2) end),
+    awful.key({}, 'XF86AudioMute', function() volume.toggle_mute() end),
+    awful.key({super}, 'v', function() awful.util.spawn('pavucontrol') end),
 
     -- Backlight
     awful.key({}, 'XF86MonBrightnessUp', function() awful.util.spawn('xbacklight -inc 10') end),
@@ -387,7 +466,7 @@ awful.rules.rules = {
         properties = { screen = 1, tag = "W" }
     },
     {
-        rule_any = { class = {"TelegramDesktop", "IRCCloud", "ViberPC", "Slack", "discord"} },
+        rule_any = { class = {"TelegramDesktop", "IRCCloud", "ViberPC", "Slack", "discord", "Hexchat"} },
         properties = { screen = 1, tag = "I" }
     },
     {
@@ -405,6 +484,10 @@ awful.rules.rules = {
     {
         rule_any = { name = {'cava'} },
         properties = { focusable = false, below = true }
+    },
+    {
+        rule_any = { class = {'Pavucontrol'} },
+        properties = { floating = true, placement = awful.placement.centered, sticky = true }
     }
 }
 -- }}}
@@ -458,24 +541,36 @@ client.connect_signal("manage", function (c, startup)
     end
 end)
 
-function configure_borders(t)
-    local count = 0
-    for _, client in pairs(t:clients()) do
-        count = count + 1
-    end
-    for _, client in pairs(t:clients()) do
-        if count > 1 and t.layout.name ~= 'max' then
-            client.border_width = 0
-        else
-            client.border_width = 0
-        end
-    end
-end
+-- function configure_borders(t)
+--     local count = 0
+--     for _, client in pairs(t:clients()) do
+--         count = count + 1
+--     end
+--     for _, client in pairs(t:clients()) do
+--         if count > 1 and t.layout.name ~= 'max' then
+--             client.border_width = 0
+--         else
+--             client.border_width = 0
+--         end
+--     end
+-- end
 
+local client_colors = {
+    HomeTerm='#000000FF',
+    Termite='#000000FF',
+    -- firefoxdeveloperedition='linear:0,0:1920,24:0,#A97E64:0.25,#BF6969:0.5,#A77B68:0.7,#BF5675:0.8,#B85A6F:0.85,#973571:0.95,#663185,1,#5E4389',
+    -- firefoxdeveloperedition='linear:0,0:1920,24:0,#1F4349:0.25,#3A4A42:0.5,#A77B68:0.6,#C46A67:0.7,#BF5675:0.8,#B85A6F:0.85,#973571:0.95,#663185,1,#5E4389',
+    firefoxdeveloperedition='#333333FF',
+    TelegramDesktop='#0E1621FF',
+    ['Google Play Music Desktop Player']='#1D1D1DFF',
+    Slack='#222222FF',
+}
 local prev_tag = nil
+local src_color = '#000000'
+local target_color = nil
 client.connect_signal("focus", function(c)
     local current_tag = awful.tag.selected(c.screen)
-    configure_borders(current_tag)
+    -- configure_borders(current_tag)
     c.border_color = beautiful.border_focus
     if c.first_tag.name == prev_tag then
         local index_in_tag = 0
@@ -491,13 +586,63 @@ client.connect_signal("focus", function(c)
         --awful.spawn('/home/anderson/.scripts/not.sh "' .. index_in_tag .. '~' .. client_name .. '~0.3"')
     end
     prev_tag = c.first_tag.name
-    --c.border_width = 1
+
+    -- print(c.class)
+    local color = client_colors[c.class]
+    if color == nil then
+        color = '#000000FF'
+    end
+    c.screen.panel_color_start(color)
+    -- if color ~= nil then
+    --     c.screen.panel.bg = color
+    -- else
+    --     c.screen.panel.bg = '#000000'
+    -- end
+    -- print(utils.mix_colors('#000000', '#FFFFFF', 0.3))
+
+    if c.class == 'Pavucontrol' then
+        -- workarea = awful.screen.focused().workarea
+        workarea = c.screen.workarea
+        -- hints = awful.placement.centered(c)
+        -- hints.width = workarea.width * 0.5
+        -- hints.height = workarea.height * 0.5
+        c.placement = awful.placement.centered
+        c.width = workarea.width * 0.8
+        c.height = workarea.height * 0.7
+        c.border_width = 2
+    end
+
+    -- local panel_color_timer = gears.timer{
+    --     callback=function()
+    --         -- local client = nil
+    --         -- for i, c in pairs(s.clients) do
+    --         --     print(i, c)
+    --         --     client = c
+    --         -- end
+    --         if c ~= nil then
+    --             -- print('x', string.format('grabc -l +0+%d -w %d', c.screen.panel.height, c.window))  -- -w `xdotool getwindowfocus`
+    --             awful.spawn.easy_async(
+    --                 string.format('grabc -l +0+%d -w %d', c.screen.panel.height, c.window),  -- -w `xdotool getwindowfocus`
+    --                 function(stdout)
+    --                     stdout = stdout:gsub("^%s*(.-)%s*$", "%1")
+    --                     -- print(stdout)
+    --                     c.screen.panel.bg = stdout
+    --                     -- print('bg', s.panel.bg)
+    --                 end
+    --             )
+    --         end
+    --     end,
+    --     timeout=0.2,
+    --     autostart=true,
+    --     single_shot=true
+    -- }
 end)
 --tag.connect_signal('property::layout', function(t)
 --    configure_borders(t)
 --end)
 client.connect_signal("unfocus", function(c)
     c.border_color = beautiful.border_normal
+    c.screen.panel_color_start('#00000000')
     --c.border_width = 0
 end)
 tag.connect_signal('property::selected', function(t)
@@ -513,6 +658,18 @@ tag.connect_signal('property::selected', function(t)
     --print(client.focus)
     --awful.spawn('/home/anderson/.scripts/not.sh "' .. t.name .. '~' .. client_name .. '~0.3"')
 end)
+-- client.disconnect_signal("request::geometry", awful.ewmh.client_geometry_requests)
+-- client.connect_signal("request::geometry", function(c, context, hints)
+--     print(c)
+--     if c.class == "Pavucontrol" then
+--         workarea = awful.screen.focused().workarea
+--         hints = awful.placement.centered(c)
+--         hints.width = workarea.width * 0.5
+--         hints.height = workarea.height * 0.5
+--         print(hints)
+--     end
+--     awful.ewmh.client_geometry_requests(c, context, hints)
+-- end)
 -- }}}
 
 --awful.util.spawn('chromium')
