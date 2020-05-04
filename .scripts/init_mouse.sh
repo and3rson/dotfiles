@@ -16,3 +16,9 @@ synclient CoastingSpeed=0 VertScrollDelta=500 HorizScrollDelta=500 HorizTwoFinge
 xinput set-prop 'SynPS/2 Synaptics TouchPad' 'Synaptics Circular Scrolling' 0
 xinput set-prop 'SynPS/2 Synaptics TouchPad' 'Synaptics Circular Scrolling Trigger' 2
 
+
+xinput set-prop 'HTIX5288:00 0911:5288 Touchpad' 'Synaptics Edges' 71 1728 53 720
+xinput set-prop 'HTIX5288:00 0911:5288 Touchpad' 'Synaptics Tap Durations' 120 120 100
+xinput set-prop 'HTIX5288:00 0911:5288 Touchpad' 'Synaptics Tap Action' 0 0 0 0 1 3 2
+xinput set-prop 'HTIX5288:00 0911:5288 Touchpad' 'Synaptics Scrolling Distance' 100 100
+
