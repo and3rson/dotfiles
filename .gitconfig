@@ -3,7 +3,7 @@
     name = Andrew Dunai
     # signingkey = 7FA9F240665038B6
     # signingkey = 58184B850FE18BA6
-    signingkey = 1CF40B595261E807B0F7D80158184B850FE18BA6
+    ; signingkey = 1CF40B595261E807B0F7D80158184B850FE18BA6
 
 [alias]
     st = status
@@ -24,5 +24,8 @@
 [diff]
     tool = meld
 
-[commit]
-    gpgsign = true
+; [commit]
+    ; gpgsign = true
+
+[include]
+    path = ~/.gitconfig.local

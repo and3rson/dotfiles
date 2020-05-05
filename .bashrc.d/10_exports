@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export EDITOR="nvim"
+export BROWSER="firefox-developer-edition"
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on'
 export GOPATH="/home/anderson/src/go"
 export PATH="$PATH:$HOME/.scripts:/sh:$GOPATH/bin"
