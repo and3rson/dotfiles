@@ -149,7 +149,8 @@ function make_prompt() {
     } # }}}
 
     function git_part() { # {{{
-        BRANCH="$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>&1)"
+        # BRANCH="$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2>&1)"
+        BRANCH="$(git rev-parse --symbolic-full-name --abbrev-ref @{u} 2>&1)"
         if [[ "$?" -eq "0" ]]
         then
             PRINTED=$((PRINTED+1))

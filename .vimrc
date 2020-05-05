@@ -264,7 +264,8 @@ set list listchars=tab:▏ ,trail:·,extends:»,precedes:«,nbsp:×
 " 
 
 " Clipboard fix
-set clipboard^=unnamed,unnamedplus
+" set clipboard^=unnamed,unnamedplus
+set clipboard=unnamedplus
 
 " Sudo write
 let $SUDO_ASKPASS=$HOME . '/.scripts/rofi-askpass.sh'
