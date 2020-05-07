@@ -121,9 +121,9 @@ return function()
     local widget = wibox.widget{
         --date_progressbar,
         wibox.widget{
-            -- wibox.layout.margin(date_icon, 0, 0, 0, 2),
+            -- wibox.container.margin(date_icon, 0, 0, 0, 2),
             --clock,
-            wibox.layout.margin(date_widget, 0, 0, 0, 2),
+            wibox.container.margin(date_widget, 0, 0, 0, 2),
             layout=wibox.layout.fixed.horizontal
         },
         layout=wibox.layout.stack

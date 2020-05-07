@@ -19,7 +19,7 @@ local theme = {}
 --theme.font = "Nimbus Sans Regular 11"
 --theme.font = "Roboto Regular 11"
 --theme.font = "RobotoMono Nerd Font 10"
-theme.font = "RobotoMono Nerd Font 9"
+theme.font = "RobotoMono Nerd Font 10"
 
 theme.fg_normal = '#FFFFFFC0'
 theme.bg_normal = '#000000'
@@ -80,6 +80,9 @@ theme.fg_term_text = theme.fg_text
 
 theme.fg_mem_graph = '#77FF00' -- theme.fg_graph
 theme.fg_mem_warning = theme.bg_focus
+
+theme.fg_swap_graph = '#AAAA00' -- theme.fg_graph
+theme.fg_swap_warning = theme.bg_focus
 
 theme.fg_cpu_graph = '#00AAFF' -- theme.fg_graph
 theme.fg_cpu_warning = theme.bg_focus

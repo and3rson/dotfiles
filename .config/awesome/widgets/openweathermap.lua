@@ -69,7 +69,7 @@ return function()
                     city_name = 'Львів'
                 end
                 openweathermap_widget.markup = '<span color="' .. beautiful.fg_owm_text .. '">' .. city_name .. ', ' .. math.floor(temp) .. '°C</span>'
-                icon_widget.markup = '<span size="14000" color="' .. beautiful.fg_owm_icon .. '">' .. utf8.char(owfont[data.weather[1].id]) .. '</span>'
+                icon_widget.markup = '<span size="14000" color="' .. beautiful.fg_owm_icon .. '" font="owfont-regular">' .. utf8.char(owfont[data.weather[1].id]) .. '</span>'
                 --fetch_icon(data.weather[1].icon)
             end)
         end)
@@ -114,7 +114,7 @@ return function()
     local widget = utils.make_row{
         --wibox.container.margin(icon, 0, 4, 2, 0),
         icon_widget,
-        wibox.layout.margin(openweathermap_widget, 0, 0, 0, 2)
+        wibox.container.margin(openweathermap_widget, 0, 0, 0, 2)
     }
 
     widget:connect_signal('button::press', function(lx, ly, button, mods, find_widgets_result)

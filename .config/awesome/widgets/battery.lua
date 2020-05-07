@@ -1,3 +1,4 @@
+        -->
 local wibox = require('wibox')
 local gears = require('gears')
 local beautiful = require('beautiful')
@@ -15,7 +16,7 @@ return function()
             icon_size=13000 -- +5000
         },
         charging={
-            icons={''},
+            icons={' '},
             count=1,
             icon_size=10000 -- +5000
         }
@@ -97,7 +98,7 @@ return function()
         else
             charging = false
             icon_set = icons.discharging
-            if n <= 10 then
+            if n <= 20 then
                 --prefix = ''
                 --color = beautiful.bg_focus
                 icon_color = beautiful.fg_battery_warning
@@ -126,9 +127,9 @@ return function()
 
         if last_value ~= n then
             if not charging then
-                if n == 15 then
+                if n == 20 then
                     utils.notify('battery-caution', 'Low power', string.format('Battery has %s%% remaining.', n))
-                elseif n == 5 then
+                elseif n == 10 then
                     utils.notify('battery-empty', 'Critically low power', string.format('Battery has %s%% remaining.', n))
                 end
             else
@@ -171,11 +172,11 @@ return function()
 
     return wibox.widget{
         utils.make_row{
-            wibox.layout.margin(battery_icon, 0, 0, 0, 2),
+            wibox.container.margin(battery_icon, 0, 0, 0, 2),
             wibox.widget{
                 battery_widget,
                 --wibox.container.margin(
-                    wibox.layout.margin(battery_value, 0, 0, 0, 2),
+                    wibox.container.margin(battery_value, 0, 0, 0, 2),
                     --utils.make_col({
                     --    battery_value,
                     --    battery_state

@@ -105,7 +105,7 @@ return function(s)
         -- local net_info = net_linux()
         -- local tx_b = math.floor(tonumber(net_info[string.format('{%s tx_mb}', DEVICE)]))
         -- local rx_b = math.floor(tonumber(net_info[string.format('{%s rx_mb}', DEVICE)]))
-        icon_widget.markup = '<span color="' .. color .. '" size="'..math.floor((s.panel.height+4)*1000/2)..'"></span>'
+        icon_widget.markup = '<span color="' .. color .. '" size="'..math.floor((s.panel.height+4-6)*1000/2)..'"> </span>'
         row1_widget.markup = '<span color="' .. color .. '">' .. essid .. '</span>'
         -- row2_widget.markup = string.format('  %dM  %dM', rx_b, tx_b)
     end
@@ -125,11 +125,11 @@ return function(s)
     awful.widget.watch('iwgetid -r', 2, update_widget)
 
     widget = utils.make_row({
-        wibox.layout.margin(icon_widget, 0, 0, 0, 2),
+        -- wibox.container.margin(icon_widget, 0, 0, 0, 2),
         wibox.widget({
-            progressbar,
+            -- progressbar,
             wibox.container.margin(
-                wibox.layout.margin(
+                wibox.container.margin(
                     utils.make_row({
                         row1_widget,
                         -- row2_widget

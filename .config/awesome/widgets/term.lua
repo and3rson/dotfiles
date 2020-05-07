@@ -48,13 +48,13 @@ return function()
     end
 
     gears.timer {
-        timeout=0.2,
+        timeout=1,
         autostart=true,
         callback=update_widget
     }
 
     return utils.make_row({
-        icon,
+        -- icon,
         wibox.widget({
             progressbar,
             wibox.container.margin(widget, 0, 0, 0, 2),

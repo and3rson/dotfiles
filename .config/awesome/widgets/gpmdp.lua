@@ -13,7 +13,7 @@ local FILE = os.getenv('HOME') .. '/.config/Google Play Music Desktop Player/jso
 local CAVA_CONF = os.getenv('HOME') .. '/.config/cava/config.awesome'
 local AART_DIR = gfs.get_xdg_cache_home() .. 'aart/'
 
-awful.util.spawn(string.format('mkdir %s', AART_DIR))
+awful.spawn(string.format('mkdir -p %s', AART_DIR))
 
 local widget
 
@@ -83,7 +83,7 @@ local update_widget = function()
     end
     local this_track = (data.song.artist .. ' - ' .. data.song.title)
     if this_track ~= prev_track then
-        local args = '-p'
+        local args = '-p -t 1500'
         if last_id ~= nil then
             args = args .. ' -r ' .. tostring(last_id)
         end
@@ -95,8 +95,10 @@ local update_widget = function()
             args = args .. ' -i ' .. aart_file
         end
         local notify = function()
-            --awful.util.spawn(string.format('feh --bg-scale "%s"', aart_file))
+            --awful.spawn(string.format('feh --bg-scale "%s"', aart_file))
             awful.spawn.easy_async(string.format('dunstify "%s" "%s" %s', data.song.title, data.song.artist, args), function(stdout, stderr, reason, exit_code)
+            -- args=''
+            -- awful.spawn.easy_async(string.format('notify-send "%s" "%s" %s', data.song.title, data.song.artist, args), function(stdout, stderr, reason, exit_code)
                 last_id = stdout:gsub("^%s*(.-)%s*$", "%1")
                 --last_id = stdout
             end)

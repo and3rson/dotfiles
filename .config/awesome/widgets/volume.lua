@@ -6,12 +6,12 @@ local utils = require('../utils')
 
 local ICONS = {
     normal = {
-        speaker='',
-        headphones='',
+        speaker=' ',
+        headphones=' ',
     },
     muted = {
-        speaker='婢',
-        headphones='ﳌ',
+        speaker='婢 ',
+        headphones='ﳌ ',
     },
 }
 
@@ -92,9 +92,10 @@ return function(s)
             icon_color = beautiful.fg_volume_muted
             text_color = beautiful.fg_volume_muted
         end
-        icon.markup = '<span size="2000"> </span><span color="' .. icon_color .. '" size="'..math.floor(s.panel.height*1000/2)..'">' .. icon_str .. '</span>'
+        icon.markup = '<span size="2000"> </span><span color="' .. icon_color .. '" size="'..math.floor((s.panel.height-6)*1000/2)..'">' .. icon_str .. '</span>'
         volume_widget.value = value
         volume_value.markup = '<span color="' .. text_color .. '">' .. value .. '%</span>'
+        volume_widget.color = text_color
         --widget.markup = '<b><span>  ' .. value .. '</span></b>'
     end
 
@@ -104,7 +105,13 @@ return function(s)
         local volume_text = math.floor(volume / 0x10000 * 100) -- .. '%'
         --awful.spawn('/home/anderson/.scripts/osd.sh "' .. volume_text .. '"')
         --awful.spawn('/home/anderson/.scripts/not.sh "' .. volume_text .. ' ' .. utf8.char(0xFC58) .. '~'..default_sink..'~0.25"')
-        awful.spawn('/home/anderson/.scripts/not.sh \'{"icon_code":'..tostring(0xFC58)..',"timeout":0.25,"message":"' .. tostring(volume_text) .. '","submessage":"' .. default_sink .. '"}\'')
+        -- awful.spawn('/home/anderson/.scripts/not.sh \'{"icon_code":'..tostring(0xFC58)..',"timeout":0.25,"message":"' .. tostring(volume_text) .. '","submessage":"' .. default_sink .. '"}\'')
+        show_headsup{
+            icon='ﱘ',
+            text=tostring(volume_text) .. '%',
+            text2=default_sink,
+            timeout=0.3
+        }
 
         update_widget()
     end
@@ -124,7 +131,7 @@ return function(s)
     }
 
     local widget = utils.make_row{
-        wibox.layout.margin(icon, 0, 0, 0, 2),
+        -- wibox.container.margin(icon, 0, 0, 0, 2),
         wibox.widget{
             volume_widget,
             wibox.container.margin(volume_value, 0, 0, 0, 2),

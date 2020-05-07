@@ -14,9 +14,17 @@ local wibox = require('wibox')
 --    1, 1, 0, 0
 --)
 return function()
-    return wibox.container.margin(
-        wibox.widget{},
-        12, 12, 0, 0,
-        'FF0000'
-    )
+    if hostname == 'vinga' then
+        return wibox.container.margin(
+            wibox.widget{},
+            8, 8, 0, 0,
+            'FF0000'
+        )
+    else
+        return wibox.container.margin(
+            wibox.widget{},
+            12, 12, 0, 0,
+            'FF0000'
+        )
+    end
 end

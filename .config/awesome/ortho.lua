@@ -1,6 +1,7 @@
 local awful = require('awful')
 local wibox = require('wibox')
 local gears = require('gears')
+local socket = require('socket')
 
 local groups = {
     nav={
@@ -100,8 +101,49 @@ for y, def_row in pairs(def_rows) do
     end
 end
 
+local animate_from = 0
+local animate_to = 0
+local animate_duration = 0.5
+local animate_started = 0
+local animate_callback = nil
+local animate_timer  -- Damn closures!
+animate_timer = gears.timer{
+    timeout=0.01,
+    autostart=false,
+    call_now=false,
+    single_shot=false,
+    callback=function()
+        local time_passed = socket.gettime() - animate_started
+        local fraction = time_passed / animate_duration
+        local interp_value
+        if fraction == 0 then
+            interp_value = animate_from
+        else
+            interp_value = animate_from + (animate_to - animate_from) * fraction
+        end
+        if fraction >= 1 then
+            animate_timer:stop()
+            fraction = 1
+            animate_callback(animate_to, true)
+        else
+            animate_callback(interp_value, false)
+        end
+    end
+}
+function animate_interp(from, to, duration, callback)
+    animate_from = from
+    animate_to = to
+    animate_duration = duration
+    animate_started = socket.gettime()
+    animate_callback = callback
+    if animate_timer.started then
+        animate_timer:stop()
+    end
+    animate_timer:start()
+end
+
 function create_button(s, def)
-    local workarea = s.workarea
+    -- local workarea = s.workarea
     local text = wibox.widget.textbox('a')
     text.align = 'center'
     text.font = 'RobotoMono Nerd Font Light'
@@ -113,7 +155,7 @@ function create_button(s, def)
     local text2 = wibox.widget.textbox('')
     text2.align = 'right'
     text2.valign = 'top'
-    local stack = wibox.widget{layout=wibox.layout.stack, bg, wibox.container.margin(text2, workarea.width / 12 / 4, workarea.width / 12 / 4, 12, 12)}
+    local stack = wibox.widget{layout=wibox.layout.stack, bg, wibox.container.margin(text2, s.geometry.width / 12 / 4, s.geometry.width / 12 / 4, 12, 12)}
     local button = stack
 
     button.text = ''
@@ -156,13 +198,13 @@ function create_button(s, def)
 end
 
 return function(s)
-    local workarea = s.workarea
+    -- local workarea = s.workarea
     local ortho = awful.wibar({
         position="bottom",
         screen=s,
         ontop=true,
         --bg='#00000000',
-        height=workarea.height * 0.4,
+        height=s.geometry.height * 0.4,
         stretch=true,
         visible=false
     })
@@ -171,8 +213,29 @@ return function(s)
         id='grid',
         expand=true
     }
-    ortho.toggle = function()
-        ortho.visible = not ortho.visible
+
+    function ortho:show()
+        self.visible = true
+        animate_interp(0, self.height, 0.1, function(v, done)
+            self.y = math.floor(s.geometry.height - v)
+        end)
+    end
+
+    function ortho:hide()
+        animate_interp(self.height, 0, 0.1, function(v, done)
+            self.y = math.floor(s.geometry.height - v)
+            if done then
+                self.visible = false
+            end
+        end)
+    end
+
+    function ortho:toggle()
+        if self.visible then
+            self:hide()
+        else
+            self:show()
+        end
     end
 
     -- button:connect_signal('button::press', function()

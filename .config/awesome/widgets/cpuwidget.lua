@@ -96,8 +96,8 @@ return function(s)
     local widget = utils.make_row{
         icon,
         wibox.widget{
-            wibox.container.margin(cpu_widget, 0, 0, 0, s.panel.height / 2),
-            wibox.container.mirror(wibox.container.margin(cpu_widget, 0, 0, 0, s.panel.height / 2), {vertical=true}),
+            wibox.container.margin(cpu_widget, 0, 0, 0, s.panel.height / 2 - 3),
+            wibox.container.mirror(wibox.container.margin(cpu_widget, 0, 0, 0, s.panel.height / 2 - 3), {vertical=true}),
             layout=layout
         }
     }

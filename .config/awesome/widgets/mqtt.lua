@@ -83,7 +83,7 @@ return function(s)
     )
 
     widget = utils.make_row({
-        wibox.layout.margin(icon_widget, 0, 0, 0, 2),
+        wibox.container.margin(icon_widget, 0, 0, 0, 2),
         text_widget
     })
 
