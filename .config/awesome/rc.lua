@@ -27,6 +27,7 @@ beautiful.init("/home/anderson/.config/awesome/themes/custom.lua")
 -- Local includes {{{
 --local volume = require("utils.volume")
 local tags_fn = require("utils.tags")
+local headsup = require("headsup")
 -- }}}
 
 -- Naughty config {{{
@@ -140,14 +141,14 @@ awful.screen.connect_for_each_screen(function(s)
             else
                 color = utils.mix_colors(color_from, color_to, progress)
             end
-            print(progress, color)
+            -- print(progress, color)
             s.panel.bg = color
         end,
         single_shot=false
     }
     s.panel_color_timer = panel_color_timer
     s.panel_color_start = function(new_color_to)
-        print('C', color_from, color_to)
+        -- print('C', color_from, color_to)
         if color_from ~= nil then
             local time_passed = socket.gettime() - color_started
             local progress = time_passed / duration
@@ -176,13 +177,13 @@ awful.screen.connect_for_each_screen(function(s)
 
     if s.index == 1 then
         for i, char in pairs(all_tags) do
-            print(i, char)
+            -- print(i, char)
             local sel = i == 1
             awful.tag.add(char, {
                 selected=sel,
                 -- screen=i,  -- Meant 1?
                 layout=layouts[1],
-                icon_only=true,
+                icon_only=false,
                 icon='/home/anderson/.icons/bullet.png'
             })
         end
@@ -191,8 +192,8 @@ awful.screen.connect_for_each_screen(function(s)
     end
 
     -- s.mytaglist = awful.widget.taglist {
-    --     screen  = s,
-    --     filter  = awful.widget.taglist.filter.all
+    --     screen = s,
+    --     filter = awful.widget.taglist.filter.all
     -- }
 
     s.panel = awful.wibar({
@@ -200,16 +201,40 @@ awful.screen.connect_for_each_screen(function(s)
         screen=s,
         ontop=true,
         --bg='#00000000',
-        height=20,
+        height=30,
         stretch=true
     })
     first_screen = s
     local config
     if s.index == 1 then
+        local input_enabled = true
+        local input_toggler = wibox.widget{widget=wibox.widget.textbox, markup='<span color="' .. beautiful.bg_weak .. '"> Input on</span>', align='center'}
+        input_toggler:connect_signal('button::press', function()
+            input_enabled = not input_enabled
+            if input_enabled then
+                awful.spawn('/home/anderson/.scripts/kbon.sh')
+                awful.spawn("xinput set-prop 'HTIX5288:00 0911:5288 Touchpad' 'Device Enabled' 1")
+                input_toggler.markup = '<span color="' .. beautiful.bg_weak .. '"> Input on</span>'
+                show_headsup{icon='', text='Input ON'}
+            else
+                awful.spawn('/home/anderson/.scripts/kboff.sh')
+                awful.spawn("xinput set-prop 'HTIX5288:00 0911:5288 Touchpad' 'Device Enabled' 0")
+                input_toggler.markup = '<span color="' .. beautiful.bg_focus .. '"> Input off</span>'
+                show_headsup{icon='', text='Input OFF'}
+            end
+        end)
+
+        local kb_toggler = wibox.widget{widget=wibox.widget.textbox, markup=' Keyboard', align='center'}
+        kb_toggler:connect_signal('button::press', function() s.ortho:toggle() end)
         volume = require('widgets.volume')(s)
         tray = wibox.widget.systray()
         tray.visible = false
         config = {
+        id='margin',
+        widget=wibox.container.margin,
+        -- color='red',
+        top=6,
+        {
             layout=wibox.layout.ratio.horizontal,
             id='ratio',
             {
@@ -240,7 +265,15 @@ awful.screen.connect_for_each_screen(function(s)
                     -- require('widgets.spacer')(),
                     -- require('widgets.mqtt')(s),
                     -- require('widgets.spacer')(),
+                    tray,
+                    require('widgets.spacer')(),
+                    input_toggler,
+                    require('widgets.spacer')(),
+                    kb_toggler,
+                    require('widgets.spacer')(),
                     require('widgets.ping')(s),
+                    require('widgets.spacer')(),
+                    require('widgets.df')(s),
                     require('widgets.spacer')(),
                     volume,
                     require('widgets.spacer')(),
@@ -248,13 +281,14 @@ awful.screen.connect_for_each_screen(function(s)
                     require('widgets.spacer')(),
                     require('widgets.memwidget')(s),
                     require('widgets.spacer')(),
-                    -- require('widgets.term')(),
+                    -- require('widgets.swapwidget')(s),
                     -- require('widgets.spacer')(),
+                    require('widgets.term')(),
+                    require('widgets.spacer')(),
                     require('widgets.battery')(),
-                    -- require('widgets.spacer')(),
-                    tray,
                 }
             }
+        }
         }
     else
         config = {
@@ -271,8 +305,19 @@ awful.screen.connect_for_each_screen(function(s)
         }
     end
     s.panel:setup(config)
-    s.panel.ratio:ajust_ratio(2, 0.4, 0.2, 0.4)
-    s.panel.ratio.inner_fill_strategy = 'justify'
+    s.panel.margin.ratio:ajust_ratio(2, 0.4, 0.2, 0.4)
+    s.panel.margin.ratio.inner_fill_strategy = 'justify'
+    if s.index == 1 then
+        s.ortho = require('ortho')(s)
+        -- s.ortho:connect_signal('show', function()
+            -- awful.spawn('/home/anderson/.scripts/kboff.sh')
+            -- awful.spawn("xinput set-prop 'HTIX5288:00 0911:5288 Touchpad' 'Device Enabled' 0")
+        -- end)
+        -- s.ortho:connect_signal('hide', function()
+            -- awful.spawn('/home/anderson/.scripts/kbon.sh')
+            -- awful.spawn("xinput set-prop 'HTIX5288:00 0911:5288 Touchpad' 'Device Enabled' 1")
+        -- end)
+    end
     -- s.panel:ajust_ratio(2, 0.25, 0.5, 0.25)
     --s.panel:struts({left=0, right=0, top=0, bottom=0})
 end)
@@ -299,7 +344,7 @@ local globalkeys = awful.util.table.join(
     -- Layouts
     awful.key({super}, "space", function () awful.layout.inc(layouts,  1) end),
 
-    -- Standard program
+    -- Standard programs
     awful.key({super}, "Return", function () awful.util.spawn('termite') end),
     awful.key({ctrl, alt}, "t", function () awful.util.spawn('termite') end),
     awful.key({super, ctrl}, "r", awesome.restart),
@@ -346,9 +391,7 @@ local globalkeys = awful.util.table.join(
 
     -- Client management
     awful.key({super}, "j", function () awful.client.focus.byidx(1) end),
-    awful.key({super}, "Page_Up", function () awful.client.focus.byidx(1) end),
     awful.key({super}, "k", function () awful.client.focus.byidx(-1) end),
-    awful.key({super}, "Page_Down", function () awful.client.focus.byidx(-1) end),
 
     -- Client management (multihead)
     awful.key({super}, 'Left', awful.client.movetoscreen),
@@ -363,6 +406,10 @@ local globalkeys = awful.util.table.join(
         awful.client.movetoscreen(client, index)
     end),
     awful.key({super}, "o",      awful.client.movetoscreen),
+
+    -- Tag switching
+    awful.key({super}, "Page_Up", function () awful.tag.viewprev() end),
+    awful.key({super}, "Page_Down", function () awful.tag.viewnext() end),
 
     -- NetworkManager DMenu
     awful.key({super}, "n", function() awful.util.spawn('networkmanager_dmenu') end),
@@ -488,6 +535,10 @@ awful.rules.rules = {
     {
         rule_any = { class = {'Pavucontrol'} },
         properties = { floating = true, placement = awful.placement.centered, sticky = true }
+    },
+    {
+        rule_any = { class = {'Onboard'} },
+        properties = { floating = true, sticky = true, ontop = true, focusable = false, dockable = true, immobilized = true }
     }
 }
 -- }}}
@@ -539,6 +590,25 @@ client.connect_signal("manage", function (c, startup)
         --    --c:lower()
         --end
     end
+
+    if c.class == 'Onboard' then
+        panel_color_timer = gears.timer{
+            timeout=0.5,
+            autostart=true,
+            call_now=false,
+            callback=function()
+                workarea = c.screen.workarea
+                for k, v in pairs(c:geometry({x=0, y=workarea.height * 2 / 3, width=workarea.width, height=workarea.height / 3 + 32})) do
+                    print(k, v)
+                end
+            end
+        }
+        -- c.placement = awful.placement.center + awful.placement.bottom
+        -- c.width = workarea.width
+        -- c.height = workarea.height / 3
+    end
+
+
 end)
 
 -- function configure_borders(t)
@@ -560,16 +630,18 @@ local client_colors = {
     Termite='#000000FF',
     -- firefoxdeveloperedition='linear:0,0:1920,24:0,#A97E64:0.25,#BF6969:0.5,#A77B68:0.7,#BF5675:0.8,#B85A6F:0.85,#973571:0.95,#663185,1,#5E4389',
     -- firefoxdeveloperedition='linear:0,0:1920,24:0,#1F4349:0.25,#3A4A42:0.5,#A77B68:0.6,#C46A67:0.7,#BF5675:0.8,#B85A6F:0.85,#973571:0.95,#663185,1,#5E4389',
-    firefoxdeveloperedition='#333333FF',
+    -- firefoxdeveloperedition='#333333FF',
+    firefoxdeveloperedition='#0C0C0DFF',
     TelegramDesktop='#0E1621FF',
     ['Google Play Music Desktop Player']='#1D1D1DFF',
-    Slack='#222222FF',
+    Slack='#000000FF',
 }
 local prev_tag = nil
 local src_color = '#000000'
 local target_color = nil
 client.connect_signal("focus", function(c)
-    local current_tag = awful.tag.selected(c.screen)
+    local current_tag = c.selected_ta
+    -- local current_tag = awful.tag.selected(c.screen)
     -- configure_borders(current_tag)
     c.border_color = beautiful.border_focus
     if c.first_tag.name == prev_tag then
@@ -674,3 +746,19 @@ end)
 
 --awful.util.spawn('chromium')
 --awful.util.spawn('start-pulseaudio-x11-mod')
+
+awful.spawn.once(gears.filesystem.get_configuration_dir() .. 'autostart.sh', awful.rules.rules)
+
+-- dbus.request_name("session", "org.freedesktop.Notifications")
+-- dbus.connect_signal("org.freedesktop.Notifications", function(data, appname, replaces_id, icon, title, text, actions, hints, expire)
+--     if data.member == 'GetServerInformation' then
+--         return "s", "headsup", "s", "awesome", "s", awesome.version, "s", "1.0"
+--     elseif data.member == 'Notify' then
+--         show_headsup{
+--             text=title,
+--             text2=text,
+--             timeout=1
+--         }
+--         print('  * ', appname, replaces_id, icon, title, text, actions, hints, expire)
+--     end
+-- end)
