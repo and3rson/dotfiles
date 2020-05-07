@@ -93,11 +93,15 @@ return function(s)
     --local layout = wibox.layout.fixed.horizontal()
     local layout = wibox.layout.stack
     layout.spacing = 8
+    local offset = 0
+    if hostname == 'vinga' then
+        offset = 3
+    end
     local widget = utils.make_row{
         icon,
         wibox.widget{
-            wibox.container.margin(cpu_widget, 0, 0, 0, s.panel.height / 2 - 3),
-            wibox.container.mirror(wibox.container.margin(cpu_widget, 0, 0, 0, s.panel.height / 2 - 3), {vertical=true}),
+            wibox.container.margin(cpu_widget, 0, 0, 0, s.panel.height / 2 - offset),
+            wibox.container.mirror(wibox.container.margin(cpu_widget, 0, 0, 0, s.panel.height / 2 - offset), {vertical=true}),
             layout=layout
         }
     }
