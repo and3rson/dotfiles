@@ -94,7 +94,7 @@ return function(s)
     local layout = wibox.layout.stack
     layout.spacing = 8
     local offset = 0
-    if hostname == 'vinga' then
+    if awesome.hostname == 'vinga' then
         offset = 3
     end
     local widget = utils.make_row{

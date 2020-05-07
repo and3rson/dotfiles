@@ -14,7 +14,7 @@ local wibox = require('wibox')
 --    1, 1, 0, 0
 --)
 return function()
-    if hostname == 'vinga' then
+    if awesome.hostname == 'vinga' then
         return wibox.container.margin(
             wibox.widget{},
             8, 8, 0, 0,
