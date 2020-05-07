@@ -30,6 +30,11 @@ local tags_fn = require("utils.tags")
 local headsup = require("headsup")
 -- }}}
 
+-- Core config {{{
+local hostname = socket.dns.gethostname()
+awesome.hostname = hostname
+-- }}}
+
 -- Naughty config {{{
 naughty.config.padding = 20
 naughty.config.spacing = 10
@@ -196,12 +201,13 @@ awful.screen.connect_for_each_screen(function(s)
     --     filter = awful.widget.taglist.filter.all
     -- }
 
+    local height = ({vinga=30, factory=20})[hostname]
     s.panel = awful.wibar({
         position="top",
         screen=s,
         ontop=true,
         --bg='#00000000',
-        height=30,
+        height=height,
         stretch=true
     })
     first_screen = s
@@ -233,7 +239,7 @@ awful.screen.connect_for_each_screen(function(s)
         id='margin',
         widget=wibox.container.margin,
         -- color='red',
-        top=6,
+        top=({vinga=6, factory=0})[hostname],
         {
             layout=wibox.layout.ratio.horizontal,
             id='ratio',
