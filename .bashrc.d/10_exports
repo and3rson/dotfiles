@@ -38,4 +38,4 @@ case $(tty) in /dev/tty[0-9]*)
     export TTY=1 ;;
 esac
 
-export GTK_THEME=Numix:dark
+# export GTK_THEME=Numix:dark
