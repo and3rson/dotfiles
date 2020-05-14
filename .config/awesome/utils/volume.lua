@@ -33,12 +33,12 @@ local modify_volume = function(diff)
         icon = tostring(0xF025)
     end
 
-    awful.spawn(
-        '/home/anderson/.scripts/not.sh \'{"icon_code":' .. icon ..
-        ',"timeout":0.25,"message":"' .. tostring(volume_text) ..
-        '","submessage":"' .. default_sink ..
-        '"}\''
-    )
+    -- awful.spawn(
+    --     '/home/anderson/.scripts/not.sh \'{"icon_code":' .. icon ..
+    --     ',"timeout":0.25,"message":"' .. tostring(volume_text) ..
+    --     '","submessage":"' .. default_sink ..
+    --     '"}\''
+    -- )
 end
 
 return {

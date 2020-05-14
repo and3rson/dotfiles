@@ -1,0 +1,9 @@
+[Unit]
+Description=IIO Monitoring Service
+
+[Service]
+; Type=simple
+ExecStart=/bin/bash /home/anderson/.scripts/iiomon.sh
+
+[Install]
+WantedBy=default.target

@@ -346,7 +346,7 @@ local globalkeys = awful.util.table.join(
             next_screen = 1
         end
         awful.screen.focus(next_screen)
-        awful.spawn('/home/anderson/.scripts/not.sh \'{"timeout":0.3,"message":":' .. tostring(current_screen) .. '"}\'')
+        -- awful.spawn('/home/anderson/.scripts/not.sh \'{"timeout":0.3,"message":":' .. tostring(current_screen) .. '"}\'')
     end),
 
     -- Layouts
