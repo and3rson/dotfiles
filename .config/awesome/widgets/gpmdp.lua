@@ -58,11 +58,16 @@ local update_widget = function()
             content = content .. line
         end
     else
-        -- content = '{"playing": false, "song": {"artist": "None", "title": "None"}}'
         gpmdp_widget.markup = ' <span color="' .. beautiful.fg_gpmdp_paused .. '"> GMPDP not running.</span>'
+        progressbar.visible = false
         return
     end
     local data = json.decode(content)
+    if data.song.title == nil then
+        gpmdp_widget.markup = ' <span color="' .. beautiful.fg_gpmdp_paused .. '"> No track.</span>'
+        progressbar.visible = false
+        return
+    end
     local color, icon, current, total, progress
     if data.playing then
         color = beautiful.fg_gpmdp_playing
@@ -119,6 +124,7 @@ local update_widget = function()
     total = string.format('%02d:%02d', math.floor(total / 60), total % 60)
     progressbar.value = progress
     progressbar.color = color
+    progressbar.visible = true
 
     local max_len = 48
     local caption = this_track

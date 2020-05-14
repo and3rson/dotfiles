@@ -20,6 +20,8 @@ local theme = {}
 --theme.font = "Roboto Regular 11"
 --theme.font = "RobotoMono Nerd Font 10"
 theme.font = "RobotoMono Nerd Font 10"
+-- theme.font_smaller = "Monospace 8"
+theme.font_smaller = "DejaVu Sans Book 8"
 
 theme.fg_normal = '#FFFFFFC0'
 theme.bg_normal = '#000000'
@@ -32,7 +34,7 @@ theme.fg_graph = theme.fg_text
 --theme.bg_focus = "#D64937"
 theme.bg_focus = "#FF0044"
 theme.bg_urgent = "#000000"
-theme.bg_weak = "#555555"
+theme.bg_weak = "#FFFFFF44"
 
 --theme.fg_ping = '#44B7F7'
 --theme.fg_ping_warning = '#FF0087'
@@ -77,6 +79,7 @@ theme.fg_volume_muted = theme.bg_focus
 
 theme.fg_term_icon = theme.fg_icon
 theme.fg_term_text = theme.fg_text
+theme.fg_term_warn = theme.bg_focus
 
 theme.fg_mem_graph = '#77FF00' -- theme.fg_graph
 theme.fg_mem_warning = theme.bg_focus
@@ -123,7 +126,8 @@ theme.taglist_font = 'RobotoMono Nerd Font Medium 10'
 --theme.taglist_shape_border_width_focus = 3
 --theme.taglist_shape_border_color_focus = '#FF0000'
 
-theme.progressbar_margins = {bottom=23}
+theme.progressbar_margins = {bottom=22}
+-- theme.progressbar_margins = {top=20, bottom=2}
 --theme.progressbar_margins = {bottom=3, top=3}
 --theme.progressbar_margins = {bottom=0, top=0}
 --theme.progressbar_margins = {bottom=2, top=20}

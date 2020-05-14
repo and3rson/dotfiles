@@ -39,3 +39,10 @@ function tg() {
     curl "https://api.telegram.org/bot${ARCHER_TG_TOKEN}/sendMessage" -H 'Content-Type: application/json' -d '{"text": "'"$@"'", "chat_id": "84560715"}'
 }
 
+function watchfile() {
+    while true
+    do
+        inotifywait $1
+        cat $1
+    done
+}

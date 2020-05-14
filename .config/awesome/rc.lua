@@ -230,7 +230,7 @@ awful.screen.connect_for_each_screen(function(s)
             end
         end)
 
-        local kb_toggler = wibox.widget{widget=wibox.widget.textbox, markup=' Keyboard', align='center'}
+        local kb_toggler = wibox.widget{widget=wibox.widget.textbox, markup='<span color="' .. beautiful.bg_weak .. '"> Ortho</span>', align='center'}
         kb_toggler:connect_signal('button::press', function() s.ortho:toggle() end)
         volume = require('widgets.volume')(s)
         tray = wibox.widget.systray()
@@ -287,6 +287,8 @@ awful.screen.connect_for_each_screen(function(s)
                     require('widgets.spacer')(),
                     require('widgets.memwidget')(s),
                     require('widgets.spacer')(),
+                    -- require('widgets.cpuclock')(s),
+                    -- require('widgets.spacer')(),
                     -- require('widgets.swapwidget')(s),
                     -- require('widgets.spacer')(),
                     require('widgets.term')(),
@@ -614,7 +616,7 @@ client.connect_signal("manage", function (c, startup)
         -- c.height = workarea.height / 3
     end
 
-
+    awful.spawn('bash -c "pkill touchegg; touchegg"')
 end)
 
 -- function configure_borders(t)

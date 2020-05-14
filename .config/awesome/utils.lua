@@ -13,9 +13,12 @@ exports = {
         icon = '/usr/share/icons/elementary/status/48/' .. icon .. '.svg'
         awful.spawn({'notify-send', '-i', icon, title, text, '-a', 'AwesomeWM'})
     end,
-    make_row = function(options)
+    make_row = function(options, spacing)
         local row = wibox.layout.fixed.horizontal()
-        row.spacing = 6
+        if spacing == nil then
+            spacing = 6
+        end
+        row.spacing = spacing
         options.layout = row
         return wibox.widget(options)
     end,
