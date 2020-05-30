@@ -447,7 +447,11 @@ local globalkeys = awful.util.table.join(
 
 local clientkeys = awful.util.table.join(
     awful.key({alt}, 'F4', function(c) c:kill() end),
-    awful.key({super}, "f",      function (c) c.fullscreen = not c.fullscreen  end),
+    awful.key({super}, "f",      function (c)
+        c.fullscreen = not c.fullscreen
+        c:raise()
+    end
+    ),
     awful.key({super}, "x",  awful.client.floating.toggle)
     --awful.key({super}, "t",      function (c) c.ontop = not c.ontop end)
 )
@@ -648,6 +652,11 @@ local prev_tag = nil
 local src_color = '#000000'
 local target_color = nil
 client.connect_signal("focus", function(c)
+    if c.fullscreen then
+        c.screen.panel.visible = false
+    else
+        c.screen.panel.visible = true
+    end
     local current_tag = c.selected_ta
     -- local current_tag = awful.tag.selected(c.screen)
     -- configure_borders(current_tag)
@@ -720,6 +729,13 @@ end)
 --tag.connect_signal('property::layout', function(t)
 --    configure_borders(t)
 --end)
+client.connect_signal('property::fullscreen', function(c)
+    if c.fullscreen then
+        c.screen.panel.visible = false
+    else
+        c.screen.panel.visible = true
+    end
+end)
 client.connect_signal("unfocus", function(c)
     c.border_color = beautiful.border_normal
     c.screen.panel_color_start('#00000000')

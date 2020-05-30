@@ -373,7 +373,7 @@ hi VertSplit ctermbg=234 ctermfg=242
 let g:NERDSpaceDelims = 1
 let g:NERDCompactSexyComs = 1
 let g:NERDDefaultAlign = 'left'
-"let g:NERDCustomDelimiters = {'python': {'leftAlt': '"""', 'rightAlt': '"""', 'left': '# '}}
+let g:NERDCustomDelimiters = {'python': {'leftAlt': '"""', 'rightAlt': '"""', 'left': '#'}}
 "let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' } }
 let g:NERDAltDelims_c = 1
 let g:NERDAltDelims_cpp = 0
@@ -546,7 +546,7 @@ let g:ale_echo_cursor = 1
 "let g:ale_python_pylint_options = '-j2 --load-plugins pylint_django'
 let g:ale_python_pylint_options = '-j2'
 "let g:ale_python_pylint_options = "-j2 --init-hook='import sys; sys.path.append(\".\")'"
-let g:ale_python_pylint_change_directory = 0
+let g:ale_python_pylint_change_directory = 1
 
 " TODO: ?
 let g:ale_python_flake8_executable = $VIRTUAL_ENV . '/bin/flake8'
@@ -619,8 +619,8 @@ endf
 aug ALEAutoLint
     au! BufRead,BufWrite * :ALELint
     "au! BufRead,BufWrite,TextChanged,InsertLeave * :ALELint
-    au! User ALELintPre :call ClearALEAnnotations()
-    au! User ALELintPost :call ShowALEAnnotations()
+    " au! User ALELintPre :call ClearALEAnnotations()
+    " au! User ALELintPost :call ShowALEAnnotations()
 aug END
 
 "let g:ale_go_golint_executable = '...'
