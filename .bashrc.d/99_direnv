@@ -1,0 +1,55 @@
+#!/bin/bash
+
+if [[ -x "$(command -v direnv)" ]]
+then
+    _direnv_hook() {
+        local previous_exit_status=$?;
+        trap -- '' SIGINT;
+        eval "$("/usr/bin/direnv" export bash)";
+        trap - SIGINT;
+        return $previous_exit_status;
+    };
+    if ! [[ "${PROMPT_COMMAND:-}" =~ _direnv_hook ]]; then
+        PROMPT_COMMAND="$PROMPT_COMMAND;_direnv_hook"
+    fi
+else
+    echo -e "${bldred}Warning: direnv is not installed.${txtrst}"
+fi
+
+function auto_activate()
+{
+    # Preserve original return code
+    RETCODE="$?"
+    DIR=`pwd`
+    found=""
+    while [[ "$DIR" != "/" ]]
+    do
+        if [[ -d "$DIR/.venv" ]]
+        then
+            found=$DIR/.venv
+            break
+        elif [[ -d "$DIR/.env" ]]
+        then
+            found=$DIR/.env
+        fi
+        DIR=`realpath $DIR/..`
+    done
+
+    if [[ "$found" != "" ]] && [[ "$VIRTUAL_ENV" == "" ]]
+    then
+        echo -e ${bldgrn}virtualenv: load $found${txtrst}
+        . $found/bin/activate
+    elif [[ "$found" == "" ]] && [[ "$VIRTUAL_ENV" != "" ]]
+    then
+        echo -e ${bldred}virtualenv: unload $VIRTUAL_ENV${txtrst}
+        deactivate
+    elif [[ "$found" != "" ]] && [[ "$VIRTUAL_ENV" != "$found" ]]
+    then
+        echo -e ${bldylw}virtualev: change $found${txtrst}
+        deactivate
+        . $found/bin/activate
+    fi
+    return $RETCODE
+}
+
+PROMPT_COMMAND="auto_activate;$PROMPT_COMMAND"
