@@ -130,10 +130,11 @@ function make_prompt() {
         then
             PRINTED=$((PRINTED+1))
             #fb 255 22
-            fb 28 234
+            # fb 28 234
+            fb 226 234
             #fore 22
             #arrow
-            NAME=`echo $VIRTUAL_ENV | awk -F'/' '{print $NF}'`
+            NAME=`echo $VIRTUAL_ENV | awk -F'/' '{print $(NF-1)}'`
             echo -n ""
             #echo -en "$VIRTUAL_ENV $RST" | awk -F/ '{print $(NF-1)"/"$NF}' | tr -d '\n'
             echo -en " $PY_ICON $NAME $RST"

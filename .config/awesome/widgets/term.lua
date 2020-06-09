@@ -42,9 +42,14 @@ return function()
         --local block_size = tonumber(parts())
 
         local percentage = temp / temp_max * 100
+        local color = beautiful.fg_term_text
+        if percentage > 75 then
+            color = beautiful.fg_term_warn
+        end
 
-        widget.markup = '<span color="' .. beautiful.fg_term_text .. '">' .. temp .. '°C</span>'
+        widget.markup = '<span color="' .. color .. '">' .. temp .. '°C</span>'
         progressbar.value = percentage
+        progressbar.color = color
     end
 
     gears.timer {

@@ -230,7 +230,7 @@ awful.screen.connect_for_each_screen(function(s)
             end
         end)
 
-        local kb_toggler = wibox.widget{widget=wibox.widget.textbox, markup=' Keyboard', align='center'}
+        local kb_toggler = wibox.widget{widget=wibox.widget.textbox, markup='<span color="' .. beautiful.bg_weak .. '"> Ortho</span>', align='center'}
         kb_toggler:connect_signal('button::press', function() s.ortho:toggle() end)
         volume = require('widgets.volume')(s)
         tray = wibox.widget.systray()
@@ -287,6 +287,8 @@ awful.screen.connect_for_each_screen(function(s)
                     require('widgets.spacer')(),
                     require('widgets.memwidget')(s),
                     require('widgets.spacer')(),
+                    -- require('widgets.cpuclock')(s),
+                    -- require('widgets.spacer')(),
                     -- require('widgets.swapwidget')(s),
                     -- require('widgets.spacer')(),
                     require('widgets.term')(),
@@ -344,7 +346,7 @@ local globalkeys = awful.util.table.join(
             next_screen = 1
         end
         awful.screen.focus(next_screen)
-        awful.spawn('/home/anderson/.scripts/not.sh \'{"timeout":0.3,"message":":' .. tostring(current_screen) .. '"}\'')
+        -- awful.spawn('/home/anderson/.scripts/not.sh \'{"timeout":0.3,"message":":' .. tostring(current_screen) .. '"}\'')
     end),
 
     -- Layouts
@@ -445,7 +447,11 @@ local globalkeys = awful.util.table.join(
 
 local clientkeys = awful.util.table.join(
     awful.key({alt}, 'F4', function(c) c:kill() end),
-    awful.key({super}, "f",      function (c) c.fullscreen = not c.fullscreen  end),
+    awful.key({super}, "f",      function (c)
+        c.fullscreen = not c.fullscreen
+        c:raise()
+    end
+    ),
     awful.key({super}, "x",  awful.client.floating.toggle)
     --awful.key({super}, "t",      function (c) c.ontop = not c.ontop end)
 )
@@ -614,7 +620,7 @@ client.connect_signal("manage", function (c, startup)
         -- c.height = workarea.height / 3
     end
 
-
+    awful.spawn('bash -c "pkill touchegg; touchegg"')
 end)
 
 -- function configure_borders(t)
@@ -646,6 +652,11 @@ local prev_tag = nil
 local src_color = '#000000'
 local target_color = nil
 client.connect_signal("focus", function(c)
+    if c.fullscreen then
+        c.screen.panel.visible = false
+    else
+        c.screen.panel.visible = true
+    end
     local current_tag = c.selected_ta
     -- local current_tag = awful.tag.selected(c.screen)
     -- configure_borders(current_tag)
@@ -718,6 +729,13 @@ end)
 --tag.connect_signal('property::layout', function(t)
 --    configure_borders(t)
 --end)
+client.connect_signal('property::fullscreen', function(c)
+    if c.fullscreen then
+        c.screen.panel.visible = false
+    else
+        c.screen.panel.visible = true
+    end
+end)
 client.connect_signal("unfocus", function(c)
     c.border_color = beautiful.border_normal
     c.screen.panel_color_start('#00000000')

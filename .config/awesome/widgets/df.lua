@@ -10,7 +10,7 @@ return function(s)
         max_value=100,
         value=0,
         background_color=beautiful.bg_weak,
-        color=beautiful.bg_focus,
+        color=beautiful.fg_normal,
         widget=wibox.widget.progressbar,
         margins=beautiful.progressbar_margins
     }
@@ -33,6 +33,12 @@ return function(s)
             '%.1f',
             block_size * blocks_free / (1024 ^ 3)
         ) .. ' GB'
+        if percentage < 20 then
+            widget.markup = '<span color="' .. beautiful.bg_focus .. '">' .. widget.markup .. '</span>'
+            progressbar.color = beautiful.bg_focus
+        else
+            progressbar.color = beautiful.fg_normal
+        end
         progressbar.value = percentage
     end
 
