@@ -1,9 +1,10 @@
 #!/bin/bash
 
 alias sudo='sudo '
-alias ls='ls --color=auto'
-alias ll='ls -l --group-directories-first'
-alias la='ls -la'
+# alias ls='ls --color=auto'
+alias ls='exa -g -B --git'
+alias ll='ls -l --group-directories-first --tree --level 1'
+alias la='ll -a'
 alias lz='ll -Shr'
 alias lzd='ll -Sh'
 #alias ll="$HOME/.gem/ruby/2.4.0/bin/colorls -l"
@@ -38,6 +39,7 @@ alias st='git st'
 alias br='git branch'
 alias co='git checkout'
 alias cm='git commit -m'
+alias lg='git log'
 alias pull='git pull'
 alias push='git push'
 alias merge='git merge'

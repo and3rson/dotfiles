@@ -142,34 +142,34 @@ local update_widget = function()
         '</span> '
 end
 
-awful.spawn.with_line_callback('cava -p ' .. CAVA_CONF, {
-    stdout=function(line)
-        local i = 0
-        local total = 0
-        local max = 0
-        for v in line:gmatch('%d+') do
-            if i % 1 == 0 then
-                v = tonumber(v)
-                max = math.max(max, v)
-                total = total + v
-                --v = ((v / 32) ^ 0.5) * 32
-                graph:add_value(v)
-            end
-            i = i + 1
-        end
-        --print(
-        --print(i, total / i, max)
-        if max == 32 then
-            graph.color = beautiful.fg_mem_graph .. 'FF'
-        else
-            graph.color = beautiful.fg_mem_graph .. '80'
-        end
-        local avg = total / i
-        graph.color = beautiful.fg_mem_graph .. string.format('%02x', math.floor((avg / 64 + 0.5) * 255))
-        local r, g, b = color.hslToRgb((avg / 32 * 2.0) % 1.0, 1.0, 0.5, 1.0)
-        graph.color = '#' .. string.format('%02x%02x%02x%02x', math.floor(r), math.floor(g), math.floor(b), math.floor((avg / 64 + 0.5) * 255))
-    end
-})
+-- awful.spawn.with_line_callback('cava -p ' .. CAVA_CONF, {
+--     stdout=function(line)
+--         local i = 0
+--         local total = 0
+--         local max = 0
+--         for v in line:gmatch('%d+') do
+--             if i % 1 == 0 then
+--                 v = tonumber(v)
+--                 max = math.max(max, v)
+--                 total = total + v
+--                 --v = ((v / 32) ^ 0.5) * 32
+--                 graph:add_value(v)
+--             end
+--             i = i + 1
+--         end
+--         --print(
+--         --print(i, total / i, max)
+--         if max == 32 then
+--             graph.color = beautiful.fg_mem_graph .. 'FF'
+--         else
+--             graph.color = beautiful.fg_mem_graph .. '80'
+--         end
+--         local avg = total / i
+--         graph.color = beautiful.fg_mem_graph .. string.format('%02x', math.floor((avg / 64 + 0.5) * 255))
+--         local r, g, b = color.hslToRgb((avg / 32 * 2.0) % 1.0, 1.0, 0.5, 1.0)
+--         graph.color = '#' .. string.format('%02x%02x%02x%02x', math.floor(r), math.floor(g), math.floor(b), math.floor((avg / 64 + 0.5) * 255))
+--     end
+-- })
 
 local inot, errno, errstr
 function poll()

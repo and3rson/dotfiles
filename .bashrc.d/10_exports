@@ -38,4 +38,7 @@ case $(tty) in /dev/tty[0-9]*)
     export TTY=1 ;;
 esac
 
+export EXA_COLORS='da=38;5;193:uu=38;5;255:un=38;5;197:gu=38;5;255:gn=38;5;197:gm=38;5;32:sn=38;1;255'
+# :di=4;38;5;111;1'
+
 # export GTK_THEME=Numix:dark

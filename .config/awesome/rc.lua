@@ -313,9 +313,9 @@ awful.screen.connect_for_each_screen(function(s)
         }
     end
     s.panel:setup(config)
-    s.panel.margin.ratio:ajust_ratio(2, 0.4, 0.2, 0.4)
-    s.panel.margin.ratio.inner_fill_strategy = 'justify'
     if s.index == 1 then
+        s.panel.margin.ratio:ajust_ratio(2, 0.4, 0.2, 0.4)
+        s.panel.margin.ratio.inner_fill_strategy = 'justify'
         s.ortho = require('ortho')(s)
         -- s.ortho:connect_signal('show', function()
             -- awful.spawn('/home/anderson/.scripts/kboff.sh')
@@ -620,7 +620,7 @@ client.connect_signal("manage", function (c, startup)
         -- c.height = workarea.height / 3
     end
 
-    awful.spawn('bash -c "pkill touchegg; touchegg"')
+    -- awful.spawn('bash -c "pkill touchegg; touchegg"')
 end)
 
 -- function configure_borders(t)

@@ -7,3 +7,19 @@ then
     MSG=`echo -e "New SSH login to dun.ai\n\nUser: ${USER}\nHost: ${SSHVARS[0]}:${SSHVARS[1]} -> ${HOSTNAME}:${SSHVARS[2]}\nTTY:${SSH_TTY}"`
     curl $URL -H "Content-Type: application/json" -d "{\"text\": \"${MSG}\", \"chat_id\":\"${TELEGRAM_CHAT_ID}\"}" > /dev/null 2>&1
 fi
+
+# preexec () {
+#     PREEXEC_START=`date +%s%N`
+#     PREEXEC_COMMAND=$BASH_COMMAND
+#     echo $BASH_COMMAND
+# }
+# preexec_invoke_exec () {
+#     [ -n "$COMP_LINE" ] && return  # do nothing if completing
+#     [ "$BASH_COMMAND" = "$PROMPT_COMMAND" ] && return # don't cause a preexec for $PROMPT_COMMAND
+#     [ "$BASH_COMMAND" = "auto_activate" ] && return
+#     [ "$BASH_COMMAND" = "set_prompt" ] && return
+#     [ "$BASH_COMMAND" = "_direnv_hook" ] && return
+#     local this_command=`HISTTIMEFORMAT= history 1 | sed -e "s/^[ ]*[0-9]*[ ]*//"`;
+#     preexec "$this_command"
+# }
+# trap 'preexec_invoke_exec' DEBUG

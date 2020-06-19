@@ -235,6 +235,22 @@ function make_prompt() {
         #echo -en "\[$txtrst\]"
     } # }}}
 
+    function duration_part() { # {{{
+        echo $PREEXEC_START
+        if [ -z "$PREEXEC_START" ]
+        then
+            return
+        fi
+        DURATION=$(((`date +%s%N` - $PREEXEC_START) / 1000000))
+        fb 255 234
+        echo -n "$DURATIONms "
+        fb 234
+        printf -v "PREEXEC_START" 0
+        echo $PREEXEC_START
+        #echo -en "\ue0b0"
+        #echo -en "\[$txtrst\]"
+    } # }}}
+
     function dirs_part() { # {{{
         PRINTED=$((PRINTED+1))
         fb 31 234
@@ -449,6 +465,7 @@ function make_prompt() {
     #files_part
     #free_part
     ret_part
+    # duration_part
     #end_part
     brk
     pwd_part_monocolor

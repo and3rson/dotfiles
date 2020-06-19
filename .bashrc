@@ -3,7 +3,8 @@
 
 SH=$0
 
-for script in ~/.bashrc.d/*
+# for script in ~/.bashrc.d/*
+for script in `run-parts ~/.bashrc.d --test`
 do
     . $script
 done
