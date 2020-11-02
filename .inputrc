@@ -21,6 +21,8 @@ set mark-symlinked-directories on
 # sudo
 "\es": "\C-p\C-asudo \C-e"
 
+Control-g: "j\n"
+
 # comment
 # "\ed": insert-comment
 

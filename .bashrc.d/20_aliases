@@ -47,4 +47,4 @@ alias vim='nvim'
 alias yay='yay --editmenu --nodiffmenu'
 
 alias ddiso='sudo dd bs=4M oflag=sync status=progress'
-
+alias largepkg='expac "%n %m" -l'\n' -Q $(pacman -Qq) | sort -rhk 2 | less'

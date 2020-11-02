@@ -81,7 +81,8 @@ call plug#begin('~/.vim/plugged')
 
     " Syntax files
     Plug 'pangloss/vim-javascript'
-    Plug 'mxw/vim-jsx'
+    " Plug 'mxw/vim-jsx'
+    Plug 'chemzqm/vim-jsx-improve'
     Plug 'chr4/nginx.vim'
     Plug 'martinda/Jenkinsfile-vim-syntax'
 
@@ -129,6 +130,7 @@ call plug#begin('~/.vim/plugged')
     Plug '~/.vim/plugins/statusline'
     Plug '~/.vim/plugins/tabline'
     Plug '~/.vim/plugins/pds'
+    Plug '~/.vim/plugins/notes'
     "Plug '~/.vim/plugins/hi_godot'
     "Plug '~/.vim/plugins/pyxl'
 
@@ -293,7 +295,7 @@ aug EqualWindows
 aug END
 
 " Limit syntax highlight
-set synmaxcol=200
+set synmaxcol=1000
 
 " Text display tweaks
 set display=lastline,msgsep,uhex
@@ -516,7 +518,8 @@ let g:piecrumbs_glue = '  '
 let g:ale_linters = {
             \'javascript': ['eslint'],
             \'python': ['pylint'],
-            \'go': ['gofmt', 'golint', 'go vet']
+            \'go': ['gofmt', 'golint', 'go vet'],
+            \'haskell': []
             \}
 "\'python': ['flake8', 'pylint']
 "\'python': ['flake8']
@@ -859,7 +862,13 @@ let g:tagbar_type_go = {
 \ }
 " }}}
 " JSX {{{
-let g:jsx_ext_required = 0
+" let g:jsx_ext_required = 0
+" GraphViz {{{
+aug JavascriptReactAuto
+    au BufNewFile,BufRead *.js set filetype=javascriptreact
+aug END
+" }}}
+"
 " }}}
 " Virtualenv {{{
 "python with virtualenv support

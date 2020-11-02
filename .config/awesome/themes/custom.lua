@@ -94,6 +94,10 @@ theme.fg_gpmdp_playing = '#77FF00'
 --theme.fg_gpmdp_paused = '#FF0044'
 theme.fg_gpmdp_paused = '#FFAA00'
 
+theme.fg_spotify_playing = '#77FF00'
+--theme.fg_gpmdp_paused = '#FF0044'
+theme.fg_spotify_paused = '#FFAA00'
+
 theme.fg_mqtt_ok = '#77FF00'
 theme.fg_mqtt_warning = theme.bg_focus
 

@@ -32,7 +32,7 @@ function auto_activate()
         then
             found=$DIR/.env
         fi
-        DIR=`realpath $DIR/..`
+        DIR=`realpath "$DIR/.."`
     done
 
     if [[ "$found" != "" ]] && [[ "$VIRTUAL_ENV" == "" ]]

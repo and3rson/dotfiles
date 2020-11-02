@@ -46,3 +46,12 @@ function watchfile() {
         cat $1
     done
 }
+
+function j() {
+    echo $1
+    dir=$(FZF_DEFAULT_COMMAND="find $1 -type d" fzf)
+    if ! [[ -z "$dir" ]]
+    then
+        cd "$dir"
+    fi
+}
