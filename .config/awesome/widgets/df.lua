@@ -33,7 +33,7 @@ return function(s)
             '%.1f',
             block_size * blocks_free / (1024 ^ 3)
         ) .. ' GB'
-        if percentage < 20 then
+        if percentage > 90 then
             widget.markup = '<span color="' .. beautiful.bg_focus .. '">' .. widget.markup .. '</span>'
             progressbar.color = beautiful.bg_focus
         else

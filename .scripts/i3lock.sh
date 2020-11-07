@@ -1,5 +1,5 @@
 #!/bin/bash
-WALLPAPER="$HOME/.wallpapers/lights1920.png"
+WALLPAPER="$HOME/.wallpapers/lights1920_lock.png"
 insidecolor=00000000
 ringcolor=ffffff10
 keyhlcolor=ff0033ff

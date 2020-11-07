@@ -774,6 +774,8 @@ aug END
 "com! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 com! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, {'options': ['--reverse', '--preview', 'highlight -O xterm256 --style molokai --force -n {}']}, <bang>0)
 
+let g:fzf_layout = {'down': '~40%'}
+
 nnoremap <silent> <M-f> :Rg<CR>
 
 "let g:fzf_files_options = '--prefiew "cat {}"'

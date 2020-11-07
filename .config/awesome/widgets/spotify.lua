@@ -16,12 +16,26 @@ return function()
         widget=wibox.widget.textbox
     }
 
+    local data = {}
+
     dbus.add_match("session", "interface='org.freedesktop.DBus.Properties', member='PropertiesChanged', path='/org/mpris/MediaPlayer2'")
-    dbus.connect_signal('org.freedesktop.DBus.Properties', function(info, source, data)
+    dbus.connect_signal('org.freedesktop.DBus.Properties', function(info, source, new_data)
+        -- eprint('data', info, source, new_data)
+        for k, v in pairs(new_data) do
+            data[k] = v
+        end
         local playing = data.PlaybackStatus == 'Playing'
-        local artists = table.concat(data.Metadata['xesam:artist'], ". ")
-        local title = data.Metadata['xesam:title']
-        local length = tonumber(data.Metadata['mpris:length'])
+        local artists = '?'
+        local title = '?'
+        local length = 0
+        if data.Metadata then
+            artists = table.concat(data.Metadata['xesam:artist'], ". ")
+            title = data.Metadata['xesam:title']
+            length = tonumber(data.Metadata['mpris:length'])
+            if length == nil then
+                length = 0
+            end
+        end
         local length_seconds = length // 1000000
         local minutes, seconds = length_seconds // 60, length_seconds % 60
         local color = beautiful.fg_spotify_paused
@@ -30,12 +44,13 @@ return function()
             color = beautiful.fg_spotify_playing
             icon = ''
         end
+
         icon_widget.markup = string.format('<span color="%s">%s </span>', color, icon)
         text_widget.markup = string.format('<span color="%s">%s - %s (%d:%02d)</span>', color, artists, title, minutes, seconds):gsub("%&","&amp;")
     end)
 
     for i=1,2 do
-        awful.util.spawn_with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause')
+        awful.spawn.with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause')
     end
 
     -- local update_widget = function()

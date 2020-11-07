@@ -7,7 +7,7 @@ local utils = require("../utils")
 
 local net_linux = require('vicious.contrib.net_linux')
 
-local DEVICE = 'wlp5s0'
+local DEVICE = 'wlan0'
 
 local ICONS = {'', '', '', ''}
 local ICONS_COUNT = 4

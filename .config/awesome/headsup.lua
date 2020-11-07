@@ -29,7 +29,7 @@ local headsup = awful.popup{
                             widget=wibox.widget.textbox,
                             id='icon',
                             text='Icon',
-                            font='DejaVu Sans 80'
+                            font='DejaVu Sans 64'
                         }
                     },
                     {
@@ -40,13 +40,13 @@ local headsup = awful.popup{
                             widget=wibox.widget.textbox,
                             id='textbox',
                             text='Foo bar askj lk adjkajdk aslkd aj lk asjdsa\nasdasd\nasd',
-                            font='DejaVu Sans 48'
+                            font='DejaVu Sans 32'
                         },
                         {
                             widget=wibox.widget.textbox,
                             id='textbox2',
                             text='Foo bar askj lk adjkajdk aslkd aj lk asjdsa\nasdasd\nasd',
-                            font='DejaVu Sans 24'
+                            font='DejaVu Sans 16'
                         }
                     }
                 }

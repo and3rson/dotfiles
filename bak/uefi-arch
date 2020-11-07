@@ -1,1 +1,1 @@
-sudo efibootmgr -d /dev/mmcblk0 -p 1 -c -L Arch Linux -l /vmlinuz-linux-anderson -u "root=PARTUUID=86019ef2-8b75-3e43-a6c8-2b8ca35a50b4 rw loglevel=3 quiet initrd=\initramfs-linux-anderson.img"
+sudo efibootmgr -d /dev/nvme0n1 -p 1 -c -L "Arch Linux" -l /vmlinuz-linux -u "root=UUID=08f8c1c7-d7ab-43d6-ab8a-102c2163d390 rw loglevel=3 quiet initrd=\initramfs-linux.img"

@@ -1,0 +1,13 @@
+# /usr/lib/systemd/system/i3lock@.service
+[Unit]
+Description=Lock the screen
+Before=sleep.target
+ 
+[Service]
+User=%I
+Type=forking
+Environment=DISPLAY=:0
+ExecStart=/home/%I/.scripts/i3lock.sh
+ 
+[Install]
+WantedBy=sleep.target

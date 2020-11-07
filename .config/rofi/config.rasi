@@ -1,0 +1,22 @@
+configuration {
+    /* fake-background: "screenshot"; */
+    /* fake-transparency: true; */
+	modi: "run,window,ssh";
+	lines: 20;
+	font: "DejaVu Sans Mono bold 10";
+	separator-style: "solid";
+	color-normal: "#222222, #DDDDDD, #222222, #1177AA, #FFFFFF";
+	color-urgent: "#222222, #b1b4b3, #222222, #77003d, #b1b4b3";
+	color-active: "#222222, #b1b4b3, #222222, #FF1177, #b1b4b3";
+	color-window: "#CC222222, #CC222222, #CC1177AA";
+    line-margin: 0;
+    padding: 10;
+    line-padding: 2;
+    terminal: "termite";
+    run-shell-command: "{terminal} -e '{cmd}'";
+    ssh-command: "{terminal} -e '{ssh-client} {host}'";
+    /* kb-mode-next: "Shift+Right,Control+Tab"; */
+    kb-row-tab: "";
+    kb-mode-next: "Tab";
+    /* kb-mode-previous: "Shift+Tab"; */
+}
