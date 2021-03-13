@@ -1,0 +1,9 @@
+#define SPAWN_WIFI_SSID "Spam"
+// #define SPAWN_WIFI_CHANNEL 6
+const unsigned char SPAWN_WIFI_BSSID[] = {0xF0, 0x9F, 0xC2, 0xF1, 0x3B, 0xD1};
+#define SPAWN_WIFI_PASS "11235813!337*,"
+#define SPAWN_MQTT_SERVER "192.168.0.100"
+#define SPAWN_MQTT_PORT 1883
+#define SPAWN_MQTT_USER "anderson"
+#define SPAWN_MQTT_PASS "11235813"
+
