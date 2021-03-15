@@ -27,7 +27,7 @@ echo $W $H
 sleep 0.5
 
 #CMD="recordmydesktop --channels 2 --freq 44100 -x $X -y $Y --width $W -height $H --fps 30 --overwrite -o $FNAME_OGV --stop-shortcut Control+s"
-CMD="recordmydesktop --device pulse -x $X -y $Y --width $W -height $H --fps 30 --overwrite -o $FNAME_OGV --stop-shortcut Control+s --no-sound"
+CMD="recordmydesktop --device pulse -x $X -y $Y --width $W -height $H --fps 60 --overwrite -o $FNAME_OGV --stop-shortcut Control+s --no-sound"
 echo $CMD
 $CMD
 ffmpeg -y -i $FNAME_OGV $FNAME_MP4

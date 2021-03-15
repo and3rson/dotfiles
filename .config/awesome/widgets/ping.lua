@@ -126,6 +126,7 @@ return function(s)
 
     widget = utils.make_row({
         -- wibox.container.margin(icon_widget, 0, 0, 0, 2),
+        icon_widget,
         wibox.widget({
             -- progressbar,
             wibox.container.margin(

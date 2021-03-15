@@ -55,3 +55,8 @@ function j() {
         cd "$dir"
     fi
 }
+
+function paste() {
+    local file=${1:-/dev/stdin}
+    curl --data-binary @${file} https://paste.rs
+}

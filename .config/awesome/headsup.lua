@@ -1,3 +1,4 @@
+-- luacheck: globals mouse
 local awful = require('awful')
 local wibox = require('wibox')
 local gears = require('gears')
@@ -5,7 +6,8 @@ local gears = require('gears')
 local headsup = awful.popup{
     widget={
         widget=wibox.container.margin,
-        top=64,
+        top=128,
+        bottom=128,
         {
             widget=wibox.container.background,
             id='bg',
@@ -53,8 +55,8 @@ local headsup = awful.popup{
             }
         }
     },
-    -- placement=awful.placement.top + awful.placement.centered_horizontal,
-    placement=awful.placement.centered,
+    placement=awful.placement.bottom + awful.placement.centered_horizontal,
+    -- placement=awful.placement.centered,
     ontop=true,
     visible=false,
     bg='#00000000',
@@ -78,6 +80,7 @@ function show_headsup(opts)
     headsup_timer:again()
     headsup.visible = true
     headsup.widget.bg.margin.layout_h.layout_v.textbox.text = opts.text
+    headsup.screen = mouse.screen
     if opts.text2 ~= nil then
         headsup.widget.bg.margin.layout_h.layout_v.textbox2.visible = true
         headsup.widget.bg.margin.layout_h.layout_v.textbox2.text = opts.text2

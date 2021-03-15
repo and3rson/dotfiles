@@ -23,3 +23,4 @@ xinput set-prop 'HTIX5288:00 0911:5288 Touchpad' 'Synaptics Tap Action' 0 0 0 0 
 xinput set-prop 'HTIX5288:00 0911:5288 Touchpad' 'Synaptics Scrolling Distance' 100 100
 
 synclient VertScrollDelta=200 HorizScrollDelta=200
+synclient HorizTwoFingerScroll=1

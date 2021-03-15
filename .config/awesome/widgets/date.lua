@@ -5,7 +5,7 @@ local watch = require("awful.widget.watch")
 local beautiful = require("beautiful")
 local gears = require("gears")
 
-local CMD = [[date +"%-d %B%n%H:%M%n%H"]]
+local CMD = [[date +"%-d.%m%n%H:%M%n%H"]]
 
 local ICONS = {
     day='盛',
@@ -106,7 +106,8 @@ return function()
             icon_color = beautiful.fg_date_icon
         end
         widget[1].markup = '<span size="2000"> </span><span color="' .. icon_color .. '" size="14000">' .. ICONS[icon_name] .. '</span> '
-        widget[2].markup = '<span color="' .. beautiful.fg_date_text .. '" size="11000" weight="300">' .. date .. ' ─  <span size="11000" weight="500">' .. time .. '</span></span>'
+        -- ─
+        widget[2].markup = '<span color="' .. beautiful.fg_date_text .. '" size="11000" weight="300">' .. date .. ' <span size="11000" weight="500">' .. time .. '</span></span>'
     end
 
     -- TODO: Replace with os.date

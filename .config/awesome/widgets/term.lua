@@ -47,7 +47,7 @@ return function()
             color = beautiful.fg_term_warn
         end
 
-        widget.markup = '<span color="' .. color .. '">' .. temp .. '°C</span>'
+        widget.markup = '<span color="' .. color .. '">' .. math.floor(temp) .. '°C</span>'
         progressbar.value = percentage
         progressbar.color = color
     end
@@ -59,7 +59,7 @@ return function()
     }
 
     return utils.make_row({
-        -- icon,
+        icon,
         wibox.widget({
             progressbar,
             wibox.container.margin(widget, 0, 0, 0, 2),

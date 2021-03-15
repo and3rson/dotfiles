@@ -25,7 +25,7 @@ beautiful.init("/home/anderson/.config/awesome/themes/custom.lua")
 -- Local includes {{{
 --local volume = require("utils.volume")
 local tags_fn = require("utils.tags")
--- local headsup = require("headsup")
+local headsup = require("headsup")
 -- }}}
 
 -- Core config {{{
@@ -144,8 +144,8 @@ awful.screen.connect_for_each_screen(function(s)
     end
 
     if s.index == 1 then
-        tray = wibox.widget.systray()
-        tray.visible = false
+        -- tray = wibox.widget.systray()
+        -- tray.visible = false
 
         for i, char in pairs(all_tags) do
             local sel = i == 1
@@ -159,33 +159,39 @@ awful.screen.connect_for_each_screen(function(s)
         end
         if screen[s].tags[1] ~= nil then
             screen[s].tags[1]:view_only()
+            awful.screen.focus(1)
         end
-        awful.screen.focus(1)
 
-        -- s.mytaglist = awful.widget.taglist {
-        --     screen = s,
-        --     filter = awful.widget.taglist.filter.all
-        -- }
+        -- local height = 24
+        -- s.panel = awful.wibar({
+        --     position="top",
+        --     screen=s,
+        --     ontop=true,
+        --     --bg='#00000000',
+        --     height=height,
+        --     stretch=true
+        -- })
+        first_screen = s
+
+        -- Volume.
+    elseif s.index == 2 then
+        tray = wibox.widget.systray()
+        tray.visible = true
 
         local height = 24
         s.panel = awful.wibar({
             position="top",
             screen=s,
             ontop=true,
-            --bg='#00000000',
+            bg='#000000C0',
             height=height,
             stretch=true
         })
-        first_screen = s
-
-        -- Volume.
         volume = require('widgets.volume')(s)
-
         local config
         config = {
             id='margin',
             widget=wibox.container.margin,
-            -- color='red',
             top=({vinga=6, factory=0})[hostname],
             {
                 layout=wibox.layout.ratio.horizontal,
@@ -194,20 +200,11 @@ awful.screen.connect_for_each_screen(function(s)
                     layout=wibox.layout.fixed.horizontal,
                     -- s.mytaglist,
                     -- require('widgets.spacer')(),
-                    -- require('widgets.gpmdp'),
                     require('widgets.spotify')(),
-                },
-                {
-                    layout=wibox.layout.align.horizontal,
-                    expand='outside',
-                    nil,
-                    {
-                        layout=wibox.layout.fixed.horizontal,
-                        require('widgets.date')(),
-                        require('widgets.spacer')(),
-                        require('widgets.openweathermap')(),
-                    },
-                    nil,
+                    -- require('widgets.cpuwidget')(s),
+                    -- require('widgets.spacer')(),
+                    -- require('widgets.memwidget')(s),
+                    -- require('widgets.gpmdp'),
                 },
                 -- nil,
                 {
@@ -216,30 +213,17 @@ awful.screen.connect_for_each_screen(function(s)
                     nil,
                     {
                         layout=wibox.layout.fixed.horizontal,
-                        -- require('widgets.spacer')(),
-                        -- require('widgets.mqtt')(s),
-                        -- require('widgets.spacer')(),
                         tray,
-                        -- require('widgets.spacer')(),
-                        -- input_toggler,
-                        -- require('widgets.spacer')(),
-                        -- kb_toggler,
                         require('widgets.spacer')(),
                         require('widgets.ping')(s),
                         require('widgets.spacer')(),
-                        require('widgets.df')(s),
-                        require('widgets.spacer')(),
-                        volume,
-                        require('widgets.spacer')(),
-                        require('widgets.cpuwidget')(s),
-                        require('widgets.spacer')(),
-                        require('widgets.memwidget')(s),
-                        require('widgets.spacer')(),
-                        -- require('widgets.cpuclock')(s),
+                        -- require('widgets.df')(s),
                         -- require('widgets.spacer')(),
-                        -- require('widgets.swapwidget')(s),
+                        -- volume,
                         -- require('widgets.spacer')(),
-                        require('widgets.term')(),
+                        -- require('widgets.term')(),
+                        -- require('widgets.spacer')(),
+                        require('widgets.date')(),
                         require('widgets.spacer')(),
                         require('widgets.battery')(),
                     }
@@ -247,12 +231,8 @@ awful.screen.connect_for_each_screen(function(s)
             }
         }
         s.panel:setup(config)
-        if s.index == 1 then
-            s.panel.margin.ratio:ajust_ratio(2, 0.4, 0.2, 0.4)
-            s.panel.margin.ratio.inner_fill_strategy = 'justify'
-            s.ortho = require('ortho')(s)
-        end
-    else
+        s.panel.margin.ratio:ajust_ratio(2, 0.35, 0.65, 0)
+        s.panel.margin.ratio.inner_fill_strategy = 'justify'
         awful.tag.add('X', {
             selected=true,
             screen=s,
@@ -264,6 +244,10 @@ awful.screen.connect_for_each_screen(function(s)
     end
     if screen[1].tags[1] then
         screen[1].tags[1]:view_only()
+    --     eprint(screen[1].tags[1].name)
+    --     for k, v in pairs(screen[1].tags[1]:clients()) do
+    --         eprint('=', k, v)
+    --     end
     end
     awful.screen.focus(1)
     -- s.panel:ajust_ratio(2, 0.25, 0.5, 0.25)
@@ -276,6 +260,7 @@ end)
 local alt = "Mod1"
 local super = "Mod4"
 local ctrl = "Ctrl"
+local shift = "Shift"
 
 local globalkeys = awful.util.table.join(
     -- Switch screen
@@ -301,6 +286,17 @@ local globalkeys = awful.util.table.join(
     awful.key({super}, "r", function() awful.spawn('rofi -show run -terminal termite') end),
 
     -- Volume control
+    awful.key({}, 'KP_Up', function() volume.modify_volume(2) end),
+    awful.key({}, 'KP_Down', function() volume.modify_volume(-2) end),
+    awful.key({}, 'KP_Begin', function()
+        awful.spawn('playerctl play-pause')
+    end),
+    awful.key({}, 'KP_Left', function()
+        awful.spawn('playerctl previous')
+    end),
+    awful.key({}, 'KP_Right', function()
+        awful.spawn('playerctl next')
+    end),
     awful.key({}, 'XF86AudioRaiseVolume', function() volume.modify_volume(2) end),
     awful.key({}, 'XF86AudioLowerVolume', function() volume.modify_volume(-2) end),
     awful.key({}, 'XF86AudioMute', function() volume.toggle_mute() end),
@@ -332,6 +328,31 @@ local globalkeys = awful.util.table.join(
     --awful.key({super}, ']', function()
     --    awful.util.spawn_with_shell('curl 127.0.0.1:9191/media -F action=seek-forward')
     --end),
+
+    awful.key({}, 'XF86TouchpadToggle', function()
+        awful.spawn.easy_async_with_shell('synclient -l | grep -c \'TouchpadOff.*=.*0\'', function(out)
+            local enabled = out:gsub('%s+', '') == '1'
+            local disable = '0'
+            if enabled then
+                disable = '1'
+            end
+            awful.spawn(string.format('synclient TouchpadOff=%s', disable))
+            local text = 'ON'
+            local icon = ''
+            if enabled then
+                text = 'OFF'
+                icon = ''
+            end
+            show_headsup{
+                icon=icon,
+                text=string.format('Touchpad %s', text),
+                -- text2='',
+                timeout=0.5
+            }
+        end)
+    --    awful.util.spawn_with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.clay /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous')
+    --    awful.util.spawn_with_shell('curl 127.0.0.1:9191/media -F action=prev')
+    end),
 
     -- Lock screen
     awful.key({ctrl, alt}, 'l', function() awful.spawn('/home/anderson/.scripts/i3lock.sh') end),
@@ -368,13 +389,14 @@ local globalkeys = awful.util.table.join(
     awful.key({super}, "b", function() awful.spawn('blueman-manager') end),
 
     -- Screenshot
-    awful.key({super}, "p", function() awful.spawn('/home/anderson/.scripts/sshot.sh') end),
+    -- awful.key({super}, "p", function() awful.spawn('/home/anderson/.scripts/sshot.sh') end),
+    awful.key({super, shift}, "s", function() awful.spawn('flameshot gui') end),
 
     -- System tray toggle
     awful.key({super}, "=", function() tray.visible = not tray.visible end),
 
     -- Panel toggle
-    awful.key({super}, "-", function() first_screen.panel.visible = not first_screen.panel.visible end),
+    -- awful.key({super}, "-", function() first_screen.panel.visible = not first_screen.panel.visible end),
 
     -- HPC YouTube player control
     --awful.key({super}, ",", function() awful.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "prev"}\'') end),
@@ -382,7 +404,26 @@ local globalkeys = awful.util.table.join(
     --awful.key({super}, "/", function() awful.spawn('curl -X POST 127.0.0.1:6565/playback --data \'{"op": "next"}\'') end),
 
     -- Vim edit
-    awful.key({super}, "e", function() awful.spawn('/home/anderson/.scripts/vime.sh') end)
+    awful.key({super}, "e", function()
+        awful.spawn.easy_async_with_shell('pulseeffects --bypass 3 2>&1', function(out)
+            local bypassed = out:gsub('%s+', '') == '1'
+            if not bypassed then
+                awful.spawn('pulseeffects --bypass 1')
+                show_headsup{
+                    icon='婢',
+                    text='PulseEffects OFF',
+                    timeout=0.3
+                }
+            else
+                awful.spawn('pulseeffects --bypass 2')
+                show_headsup{
+                    icon='',
+                    text='PulseEffects ON',
+                    timeout=0.3
+                }
+            end
+        end)
+    end)
 
     --awful.key({ super }, "x", function() menubar.show() end)
 )
@@ -455,7 +496,7 @@ awful.rules.rules = {
     { rule = { class = "pinentry" },
       properties = { screen = 1, floating = true } },
     { rule = { class = "Godot" },
-      properties = { tag = "M", floating = true } },
+      properties = { tag = "A", floating = true } },
     --{ rule = { class = "gimp" },
     --  properties = { floating = true } },
     {
@@ -464,22 +505,22 @@ awful.rules.rules = {
     },
     {
         rule_any = { class = {"PadTerm"} },
-        properties = { screen = 2, tag = "Q" }
+        properties = { screen = 2, tag = "X", focusable = false }
     },
     {
         rule_any = { class = {"Chromium", "Firefox", "Navigator", "firefoxdeveloperedition"} },
         properties = { screen = 1, tag = "W" }
     },
     {
-        rule_any = { class = {"TelegramDesktop", "IRCCloud", "ViberPC", "Slack", "discord", "Hexchat"} },
+        rule_any = { class = {"TelegramDesktop", "IRCCloud", "ViberPC", "Slack", "discord", "Hexchat", "Mattermost", "Element"} },
         properties = { screen = 1, tag = "I" }
     },
     {
-        rule_any = { class = {"Evolution", "Steam", "Wine", "minecraft-launcher", "Minecraft 1.14.4", "Google Play Music Desktop Player", "Spotify"} },
+        rule_any = { class = {"Evolution", "Google Play Music Desktop Player", "Spotify"} },
         properties = { screen = 1, tag = "M" }
     },
     {
-        rule_any = { class = {"Todoist"} },
+        rule_any = { class = {"Todoist", "Steam", "Wine", "minecraft-launcher", "Minecraft 1.14.4", "Simplenote" } },
         properties = { screen = 1, tag = "A" }
     },
     {
@@ -491,13 +532,26 @@ awful.rules.rules = {
         properties = { focusable = false, below = true }
     },
     {
+        rule_any = { name = {'GLava'} },
+        properties = { screen=2, tag='X', focusable = false, above = true, sticky = true }
+    },
+    {
         rule_any = { class = {'Pavucontrol'} },
         properties = { floating = true, placement = awful.placement.centered, sticky = true }
     },
     {
         rule_any = { class = {'Onboard'} },
         properties = { floating = true, sticky = true, ontop = true, focusable = false, dockable = true, immobilized = true }
-    }
+    },
+    {
+        rule_any = { name = {'Android Emulator - Pixel_XL_API_30:5554', 'Emulator'} },
+        properties = { screen = 1, tag = "A", floating = true }
+    },
+    { rule = { class = "jetbrains-studio" },
+      properties = {
+        -- floating = false,
+        -- type = "normal"
+    } },
 }
 -- }}}
 -- Visual effect when switching screens (old) {{{
@@ -560,56 +614,41 @@ client.connect_signal("manage", function (c, startup)
     -- awful.spawn('bash -c "pkill touchegg; touchegg"')
 end)
 
-local client_colors = {
-    HomeTerm='#000000FF',
-    Termite='#000000FF',
-    firefoxdeveloperedition='#0C0C0DFF',
-    TelegramDesktop='#0E1621FF',
-    ['Google Play Music Desktop Player']='#1D1D1DFF',
-    Slack='#000000FF',
-    Spotify='#121212FF'
-}
-local prev_tag = nil
+-- local client_colors = {
+--     HomeTerm='#000000FF',
+--     Termite='#000000FF',
+--     firefoxdeveloperedition='#0C0C0DFF',
+--     TelegramDesktop='#0E1621FF',
+--     ['Google Play Music Desktop Player']='#1D1D1DFF',
+--     -- Slack='#000000FF',
+--     Slack='#121016FF',
+--     Spotify='#121212FF',
+--     Mattermost='#202124FF',
+--     Simplenote='#1D2327FF',
+-- }
 local src_color = '#000000'
 local target_color = nil
 client.connect_signal("focus", function(c)
     if c.screen.index ~= 1 then
         return
     end
-    if c.fullscreen then
-        c.screen.panel.visible = false
-    else
-        c.screen.panel.visible = true
-    end
+    -- if c.fullscreen then
+    --     c.screen.panel.visible = false
+    -- else
+    --     c.screen.panel.visible = true
+    -- end
     local current_tag = c.selected_ta
-    -- local current_tag = awful.tag.selected(c.screen)
-    -- configure_borders(current_tag)
-    c.border_color = beautiful.border_focus
-    if c.first_tag.name == prev_tag then
-        local index_in_tag = 0
-        for index, value in pairs(c.first_tag:clients()) do
-            if value == c then
-                index_in_tag = index
-            end
-        end
-        local client_name = '(Unnamed client)'
-        if c.name then
-            client_name = c.name
-        end
-        --awful.spawn('/home/anderson/.scripts/not.sh "' .. index_in_tag .. '~' .. client_name .. '~0.3"')
-    end
-    prev_tag = c.first_tag.name
 
     -- print(c.class)
-    local color = client_colors[c.class]
-    if color == nil then
-        color = '#000000FF'
-    end
-    if color ~= nil then
-        c.screen.panel.bg = color
-    else
-        c.screen.panel.bg = '#000000'
-    end
+    -- local color = client_colors[c.class]
+    -- if color == nil then
+    --     color = '#000000FF'
+    -- end
+    -- if color ~= nil then
+    --     c.screen.panel.bg = color
+    -- else
+    --     c.screen.panel.bg = '#000000'
+    -- end
     -- print(utils.mix_colors('#000000', '#FFFFFF', 0.3))
 
     if c.class == 'Pavucontrol' then
@@ -648,12 +687,25 @@ tag.connect_signal('property::selected', function(t)
     --for k, v in pairs(t) do
     --    print(k, v)
     --end
+    -- eprint(tag, t.selected)
     local client_name = ''
     for index, c in pairs(t:clients()) do
         if c.first_tag == t and c.name then
             client_name = c.name
+            -- show_headsup{text=client_name, timeout=0.5}
         end
     end
+    local count = 0
+    for _, _ in pairs(t:clients()) do
+        count = count + 1
+    end
+    show_headsup{
+        -- icon='类',
+        icon=t.name,
+        text=string.format('%d clients', count),
+        timeout=0.15
+    }
+
     --print(client.focus)
     --awful.spawn('/home/anderson/.scripts/not.sh "' .. t.name .. '~' .. client_name .. '~0.3"')
 end)

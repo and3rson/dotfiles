@@ -31,6 +31,9 @@ function auto_activate()
         elif [[ -d "$DIR/.env" ]]
         then
             found=$DIR/.env
+        elif [[ -d "$DIR/venv" ]]
+        then
+            found=$DIR/venv
         fi
         DIR=`realpath "$DIR/.."`
     done

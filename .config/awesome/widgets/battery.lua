@@ -128,12 +128,30 @@ return function()
             if not charging then
                 if n == 20 then
                     utils.notify('battery-caution', 'Low power', string.format('Battery has %s%% remaining.', n))
-                elseif n == 10 then
+                    show_headsup{
+                        text='Low power: 20%',
+                        text2='Please connect to power supply as soon as posssible.',
+                        icon='',
+                        timeout=3
+                    }
+                elseif n == 5 then
                     utils.notify('battery-empty', 'Critically low power', string.format('Battery has %s%% remaining.', n))
+                    show_headsup{
+                        text='Critically low power: 5%',
+                        text2='Please connect to power supply immediately.',
+                        icon='',
+                        timeout=3
+                    }
                 end
             else
-                if n == 99 and last_value ~= 100 then
+                if n == 100 then
+                -- if n == 99 and last_value ~= 100 then
                     utils.notify('battery-full-charged', 'Battery is charged', 'The battery is fully charged.')
+                    show_headsup{
+                        text='Battery is fully charged.',
+                        icon='',
+                        timeout=1
+                    }
                 end
             end
             last_value = n

@@ -15,7 +15,7 @@ local utils = require("../utils")
 
 local icon = wibox.widget{
     --markup='<span size="2000"> </span><span size="8000" color="#74aeab"></span>',
-    markup='<span size="8000" color="#7777FF">ﳻ</span>',
+    markup='<span size="14000" color="#7777FF">ﳻ</span>',
     widget=wibox.widget.textbox
 }
 
@@ -26,11 +26,11 @@ local value = wibox.widget{
 
 local update = function()
     local busid, state = utils.getline('/proc/acpi/bbswitch'):match('(.*) (.*)')
-    fg = beautiful.fg_bright
+    fg = beautiful.fg_text
     if state == 'ON' then
-        fg = beautiful.fg_urgent
+        fg = beautiful.fg_danger
     end
-    icon.markup = string.format('<span size="8000" color="%s">ﳻ</span>', fg)
+    icon.markup = string.format('<span size="14000" color="%s">ﳻ</span>', fg)
     value.markup = string.format('<span color="%s">%s</span>', fg, state)
 end
 

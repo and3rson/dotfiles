@@ -19,6 +19,7 @@ return function(s)
     local volume
     local mute
     local default_sink
+    local sink_description
 
     local icon = wibox.widget{
         markup=' ~',
@@ -67,6 +68,11 @@ return function(s)
         if default_sink == nil then
             return
         end
+        -- awful.spawn.easy_async_with_shell('pacmd list-sinks | egrep "(name:|device.description)" | grep alsa_output.pci-0000_00_1f.3.analog-stereo -A 1 | tail -n 1 | egrep -o \'"([^"]+)"\' | sed -e s/\"//g', function(out)
+        sink_description = 'Volume'
+        -- awful.spawn.easy_async_with_shell('pacmd list-sinks | egrep "(name:|device.description)" | grep ' .. default_sink .. ' -A 1 | tail -n 1 | egrep -o \'"([^"]+)"\' | sed -e s/\\"//g', function(out)
+        --     sink_description = out:gsub("^%s*(.-)%s*$", "%1")
+        -- end)
         volume = stdout:match('set%-sink%-volume ' .. default_sink:gsub('%.', '%%.'):gsub('%-', '%%-') .. ' (%S+)\n')
         volume = tonumber(volume)
         local mute_value = stdout:match('set%-sink%-mute ' .. default_sink:gsub('%.', '%%.'):gsub('%-', '%%-') .. ' (%S+)\n')
@@ -109,7 +115,8 @@ return function(s)
         show_headsup{
             icon='ﱘ',
             text=tostring(volume_text) .. '%',
-            text2=default_sink,
+            -- text2=default_sink,
+            text2=sink_description,
             timeout=0.3
         }
 
@@ -131,7 +138,7 @@ return function(s)
     }
 
     local widget = utils.make_row{
-        -- wibox.container.margin(icon, 0, 0, 0, 2),
+        wibox.container.margin(icon, 0, 0, 0, 2),
         wibox.widget{
             volume_widget,
             wibox.container.margin(volume_value, 0, 0, 0, 2),

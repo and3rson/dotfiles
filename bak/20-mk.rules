@@ -1,5 +1,6 @@
 ACTION=="bind", SUBSYSTEM=="hid", ENV{HID_NAME}=="Andrew Dunai Custom 48", RUN+="/home/anderson/.scripts/init_kb.sh"
 ACTION=="bind", SUBSYSTEM=="hid", ENV{HID_NAME}=="Andrew Dunai Custom 49", RUN+="/home/anderson/.scripts/init_kb.sh"
 ACTION=="bind", SUBSYSTEM=="hid", ENV{HID_NAME}=="Andrew Dunai D48", RUN+="/home/anderson/.scripts/init_kb.sh"
+ACTION=="bind", SUBSYSTEM=="hid", ENV{HID_NAME}=="foostan Corne", RUN+="/home/anderson/.scripts/init_kb.sh"
 #ACTION=="bind", SUBSYSTEM=="hid", ENV{HID_NAME}=="Andrew Dunai D48", RUN+="/home/anderson/.scripts/kboff.sh"
 #ACTION=="unbind", SUBSYSTEM=="hid", ENV{HID_NAME}=="Andrew Dunai D48", RUN+="/home/anderson/.scripts/kbon.sh"

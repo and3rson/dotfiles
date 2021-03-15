@@ -3,7 +3,7 @@
 alias sudo='sudo '
 # alias ls='ls --color=auto'
 alias ls='exa -g -B --git'
-alias ll='ls -l --group-directories-first --tree --level 1'
+alias ll='ls -l --group-directories-first --level 1'
 alias la='ll -a'
 alias lz='ll -Shr'
 alias lzd='ll -Sh'
@@ -48,3 +48,6 @@ alias yay='yay --editmenu --nodiffmenu'
 
 alias ddiso='sudo dd bs=4M oflag=sync status=progress'
 alias largepkg='expac "%n %m" -l'\n' -Q $(pacman -Qq) | sort -rhk 2 | less'
+
+alias scrot='scrot -o'
+alias sxiv='sxiv -p'
