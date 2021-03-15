@@ -20,6 +20,7 @@ local theme = {}
 --theme.font = "Roboto Regular 11"
 --theme.font = "RobotoMono Nerd Font 10"
 theme.font = "RobotoMono Nerd Font 10"
+-- theme.font = "Terminus 10"
 -- theme.font_smaller = "Monospace 8"
 theme.font_smaller = "DejaVu Sans Book 8"
 
@@ -35,6 +36,7 @@ theme.fg_graph = theme.fg_text
 theme.bg_focus = "#FF0044"
 theme.bg_urgent = "#000000"
 theme.bg_weak = "#FFFFFF44"
+theme.fg_danger = "#FF0044"
 
 --theme.fg_ping = '#44B7F7'
 --theme.fg_ping_warning = '#FF0087'
@@ -73,8 +75,8 @@ theme.bg_date_today = theme.bg_focus
 
 -- theme.fg_volume_icon = "#FF7700" -- theme.fg_icon
 -- theme.fg_volume_text = "#FF7700" -- theme.fg_text
-theme.fg_volume_icon = "#BB66FF" -- theme.fg_icon
-theme.fg_volume_text = "#BB66FF" -- theme.fg_text
+theme.fg_volume_icon = "#DDAAFF" -- theme.fg_icon
+theme.fg_volume_text = "#DDAAFF" -- theme.fg_text
 theme.fg_volume_muted = theme.bg_focus
 
 theme.fg_term_icon = theme.fg_icon
@@ -130,7 +132,7 @@ theme.taglist_font = 'RobotoMono Nerd Font Medium 10'
 --theme.taglist_shape_border_width_focus = 3
 --theme.taglist_shape_border_color_focus = '#FF0000'
 
-theme.progressbar_margins = {bottom=22}
+theme.progressbar_margins = {top=22}
 -- theme.progressbar_margins = {top=20, bottom=2}
 --theme.progressbar_margins = {bottom=3, top=3}
 --theme.progressbar_margins = {bottom=0, top=0}
@@ -214,7 +216,14 @@ theme.titlebar_maximized_button_focus_active  = themes_path.."default/titlebar/m
 --local wp = '/home/anderson/.wallpapers/ng1/121410.jpg'
 --local wp = '/home/anderson/.wallpapers/rainbow-colors-blurred.jpg'
 --local wp = '/home/anderson/.wallpapers/doom-ng/slayer.jpg'
-local wp = '/home/anderson/.wallpapers/lights1920.png'
+-- local wp = '/home/anderson/.wallpapers/lights1920.png'
+-- local wp = '/home/anderson/.wallpapers/lights2.jpg'
+
+local wp = '/usr/share/backgrounds/archlinux/awesome.png'
+-- local wp = '/usr/share/backgrounds/archlinux/split.png'
+-- local wp = '/usr/share/backgrounds/archlinux/wild.png'
+
+-- local wp = '/home/anderson/.wallpapers/undertale/thumb-1920-969432.jpg'
 --local wp = '/home/anderson/.wallpapers/sw/thefuture.jpg'
 --local wp = '/home/anderson/.wallpapers/sw/isnow.jpg'
 --local wp = '/home/anderson/.wallpapers/332450.jpg'

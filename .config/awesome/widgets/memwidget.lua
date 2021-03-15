@@ -19,7 +19,7 @@ return function(s)
         --background_color = "#1e252c",
         --border_width = 1,
         --border_color = beautiful.fg_mem,
-        forced_width = 24,
+        forced_width = 48,
         forced_height = 24,
         step_width = 2,
         step_spacing = 1,

@@ -1,6 +1,7 @@
 [user]
     email = a@dun.ai
     name = Andrew Dunai
+    signingkey = 4ED6FABF2001963C5801FFB1DC7797A711FFF6AF
     # signingkey = 7FA9F240665038B6
     # signingkey = 58184B850FE18BA6
     ; signingkey = 1CF40B595261E807B0F7D80158184B850FE18BA6
@@ -13,7 +14,33 @@
     commit = commit -S
 
 [core]
-    pager = less
+    # pager = less
+    pager = delta
+
+[delta]
+    syntax-theme = Monokai Extended
+    minus-style = syntax "#550000"
+    minus-non-emph-style = syntax
+    minus-emph-style = syntax "#550000" bold
+    plus-style = syntax "#003300"
+    plus-non-emph-style = syntax
+    plus-emph-style = syntax "#003300" bold
+    side-by-side = true
+    file-style = bold cyan
+    file-decoration-style = cyan ul ol
+    line-numbers-zero-style = 255
+    line-numbers-left-style = cyan
+    line-numbers-right-style = cyan
+    line-numbers-plus-style = bold green "#005500"
+    line-numbers-minus-style = bold red "#550000"
+    hunk-header-decoration-style = "#FF8800"
+    hunk-header-line-number-style = "#FF8800"
+    ; hunk-header-file-style = red
+    ; hunk-header = false
+    ; commit-decoration-style = red
+    line-numbers-left-format = "{nm:>4}│"
+    line-numbers-right-format = "{np:>4}│"
+    ; line-numbers = true
 
 [color]
     ui = true

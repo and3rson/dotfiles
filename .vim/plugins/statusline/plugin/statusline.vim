@@ -261,6 +261,7 @@ let g:statusbar_highlights = {
             \ 'R': 'StatusBarReplace',
             \ 'v': 'StatusBarVisual',
             \ 'V': 'StatusBarVisual',
+            \ 's': 'StatusBarVisual',
             \ nr2char(22): 'StatusBarVisual',
             \ 't': 'StatusBarTerminal'
             \ }

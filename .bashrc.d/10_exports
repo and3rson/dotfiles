@@ -38,7 +38,14 @@ case $(tty) in /dev/tty[0-9]*)
     export TTY=1 ;;
 esac
 
-export EXA_COLORS='da=38;5;193:uu=38;5;255:un=38;5;197:gu=38;5;255:gn=38;5;197:gm=38;5;32:sn=38;1;255'
+export EXA_COLORS='da=38;5;193:uu=0:un=0:gu=0:gn=0:gm=38;5;32:sn=38;1;255'
+export EXA_COLORS="$EXA_COLORS:ur=38;1;31:uw=38;1;31:ux=38;1;31:ue=38;1;31:gr=38;1;33:gw=38;1;33:gx=38;1;33:tr=38;1;32:tw=38;1;32:tx=38;1;32"
+# export EXA_COLORS="uu=0:un=0:gu=0:gn=0"
 # :di=4;38;5;111;1'
 
 # export GTK_THEME=Numix:dark
+
+export FrameworkPathOverride=/lib/mono/4.7.1-api/
+
+export ANDROID_SDK=/home/anderson/Android/Sdk
+export PATH="$PATH:$ANDROID_SDK/platform-tools:$ANDROID_SDK/tools"

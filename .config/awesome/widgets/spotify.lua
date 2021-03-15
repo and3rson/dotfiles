@@ -29,11 +29,23 @@ return function()
         local title = '?'
         local length = 0
         if data.Metadata then
-            artists = table.concat(data.Metadata['xesam:artist'], ". ")
+            eprint('=======')
+            for k, v in pairs(data.Metadata) do
+                eprint(k, v)
+            end
+            if data.Metadata['xesam:artist'] then
+                artists = table.concat(data.Metadata['xesam:artist'], ". ")
+            else
+                artists = nil
+            end
             title = data.Metadata['xesam:title']
             length = tonumber(data.Metadata['mpris:length'])
             if length == nil then
                 length = 0
+            end
+            if artists == nil and title == nil and data.Metadata['xesam:url'] then
+                artists = 'URL'
+                title = data.Metadata['xesam:url']
             end
         end
         local length_seconds = length // 1000000
@@ -49,9 +61,9 @@ return function()
         text_widget.markup = string.format('<span color="%s">%s - %s (%d:%02d)</span>', color, artists, title, minutes, seconds):gsub("%&","&amp;")
     end)
 
-    for i=1,2 do
-        awful.spawn.with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause')
-    end
+    -- for i=1,2 do
+    --     awful.spawn.with_shell('dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause')
+    -- end
 
     -- local update_widget = function()
     --     local content = ''

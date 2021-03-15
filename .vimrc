@@ -4,7 +4,7 @@ scriptencoding utf-8
 
 set t_Co=256
 
-set nocompatible
+" set nocompatible
 
 let g:python_highlight_all = 1
 let python_highlight_all = 1
@@ -120,6 +120,34 @@ call plug#begin('~/.vim/plugged')
     " Local vim settings
     Plug 'embear/vim-localvimrc'
 
+    " TOML
+    Plug 'cespare/vim-toml'
+
+    " Terraform
+    Plug 'hashivim/vim-terraform'
+
+    " Buffer tabline
+    " Plug 'ap/vim-buftabline'
+
+    " GLSL highlight
+    Plug 'tikhomirov/vim-glsl'
+
+    " CSV
+    " Plug 'chrisbra/csv.vim'
+    Plug 'mechatroner/rainbow_csv'
+
+    " PlatformIO stuff
+    " https://gist.github.com/neta540/9e65261be52d6cd4d6c17399b78d34bb
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    Plug 'neomake/neomake'
+
+    " Statusline
+    Plug 'itchyny/lightline.vim'
+    Plug 'mengelbrecht/lightline-bufferline'
+
+    " Nerd font
+    Plug 'lambdalisue/nerdfont.vim'
+
     " Custom plugins
     Plug '~/.vim/plugins/icons'
     Plug '~/.vim/plugins/utils'
@@ -127,11 +155,11 @@ call plug#begin('~/.vim/plugged')
     Plug '~/.vim/plugins/hi_yaml'
     Plug '~/.vim/plugins/icons'
     Plug '~/.vim/plugins/signs'
-    Plug '~/.vim/plugins/statusline'
-    Plug '~/.vim/plugins/tabline'
+    " Plug '~/.vim/plugins/statusline'
+    " Plug '~/.vim/plugins/tabline'
     Plug '~/.vim/plugins/pds'
     Plug '~/.vim/plugins/notes'
-    "Plug '~/.vim/plugins/hi_godot'
+    Plug '~/.vim/plugins/hi_godot'
     "Plug '~/.vim/plugins/pyxl'
 
 call plug#end()                    " required
@@ -263,6 +291,7 @@ set nocursorcolumn
 set fillchars+=stl:\ ,stlnc:\ ,fold:\-,msgsep:+,eob:\ "
 " Chars
 set list listchars=tab:▏ ,trail:·,extends:»,precedes:«,nbsp:×
+" ,space:·
 " 
 
 " Clipboard fix
@@ -323,7 +352,8 @@ set colorcolumn=120,160
 " Cursor
 
 hi CursorLine ctermbg=234 " cterm=underline
-hi CursorColumn ctermbg=234
+" hi CursorColumn ctermbg=234
+hi CursorColumn ctermbg=94 ctermfg=255 " Used by Coc
 "hi StatusLine ctermfg=233
 "hi StatusLineNC ctermbg=None ctermfg=240 cterm=None
 
@@ -467,7 +497,7 @@ set nobackup
 
 " Remove trailing whitespaces
 fu CleanUp()
-    %s/\s\+$//e
+    exe '%s/\s\+$//e'
     " |norm!``
 endf
 aug CleanUp
@@ -518,14 +548,21 @@ let g:piecrumbs_glue = '  '
 let g:ale_linters = {
             \'javascript': ['eslint'],
             \'python': ['pylint'],
+            \'cpp': ['ccls'],
             \'go': ['gofmt', 'golint', 'go vet'],
-            \'haskell': []
+            \'haskell': [],
+            \'vim': ['vint']
             \}
+let g:ale_fixers = { 'cpp': [ 'clang-format' ] }
+" let g:ale_pattern_options = {'\.cpp$': {'ale_enabled': 0}}
+"
 "\'python': ['flake8', 'pylint']
 "\'python': ['flake8']
 
-nnoremap <silent> ; :lprev<CR>
-nnoremap <silent> ' :lnext<CR>
+" nnoremap <silent> ; :lprev<CR>
+" nnoremap <silent> ' :lnext<CR>
+nnoremap <silent> ; :ALEPrevious<CR>
+nnoremap <silent> ' :ALENext<CR>
 
 let g:ale_open_list = 0
 let g:ale_sign_error = ''
@@ -752,24 +789,24 @@ nnoremap <silent> <M-l>      :Lines<CR>
 
 "let g:fzf_prefer_tmux = 1
 
-fu! s:fzf_statusline()
-  " Override statusline as you like
-  "highlight fzf1 ctermfg=161 ctermbg=251
-  hi link fzf1 StatusBarVisualInv
-  "highlight fzf2 ctermfg=23 ctermbg=251
-  hi link fzf2 StatusBarVisualInv
-  "highlight fzf3 ctermfg=237 ctermbg=251
-  hi link fzf3 StatusBarVisualInv
-  setlocal statusline=%#fzf1#\ \ %*\ %#fzf2#fzf%#fzf3#
-endf
+" fu! s:fzf_statusline()
+"   " Override statusline as you like
+"   "highlight fzf1 ctermfg=161 ctermbg=251
+"   hi link fzf1 StatusBarVisualInv
+"   "highlight fzf2 ctermfg=23 ctermbg=251
+"   hi link fzf2 StatusBarVisualInv
+"   "highlight fzf3 ctermfg=237 ctermbg=251
+"   hi link fzf3 StatusBarVisualInv
+"   setlocal statusline=%#fzf1#\ \ %*\ %#fzf2#fzf%#fzf3#
+" endf
 
-aug FZFCustomStatusLine
-    au! User FzfStatusLine call <SID>fzf_statusline()
+" aug FZFCustomStatusLine
+"     au! User FzfStatusLine call <SID>fzf_statusline()
 
-    au! FileType fzf
-    au FileType fzf set conceallevel=0
-      \| au BufLeave <buffer> set conceallevel=2
-aug END
+"     au! FileType fzf
+"     au FileType fzf set conceallevel=0
+"       \| au BufLeave <buffer> set conceallevel=2
+" aug END
 
 "com! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 com! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, {'options': ['--reverse', '--preview', 'highlight -O xterm256 --style molokai --force -n {}']}, <bang>0)
@@ -833,7 +870,7 @@ let g:tagbar_status_func = 'TagbarStatusFn'
 "au VimEnter * nested :TagbarOpen
 nnoremap <silent> <F2> :TagbarToggle<CR>
 inoremap <silent> <F2> <C-o>:TagbarToggle<CR>
-set updatetime=200
+set updatetime=100
 
 let g:tagbar_type_go = {
     \ 'ctagstype' : 'go',
@@ -960,10 +997,10 @@ set completeopt=menu
 " Jedi
 "let g:jedi#auto_initialization = 0
 let g:jedi#show_call_signatures = 2
-let g:jedi#show_call_signatures_delay = 500
+let g:jedi#show_call_signatures_delay = 100
 let g:jedi#popup_select_first = 0
 let g:jedi#max_doc_height = 15
-let g:jedi#rename_command = '<C-r>'
+" let g:jedi#rename_command = '<C-r>'
 let g:jedi#usages_command = '<C-n>'
 let g:jedi#popup_on_dot = 0
 let g:jedi#popup_select_first = 0
@@ -975,7 +1012,9 @@ aug PythonJediConfig
     "au TextChangedI,CursorMovedI * :call jedi#show_call_signatures()
 aug end
 "let g:jedi#godo_command = '<C-g>'
-au FileType python nmap <silent> <C-g> :call jedi#goto()<CR>
+aug PythonJediGoto
+    au FileType python nmap <silent> <C-g> :call jedi#goto()<CR>
+aug end
 let g:SuperTabDefaultCompletionType = 'context'
 let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&contextfunc']
 
@@ -1011,7 +1050,9 @@ hi jediFat ctermfg=197 ctermbg=234 cterm=bold,underline
 
 " }}}
 " Go {{{
-au FileType go nmap <silent> <C-g> :GoDef<CR>
+aug GolangGoto
+    au FileType go nmap <silent> <C-g> :GoDef<CR>
+aug end
 let g:go_fmt_fail_silently = 1  " Do not open loclist
 let g:go_lint_fail_silently = 1  " Do not open loclist
 let g:go_list_height = 0
@@ -1019,7 +1060,9 @@ let g:go_list_autoclose = 1
 "let g:go_metalinter_autosave = 0
 "au CursorMoved *.go :GoInfo
 "au BufRead,BufWrite *.go :GoLint
-au FileType go nnoremap <silent> w :GoInfo<CR>
+aug GolangInfo
+    au FileType go nnoremap <silent> w :GoInfo<CR>
+aug end
 " }}}
 " Startify {{{
 let g:startify_files_number = 10
@@ -1101,5 +1144,106 @@ fu! FormatTemplate()
         :d
     endi
 endf
-au BufNewFile *.py 0r ~/.vim/skeletons/skeleton.py | call FormatTemplate()
+aug PythonSkelegon
+    au BufNewFile *.py 0r ~/.vim/skeletons/skeleton.py | call FormatTemplate()
+aug end
+" }}}
+" Systemd {{{
+aug SystemdAuto
+    au BufNewFile,BufRead *.service set filetype=systemd
+aug END
+" }}}
+" Terraform {{{
+let g:terraform_fold_sections=0
+" }}}
+" Template files {{{
+aug SystemdAuto
+    au BufNewFile,BufRead *.tpl set filetype=bash
+aug END
+" }}}
+" Lightline (statusline & tabline via lightline-bufferline) {{{
+set noshowmode
+let g:lightline = {
+            \ 'colorscheme': 'molokai',
+            \ 'active': {
+            \   'left': [['mode', 'paste'], ['readonly', 'filename_and_position', 'modified']],
+            \   'right': [[], [], ['fileformat', 'fileencoding', 'filetype'], ['ale_info']]
+            \ },
+            \ 'inactive': {
+            \   'left': [['filename']],
+            \   'right': [[], [], ['fileformat', 'fileencoding', 'filetype'], ['ale_info']]
+            \ },
+            \ 'mode_map': {
+            \   'n': 'NRM', 'i': 'INS', 'R': 'REP', 'v': 'VIS', 'V': 'V-L', "\<C-v>": 'V-B',
+            \   'c': 'CMD', 's': 'SEL', 'S': 'S-L', "\<C-s>": 'S-B', 't': 'TER'
+            \ },
+            \ 'component_expand': {
+            \   'buffers': 'lightline#bufferline#buffers',
+            \   'ale_info': 'AleInfo'
+            \ },
+            \ 'component': {
+            \   'filename_and_position': '%t:%l:%c',
+            \   'lineinfo_short': '%l:%c',
+            \ },
+            \ 'component_function': {
+            \ },
+            \ 'component_type': {
+            \   'buffers': 'tabsel',
+            \ },
+            \ 'component_raw': {
+            \   'ale_info': 1
+            \ }
+            \ }
+let g:lightline.tabline = {
+            \ 'left': [ [ 'buffers' ] ],
+            \ 'right': [ [] ]
+            \ }
+            " \ 'right': [ [ 'close' ] ]
+set showtabline=2
+let g:lightline#bufferline#show_number = 2
+let g:lightline#bufferline#enable_nerdfont = 1
+fu! AleInfo() abort
+    let l:is_checking = ale#engine#IsCheckingBuffer(bufnr())
+    let l:counts = ale#statusline#Count(bufnr())
+    let l:errors = l:counts.error + l:counts.style_error
+    let l:warnings = l:counts.total - l:errors
+    let l:err_msg = ''
+    let l:warn_msg = ''
+    if l:is_checking
+        let l:err_msg = ' ' . '…'
+    else
+        if l:errors
+            let l:err_msg = '%#ALEErrorSign# ' . printf('%d', l:errors)
+        else
+            let l:err_msg = ' ' . '0'  " ' —'
+        endi
+    endi
+    let l:err_msg = l:err_msg . '%#LightLineRight_normal_2#'
+    if l:is_checking
+        let l:warn_msg = ' ' . '…'
+    else
+        if l:warnings
+            let l:warn_msg = '%#ALEWarningSign# ' . printf('%d', l:warnings)
+        else
+            let l:warn_msg = ' ' . '0'  " ' —'
+        endi
+    endi
+    let l:warn_msg = l:warn_msg . '%#LightLineRight_normal_2#'
+    return l:err_msg . '  ' . l:warn_msg
+endf
+aug ALERefreshStatusline
+    au! User ALEJobStarted :call lightline#update()
+    " au! User ALELintPre :call lightline#update()
+    au! User ALELintPost :call lightline#update()
+aug END
+" hi LightlineLeft_inactive_0 ctermfg=245
+" }}}
+" CPP (Coc) {{{
+" https://github.com/neoclide/coc.nvim#example-vim-configuration
+aug CPPCocGoto
+    au FileType cpp nmap <silent> <C-g> <Plug>(coc-definition)
+aug end
+aug CPPCocHighlight
+    autocmd CursorHold * silent call CocActionAsync('highlight')
+aug end
 " }}}

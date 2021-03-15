@@ -1,1 +1,1 @@
-sudo efibootmgr -d /dev/nvme0n1 -p 1 -c -L "Arch Linux" -l /vmlinuz-linux -u "root=UUID=08f8c1c7-d7ab-43d6-ab8a-102c2163d390 rw loglevel=3 quiet initrd=\initramfs-linux.img"
+sudo efibootmgr -d /dev/nvme0n1 -p 1 -c -L "Arch Linux" -l /vmlinuz-linux -u "root=UUID=08f8c1c7-d7ab-43d6-ab8a-102c2163d390 rw loglevel=3 quiet i915.fastboot=1 initrd=\initramfs-linux.img"

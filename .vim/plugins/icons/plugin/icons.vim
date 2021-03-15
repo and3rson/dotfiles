@@ -3,7 +3,7 @@
             "\ 'default': '',
 let g:ic = {
             \ 'insert': '',
-            \ 'replace': '',
+            \ 'replace': '',
             \ 'python': '',
             \ 'vim': '',
             \ 'javascript': '',
@@ -11,7 +11,7 @@ let g:ic = {
             \ 'markdown': '',
             \ 'haskell': '',
             \ 'default': '',
-            \ 'go': '',
+            \ 'go': 'ﳑ',
             \ 'cpp': '',
             \ 'c++': '',
             \ 'cxx': '',
@@ -28,7 +28,8 @@ let g:ic = {
             \ 'make': '',
             \ 'css': '',
             \ 'html': '',
-            \ 'lua': ''
+            \ 'lua': '',
+            \ 'terraform': '行',
             \ }
 "'',
 

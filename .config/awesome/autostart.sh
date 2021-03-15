@@ -41,8 +41,10 @@ echo "Display: $DISPLAY"
         firefox-developer-edition 2>&1 > /dev/null &
         telegram-desktop &
         slack &
+        mattermost-desktop &
         #irccloud &
-        /opt/Todoist/todoist &
+        # /opt/Todoist/todoist &
+        simplenote &
         #~/.scripts/media_notifier.sh &
         export GPMDP_API_PORT=5673 gpmdp &
         #termite -c ~/.config/termite/config.cava -e cava &
@@ -50,11 +52,13 @@ echo "Display: $DISPLAY"
         # systemctl --user start not
 
         spotify &
+        # pulseeffects --gapplication-service &
+        # glava &
 
         if [[ "`cat /etc/hostname`" == "vivo" ]]
         then
             # GDK_DPI_SCALE=3
-            termite --class PadTerm -e 'htop -d 5' &
+            termite --class PadTerm -c ~/.config/termite/config.padterm -e 'htop -d 5' &
         fi
 
     #     awesome > ~/.awesome.log

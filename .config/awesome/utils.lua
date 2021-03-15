@@ -16,7 +16,7 @@ exports = {
     make_row = function(options, spacing)
         local row = wibox.layout.fixed.horizontal()
         if spacing == nil then
-            spacing = 6
+            spacing = 4
         end
         row.spacing = spacing
         options.layout = row

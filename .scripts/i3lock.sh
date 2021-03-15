@@ -1,5 +1,12 @@
 #!/bin/bash
 WALLPAPER="$HOME/.wallpapers/lights1920_lock.png"
+
+WP=/tmp/wp.jpg
+scrot -o -q 100 $WP
+convert $WP -scale 10% -scale 1000% $WP
+# convert $WP -blur 10x10 $WP
+WALLPAPER=$WP
+
 insidecolor=00000000
 ringcolor=ffffff10
 keyhlcolor=ff0033ff
@@ -15,7 +22,7 @@ datecolor=ffffffff
 loginbox=00000066
 font="Sans"
 locktext='Who are you?'
-i3lock \
+pgrep -x i3lock > /dev/null || i3lock \
     -t -i "$WALLPAPER" \
     --timepos='x+110:h-70' \
     --datepos='x+43:h-45' \
