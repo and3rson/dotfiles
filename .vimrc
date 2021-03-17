@@ -108,7 +108,7 @@ call plug#begin('~/.vim/plugged')
 
     " Python
     "Plugin 'python-mode/python-mode'
-    Plug 'davidhalter/jedi-vim'
+    " Plug 'davidhalter/jedi-vim'
     Plug 'heavenshell/vim-pydocstring'
 
     " Go
@@ -142,8 +142,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'neomake/neomake'
 
     " Statusline
-    Plug 'itchyny/lightline.vim'
-    Plug 'mengelbrecht/lightline-bufferline'
+    " Plug 'itchyny/lightline.vim'
+    " Plug 'mengelbrecht/lightline-bufferline'
 
     " Nerd font
     Plug 'lambdalisue/nerdfont.vim'
@@ -155,8 +155,8 @@ call plug#begin('~/.vim/plugged')
     Plug '~/.vim/plugins/hi_yaml'
     Plug '~/.vim/plugins/icons'
     Plug '~/.vim/plugins/signs'
-    " Plug '~/.vim/plugins/statusline'
-    " Plug '~/.vim/plugins/tabline'
+    Plug '~/.vim/plugins/statusline'
+    Plug '~/.vim/plugins/tabline'
     Plug '~/.vim/plugins/pds'
     Plug '~/.vim/plugins/notes'
     Plug '~/.vim/plugins/hi_godot'
@@ -661,6 +661,8 @@ aug ALEAutoLint
     "au! BufRead,BufWrite,TextChanged,InsertLeave * :ALELint
     " au! User ALELintPre :call ClearALEAnnotations()
     " au! User ALELintPost :call ShowALEAnnotations()
+    au! User ALEJobStarted :let &stl=&stl
+    au! User ALELintPost :let &stl=&stl
 aug END
 
 "let g:ale_go_golint_executable = '...'
@@ -1167,19 +1169,20 @@ let g:lightline = {
             \ 'colorscheme': 'molokai',
             \ 'active': {
             \   'left': [['mode', 'paste'], ['readonly', 'filename_and_position', 'modified']],
-            \   'right': [[], [], ['fileformat', 'fileencoding', 'filetype'], ['ale_info']]
+            \   'right': [[], [], ['filetype', 'bufnum', 'fileformat', 'fileencoding'], ['ale_warnings'], ['ale_errors']]
             \ },
             \ 'inactive': {
             \   'left': [['filename']],
-            \   'right': [[], [], ['fileformat', 'fileencoding', 'filetype'], ['ale_info']]
+            \   'right': [[], [], ['filetype', 'bufnum', 'fileformat', 'fileencoding'], ['ale_warnings'], ['ale_errors']]
             \ },
             \ 'mode_map': {
-            \   'n': 'NRM', 'i': 'INS', 'R': 'REP', 'v': 'VIS', 'V': 'V-L', "\<C-v>": 'V-B',
-            \   'c': 'CMD', 's': 'SEL', 'S': 'S-L', "\<C-s>": 'S-B', 't': 'TER'
+            \   'n': '', 'i': '', 'R': '', 'v': '', 'V': '', "\<C-v>": '',
+            \   'c': 'C', 's': 'S', 'S': 'S-L', "\<C-s>": 'S-B', 't': 'T'
             \ },
             \ 'component_expand': {
             \   'buffers': 'lightline#bufferline#buffers',
-            \   'ale_info': 'AleInfo'
+            \   'ale_errors': 'AleErrors',
+            \   'ale_warnings': 'AleWarnings'
             \ },
             \ 'component': {
             \   'filename_and_position': '%t:%l:%c',
@@ -1191,7 +1194,8 @@ let g:lightline = {
             \   'buffers': 'tabsel',
             \ },
             \ 'component_raw': {
-            \   'ale_info': 1
+            \   'ale_errors': 1,
+            \   'ale_warnings': 1
             \ }
             \ }
 let g:lightline.tabline = {
@@ -1202,46 +1206,53 @@ let g:lightline.tabline = {
 set showtabline=2
 let g:lightline#bufferline#show_number = 2
 let g:lightline#bufferline#enable_nerdfont = 1
-fu! AleInfo() abort
-    let l:is_checking = ale#engine#IsCheckingBuffer(bufnr())
-    let l:counts = ale#statusline#Count(bufnr())
+aug CurrentBuf
+    au WinEnter * :call setwinvar(winnr(), 'winnr', winnr())
+aug end
+fu! AleErrors() abort
+    let l:is_checking = ale#engine#IsCheckingBuffer(b:id)
+    let l:counts = ale#statusline#Count(b:id)
     let l:errors = l:counts.error + l:counts.style_error
-    let l:warnings = l:counts.total - l:errors
-    let l:err_msg = ''
-    let l:warn_msg = ''
+    let l:err_msg = '' . expand('<abuf>')
     if l:is_checking
-        let l:err_msg = ' ' . '…'
+        let l:err_msg = '  ' . '… '
     else
         if l:errors
-            let l:err_msg = '%#ALEErrorSign# ' . printf('%d', l:errors)
+            let l:err_msg .= '%#ALEError#  ' . printf('%d', l:errors) . ' '
         else
-            let l:err_msg = ' ' . '0'  " ' —'
+            let l:err_msg .= '  ' . '0 '  " ' —'
         endi
     endi
-    let l:err_msg = l:err_msg . '%#LightLineRight_normal_2#'
+    return l:err_msg
+endf
+fu! AleWarnings() abort
+    let l:is_checking = ale#engine#IsCheckingBuffer(b:id)
+    let l:counts = ale#statusline#Count(b:id)
+    let l:errors = l:counts.error + l:counts.style_error
+    let l:warnings = l:counts.total - l:errors
+    let l:warn_msg = '' . w:winnr
     if l:is_checking
-        let l:warn_msg = ' ' . '…'
+        let l:warn_msg .= '  ' . '… '
     else
         if l:warnings
-            let l:warn_msg = '%#ALEWarningSign# ' . printf('%d', l:warnings)
+            let l:warn_msg .= '%#ALEWarning#  ' . printf('%d', l:warnings) . ' '
         else
-            let l:warn_msg = ' ' . '0'  " ' —'
+            let l:warn_msg .= '  ' . '0 '  " ' —'
         endi
     endi
-    let l:warn_msg = l:warn_msg . '%#LightLineRight_normal_2#'
-    return l:err_msg . '  ' . l:warn_msg
+    return l:warn_msg
 endf
 aug ALERefreshStatusline
-    au! User ALEJobStarted :call lightline#update()
-    " au! User ALELintPre :call lightline#update()
-    au! User ALELintPost :call lightline#update()
+    " au! User ALEJobStarted :call lightline#update()
+    " " au! User ALELintPre :call lightline#update()
+    " au! User ALELintPost :call lightline#update()
 aug END
 " hi LightlineLeft_inactive_0 ctermfg=245
 " }}}
 " CPP (Coc) {{{
 " https://github.com/neoclide/coc.nvim#example-vim-configuration
 aug CPPCocGoto
-    au FileType cpp nmap <silent> <C-g> <Plug>(coc-definition)
+    au FileType cpp,python nmap <silent> <C-g> <Plug>(coc-definition)
 aug end
 aug CPPCocHighlight
     autocmd CursorHold * silent call CocActionAsync('highlight')
