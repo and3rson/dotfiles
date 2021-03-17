@@ -12,16 +12,19 @@ exe 'hi MarkLine ctermbg=236'
 let i = 0
 while i < 10
     let c = nr2char(char2nr('a') + i)
-    if c == 'm'
+    let i = i + 1
+    if c ==# 'm'
+        continue
+    elseif c ==# 'd'
         continue
     endif
     exe 'sign define Sign_'.c.' text='.toupper(c).'> texthl=Mark linehl=MarkLine'
     exe 'nnoremap <silent> mm'.c.' :call SignPlace("'.c.'")<CR>'
     exe 'nnoremap <silent> m'.c.' :call SignJump("'.c.'")<CR>'
-    let i = i + 1
-endwhil
+endw
 
 nnoremap <silent> mm<Space> :call ClearSigns()<CR>
+nnoremap <silent> mmd :call SignDelete()<CR>
 nnoremap <silent> mh :call SignPrev()<CR>
 nnoremap <silent> mn :call SignNext()<CR>
 
@@ -64,7 +67,7 @@ fu! GetSigns()
     "let l:filename = expand('%:p')
     let l:signs = execute('sign place buffer=' . buffer_number('%'))
     for l:line in split(l:signs, '\n')
-        let l:match = matchlist(l:line, '=\(\d\+\).*=\(\d\+\).*=\(\S\+\)')
+        let l:match = matchlist(l:line, 'line=\(\d\+\).*id=\(\d\+\).*name=\(\S\+\).*priority=\(\d\+\)')
         if len(l:match) == 0
             continue
         endi
@@ -175,6 +178,18 @@ fu! ClearSigns()
     for l:sign in keys(l:signs)
         let l:id = char2nr(l:sign) + 4000000
         exe 'sign unplace '.l:id.' buffer=' .buffer_number('%')
+    endfor
+    call SaveSigns()
+endf
+
+fu! SignDelete()
+    let l:current_line = line('.')
+    let l:signs = GetSigns()
+    for [l:sign, l:line] in items(l:signs)
+        if l:line == l:current_line
+            let l:id = char2nr(l:sign) + 4000000
+            exe 'sign unplace '.l:id.' buffer=' .buffer_number('%')
+        endi
     endfor
     call SaveSigns()
 endf

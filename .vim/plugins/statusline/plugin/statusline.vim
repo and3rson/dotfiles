@@ -77,25 +77,25 @@ endf
 " }}}
 " ALE status {{{
 fu! AleStatus(bufnr, mode, is_active_window) abort
-    let l:is_checking = ale#engine#IsCheckingBuffer(bufnr(''))
+    let l:is_checking = ale#engine#IsCheckingBuffer(a:bufnr)
 
     return l:is_checking == 0 ? '' : (g:sep . '...')
 endf
 " }}}
 " ALE warnings {{{
 fu! AleWarnings(bufnr, mode, is_active_window) abort
-    let l:is_checking = ale#engine#IsCheckingBuffer(bufnr(''))
+    let l:is_checking = ale#engine#IsCheckingBuffer(a:bufnr)
     let l:counts = ale#statusline#Count(a:bufnr)
     let l:errors = l:counts.error + l:counts.style_error
     let l:warnings = l:counts.total - l:errors
     let l:msg = ''
     if l:is_checking
-        let l:msg = '%#StatusBarText# ' . ' …'
+        let l:msg .= '%#StatusBarText# ' . ' …'
     else
         if l:warnings
-            let l:msg = '%#StatusBarWarning# ' . printf('%2d', l:warnings)
+            let l:msg .= '%#StatusBarWarning# ' . printf('%2d', l:warnings)
         else
-            let l:msg = '%#StatusBarText# ' . ' 0'  " ' —'
+            let l:msg .= '%#StatusBarText# ' . ' 0'  " ' —'
         endi
     endi
     return g:sep . l:msg . '%#StatusBarText#'
@@ -103,17 +103,17 @@ endf
 " }}}
 " ALE errors {{{
 fu! AleErrors(bufnr, mode, is_active_window) abort
-    let l:is_checking = ale#engine#IsCheckingBuffer(bufnr(''))
+    let l:is_checking = ale#engine#IsCheckingBuffer(a:bufnr)
     let l:counts = ale#statusline#Count(a:bufnr)
     let l:errors = l:counts.error + l:counts.style_error
     let l:msg = ''
     if l:is_checking
-        let l:msg = '%#StatusBarText# ' . ' …'
+        let l:msg .= '%#StatusBarText# ' . ' …'
     else
         if l:errors
-            let l:msg = '%#StatusBarError# ' . printf('%2d', l:errors)
+            let l:msg .= '%#StatusBarError# ' . printf('%2d', l:errors)
         else
-            let l:msg = '%#StatusBarText# ' . ' 0'  " ' —'
+            let l:msg .= '%#StatusBarText# ' . ' 0'  " ' —'
         endi
     endi
     return g:sep . l:msg . '%#StatusBarText#'
@@ -325,25 +325,18 @@ let g:status_bar = [
             \ 'AleWarnings',
             \ ]
 
-fu! StatusBar(winid)
+fu! StatusBar(winnr, bufnr)
     let l:s = ''
     "let end = ' %*'
-    let l:bufnr = -1
     let l:title_hi = '*'
-    let l:is_active_window = g:winid == a:winid
-    for l:bufinfo in getbufinfo()
-        if index(l:bufinfo.windows, str2nr(a:winid)) != -1
-            let l:bufnr = l:bufinfo.bufnr
-            break
-        endif
-    endfor
+    let l:is_active_window = winnr() == a:winnr
     if l:is_active_window
         let l:m = mode()
     else
         let l:m = 'n'
     endi
     for l:fn in g:status_bar
-        let s .= call(l:fn, [l:bufnr, l:m, l:is_active_window])
+        let s .= call(l:fn, [a:bufnr, l:m, l:is_active_window])
     endfo
     let s .= ' '
     return l:s
@@ -356,26 +349,21 @@ fu! Clamp(smin, smax, dmin, dmax, value)
     return a:dmin + (a:dmax - a:dmin) * k
 endf
 
-let g:winid = win_getid()
-fu! SLEnter()
-    let g:winid = win_getid()
-endf
-
-let g:active_winnr = winnr()
-
 set lazyredraw
 set noshowmode
 set laststatus=2
 
 fu InitStatusBar()
-    if &filetype ==? 'tagbar'
-        return
-    endif
-    let &l:statusline='%!StatusBar('.win_getid().')'
+    for l:wininfo in getwininfo()
+        let l:winnr = l:wininfo.winnr
+        if getwinvar(l:winnr, '&filetype') ==? 'tagbar'
+            return
+        endif
+        call setwinvar(l:winnr, '&statusline', '%!StatusBar('.l:winnr.', '.l:wininfo.bufnr.')')
+    endfor
 endf
 aug StatusLine
     au VimEnter,WinNew,BufEnter * call InitStatusBar()
-    au VimEnter,WinEnter,BufEnter * call SLEnter()
     au FileType qf call InitStatusBar()
     au FileType tagbar call InitStatusBar()
 aug END
