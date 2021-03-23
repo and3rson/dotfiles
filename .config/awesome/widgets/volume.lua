@@ -98,7 +98,9 @@ return function(s)
             icon_color = beautiful.fg_volume_muted
             text_color = beautiful.fg_volume_muted
         end
-        icon.markup = '<span size="2000"> </span><span color="' .. icon_color .. '" size="'..math.floor((s.panel.height-6)*1000/2)..'">' .. icon_str .. '</span>'
+        if s ~= 0 then
+            icon.markup = '<span size="2000"> </span><span color="' .. icon_color .. '" size="'..math.floor((s.panel.height-6)*1000/2)..'">' .. icon_str .. '</span>'
+        end
         volume_widget.value = value
         volume_value.markup = '<span color="' .. text_color .. '">' .. value .. '%</span>'
         volume_widget.color = text_color

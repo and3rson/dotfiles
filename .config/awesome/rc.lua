@@ -144,6 +144,7 @@ awful.screen.connect_for_each_screen(function(s)
     end
 
     if s.index == 1 then
+        volume = require('widgets.volume')(0) -- !!!
         -- tray = wibox.widget.systray()
         -- tray.visible = false
 
@@ -175,64 +176,65 @@ awful.screen.connect_for_each_screen(function(s)
 
         -- Volume.
     elseif s.index == 2 then
-        tray = wibox.widget.systray()
-        tray.visible = true
+        if false then -- disabled
+            tray = wibox.widget.systray()
+            tray.visible = true
 
-        local height = 24
-        s.panel = awful.wibar({
-            position="top",
-            screen=s,
-            ontop=true,
-            bg='#000000C0',
-            height=height,
-            stretch=true
-        })
-        volume = require('widgets.volume')(s)
-        local config
-        config = {
-            id='margin',
-            widget=wibox.container.margin,
-            top=({vinga=6, factory=0})[hostname],
-            {
-                layout=wibox.layout.ratio.horizontal,
-                id='ratio',
+            local height = 24
+            s.panel = awful.wibar({
+                position="top",
+                screen=s,
+                ontop=true,
+                bg='#000000C0',
+                height=height,
+                stretch=true
+            })
+            local config
+            config = {
+                id='margin',
+                widget=wibox.container.margin,
+                top=({vinga=6, factory=0})[hostname],
                 {
-                    layout=wibox.layout.fixed.horizontal,
-                    -- s.mytaglist,
-                    -- require('widgets.spacer')(),
-                    require('widgets.spotify')(),
-                    -- require('widgets.cpuwidget')(s),
-                    -- require('widgets.spacer')(),
-                    -- require('widgets.memwidget')(s),
-                    -- require('widgets.gpmdp'),
-                },
-                -- nil,
-                {
-                    layout=wibox.layout.align.horizontal,
-                    nil,
-                    nil,
+                    layout=wibox.layout.ratio.horizontal,
+                    id='ratio',
                     {
                         layout=wibox.layout.fixed.horizontal,
-                        tray,
-                        require('widgets.spacer')(),
-                        require('widgets.ping')(s),
-                        require('widgets.spacer')(),
-                        -- require('widgets.df')(s),
+                        -- s.mytaglist,
                         -- require('widgets.spacer')(),
-                        -- volume,
+                        require('widgets.spotify')(),
+                        -- require('widgets.cpuwidget')(s),
                         -- require('widgets.spacer')(),
-                        -- require('widgets.term')(),
-                        -- require('widgets.spacer')(),
-                        require('widgets.date')(),
-                        require('widgets.spacer')(),
-                        require('widgets.battery')(),
+                        -- require('widgets.memwidget')(s),
+                        -- require('widgets.gpmdp'),
+                    },
+                    -- nil,
+                    {
+                        layout=wibox.layout.align.horizontal,
+                        nil,
+                        nil,
+                        {
+                            layout=wibox.layout.fixed.horizontal,
+                            tray,
+                            require('widgets.spacer')(),
+                            require('widgets.ping')(s),
+                            require('widgets.spacer')(),
+                            -- require('widgets.df')(s),
+                            -- require('widgets.spacer')(),
+                            -- volume,
+                            -- require('widgets.spacer')(),
+                            -- require('widgets.term')(),
+                            -- require('widgets.spacer')(),
+                            require('widgets.date')(),
+                            require('widgets.spacer')(),
+                            require('widgets.battery')(),
+                        }
                     }
                 }
             }
-        }
-        s.panel:setup(config)
-        s.panel.margin.ratio:ajust_ratio(2, 0.35, 0.65, 0)
-        s.panel.margin.ratio.inner_fill_strategy = 'justify'
+            s.panel:setup(config)
+            s.panel.margin.ratio:ajust_ratio(2, 0.35, 0.65, 0)
+            s.panel.margin.ratio.inner_fill_strategy = 'justify'
+        end
         awful.tag.add('X', {
             selected=true,
             screen=s,

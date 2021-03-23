@@ -2,12 +2,19 @@
 scriptencoding utf-8
 " Highlights {{{
 hi! StatusBarInsert ctermbg=233 ctermfg=197
+hi! StatusBarInsertInv ctermfg=233 ctermbg=197
 hi! StatusBarNormal ctermbg=233 ctermfg=81
+hi! StatusBarNormalInv ctermfg=233 ctermbg=81
 hi! StatusBarCommand ctermbg=233 ctermfg=32
+hi! StatusBarCommandInv ctermfg=233 ctermbg=32
 hi! StatusBarVisual ctermbg=233 ctermfg=118
+hi! StatusBarVisualInv ctermfg=233 ctermbg=118
 hi! StatusBarReplace ctermbg=233 ctermfg=222
+hi! StatusBarReplaceInv ctermfg=233 ctermbg=222
 hi! StatusBarTerminal ctermbg=233 ctermfg=57
-hi! StatusBarText ctermbg=233 ctermfg=248
+hi! StatusBarTerminalInv ctermfg=233 ctermbg=57
+hi! StatusBarText ctermbg=233 ctermfg=none
+hi! StatusBarTextInv ctermfg=233 ctermbg=238
 " Error parts
 hi! StatusBarWarning ctermfg=3 ctermbg=233 cterm=bold
 hi! StatusBarError ctermfg=1 ctermbg=233 cterm=bold
@@ -140,7 +147,8 @@ endf
 " }}}
 " File type {{{
 fu! FileType(bufnr, mode, is_active_window)
-    return getbufvar(a:bufnr, '&filetype')
+    let l:filetype = getbufvar(a:bufnr, '&filetype')
+    return '%#StatusBarText#' . FileIcon(l:filetype) . ' ' . getbufvar(a:bufnr, '&filetype')
     "let ft = &filetype
     "return has_key(g:abbr, ft) ? g:abbr[ft] : ft
 endf
@@ -244,7 +252,7 @@ endf
 " File position {{{
 fu! FilePos(bufnr, mode, is_active_window)
     "return g:sep . '%03l:%03c / %03L'
-    return g:sep . '%03l/%03L'
+    return '%#StatusBarText#' . g:sep . '%03l/%03L'
 endf
 " }}}
 " Buffer number {{{
@@ -269,8 +277,10 @@ let g:statusbar_highlights = {
 fu! FileAndMode(bufnr, m, is_active_window)
     let s = ''
     if a:is_active_window
+        let icon_hi = '%#' . g:statusbar_highlights[a:m] . 'Inv#'
         let title_hi = '%#' . g:statusbar_highlights[a:m] . '#'
     else
+        let icon_hi = '%#StatusBarTextInv#'
         let title_hi = '%#StatusBarInactive#'
     endif
     let l:filetype = getbufvar(a:bufnr, '&filetype')
@@ -287,8 +297,8 @@ fu! FileAndMode(bufnr, m, is_active_window)
         let l:flags .= '[-M]'
     endi
 
-    let s .= title_hi . ' ' . ((a:m == 'n' || a:m == 'c') ? l:file_icon : g:mode_map[a:m]) . ' '
-    let s .= title_hi . '%<%f:%l:%c' . l:flags . ' '
+    let s .= icon_hi . ' ' . ((a:m ==# 'n' || a:m ==# 'c') ? l:file_icon : g:mode_map[a:m]) . ' '
+    let s .= title_hi . ' %<%f:%l:%c' . l:flags . ' '
     return s
 endf
 " }}}
@@ -336,7 +346,7 @@ fu! StatusBar(winnr, bufnr)
         let l:m = 'n'
     endi
     for l:fn in g:status_bar
-        let s .= call(l:fn, [a:bufnr, l:m, l:is_active_window])
+        let s .= call(l:fn, [a:bufnr, l:m, l:is_active_window && g:has_focus])
     endfo
     let s .= ' '
     return l:s
@@ -362,8 +372,11 @@ fu InitStatusBar()
         call setwinvar(l:winnr, '&statusline', '%!StatusBar('.l:winnr.', '.l:wininfo.bufnr.')')
     endfor
 endf
+let g:has_focus = 1
 aug StatusLine
     au VimEnter,WinNew,BufEnter * call InitStatusBar()
     au FileType qf call InitStatusBar()
     au FileType tagbar call InitStatusBar()
+    au FocusGained * :let g:has_focus=1
+    au FocusLost * :let g:has_focus=0
 aug END

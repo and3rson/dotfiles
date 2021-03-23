@@ -25,12 +25,12 @@ let g:sublimemonokai_term_italic = 1
 
 " Plug {{{
 call plug#begin('~/.vim/plugged')
-    Plug 'tomasr/molokai'
+    " Plug 'tomasr/molokai'
     "Plug 'dikiaap/minimalist'
     "Plug 'ErichDonGubler/vim-sublime-monokai'
 call plug#end()
 
-colorscheme molokai
+" colorscheme molokai
 "colorscheme minimalist
 "colorscheme sublimemonokai
 filetype on
@@ -39,26 +39,32 @@ filetype plugin indent on
 syntax enable
 
 call plug#begin('~/.vim/plugged')
-    "Plug 'dikiaap/minimalist'
+    " General
+    " Plug 'dikiaap/minimalist'
+    Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
+    Plug 'tomasr/molokai'
     Plug 'VundleVim/Vundle.vim'
     Plug 'scrooloose/nerdcommenter'
-    Plug 'Yggdroot/indentLine'
+
+    " Indentation
+    " Plug 'Yggdroot/indentLine'
     "Plug 'nathanaelkane/vim-indent-guides'
+    " Plug 'glepnir/indent-guides.nvim'
+    " Plug 'phaazon/indent-guides.nvim', {'branch': 'feature/indent-guide-custom-char'}
+    Plug 'lukas-reineke/indent-blankline.nvim', {'branch': 'lua'}
     Plug 'w0rp/ale'
 
     " Slow returns
     Plug 'Vimjas/vim-python-pep8-indent'
     Plug 'airblade/vim-gitgutter'
     Plug 'tpope/vim-fugitive'
-    Plug 'ervandew/supertab'
+    " Plug 'ervandew/supertab'
 
     "Plugin 'ap/vim-css-color'
     Plug 'chrisbra/Colorizer'
     Plug 'osyo-manga/vim-over'
     "Plugin 'haya14busa/incsearch.vim'
     "Plugin 'haya14busa/incsearch-fuzzy.vim'
-
-    Plug 'tmux-plugins/vim-tmux'
 
     Plug 'junegunn/fzf'
     Plug 'junegunn/fzf.vim'
@@ -80,25 +86,23 @@ call plug#begin('~/.vim/plugged')
     "Plug 'ehamberg/vim-cute-python'
 
     " Syntax files
+    Plug 'sheerun/vim-polyglot'
+    Plug 'tmux-plugins/vim-tmux'
     Plug 'pangloss/vim-javascript'
     " Plug 'mxw/vim-jsx'
-    Plug 'chemzqm/vim-jsx-improve'
+    " Plug 'chemzqm/vim-jsx-improve'
     Plug 'chr4/nginx.vim'
     Plug 'martinda/Jenkinsfile-vim-syntax'
-
+    Plug 'calviken/vim-gdscript3'
+    Plug 'leafgarland/typescript-vim'
+    Plug 'cespare/vim-toml'
+    Plug 'hashivim/vim-terraform'
+    Plug 'tikhomirov/vim-glsl'
     " Faster YAML syntax
     Plug 'stephpy/vim-yaml'
 
     "Plugin 'kien/rainbow_parentheses.vim'
     Plug 'luochen1990/rainbow'
-
-    " Godot GDScript
-    Plug 'calviken/vim-gdscript3'
-
-    " Python better code folding
-
-    " TypeScript
-    Plug 'leafgarland/typescript-vim'
 
     " Hex mode
     Plug 'fidian/hexmode'
@@ -120,17 +124,8 @@ call plug#begin('~/.vim/plugged')
     " Local vim settings
     Plug 'embear/vim-localvimrc'
 
-    " TOML
-    Plug 'cespare/vim-toml'
-
-    " Terraform
-    Plug 'hashivim/vim-terraform'
-
     " Buffer tabline
     " Plug 'ap/vim-buftabline'
-
-    " GLSL highlight
-    Plug 'tikhomirov/vim-glsl'
 
     " CSV
     " Plug 'chrisbra/csv.vim'
@@ -146,7 +141,15 @@ call plug#begin('~/.vim/plugged')
     " Plug 'mengelbrecht/lightline-bufferline'
 
     " Nerd font
-    Plug 'lambdalisue/nerdfont.vim'
+    " Plug 'lambdalisue/nerdfont.vim'
+
+    " Scrolling stuff
+    Plug 'dstein64/nvim-scrollview', {'branch': 'main'}
+    " Plug 'wfxr/minimap.vim'
+
+    " Icons
+    " Plug 'kyazdani42/nvim-web-devicons'
+    " Plug 'ryanoasis/vim-devicons'
 
     " Custom plugins
     Plug '~/.vim/plugins/icons'
@@ -161,11 +164,16 @@ call plug#begin('~/.vim/plugged')
     Plug '~/.vim/plugins/notes'
     Plug '~/.vim/plugins/hi_godot'
     "Plug '~/.vim/plugins/pyxl'
+    Plug '~/.vim/plugins/prettyconceal'
 
 call plug#end()                    " required
 " }}}
 
 " Internals (hotkeys, highlights, vim configs) {{{
+
+" colorscheme spaceduck
+" hi EndOfBuffer ctermbg=none
+colorscheme molokai
 
 set nowrap
 
@@ -341,7 +349,7 @@ set shada=!,'100,<50,s10,h,:500,@500,/500
 
 " Color column
 "set colorcolumn=80,100,120
-set colorcolumn=120,160
+set colorcolumn=120
 
 " Word jump config
 "set iskeyword=@,48-57
@@ -361,7 +369,8 @@ hi CursorColumn ctermbg=94 ctermfg=255 " Used by Coc
 
 "hi CursorLineNr ctermfg=119 ctermbg=235 cterm=bold
 hi CursorLineNr ctermfg=81 ctermbg=234 cterm=bold
-hi LineNr ctermbg=234 ctermfg=242
+hi LineNr ctermbg=233 ctermfg=242
+hi SignColumn ctermbg=233
 "hi LineNr ctermbg=none ctermfg=239
 
 " Molokai theme patches
@@ -378,7 +387,7 @@ hi MatchParen ctermfg=197 ctermbg=none cterm=bold,underline
 
 hi Special cterm=italic
 
-hi ColorColumn ctermbg=235
+hi ColorColumn ctermbg=233
 
 " Highlight selected word
 "hi Selected ctermbg=94 ctermfg=none
@@ -398,7 +407,8 @@ hi ColorColumn ctermbg=235
 
 " Split
 "hi VertSplit ctermbg=none
-hi VertSplit ctermbg=234 ctermfg=242
+" hi VertSplit ctermbg=233 ctermfg=242
+hi VertSplit ctermbg=none ctermfg=242
 " }}}
 
 " NERD Commenter {{{
@@ -464,6 +474,7 @@ let g:indent_guides_enable_on_vim_startup=1
 let g:indent_guides_guide_size=1
 
 let g:indentLine_char = '▏'
+" let g:indentLine_char = ''
 let g:indentLine_first_char = '▏'
 "let g:indentLine_first_char = '>'
 " let g:indentLine_first_char = 'x'
@@ -477,7 +488,7 @@ let g:indentLine_conceallevel = 1
 let g:indentLine_color_term = 239
 " let g:indentLine_bgcolor_term = 202
 let g:indentLine_showFirstIndentLevel = 0
-let g:indentLine_fileTypeExclude = ['text', 'json', 'help', 'startify']
+let g:indentLine_fileTypeExclude = ['text', 'help', 'startify']
 let g:indentLine_faster = 1 " TODO: Experimental
 " }}}
 " Conceal {{{
@@ -601,12 +612,12 @@ noremap <silent> <A-e> :lopen<CR>
 "hi ALEWarning ctermbg=190 ctermfg=233 cterm=bold
 "hi ALEWarning cterm=underline
 hi ALEWarning cterm=reverse ctermfg=yellow
-hi ALEWarningSign ctermbg=234 ctermfg=190
+hi ALEWarningSign ctermbg=233 ctermfg=190
 "hi ALEError ctermbg=197 ctermfg=255
 "hi ALEError ctermbg=197 ctermfg=255 cterm=bold,underline
 "hi ALEError cterm=underline
 hi ALEError cterm=reverse ctermfg=red
-hi ALEErrorSign ctermbg=234 ctermfg=197 cterm=bold
+hi ALEErrorSign ctermbg=233 ctermfg=197 cterm=bold
 
 hi ALEVirtualTextError ctermfg=197 cterm=bold
 hi ALEVirtualTextWarning ctermfg=yellow cterm=bold
@@ -741,7 +752,7 @@ hi FoldColumn ctermfg=245 ctermbg=233
 "set foldcolumn=2
 "hi Folded ctermfg=241 ctermbg=16
 "hi Folded ctermfg=67 ctermbg=16
-hi Folded ctermfg=67 ctermbg=0 cterm=italic
+hi Folded ctermfg=67 ctermbg=none cterm=italic
 
 aug CustomFolds
     "au FileType javascript setlocal foldmethod=marker foldmarker={,}
@@ -791,24 +802,24 @@ nnoremap <silent> <M-l>      :Lines<CR>
 
 "let g:fzf_prefer_tmux = 1
 
-" fu! s:fzf_statusline()
-"   " Override statusline as you like
-"   "highlight fzf1 ctermfg=161 ctermbg=251
-"   hi link fzf1 StatusBarVisualInv
-"   "highlight fzf2 ctermfg=23 ctermbg=251
-"   hi link fzf2 StatusBarVisualInv
-"   "highlight fzf3 ctermfg=237 ctermbg=251
-"   hi link fzf3 StatusBarVisualInv
-"   setlocal statusline=%#fzf1#\ \ %*\ %#fzf2#fzf%#fzf3#
-" endf
+fu! s:fzf_statusline()
+  " Override statusline as you like
+  "highlight fzf1 ctermfg=161 ctermbg=251
+  hi link fzf1 StatusBarVisual
+  "highlight fzf2 ctermfg=23 ctermbg=251
+  hi link fzf2 StatusBarVisual
+  "highlight fzf3 ctermfg=237 ctermbg=251
+  hi link fzf3 StatusBarVisual
+  setlocal statusline=%#fzf1#\ \ %*\ %#fzf2#fzf%#fzf3#
+endf
 
-" aug FZFCustomStatusLine
-"     au! User FzfStatusLine call <SID>fzf_statusline()
+aug FZFCustomStatusLine
+    au! User FzfStatusLine call <SID>fzf_statusline()
 
-"     au! FileType fzf
-"     au FileType fzf set conceallevel=0
-"       \| au BufLeave <buffer> set conceallevel=2
-" aug END
+    au! FileType fzf
+    au FileType fzf set conceallevel=0
+      \| au BufLeave <buffer> set conceallevel=2
+aug END
 
 "com! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
 com! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, {'options': ['--reverse', '--preview', 'highlight -O xterm256 --style molokai --force -n {}']}, <bang>0)
@@ -854,8 +865,8 @@ let g:tagbar_autoshowtag = 1
 "let g:tagbar_iconchars = ['-', '|']
 "let g:tagbar_autopreview = 1
 fu! TagbarStatusFn(current, sort, fname, flags, ...) abort
-    let highlight_colour = a:current ? '%#StatusBarNormal#' : '%#StatusBarText#'
-    let text_colour = a:current ? '%#StatusBarText#' : '%#StatusBarText#'
+    let highlight_colour = a:current ? '%#StatusBarNormalInv#' : '%#StatusBarText#'
+    let text_colour = a:current ? '%#StatusBarNormal#' : '%#StatusBarText#'
     let flagstr = join(a:flags, '')
     if flagstr !=# ''
         let flagstr = '[' . flagstr . '] '
@@ -1022,6 +1033,10 @@ let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&contextfunc']
 
 hi TabLine ctermbg=236 ctermfg=red
 
+aug PythonCompletion
+    au FileType python :set omnifunc=
+aug end
+
 " More obvious active windows. Neovim rocks!
 "hi! NormalNC ctermfg=240 ctermbg=none cterm=none
 "hi! LineNrNC ctermbg=none
@@ -1046,8 +1061,8 @@ aug BgHighlight
 aug END
 
 " Conceal tweaks for jedi signature display
-hi jediFat ctermfg=197 ctermbg=234 cterm=bold,underline
-"hi jediFatSymbol ctermfg=234 ctermbg=234
+hi jediFat ctermfg=197 ctermbg=233 cterm=bold,underline
+"hi jediFatSymbol ctermfg=233 ctermbg=233
 "au BufRead *.py :syn match jediFatSymbol "\*_\*" contained  " conceal
 
 " }}}
@@ -1128,7 +1143,7 @@ nnoremap <silent> <M-d> :call PDS()<CR>
 " }}}
 " Local VimRC {{{
 "let g:localvimrc_sandbox = 0
-let g:localvimrc_ask = 0
+let g:localvimrc_ask = 1
 " }}}
 " Java {{{
 aug JavaCustom
@@ -1249,12 +1264,51 @@ aug ALERefreshStatusline
 aug END
 " hi LightlineLeft_inactive_0 ctermfg=245
 " }}}
-" CPP (Coc) {{{
+" Coc {{{
 " https://github.com/neoclide/coc.nvim#example-vim-configuration
 aug CPPCocGoto
     au FileType cpp,python nmap <silent> <C-g> <Plug>(coc-definition)
 aug end
 aug CPPCocHighlight
     autocmd CursorHold * silent call CocActionAsync('highlight')
+aug end
+
+" https://github.com/neoclide/coc.nvim/wiki/Completion-with-sources
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <Tab>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<Tab>" :
+      \ coc#refresh()
+"
+" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>""
+
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+"
+" }}}
+" ScrollView {{{
+let g:scrollview_column = 1
+" let g:scrollview_mode = 'virtual'
+" }}}
+" Minimap {{{
+let g:minimap_width = 10
+let g:minimap_auto_start = 1
+let g:minimap_auto_start_win_enter = 1
+" }}}
+" IndentLine (NVIM) {{{
+            " \ indent_soft_pattern = '\\s',
+" lua require('indent_guides').setup({
+"             \ indent_char = '▏';
+"             \ indent_pretty_mode = true;
+"             \ })
+let g:indent_blankline_buftype_exclude = ['help', 'startify'] " Does not seem to work
+let g:indent_blankline_show_first_indent_level = v:false
+aug BlanklineDisable
+    au FileType startify :IndentBlanklineDisable
 aug end
 " }}}
