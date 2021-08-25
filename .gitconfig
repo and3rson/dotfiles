@@ -19,13 +19,13 @@
 
 [delta]
     syntax-theme = Monokai Extended
-    minus-style = syntax "#550000"
-    minus-non-emph-style = syntax
-    minus-emph-style = syntax "#550000" bold
-    plus-style = syntax "#003300"
-    plus-non-emph-style = syntax
-    plus-emph-style = syntax "#003300" bold
-    side-by-side = true
+    ; minus-style = syntax "#550000"
+    ; minus-non-emph-style = syntax
+    ; minus-emph-style = syntax "#550000" bold
+    ; plus-style = syntax "#003300"
+    ; plus-non-emph-style = syntax
+    ; plus-emph-style = syntax "#003300" bold
+    side-by-side = false
     file-style = bold cyan
     file-decoration-style = cyan ul ol
     line-numbers-zero-style = 255
@@ -40,7 +40,7 @@
     ; commit-decoration-style = red
     line-numbers-left-format = "{nm:>4}│"
     line-numbers-right-format = "{np:>4}│"
-    ; line-numbers = true
+    line-numbers = true
 
 [color]
     ui = true

@@ -8,6 +8,8 @@ echo "Display: $DISPLAY"
 # xrandr --addmode HDMI1 360x720_50.03
 # xrandr --output HDMI1 --mode 1080x2160 --rotate right --scale 0.35x0.35 --pos 1920x1078
 
+# xrandr --output HDMI1 --mode 1080x2160 --rotate right --scale 0.35x0.35 --pos 1920x1080
+
 (
     if [[ -z "$1" ]]
     then
@@ -15,10 +17,12 @@ echo "Display: $DISPLAY"
 
         # https://github.com/tryone144/compton
         #compton --config ~/.compton.conf -b -f --backend glx --blur-background --blur-kern=3x3gaussian --inactive-dim-fixed
+        playerctld daemon &
         picom --config ~/.compton.conf -b -f
         xbanish &
         xsetroot -cursor_name X_cursor
-        xcape -e 'Overlay1_Enable=Escape' -t 90
+        xcape -e 'ISO_Level3_Shift=Escape' -t 90
+        # xcape -e 'Overlay1_Enable=Escape' -t 90
         ~/.scripts/init_kb.sh
         ~/.scripts/init_mouse.sh
         # touchegg &
@@ -37,7 +41,7 @@ echo "Display: $DISPLAY"
         dunst &
 
         # Apps
-        termite --class HomeTerm -e ~/.scripts/stmux.sh &
+        alacritty --class HomeTerm -e ~/.scripts/stmux.sh &
         firefox-developer-edition 2>&1 > /dev/null &
         telegram-desktop &
         slack &
@@ -58,7 +62,8 @@ echo "Display: $DISPLAY"
         if [[ "`cat /etc/hostname`" == "vivo" ]]
         then
             # GDK_DPI_SCALE=3
-            termite --class PadTerm -c ~/.config/termite/config.padterm -e 'htop -d 5' &
+            # oldterm --class PadTerm -c ~/.config/termite/config.padterm -e 'htop -d 5' &
+            alacritty --class PadTerm,PadTerm -e bash -c 'TERM=rxvt-256color cava'
         fi
 
     #     awesome > ~/.awesome.log

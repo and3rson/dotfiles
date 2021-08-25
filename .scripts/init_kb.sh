@@ -9,7 +9,7 @@ export HOME=/home/anderson
 
 ##setxkbmap -layout 'us,ua' -option grp:alt_shift_toggle
 # echo 1 > /tmp/foo
-setxkbmap -layout 'us,ua' -option grp:alt_space_toggle
+setxkbmap -layout 'us,ua' -option grp:alt_space_toggle -option lv3:caps_switch
 # echo 2 > /tmp/foo
 xmodmap ~/.Xmodmap
 # echo 3 > /tmp/foo

@@ -1,0 +1,204 @@
+xwayland enable
+
+# Definitions
+    set $mod Mod4
+    set $term alacritty
+    # set $menu dmenu_path | dmenu | xargs swaymsg exec --
+    set $menu "rofi -show run"
+
+# Output
+    output * bg /home/anderson/.wallpapers/lights2.jpg fill
+    output eDP-1 position 0,0
+    output HDMI-A-1 position 1920,0 transform 90 scale 3
+
+# Input
+    input "1:1:AT_Translated_Set_2_keyboard" {
+        repeat_delay 167
+        repeat_rate 25
+        xkb_layout us,ua
+        xkb_options grp:alt_space_toggle,lv3:caps_switch
+    }
+    input "10182:500:GDX1515:00_27C6:01F4_Touchpad" {
+        tap enabled
+        scroll_factor 0.25
+        tap_button_map lrm
+        dwt disabled
+        click_method clickfinger
+    }
+
+# Basic keys
+    bindsym $mod+Return exec $term
+    # bindsym --release Escape exec dunstctl close
+    bindsym Ctrl+Escape exec dunstctl close
+
+    bindsym Alt+f4 kill
+
+    bindsym $mod+r exec $menu
+    bindsym $mod+b exec blueman-manager
+    bindsym $mod+n exec networkmanager_dmenu
+    bindsym $mod+c exec clipman pick --tool=rofi
+
+    # Drag floating windows by holding down $mod and left mouse button.
+    # Resize them with right mouse button + $mod.
+    # Despite the name, also works for non-floating windows.
+    # Change normal to inverse to use left mouse button for resizing and right
+    # mouse button for dragging.
+    floating_modifier $mod normal
+
+    # Reload the configuration file
+    bindsym $mod+Control+r reload
+
+    # Exit sway (logs you out of your Wayland session)
+    # bindsym $mod+Ctrl+q exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+    bindsym $mod+Ctrl+q exec "CMD=`echo -e 'Yes\nNo' | rofi -dmenu -p Quit`; if [[ $CMD == Yes ]]; then swaymsg exit; fi"
+
+    # Lock screen
+    # bindsym Ctrl+Alt+l exec swaylock -i ~/.wallpapers/lights1920.png
+    bindsym Ctrl+Alt+l exec swaylock -i ~/.wallpapers/332450.jpg
+
+    # Screenshot
+    bindsym Print exec grim -o eDP-1 -t png - > /tmp/sshot.png && (wl-copy < /tmp/sshot.png && notify-send -i /tmp/sshot.png "Screen copied to clipboard") || notify-send "Terminated"
+    bindsym Alt+Print exec grim -g "$(slurp)" -t png - > /tmp/sshot.png && (wl-copy < /tmp/sshot.png && notify-send -i /tmp/sshot.png "Selected area copied to clipboard") || notify-send "Terminated"
+
+# Client keys
+    # Move your focus around
+    bindsym $mod+Left focus left
+    bindsym $mod+Down focus down
+    bindsym $mod+Up focus up
+    bindsym $mod+Right focus right
+
+    # Move the focused window with the same, but add Shift
+    bindsym $mod+Shift+Left move left
+    bindsym $mod+Shift+Down move down
+    bindsym $mod+Shift+Up move up
+    bindsym $mod+Shift+Right move right
+
+    # Does not work
+    # bindsym $mod+1 focus number 1
+    # bindsym $mod+2 focus number 2
+    # bindsym $mod+3 focus number 3
+
+    focus_follows_mouse no
+
+# Workspaces
+    # Switch to workspace
+    bindsym $mod+q workspace q
+    bindsym $mod+w workspace w
+    bindsym $mod+i workspace i
+    bindsym $mod+m workspace m
+    bindsym $mod+a workspace a
+    # Move focused container to workspace
+    bindsym $mod+Shift+q move container to workspace q
+    bindsym $mod+Shift+w move container to workspace w
+    bindsym $mod+Shift+i move container to workspace i
+    bindsym $mod+Shift+m move container to workspace m
+    bindsym $mod+Shift+a move container to workspace a
+    # Note: workspaces can have any name you want, not just numbers.
+    # We just use 1-10 as the default.
+
+    workspace x output HDMI-A-1
+    workspace q output eDP-1
+    workspace_layout tabbed
+
+# Layout stuff
+    # Make the current focus fullscreen
+    bindsym $mod+f fullscreen
+
+    # Toggle the current focus between tiling and floating mode
+    bindsym $mod+x floating toggle
+
+    # Swap focus between the tiling area and the floating area
+    # bindsym $mod+space focus mode_toggle
+
+    # Move focus to the parent container
+    # bindsym $mod+a focus parent
+
+
+# Media keys
+    bindsym KP_Begin exec playerctl play-pause
+    bindsym KP_Left exec playerctl previous
+    bindsym KP_Right exec playerctl next
+    bindsym KP_Up exec notify-send \
+        --hint=string:x-dunst-stack-tag:volume -t 300 -a Volume \
+        -i /usr/share/icons/hicolor/48x48/apps/hwmixvolume.png \
+        "Volume: `amixer -D pulse sset Master 2%+ | grep Left: | awk -F'[][]' '{ print $2 }'`" \
+        `pacmd dump | grep default-sink | awk -F ' ' '{print $2}'`
+    bindsym KP_Down exec notify-send \
+        --hint=string:x-dunst-stack-tag:volume -t 300 -a Volume \
+        -i /usr/share/icons/hicolor/48x48/apps/hwmixvolume.png \
+        "Volume: `amixer -D pulse sset Master 2%- | grep Left: | awk -F'[][]' '{ print $2 }'`" \
+        `pacmd dump | grep default-sink | awk -F ' ' '{print $2}'`
+    bindsym XF86AudioRaiseVolume exec notify-send \
+        --hint=string:x-dunst-stack-tag:volume -t 300 -a Volume \
+        -i /usr/share/icons/hicolor/48x48/apps/hwmixvolume.png \
+        "Volume: `amixer -D pulse sset Master 2%+ | grep Left: | awk -F'[][]' '{ print $2 }'`" \
+        `pacmd dump | grep default-sink | awk -F ' ' '{print $2}'`
+    bindsym XF86AudioLowerVolume exec notify-send \
+        --hint=string:x-dunst-stack-tag:volume -t 300 -a Volume \
+        -i /usr/share/icons/hicolor/48x48/apps/hwmixvolume.png \
+        "Volume: `amixer -D pulse sset Master 2%- | grep Left: | awk -F'[][]' '{ print $2 }'`" \
+        `pacmd dump | grep default-sink | awk -F ' ' '{print $2}'`
+
+    bindsym XF86MonBrightnessUp exec notify-send \
+        --hint=string:x-dunst-stack-tag:brightness -t 300 -a Brightness \
+        -i /usr/share/icons/menta/48x48/devices/display.png \
+        "Brightness: `brightnessctl s 5%+ | egrep -o '[0-9]+%'`"
+    bindsym XF86MonBrightnessDown exec notify-send \
+        --hint=string:x-dunst-stack-tag:brightness -t 300 -a Brightness \
+        -i /usr/share/icons/menta/48x48/devices/display.png \
+        "Brightness: `brightnessctl s 5%- | egrep -o '[0-9]+%'`"
+
+# Status Bar:
+    # Read `man 5 sway-bar` for more information about this section.
+    font pango:RobotoMonoNerdFont 10
+    # bar {
+    #     position top
+    #     output eDP-1
+
+    #     # When the status_command prints a new line to stdout, swaybar updates.
+    #     # The default just shows the current date and time.
+    #     # status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
+    #     status_command while true; do echo -n `~/.tmux.d/status.sh ansi | ansifilter -M -F RobotoMonoNerdFont`; sleep 1; done
+    #     pango_markup true
+    #     workspace_buttons no
+
+    #     colors {
+    #         statusline #ffffff
+    #         background #000000
+    #         inactive_workspace #32323200 #32323200 #5c5c5c
+    #     }
+    # }
+
+
+# Styles
+# default_border pixel 0
+default_border none
+hide_edge_borders --i3 both
+
+client.focused #222222 #222222 #EEEEEE
+client.unfocused #000000 #000000 #777777
+# default_border pixel 1
+
+# App configs
+assign [app_id="hometerm"] workspace q
+exec alacritty --class hometerm -e ~/.scripts/stmux.sh
+assign [app_id="padterm"] workspace x
+exec alacritty --class padterm -e bash -c 'TERM=rxvt-256color cava'
+assign [app_id="firefoxdeveloperedition"] workspace w
+exec firefox-developer-edition
+assign [app_id="telegramdesktop"] workspace i
+exec telegram-desktop
+# assign [instance="spotify"] workspace m
+# assign [class="Spotify"] workspace m
+# assign [title=".*Spotify.*"] workspace m
+# assign [title=".*spotify.*"] workspace m
+for_window [class="Spotify"] move window to workspace m
+exec spotify
+
+# for_window [app_id="gcolor3"] floating enable
+
+exec flashfocus
+exec wl-paste -t text --watch clipman store
+
+# Built-in configs
+include /etc/sway/config.d/*

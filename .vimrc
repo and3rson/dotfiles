@@ -20,39 +20,28 @@ let g:rehash256 = 1
 
 let g:sublimemonokai_term_italic = 1
 
-"let g:python_host_prog='/usr/bin/python'
-" }}}
-
-" Plug {{{
-call plug#begin('~/.vim/plugged')
-    " Plug 'tomasr/molokai'
-    "Plug 'dikiaap/minimalist'
-    "Plug 'ErichDonGubler/vim-sublime-monokai'
-call plug#end()
-
-" colorscheme molokai
-"colorscheme minimalist
-"colorscheme sublimemonokai
 filetype on
 filetype plugin on
 filetype plugin indent on
 syntax enable
 
+"let g:python_host_prog='/usr/bin/python'
+" }}}
+
+" Third-party plugins {{{
+
 call plug#begin('~/.vim/plugged')
     " General
-    " Plug 'dikiaap/minimalist'
-    Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
+    " Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
     Plug 'tomasr/molokai'
-    Plug 'VundleVim/Vundle.vim'
     Plug 'scrooloose/nerdcommenter'
 
     " Indentation
-    " Plug 'Yggdroot/indentLine'
-    "Plug 'nathanaelkane/vim-indent-guides'
-    " Plug 'glepnir/indent-guides.nvim'
-    " Plug 'phaazon/indent-guides.nvim', {'branch': 'feature/indent-guide-custom-char'}
-    Plug 'lukas-reineke/indent-blankline.nvim', {'branch': 'lua'}
-    Plug 'w0rp/ale'
+    " Plug 'lukas-reineke/indent-blankline.nvim', {'branch': 'lua'}
+    Plug 'Yggdroot/indentLine'
+
+    " Code quality
+    " Plug 'w0rp/ale'
 
     " Slow returns
     Plug 'Vimjas/vim-python-pep8-indent'
@@ -63,63 +52,43 @@ call plug#begin('~/.vim/plugged')
     "Plugin 'ap/vim-css-color'
     Plug 'chrisbra/Colorizer'
     Plug 'osyo-manga/vim-over'
-    "Plugin 'haya14busa/incsearch.vim'
-    "Plugin 'haya14busa/incsearch-fuzzy.vim'
 
+    " FZF
     Plug 'junegunn/fzf'
     Plug 'junegunn/fzf.vim'
 
-    " Ack (must be loaded AFTER fzf)
-    "Plug 'mileszs/ack.vim'
-
-    "Plugin 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-
-    "Plugin 'joeytwiddle/sexy_scroller.vim'
     Plug 'mhinz/vim-startify'
 
-    "Plugin 'wkentaro/conque.vim'
-    "Plug 'christoomey/vim-tmux-navigator'
-    "Plugin 'jpalardy/vim-slime'
-
     Plug 'majutsushi/tagbar'
-    "Plugin 'calebsmith/vim-lambdify'
-    "Plug 'ehamberg/vim-cute-python'
 
     " Syntax files
+    let g:polyglot_disabled = ['csv', 'go', 'html']
     Plug 'sheerun/vim-polyglot'
-    Plug 'tmux-plugins/vim-tmux'
-    Plug 'pangloss/vim-javascript'
+    " Plug 'tmux-plugins/vim-tmux'
+    " Plug 'pangloss/vim-javascript'
     " Plug 'mxw/vim-jsx'
     " Plug 'chemzqm/vim-jsx-improve'
-    Plug 'chr4/nginx.vim'
-    Plug 'martinda/Jenkinsfile-vim-syntax'
-    Plug 'calviken/vim-gdscript3'
-    Plug 'leafgarland/typescript-vim'
-    Plug 'cespare/vim-toml'
-    Plug 'hashivim/vim-terraform'
-    Plug 'tikhomirov/vim-glsl'
+    " Plug 'chr4/nginx.vim'
+    " Plug 'martinda/Jenkinsfile-vim-syntax'
+    " Plug 'calviken/vim-gdscript3'
+    " Plug 'leafgarland/typescript-vim'
+    " Plug 'cespare/vim-toml'
+    " Plug 'hashivim/vim-terraform'
+    " Plug 'tikhomirov/vim-glsl'
     " Faster YAML syntax
     Plug 'stephpy/vim-yaml'
 
-    "Plugin 'kien/rainbow_parentheses.vim'
-    Plug 'luochen1990/rainbow'
-
     " Hex mode
     Plug 'fidian/hexmode'
-    "Plugin 'mattn/vim-xxdcursor'
-
-    "Plugin 'chriskempson/base16-vim'
 
     " Python
-    "Plugin 'python-mode/python-mode'
-    " Plug 'davidhalter/jedi-vim'
     Plug 'heavenshell/vim-pydocstring'
 
     " Go
-    Plug 'fatih/vim-go'
-
+    " Plug 'fatih/vim-go'
+    " Plug 'cespare/vim-go-templates'
     " Motion
-    Plug 'easymotion/vim-easymotion'
+    " Plug 'easymotion/vim-easymotion'
 
     " Local vim settings
     Plug 'embear/vim-localvimrc'
@@ -127,33 +96,28 @@ call plug#begin('~/.vim/plugged')
     " Buffer tabline
     " Plug 'ap/vim-buftabline'
 
-    " CSV
-    " Plug 'chrisbra/csv.vim'
+    " Pretty stuff
+    Plug 'luochen1990/rainbow'
     Plug 'mechatroner/rainbow_csv'
 
     " PlatformIO stuff
     " https://gist.github.com/neta540/9e65261be52d6cd4d6c17399b78d34bb
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
     Plug 'neomake/neomake'
 
-    " Statusline
-    " Plug 'itchyny/lightline.vim'
-    " Plug 'mengelbrecht/lightline-bufferline'
-
-    " Nerd font
-    " Plug 'lambdalisue/nerdfont.vim'
+    " Code completion
+    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+    " Plug 'Shougo/echodoc.vim'
 
     " Scrolling stuff
     Plug 'dstein64/nvim-scrollview', {'branch': 'main'}
-    " Plug 'wfxr/minimap.vim'
 
-    " Icons
-    " Plug 'kyazdani42/nvim-web-devicons'
-    " Plug 'ryanoasis/vim-devicons'
+    " SQL completion
+    Plug 'vim-scripts/dbext.vim'
 
-    " Custom plugins
+" }}}
+" Local plugins {{{
+    " Plug '~/.vim/plugins/prettyconceal'
     Plug '~/.vim/plugins/icons'
-    Plug '~/.vim/plugins/utils'
     Plug '~/.vim/plugins/autocursor'
     Plug '~/.vim/plugins/hi_yaml'
     Plug '~/.vim/plugins/icons'
@@ -161,18 +125,17 @@ call plug#begin('~/.vim/plugged')
     Plug '~/.vim/plugins/statusline'
     Plug '~/.vim/plugins/tabline'
     Plug '~/.vim/plugins/pds'
-    Plug '~/.vim/plugins/notes'
     Plug '~/.vim/plugins/hi_godot'
-    "Plug '~/.vim/plugins/pyxl'
-    Plug '~/.vim/plugins/prettyconceal'
-
-call plug#end()                    " required
+    Plug '~/.vim/plugins/zipe'
+call plug#end()
 " }}}
 
 " Internals (hotkeys, highlights, vim configs) {{{
 
 " colorscheme spaceduck
 " hi EndOfBuffer ctermbg=none
+let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+
 colorscheme molokai
 
 set nowrap
@@ -252,7 +215,8 @@ inoremap <M-s> <C-o>:w<CR>
 "map c <Nop>
 
 " Delete buffer
-nnoremap <silent> <M-x>      :bd<CR>
+" nnoremap <silent> <M-x>      :bd<CR>
+nnoremap <silent> <M-x>      :Bdelete<CR>
 "nnoremap b  :buffers<CR>:b
 
 " Close window
@@ -299,6 +263,7 @@ set nocursorcolumn
 set fillchars+=stl:\ ,stlnc:\ ,fold:\-,msgsep:+,eob:\ "
 " Chars
 set list listchars=tab:▏ ,trail:·,extends:»,precedes:«,nbsp:×
+hi Whitespace ctermfg=236
 " ,space:·
 " 
 
@@ -383,11 +348,14 @@ hi Error ctermbg=197 ctermfg=255 cterm=bold,underline
 "hi Function cterm=underline
 hi Include cterm=bold ctermfg=154
 "hi MatchParen ctermfg=197 ctermbg=NONE cterm=inverse,bold,underline
-hi MatchParen ctermfg=197 ctermbg=none cterm=bold,underline
+" hi MatchParen ctermfg=197 ctermbg=none cterm=bold,underline
+hi MatchParen ctermfg=none ctermbg=240 cterm=none
 
 hi Special cterm=italic
 
 hi ColorColumn ctermbg=233
+
+hi Conceal ctermfg=240 ctermbg=none
 
 " Highlight selected word
 "hi Selected ctermbg=94 ctermfg=none
@@ -485,7 +453,7 @@ let g:indentLine_first_char = '▏'
 let g:indentLine_concealcursor = 0
 let g:indentLine_conceallevel = 1
 " let g:indentLine_setConceal = 0
-let g:indentLine_color_term = 239
+let g:indentLine_color_term = 236
 " let g:indentLine_bgcolor_term = 202
 let g:indentLine_showFirstIndentLevel = 0
 let g:indentLine_fileTypeExclude = ['text', 'help', 'startify']
@@ -553,128 +521,129 @@ aug END
 let g:piecrumbs_glue = '  '
 " }}}
 " ALE {{{
-" TODO: Do not rewrite existing linters config?
-"let g:ale_linters.javascript = ['eslint']
-"let g:ale_linters.python = ['pylint']
-let g:ale_linters = {
-            \'javascript': ['eslint'],
-            \'python': ['pylint'],
-            \'cpp': ['ccls'],
-            \'go': ['gofmt', 'golint', 'go vet'],
-            \'haskell': [],
-            \'vim': ['vint']
-            \}
-let g:ale_fixers = { 'cpp': [ 'clang-format' ] }
-" let g:ale_pattern_options = {'\.cpp$': {'ale_enabled': 0}}
-"
-"\'python': ['flake8', 'pylint']
-"\'python': ['flake8']
+" " TODO: Do not rewrite existing linters config?
+" "let g:ale_linters.javascript = ['eslint']
+" "let g:ale_linters.python = ['pylint']
+" let g:ale_linters = {
+"             \'javascript': ['eslint'],
+"             \'python': ['pylint'],
+"             \'go': [],
+"             \'cpp': [],
+"             \'haskell':
+"             \'vim': ['vint']
+"             \}
+" let g:ale_fixers = { 'cpp': [ 'clang-format' ], 'sql': ['pgformatter'] }
+" " \'go': ['gofmt', 'golint', 'go vet'],
+" " let g:ale_pattern_options = {'\.cpp$': {'ale_enabled': 0}}
+" "
+" "\'python': ['flake8', 'pylint']
+" "\'python': ['flake8']
 
-" nnoremap <silent> ; :lprev<CR>
-" nnoremap <silent> ' :lnext<CR>
-nnoremap <silent> ; :ALEPrevious<CR>
-nnoremap <silent> ' :ALENext<CR>
+" " nnoremap <silent> ; :lprev<CR>
+" " nnoremap <silent> ' :lnext<CR>
+" " nnoremap <silent> ; :ALEPrevious<CR>
+" " nnoremap <silent> ' :ALENext<CR>
 
-let g:ale_open_list = 0
-let g:ale_sign_error = ''
-let g:ale_sign_warning = ''
-"let g:ale_sign_error = 'EE'
-"let g:ale_sign_warning = 'EE'
-let g:ale_lint_delay = 500
-let g:ale_lint_on_enter = 0
-let g:ale_lint_on_filetype_changed = 0
-let g:ale_lint_on_save = 0
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_insert_leave = 0
-let g:ale_cursor_detail = 0
-let g:ale_writegood_use_global = 1
-let g:ale_echo_cursor = 1
+" let g:ale_open_list = 0
+" let g:ale_sign_error = ''
+" let g:ale_sign_warning = ''
+" "let g:ale_sign_error = 'EE'
+" "let g:ale_sign_warning = 'EE'
+" let g:ale_lint_delay = 500
+" let g:ale_lint_on_enter = 0
+" let g:ale_lint_on_filetype_changed = 0
+" let g:ale_lint_on_save = 0
+" let g:ale_lint_on_text_changed = 'never'
+" let g:ale_lint_on_insert_leave = 0
+" let g:ale_cursor_detail = 0
+" let g:ale_writegood_use_global = 1
+" let g:ale_echo_cursor = 1
 
-"let g:ale_virtualtext_cursor = 1
-"let g:ale_virtualtext_prefix = ' *** '
-"let g:ale_cursor_detail = 1
+" "let g:ale_virtualtext_cursor = 1
+" "let g:ale_virtualtext_prefix = ' *** '
+" "let g:ale_cursor_detail = 1
 
-"let g:ale_python_pylint_options = '-j2 --load-plugins pylint_django'
-let g:ale_python_pylint_options = '-j2'
-"let g:ale_python_pylint_options = "-j2 --init-hook='import sys; sys.path.append(\".\")'"
-let g:ale_python_pylint_change_directory = 1
+" "let g:ale_python_pylint_options = '-j2 --load-plugins pylint_django'
+" let g:ale_python_pylint_options = '-j2'
+" "let g:ale_python_pylint_options = "-j2 --init-hook='import sys; sys.path.append(\".\")'"
+" let g:ale_python_pylint_change_directory = 1
 
-" TODO: ?
-let g:ale_python_flake8_executable = $VIRTUAL_ENV . '/bin/flake8'
+" " TODO: ?
+" let g:ale_python_flake8_executable = $VIRTUAL_ENV . '/bin/flake8'
 
-nmap <silent> <F5> :ALELint<CR>
+" " nmap <silent> <F5> :ALELint<CR>
 
-"au BufNewFile,BufRead * ALELint
-"let g:ale_sign_column_always = 1
+" "au BufNewFile,BufRead * ALELint
+" "let g:ale_sign_column_always = 1
 
-noremap <silent> <A-e> :lopen<CR>
+" noremap <silent> <A-e> :lopen<CR>
 
-"hi ALEWarning ctermbg=190 ctermfg=233 cterm=bold
-"hi ALEWarning cterm=underline
-hi ALEWarning cterm=reverse ctermfg=yellow
-hi ALEWarningSign ctermbg=233 ctermfg=190
-"hi ALEError ctermbg=197 ctermfg=255
-"hi ALEError ctermbg=197 ctermfg=255 cterm=bold,underline
-"hi ALEError cterm=underline
-hi ALEError cterm=reverse ctermfg=red
-hi ALEErrorSign ctermbg=233 ctermfg=197 cterm=bold
+" "hi ALEWarning ctermbg=190 ctermfg=233 cterm=bold
+" "hi ALEWarning cterm=underline
+" hi ALEWarning cterm=reverse ctermfg=yellow
+" hi ALEWarningSign ctermbg=233 ctermfg=190
+" "hi ALEError ctermbg=197 ctermfg=255
+" "hi ALEError ctermbg=197 ctermfg=255 cterm=bold,underline
+" "hi ALEError cterm=underline
+" hi ALEError cterm=reverse ctermfg=red
+" hi ALEErrorSign ctermbg=233 ctermfg=197 cterm=bold
 
-hi ALEVirtualTextError ctermfg=197 cterm=bold
-hi ALEVirtualTextWarning ctermfg=yellow cterm=bold
-"hi ALEVirtualTextWarning ctermfg=190 cterm=bold,underline
+" hi ALEVirtualTextError ctermfg=197 cterm=bold
+" hi ALEVirtualTextWarning ctermfg=yellow cterm=bold
+" "hi ALEVirtualTextWarning ctermfg=190 cterm=bold,underline
 
-let g:ale_annotations_ns_id = nvim_create_namespace('ALEAnnotations')
+" let g:ale_annotations_ns_id = nvim_create_namespace('ALEAnnotations')
 
-hi VirtualError ctermfg=244 cterm=underline
+" hi VirtualError ctermfg=244 cterm=underline
 
-fu! ClearALEAnnotations()
-    call nvim_buf_clear_highlight(bufnr('%'), g:ale_annotations_ns_id, 0, -1)
-endf
+" fu! ClearALEAnnotations()
+"     call nvim_buf_clear_highlight(bufnr('%'), g:ale_annotations_ns_id, 0, -1)
+" endf
 
-fu! ShowALEAnnotations()
-    for l:info in g:ale_buffer_info[bufnr('%')].loclist
-        let l:class = 'ALEVirtualTextError'
-        let l:prefix = 'EE'
-        if l:info.type ==# 'W'
-            let l:class = 'ALEVirtualTextWarning'
-            let l:prefix = 'WW'
-        endi
-        let l:meta = ''
-        if has_key(l:info, 'linter_name')
-            let l:meta = l:info.linter_name
-        end
-        if has_key(l:info, 'code')
-            if len(l:meta)
-                let l:meta .= '/'
-            end
-            let l:meta .= l:info.code
-        end
-        if len(l:meta)
-            let l:meta .= ': '
-        end
-        "\ [[' ', 'Normal'], ['[' . l:prefix . '] ' . l:meta . l:info.text, l:class]],
-        call nvim_buf_set_virtual_text(
-                    \ bufnr('%'),
-                    \ g:ale_annotations_ns_id,
-                    \ l:info.lnum - 1,
-                    \ [
-                    \   [' ' . b:NERDCommenterDelims.left, 'Comment'],
-                    \   ['[' . l:prefix . '] ', l:class],
-                    \   [l:meta . l:info.text, 'VirtualError']
-                    \ ],
-                    \ {}
-                    \ )
-    endfo
-endf
+" fu! ShowALEAnnotations()
+"     for l:info in g:ale_buffer_info[bufnr('%')].loclist
+"         let l:class = 'ALEVirtualTextError'
+"         let l:prefix = 'EE'
+"         if l:info.type ==# 'W'
+"             let l:class = 'ALEVirtualTextWarning'
+"             let l:prefix = 'WW'
+"         endi
+"         let l:meta = ''
+"         if has_key(l:info, 'linter_name')
+"             let l:meta = l:info.linter_name
+"         end
+"         if has_key(l:info, 'code')
+"             if len(l:meta)
+"                 let l:meta .= '/'
+"             end
+"             let l:meta .= l:info.code
+"         end
+"         if len(l:meta)
+"             let l:meta .= ': '
+"         end
+"         "\ [[' ', 'Normal'], ['[' . l:prefix . '] ' . l:meta . l:info.text, l:class]],
+"         call nvim_buf_set_virtual_text(
+"                     \ bufnr('%'),
+"                     \ g:ale_annotations_ns_id,
+"                     \ l:info.lnum - 1,
+"                     \ [
+"                     \   [' ' . b:NERDCommenterDelims.left, 'Comment'],
+"                     \   ['[' . l:prefix . '] ', l:class],
+"                     \   [l:meta . l:info.text, 'VirtualError']
+"                     \ ],
+"                     \ {}
+"                     \ )
+"     endfo
+" endf
 
-aug ALEAutoLint
-    au! BufRead,BufWrite * :ALELint
-    "au! BufRead,BufWrite,TextChanged,InsertLeave * :ALELint
-    " au! User ALELintPre :call ClearALEAnnotations()
-    " au! User ALELintPost :call ShowALEAnnotations()
-    au! User ALEJobStarted :let &stl=&stl
-    au! User ALELintPost :let &stl=&stl
-aug END
+" aug ALEAutoLint
+"     au! BufRead,BufWrite * :ALELint
+"     "au! BufRead,BufWrite,TextChanged,InsertLeave * :ALELint
+"     " au! User ALELintPre :call ClearALEAnnotations()
+"     " au! User ALELintPost :call ShowALEAnnotations()
+"     au! User ALEJobStarted :let &stl=&stl
+"     au! User ALELintPost :let &stl=&stl
+" aug END
 
 "let g:ale_go_golint_executable = '...'
 
@@ -915,11 +884,9 @@ let g:tagbar_type_go = {
 " }}}
 " JSX {{{
 " let g:jsx_ext_required = 0
-" GraphViz {{{
 aug JavascriptReactAuto
     au BufNewFile,BufRead *.js set filetype=javascriptreact
 aug END
-" }}}
 "
 " }}}
 " Virtualenv {{{
@@ -1020,14 +987,14 @@ let g:jedi#popup_select_first = 0
 " let g:jedi#use_splits_not_buffers = 'right'
 let g:jedi#smart_auto_mappings = 0
 let g:jedi#fuzzy_completion = 1
-aug PythonJediConfig
-    au FileType python :py3 from jedi import settings; settings.fuzzy_completion = 1
-    "au TextChangedI,CursorMovedI * :call jedi#show_call_signatures()
-aug end
+" aug PythonJediConfig
+"     au FileType python :py3 from jedi import settings; settings.fuzzy_completion = 1
+"     "au TextChangedI,CursorMovedI * :call jedi#show_call_signatures()
+" aug end
 "let g:jedi#godo_command = '<C-g>'
-aug PythonJediGoto
-    au FileType python nmap <silent> <C-g> :call jedi#goto()<CR>
-aug end
+" aug PythonJediGoto
+"     au FileType python nmap <silent> <C-g> :call jedi#goto()<CR>
+" aug end
 let g:SuperTabDefaultCompletionType = 'context'
 let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&contextfunc']
 
@@ -1065,11 +1032,13 @@ hi jediFat ctermfg=197 ctermbg=233 cterm=bold,underline
 "hi jediFatSymbol ctermfg=233 ctermbg=233
 "au BufRead *.py :syn match jediFatSymbol "\*_\*" contained  " conceal
 
+autocmd FileType python let b:coc_root_patterns = ['.git', '.env', 'requirements.txt', 'Dockerfile']
+
 " }}}
 " Go {{{
-aug GolangGoto
-    au FileType go nmap <silent> <C-g> :GoDef<CR>
-aug end
+" aug GolangGoto
+"     au FileType go nmap <silent> <C-g> :GoDef<CR>
+" aug end
 let g:go_fmt_fail_silently = 1  " Do not open loclist
 let g:go_lint_fail_silently = 1  " Do not open loclist
 let g:go_list_height = 0
@@ -1077,9 +1046,9 @@ let g:go_list_autoclose = 1
 "let g:go_metalinter_autosave = 0
 "au CursorMoved *.go :GoInfo
 "au BufRead,BufWrite *.go :GoLint
-aug GolangInfo
-    au FileType go nnoremap <silent> w :GoInfo<CR>
-aug end
+" aug GolangInfo
+"     au FileType go nnoremap <silent> w :GoInfo<CR>
+" aug end
 " }}}
 " Startify {{{
 let g:startify_files_number = 10
@@ -1161,9 +1130,9 @@ fu! FormatTemplate()
         :d
     endi
 endf
-aug PythonSkelegon
-    au BufNewFile *.py 0r ~/.vim/skeletons/skeleton.py | call FormatTemplate()
-aug end
+" aug PythonSkeleton
+"     au BufNewFile *.py 0r ~/.vim/skeletons/skeleton.py | call FormatTemplate()
+" aug end
 " }}}
 " Systemd {{{
 aug SystemdAuto
@@ -1265,12 +1234,26 @@ aug END
 " hi LightlineLeft_inactive_0 ctermfg=245
 " }}}
 " Coc {{{
+
+" let g:coc_global_extensions = ['coc-json', 'coc-diagnostic', 'coc-jedi', 'coc-java']
+let g:coc_global_extensions = ['coc-json', 'coc-java', 'coc-tsserver', 'coc-eslint', 'coc-go', 'coc-pyright']
+" let g:coc_global_extensions = ['coc-json', 'coc-java', 'coc-tsserver', 'coc-go', 'coc-jedi']
+" let g:coc_borderchars = ['1', '2', '3', '4', '5', '6', '7', '8']
+" let g:coc_global_extensions = ['coc-json', 'coc-jedi', 'coc-java', 'coc-tsserver', 'coc-go']
+
 " https://github.com/neoclide/coc.nvim#example-vim-configuration
-aug CPPCocGoto
-    au FileType cpp,python nmap <silent> <C-g> <Plug>(coc-definition)
-aug end
-aug CPPCocHighlight
+" aug CPPCocGoto
+nmap <silent> <C-g> <Plug>(coc-definition)
+nmap <silent> ; <Plug>(coc-diagnostic-prev)
+nmap <silent> ' <Plug>(coc-diagnostic-next)
+" set keywordprg=:call CocAction('doHover')
+nmap <silent> K :call CocAction('doHover')<CR>
+nmap <silent> <M-i> :CocCommand go.impl.cursor<CR>
+nmap <silent> <M-Enter> :CocAction<CR>
+" aug end
+aug CocHighlight
     autocmd CursorHold * silent call CocActionAsync('highlight')
+    autocmd CursorHoldI * silent call CocActionAsync('highlight')
 aug end
 
 " https://github.com/neoclide/coc.nvim/wiki/Completion-with-sources
@@ -1289,10 +1272,41 @@ inoremap <silent><expr> <Tab>
 " inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>""
 
 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+nnoremap <expr><C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+nnoremap <expr><C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+inoremap <expr><C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<Right>"
+inoremap <expr><C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<Left>"
+
+" Golang
+" au FileType go au BufWritePre <buffer> <Plug>(coc-format)
+" autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
+aug CocGolang
+    " au BufWritePost *.go :silent exec '!go fmt' | let b:v=winsaveview() | :e | call winrestview(b:v)
+    au BufWritePre,InsertLeave *.go :call CocAction('format')
+    " au FileType go au BufWritePre <buffer> <Plug>(coc-format)
+aug end
+
+" https://www.reddit.com/r/vim/comments/a4bn0w/how_do_i_show_documentation_with_coc_with/
+" Show docstring immediately after selecting completion
+autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+
+hi CocErrorSign ctermfg=9 ctermbg=235
+hi CocWarningSign ctermfg=130 ctermbg=235
+hi CocInfoSign ctermfg=11 ctermbg=235
+hi CocHintSign ctermfg=12 ctermbg=235
+
 "
 " }}}
 " ScrollView {{{
 let g:scrollview_column = 1
+
+" https://github.com/dstein64/nvim-scrollview/issues/10#issuecomment-751959901
+command Bdelete
+    \ silent! ScrollViewDisable
+    \ | bdelete
+    \ | silent! ScrollViewEnable
+
 " let g:scrollview_mode = 'virtual'
 " }}}
 " Minimap {{{
@@ -1306,9 +1320,21 @@ let g:minimap_auto_start_win_enter = 1
 "             \ indent_char = '▏';
 "             \ indent_pretty_mode = true;
 "             \ })
-let g:indent_blankline_buftype_exclude = ['help', 'startify'] " Does not seem to work
-let g:indent_blankline_show_first_indent_level = v:false
-aug BlanklineDisable
-    au FileType startify :IndentBlanklineDisable
-aug end
+
+" let g:indent_blankline_buftype_exclude = ['help', 'startify'] " Does not seem to work
+" let g:indent_blankline_show_first_indent_level = v:false
+" aug BlanklineDisable
+"     au FileType startify :IndentBlanklineDisable
+" aug end
+" }}}
+" vim.zip {{{
+let g:zip_nomax = 1
+" let g:loaded_zipPlugin= 1
+" let g:loaded_zip      = 1
+" }}}
+" SQL {{{
+" au BufWritePre,InsertLeave *.sql :ALEFix
+" }}}
+" OS X stuff {{{
+au BufNewFile,BufRead *.plist set filetype=xml
 " }}}

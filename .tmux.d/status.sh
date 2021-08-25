@@ -13,19 +13,25 @@ COLOR_4=222
 #STRONG_COLOR=205
 #STRONG_COLOR=33
 #STRONG_COLOR=255
-if [[ "$1" == 'ansi' ]]
+MODE='tmux'
+if [[ "$1" != '' ]]
 then
-    ANSI=1
-else
-    ANSI=0
+    MODE=$1
 fi
 # }}}
 
+set -a
+
+DEBUG=0
+
 # Functions {{{
 function sep() {
-    if (( $ANSI ))
+    if [[ "$MODE" == "ansi" ]]
     then
         echo -en "\e[38;5;236m \u2502 "
+    elif [[ "$MODE" == "pango" ]]
+    then
+        echo -en "<span foreground=\"#CCCCCC\"> \u2502 </span>"
     else
         echo -en "#[fg=colour236] \u2502 "
     fi
@@ -34,9 +40,12 @@ function sep() {
 }
 
 function normal() {
-    if (( $ANSI ))
+    if [[ "$MODE" == "ansi" ]]
     then
         echo -en "\e[38;5;${NORMAL_COLOR}m$1"
+    elif [[ "$MODE" == "pango" ]]
+    then
+        echo -en "<span foreground=\"#F5F5F5\"> $1 </span>"
     else
         echo -en "#[default,fg=colour$NORMAL_COLOR]$1"
     fi
@@ -44,18 +53,24 @@ function normal() {
 }
 
 function strong() {
-    if (( $ANSI ))
+    if [[ "$MODE" == "ansi" ]]
     then
         echo -en "\e[38;5;${STRONG_COLOR}m$1"
+    elif [[ "$MODE" == "pango" ]]
+    then
+        echo -en "<span foreground=\"#FF1177\"> $1 </span>"
     else
         echo -en "#[fg=colour$STRONG_COLOR,bold]$1"
     fi
 }
 
 function warn() {
-    if (( $ANSI ))
+    if [[ "$MODE" == "ansi" ]]
     then
         echo -en "\e[38;5;${WARN_COLOR}m$1"
+    elif [[ "$MODE" == "pango" ]]
+    then
+        echo -en "<span foreground=\"#FF1177\"> $1 </span>"
     else
         echo -en "#[default,fg=colour$WARN_COLOR]$1"
     fi
@@ -63,7 +78,7 @@ function warn() {
 
 function color() {
     varname="COLOR_$2"
-    if (( $ANSI ))
+    if [[ "$MODE" == "ansi" ]]
     then
         echo -en "\e[38;5;${!varname}m$1"
     else
@@ -90,7 +105,37 @@ function strength() {
     echo -en $CH
 }
 
+function render() {
+    FIRST=1
+    for part in $@
+    do
+        if [[ "$DEBUG" == "1" ]]
+        then
+            START=`$BIN/date +%s.%N`
+            OUT=$($part)
+            END=`$BIN/date +%s.%N`
+            DIFF=$(LANG=en_US printf %.3fms `$BIN/bc <<< "($END-$START)*1000"`)
+            OUT="$OUT ($DIFF)"
+        else
+            OUT=$($part)
+        fi
+        if [[ "$?" -eq "0" ]]
+        then
+            [[ "$FIRST" -eq "0" ]] && sep
+            echo -n "$OUT"
+            # echo -n `echo $ERR | $BIN/grep a`
+            FIRST=0
+        fi
+    done
+}
+
 # }}}
+
+enable -f /usr/lib/bash/sleep sleep
+
+PATH="."
+BIN=/usr/bin
+# trap 'echo -n "CHLD $1"' SIGCHLD
 
 # clay: Clay {{{
 function clay() {
@@ -113,8 +158,8 @@ function current_dir() {
 # }}}
 # player: Playerctl {{{
 function player() {
-    TEXT="`playerctl metadata --format '[{{playerName}}] {{artist}} - {{title}}'`"
-    STATUS="`playerctl metadata --format '{{lc(status)}}'`"
+    TEXT="`$BIN/playerctl metadata --format '[{{playerName}}] {{artist}} - {{title}}' 2> /dev/null`"
+    STATUS="`$BIN/playerctl metadata --format '{{lc(status)}}' 2> /dev/null`"
     if [[ "$STATUS" == "playing" ]]
     then
         ICON="\uF04B"
@@ -134,7 +179,7 @@ function player() {
 # }}}
 # netstatus: Network status {{{
 function netstatus() {
-    NET=`LANG=en nmcli dev | grep -w connected | grep -v bridge | awk '{print $4s}' | sed -re ':a;N;$!ba;s/\n/, /g'`
+    NET=`LANG=en $BIN/nmcli dev | $BIN/grep -w connected | $BIN/grep -v bridge | $BIN/awk '{print $4s}' | $BIN/sed -re ':a;N;$!ba;s/\n/, /g'`
     if [[ "$NET" == "" ]]
     then
         # warn "\uFAA8 "
@@ -167,7 +212,7 @@ function kblayout() {
 # }}}
 # volume: Volume {{{
 function volume() {
-    DUMP=`pacmd dump`
+    DUMP=`/usr/bin/pacmd dump`
     [[ $DUMP =~ set-default-sink\ ([a-zA-Z0-9_\.-]+) ]]
     SINK=${BASH_REMATCH[1]}
     [[ $DUMP =~ set-sink-volume\ $SINK\ ([0-9a-fx]+) ]]
@@ -178,14 +223,15 @@ function volume() {
         ICON='\uF7CA'
         ICON_CODE=$((0xF7CA))
     else
-        #ICON='\uF027'
-        #ICON='\uF886'
-        ICON='\uFC58'
+        # ICON='\uF027'
+        ICON='\uF886'
+        # ICON='\uFC58'
         ICON_CODE=$((0xFC58))
     fi
 
-    strong "$ICON "
-    normal $((`printf %d $VOLUME` * 100 / 0x10000))'%'
+    # strong "$ICON "
+    # normal $((`printf %d $VOLUME` * 100 / 0x10000))'%'
+    color "$ICON $((`printf %d $VOLUME` * 100 / 0x10000))%" 3
 }
 
 # PREV=`cat /tmp/sink.txt 2> /dev/null || true`
@@ -200,12 +246,16 @@ function volume() {
 # }}}
 # cpu: CPU utilization {{{
 function cpu() {
-    A=($(sed -n '1p' /proc/stat))
+    # A=($($BIN/sed -n '1p' /proc/stat))
+    read -r A < /proc/stat
+    A=($A)
     # user         + nice     + system   + idle
     B=$((${A[1]}  + ${A[2]}  + ${A[3]}  + ${A[4]}))
-    sleep 0.1
+    sleep 0.25
     # user         + nice     + system   + idle
-    C=($(sed -n '1p' /proc/stat))
+    # C=($($BIN/sed -n '1p' /proc/stat))
+    read -r C < /proc/stat
+    C=($C)
     D=$((${C[1]}  + ${C[2]}  + ${C[3]}  + ${C[4]}))
     # cpu usage per core
     E=$((100 * (B - D - ${A[4]}  + ${C[4]})  / (B - D)))
@@ -246,7 +296,7 @@ function cpu() {
 # }}}
 # mem: Memory {{{
 function mem() {
-    IFS=' ' read total used <<< `free -b | sed '2q;d' | awk '{print $2" "$3}'`
+    IFS=' ' read total used <<< `$BIN/free -b | $BIN/sed '2q;d' | $BIN/awk '{print $2" "$3}'`
     mem_fraction=$((used*100/total))
     ch=`strength $mem_fraction`
     # touch /tmp/mem_graph.txt
@@ -274,7 +324,9 @@ function mem() {
 function diskfree() {
     # strong "\uF7C9 "
     # normal `df -h / --output=avail | tail -n 1 | tr -d "\n "`
-    color "\uF7C9 "`df -h / --output=avail | tail -n 1 | tr -d "\n "` 4
+    [[ `$BIN/df -h / --output=avail` =~ [0-9]+[A-Z] ]]
+    color "\uF7C9 ${BASH_REMATCH[0]}" 4
+    # color "\uF7C9 "`$BIN/df -h / --output=avail | $BIN/tail -n 1 | $BIN/tr -d "\n "` 4
     #sed -re 's/([0-9])([A-Z])/\1 \2iB/g'
 }
 # }}}
@@ -290,20 +342,23 @@ function now() {
     if (( $ANSI ))
     then
         #DATE=`date +"%a, %d %b, %H:%M:%S"`
-        DATE=`date +"%d %b, %H:%M"`
+        # DATE=`date +"%d %b, %H:%M"`
+        DATE=`builtin printf '%(%d %b, %H:%M)T' -1`
     else
         #DATE=`date +"%a, %d %b, %H:%M:%S" | sed -re "s/([0-9]+:[0-9]+)/#[fg=colour$STRONG_COLOR,bold]\1\#[default,fg=colour$NORMAL_COLOR]/g"`
         #DATE=`date +"%H:%M" | sed -re "s/([0-9]+:[0-9]+)/#[fg=colour$STRONG_COLOR,bold]\1\#[default,fg=colour$NORMAL_COLOR]/g"`
-        DATE=`date +"%d %b, %H:%M"`
+        # DATE=`date +"%d %b, %H:%M"`
+        DATE=`builtin printf '%(%d %b, %H:%M)T' -1`
     fi
-    HOUR=`date +"%I" | sed -re 's/^0//g'`
-    if (( $HOUR == 12 ))
+    HOUR=`builtin printf '%(%l)T' -1`
+    # HOUR=`date +"%I" | sed -re 's/^0//g'`
+    if (( "$HOUR" == 12 ))
     then
         HOUR=0
     fi
     CHR=$((0xE381+HOUR))
     ICON=$(printf "\u"`printf %x $CHR`)
-    #strong "$ICON "
+    # color "$ICON " 4
     color "$DATE" 4
 }
 #echo -en " #[default,fg=colour$NORMAL_COLOR]$DATE#[default]"
@@ -314,10 +369,12 @@ function battery() {
     then
         return 1
     fi
-    BATT=`acpi -b`
-    [[ $BATT =~ Battery\ ([0-9]):\ ([a-zA-Z\ ]+),\ ([0-9]+) ]]
-    STATE=${BASH_REMATCH[2]}
-    CHARGE=${BASH_REMATCH[3]}
+    # BATT=`acpi -b`
+    # [[ $BATT =~ Battery\ ([0-9]):\ ([a-zA-Z\ ]+),\ ([0-9]+) ]]
+    # STATE=${BASH_REMATCH[2]}
+    # CHARGE=${BASH_REMATCH[3]}
+    STATE=$(</sys/class/power_supply/BAT0/status)
+    CHARGE=$(</sys/class/power_supply/BAT0/capacity)
     ICON='\uF578'
     if [ "$STATE" == "Charging" ] || [ "$STATE" == "Full" ] || [ "$STATE" == "Not charging" ]
     then
@@ -341,18 +398,5 @@ function battery() {
 }
 # }}}
 
-PARTS="diskfree cpu mem netstatus now battery"
-FIRST=1
-for part in $PARTS
-do
-    OUT=$($part)
-    if [[ "$?" -eq "0" ]]
-    then
-        if [[ "$FIRST" -eq "0" ]]
-        then
-            sep
-        fi
-        echo -n "$OUT"
-        FIRST=0
-    fi
-done
+# render player diskfree cpu mem netstatus now battery
+render player diskfree cpu netstatus volume now battery

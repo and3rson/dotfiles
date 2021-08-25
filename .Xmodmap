@@ -9,3 +9,31 @@
 !add mod5 = Hyper_L
 
 ! keycode 33 lock = KP_Up
+
+! keycode 66 = Mode_switch
+! keycode 63 = 1 2 3 4 5 6 7 8
+! keycode 66 = ISO_Level5_Shift
+! keycode 66 = Overlay1_Enable
+! clear 66
+! keycode 66 = ISO_Level5_Shift ISO_Level5_Shift ISO_Level5_Shift ISO_Level5_Shift ISO_Level5_Shift ISO_Level5_Shift ISO_Level5_Shift ISO_Level5_Shift
+! keysym i = i I Cyrillic_sha Cyrillic_SHA Up
+! keysym j = j J Cyrillic_o Cyrillic_O Left
+! keysym k = k K Cyrillic_el Cyrillic_EL Down
+! keysym l = l L Cyrillic_de Cyrillic_DE Right
+! keysym h = h H Cyrillic_er Cyrillic_ER Home
+! keysym n = n N Cyrillic_te Cyrillic_TE End
+! keysym u = u U Cyrillic_ghe Cyrillic_GHE Page_Up
+! keysym o = o O Cyrillic_shcha Cyrillic_SHCHA Page_Down
+! keysym q = q Q XF86_AudioPrev
+! keysym w = w W XF86_AudioPlay
+! keysym e = e E XF86_AudioNext
+
+
+! keysym i = i I ш Ш
+! keysym j = j J о О
+! keysym k = k K л Л
+! keysym l = l L д Д
+! keysym h = h H р Р
+! keysym n = n N Т т
+! keysym u = u U Г г
+! keysym o = o O Щ щ
