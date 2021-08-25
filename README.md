@@ -6,7 +6,7 @@ Those are my dotfiles.
 
 ## Stack
 
-  - [sway](https://swaywm.org)
+  - [sway (wayland)](https://swaywm.org)
   - [neovim](https://neovim.io/)
   - [tmux](https://github.com/tmux/tmux)
   - [bash](https://www.gnu.org/software/bash/)
