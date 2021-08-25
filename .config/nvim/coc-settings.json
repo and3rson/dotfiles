@@ -1,0 +1,63 @@
+{
+  "languageserver": {
+    "clangd": {
+      "command": "ccls",
+      "args": [],
+      "rootPatterns": [
+        "compile_flags.txt",
+        "compile_commands.json",
+        ".vim/",
+        ".git/",
+        ".hg/"
+      ],
+      "filetypes": ["c", "cpp", "objc", "objcpp"],
+      "disableDiagnostics": false
+    }
+  },
+  "coc.preferences.currentFunctionSymbolAutoUpdate": true,
+  "suggest.echodocSupport": true,
+  // "diagnostic-languageserver.mergeConfig": true,
+  // "jedi.trace.server": "verbose",
+  "suggest.timeout": 10000,
+  "old": {
+      "jedi.executable.command": "jedi-language-server",
+      "diagnostic-languageserver.filetypes": {
+        "python": "pylint"
+      },
+      "diagnostic-languageserver.linters": {
+        "pylint": {
+          "args": ["-j2", "--init-hook='import sys; sys.path.append(\".\"); sys.path.append(\"backend\");'"]
+        },
+        "rootPatterns": [".git", ".venv", ".pylintrc"]
+      }
+  },
+  "tsserver.enable": true,
+  "javascript.suggestionActions.enabled": true,
+  "tsserver.log": "verbose",
+  "signature.target": "echo",
+  "diagnostic.messageTarget": "echo",
+  "diagnostic.messageDelay": 0,
+  "diagnostic.maxWindowHeight": 20,
+  "diagnostic.virtualText": true,
+  "diagnostic.virtualTextCurrentLineOnly": false,
+  "diagnostic.virtualTextPrefix": "",
+  // "diagnostic.virtualTextLineSeparator": " \\ ",
+  // "diagnostic.displayByAle": true,
+  "diagnostic.enableHighlightLineNumber": true,
+  "diagnostic.enableSign": true,
+  "suggest.floatEnable": true,
+  "coc.preferences.hoverTarget": "echo",
+
+  // Pyright
+  "workspace.bottomUpFiletypes": ["python"],
+  "workspace.workspaceFolderCheckCwd": false,
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+  // "python.linting.flake8Enabled": true,
+  "python.linting.pylintUseMinimalCheckers": false,
+  "pyright.disableDiagnostics": true,
+
+  // "pyright.disableDiagnostics": true,
+  // "diagnostic.enableMessage": "always",
+  // "diagnostic.separateRelatedInformationAsDiagnostics": true
+}

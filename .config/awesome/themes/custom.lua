@@ -217,9 +217,9 @@ theme.titlebar_maximized_button_focus_active  = themes_path.."default/titlebar/m
 --local wp = '/home/anderson/.wallpapers/rainbow-colors-blurred.jpg'
 --local wp = '/home/anderson/.wallpapers/doom-ng/slayer.jpg'
 -- local wp = '/home/anderson/.wallpapers/lights1920.png'
--- local wp = '/home/anderson/.wallpapers/lights2.jpg'
+local wp = '/home/anderson/.wallpapers/lights2.jpg'
 
-local wp = '/usr/share/backgrounds/archlinux/awesome.png'
+-- local wp = '/usr/share/backgrounds/archlinux/awesome.png'
 -- local wp = '/usr/share/backgrounds/archlinux/split.png'
 -- local wp = '/usr/share/backgrounds/archlinux/wild.png'
 

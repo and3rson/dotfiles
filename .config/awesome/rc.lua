@@ -129,8 +129,9 @@ end--}}}
 
 -- Wallpapers, tags, wiboxes & other stuff for each screen. {{{
 local volume
-local tray
+-- local tray
 local first_screen
+require('widgets.battery')()
 awful.screen.connect_for_each_screen(function(s)
     eprint('Configuring screen', s)
     for key, _ in pairs(s.outputs) do
@@ -172,7 +173,6 @@ awful.screen.connect_for_each_screen(function(s)
         --     height=height,
         --     stretch=true
         -- })
-        first_screen = s
 
         -- Volume.
     elseif s.index == 2 then
@@ -279,13 +279,13 @@ local globalkeys = awful.util.table.join(
     awful.key({super}, "space", function () awful.layout.inc(layouts,  1) end),
 
     -- Standard programs
-    awful.key({super}, "Return", function () awful.spawn('termite') end),
-    awful.key({ctrl, alt}, "t", function () awful.spawn('termite') end),
+    awful.key({super}, "Return", function () awful.spawn('alacritty') end),
+    -- awful.key({ctrl, alt}, "t", function () awful.spawn('termite') end),
     awful.key({super, ctrl}, "r", awesome.restart),
     awful.key({super, ctrl}, "q", awesome.quit),
 
     -- Run rofi
-    awful.key({super}, "r", function() awful.spawn('rofi -show run -terminal termite') end),
+    awful.key({super}, "r", function() awful.spawn('rofi -show run -terminal alacritty') end),
 
     -- Volume control
     awful.key({}, 'KP_Up', function() volume.modify_volume(2) end),
@@ -395,7 +395,7 @@ local globalkeys = awful.util.table.join(
     awful.key({super, shift}, "s", function() awful.spawn('flameshot gui') end),
 
     -- System tray toggle
-    awful.key({super}, "=", function() tray.visible = not tray.visible end),
+    -- awful.key({super}, "=", function() tray.visible = not tray.visible end),
 
     -- Panel toggle
     -- awful.key({super}, "-", function() first_screen.panel.visible = not first_screen.panel.visible end),
@@ -507,7 +507,7 @@ awful.rules.rules = {
     },
     {
         rule_any = { class = {"PadTerm"} },
-        properties = { screen = 2, tag = "X", focusable = false }
+        properties = { screen = 2, tag = "X", focusable = true }
     },
     {
         rule_any = { class = {"Chromium", "Firefox", "Navigator", "firefoxdeveloperedition"} },
@@ -529,14 +529,14 @@ awful.rules.rules = {
         rune_any = { class = {'Not'} },
         properties = { sticky = true, ontop = true, focusable = false, tag = "M" }
     },
-    {
-        rule_any = { name = {'cava'} },
-        properties = { focusable = false, below = true }
-    },
-    {
-        rule_any = { name = {'GLava'} },
-        properties = { screen=2, tag='X', focusable = false, above = true, sticky = true }
-    },
+    -- {
+    --     rule_any = { name = {'cava'} },
+    --     properties = { focusable = false, below = true }
+    -- },
+    -- {
+    --     rule_any = { name = {'GLava'} },
+    --     properties = { screen = 2, tag='X', focusable = false, above = true, sticky = true }
+    -- },
     {
         rule_any = { class = {'Pavucontrol'} },
         properties = { floating = true, placement = awful.placement.centered, sticky = true }

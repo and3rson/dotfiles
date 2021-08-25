@@ -31,7 +31,7 @@ local headsup = awful.popup{
                             widget=wibox.widget.textbox,
                             id='icon',
                             text='Icon',
-                            font='DejaVu Sans 64'
+                            font='DejaVu Sans 52'
                         }
                     },
                     {

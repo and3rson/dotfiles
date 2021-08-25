@@ -1,5 +1,6 @@
 [options]
 font = RobotoMono Nerd Font 10
+; font = Roboto Mono 10
 ; font = RobotoMono Nerd Font 13
 ;font = RobotoMono Nerd Font 10
 ;font = DejaVuSansMono Nerd Font 8
@@ -8,6 +9,7 @@ font = RobotoMono Nerd Font 10
 icon_name = terminal
 cursor_blink = system
 highlight =
+clickable_url = false
 
 [colors]
 # background = rgba(0, 0, 0, 0.83)

@@ -66,8 +66,10 @@
     # the top and down respectevly.
     # The width can be negative.  In this case the actual width is the
     # screen width minus the width defined in within the geometry option.
-    geometry = "420x5-16+43"
+    geometry = "480x1-16+43"
     # geometry = "320x5-0+0"
+
+    max_icon_size = 160
 
     # Shrink window if it's smaller than the width.  Will be ignored if
     # width is 0.
@@ -117,13 +119,15 @@
     # Draw a line of "separatpr_height" pixel height between two
     # notifications.
     # Set to 0 to disable.
-    separator_height = 3
+    separator_height = 2
 
     # Padding between text and separator.
-    padding = 16
+    padding = 8
 
     # Horizontal padding.
-    horizontal_padding = 16
+    horizontal_padding = 8
+
+    text_icon_padding = 16
 
     # Define a color for the separator.
     # possible values are:
@@ -140,7 +144,8 @@
 
     # dmenu path.
     #dmenu = /usr/bin/dmenu -p dunst:
-    dmenu = /home/anderson/.scripts/dmenu.sh
+    # dmenu = /home/anderson/.scripts/dmenu.sh
+    dmenu = /usr/bin/rofi -dmenu -p dunst
 
     # Browser for opening urls in context menu.
     browser = /usr/bin/firefox-developer-edition
@@ -248,3 +253,7 @@
 #    urgency = normal
 #
 # vim: ft=cfg
+
+# [spotify]
+#     appname = Spotify
+#     script = foo

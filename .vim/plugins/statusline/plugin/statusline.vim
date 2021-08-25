@@ -97,7 +97,7 @@ fu! AleWarnings(bufnr, mode, is_active_window) abort
     let l:warnings = l:counts.total - l:errors
     let l:msg = ''
     if l:is_checking
-        let l:msg .= '%#StatusBarText# ' . ' …'
+        let l:msg .= '%#StatusBarWarning# ' . ' …'
     else
         if l:warnings
             let l:msg .= '%#StatusBarWarning# ' . printf('%2d', l:warnings)
@@ -115,7 +115,7 @@ fu! AleErrors(bufnr, mode, is_active_window) abort
     let l:errors = l:counts.error + l:counts.style_error
     let l:msg = ''
     if l:is_checking
-        let l:msg .= '%#StatusBarText# ' . ' …'
+        let l:msg .= '%#StatusBarWarning# ' . ' …'
     else
         if l:errors
             let l:msg .= '%#StatusBarError# ' . printf('%2d', l:errors)
@@ -124,6 +124,39 @@ fu! AleErrors(bufnr, mode, is_active_window) abort
         endi
     endi
     return g:sep . l:msg . '%#StatusBarText#'
+endf
+" }}}
+" COC warnings {{{
+fu! CocWarnings(bufnr, mode, is_active_window) abort
+    let l:coc_info = getbufvar(a:bufnr, 'coc_diagnostic_info')
+    let l:msg = ''
+    if l:coc_info['warning']
+        let l:msg .= '%#StatusBarWarning# ' . printf('%2d', l:coc_info.warning)
+    else
+        let l:msg .= '%#StatusBarText# ' . ' 0'  " ' —'
+    endi
+    return g:sep . l:msg . '%#StatusBarText#'
+endf
+" }}}
+" COC errors {{{
+fu! CocErrors(bufnr, mode, is_active_window) abort
+    let l:coc_info = getbufvar(a:bufnr, 'coc_diagnostic_info')
+    let l:msg = ''
+    if l:coc_info['error']
+        let l:msg .= '%#StatusBarError# ' . printf('%2d', l:coc_info.error)
+    else
+        let l:msg .= '%#StatusBarText# ' . ' 0'  " ' —'
+    endi
+    return g:sep . l:msg . '%#StatusBarText#'
+endf
+" }}}
+" COC status {{{
+fu! CocStatus(bufnr, mode, is_active_window) abort
+    if exists('g:coc_status')
+        return g:sep . g:coc_status
+    else
+        return ''
+    end
 endf
 " }}}
 " Linter status {{{
@@ -317,6 +350,16 @@ endf
 "endf
 " }}}
 
+fu! CocOrAle(bufnr, m, is_active_window)
+    if !empty(getbufvar(a:bufnr, 'coc_diagnostic_info'))
+        return ' [Coc]' . CocErrors(a:bufnr, a:m, a:is_active_window) . CocWarnings(a:bufnr, a:m, a:is_active_window)
+    elseif !empty(getbufvar(a:bufnr, 'ale_linted'))
+        return ' [ALE]' . AleErrors(a:bufnr, a:m, a:is_active_window) . AleWarnings(a:bufnr, a:m, a:is_active_window)
+    else
+        return ' [???]'
+    endi
+endf
+
             "\ 'PieCrumbs',
             "
             "\ 'Branch',
@@ -324,6 +367,7 @@ endf
             "
             "\ 'CharCode',
             "\ 'LocInfo',
+            " \ 'CocStatus',
 let g:status_bar = [
             \ 'FileAndMode',
             \ 'Spacer',
@@ -331,9 +375,12 @@ let g:status_bar = [
             \
             \ 'FilePos',
             \
-            \ 'AleErrors',
-            \ 'AleWarnings',
+            \ 'CocOrAle',
             \ ]
+            " \ 'CocErrors',
+            " \ 'CocWarnings',
+            " \ 'AleErrors',
+            " \ 'AleWarnings',
 
 fu! StatusBar(winnr, bufnr)
     let l:s = ''

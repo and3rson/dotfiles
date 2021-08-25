@@ -33,7 +33,8 @@ alias up='curl -X POST http://kv.dun.ai/ips/latitude --data value=`curl canihazi
 #alias ccat='pygmentize -g -O style=colorful,linenos=1'
 alias ccat='highlight -O xterm256 --style molokai --force'
 alias xc='xclip -selection clipboard'
-alias t='todoist'
+# alias t='todoist'
+alias df='df -xoverlay'
 
 alias st='git st'
 alias br='git branch'
