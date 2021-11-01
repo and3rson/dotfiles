@@ -137,6 +137,19 @@ PATH="."
 BIN=/usr/bin
 # trap 'echo -n "CHLD $1"' SIGCHLD
 
+# phonebattery: Display Note 8 Pro battery charge {{{
+function phonebattery() {
+    CHARGE=$(<~/.mqtt/devices_note8pro_battery)
+    if (( $CHARGE < 20 ))
+    then
+        COLOR=0
+    else
+        COLOR=2
+    fi
+    color "\uF8F1 " $COLOR
+    color "$CHARGE%" $COLOR
+}
+# }}}
 # clay: Clay {{{
 function clay() {
     if [[ -f /tmp/clay.json ]]
@@ -160,6 +173,10 @@ function current_dir() {
 function player() {
     TEXT="`$BIN/playerctl metadata --format '[{{playerName}}] {{artist}} - {{title}}' 2> /dev/null`"
     STATUS="`$BIN/playerctl metadata --format '{{lc(status)}}' 2> /dev/null`"
+    if (( ${#TEXT} > 64 ))
+    then
+        TEXT=${TEXT:0:64}`printf "\u2026"`
+    fi
     if [[ "$STATUS" == "playing" ]]
     then
         ICON="\uF04B"
@@ -246,20 +263,32 @@ function volume() {
 # }}}
 # cpu: CPU utilization {{{
 function cpu() {
-    # A=($($BIN/sed -n '1p' /proc/stat))
-    read -r A < /proc/stat
-    A=($A)
-    # user         + nice     + system   + idle
-    B=$((${A[1]}  + ${A[2]}  + ${A[3]}  + ${A[4]}))
+    if (( 0 == 1 ))
+    then
+        # A=($($BIN/sed -n '1p' /proc/stat))
+        read -r A < /proc/stat
+        A=($A)
+        # user         + nice     + system   + idle
+        B=$((${A[1]}  + ${A[2]}  + ${A[3]}  + ${A[4]}))
+        sleep 0.25
+        # user         + nice     + system   + idle
+        # C=($($BIN/sed -n '1p' /proc/stat))
+        read -r C < /proc/stat
+        C=($C)
+        D=$((${C[1]}  + ${C[2]}  + ${C[3]}  + ${C[4]}))
+        # cpu usage per core
+        E=$((100 * (B - D - ${A[4]}  + ${C[4]})  / (B - D)))
+        #echo $E0
+    fi
+
+    read cpu user nice system idle iowait irq softirq steal guest< /proc/stat
+    cpu_active_prev=$((user+system+nice+softirq+steal))
+    cpu_total_prev=$((user+system+nice+softirq+steal+idle+iowait))
     sleep 0.25
-    # user         + nice     + system   + idle
-    # C=($($BIN/sed -n '1p' /proc/stat))
-    read -r C < /proc/stat
-    C=($C)
-    D=$((${C[1]}  + ${C[2]}  + ${C[3]}  + ${C[4]}))
-    # cpu usage per core
-    E=$((100 * (B - D - ${A[4]}  + ${C[4]})  / (B - D)))
-    #echo $E0
+    read cpu user nice system idle iowait irq softirq steal guest< /proc/stat
+    cpu_active_cur=$((user+system+nice+softirq+steal))
+    cpu_total_cur=$((user+system+nice+softirq+steal+idle+iowait))
+    cpu_util=$((100*( cpu_active_cur-cpu_active_prev ) / (cpu_total_cur-cpu_total_prev) ))
 
     ##E=$((E0+E1+E2+E3/4))
     if (( $E > 99 ))
@@ -267,7 +296,8 @@ function cpu() {
         E=99
     fi
 
-    cpu_fraction=$E
+    # cpu_fraction=$E
+    cpu_fraction=$cpu_util
     ch=`strength $cpu_fraction`
     # touch /tmp/cpu_graph.txt
     # graph=`tail /tmp/cpu_graph.txt -c 9`

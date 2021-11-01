@@ -33,8 +33,19 @@ syntax enable
 call plug#begin('~/.vim/plugged')
     " General
     " Plug 'pineapplegiant/spaceduck', { 'branch': 'main' }
+    " Plug 'tanvirtin/monokai.nvim'
     Plug 'tomasr/molokai'
-    Plug 'scrooloose/nerdcommenter'
+    " Plug 'tamelion/neovim-molokai'
+    " Plug 'scrooloose/nerdcommenter'
+
+    " LSP
+    Plug 'neovim/nvim-lspconfig'
+    Plug 'nvim-lua/lsp-status.nvim'
+    Plug 'JoosepAlviste/nvim-ts-context-commentstring'
+    Plug 'tpope/vim-commentary'
+
+    Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
+    Plug 'nvim-treesitter/playground'
 
     " Indentation
     " Plug 'lukas-reineke/indent-blankline.nvim', {'branch': 'lua'}
@@ -46,24 +57,26 @@ call plug#begin('~/.vim/plugged')
     " Slow returns
     Plug 'Vimjas/vim-python-pep8-indent'
     Plug 'airblade/vim-gitgutter'
-    Plug 'tpope/vim-fugitive'
-    " Plug 'ervandew/supertab'
+    " Plug 'tpope/vim-fugitive'
+    Plug 'ervandew/supertab'
 
     "Plugin 'ap/vim-css-color'
-    Plug 'chrisbra/Colorizer'
+    " Plug 'chrisbra/Colorizer'
     Plug 'osyo-manga/vim-over'
 
-    " FZF
-    Plug 'junegunn/fzf'
-    Plug 'junegunn/fzf.vim'
+    " Telescope
+    Plug 'nvim-lua/plenary.nvim'
+    Plug 'nvim-telescope/telescope.nvim'
 
+    " Startup
     Plug 'mhinz/vim-startify'
 
+    " Tagbar
     Plug 'majutsushi/tagbar'
 
     " Syntax files
-    let g:polyglot_disabled = ['csv', 'go', 'html']
-    Plug 'sheerun/vim-polyglot'
+    " let g:polyglot_disabled = ['csv', 'go', 'html', 'python']
+    " Plug 'sheerun/vim-polyglot'
     " Plug 'tmux-plugins/vim-tmux'
     " Plug 'pangloss/vim-javascript'
     " Plug 'mxw/vim-jsx'
@@ -77,24 +90,21 @@ call plug#begin('~/.vim/plugged')
     " Plug 'tikhomirov/vim-glsl'
     " Faster YAML syntax
     Plug 'stephpy/vim-yaml'
+    Plug 'othree/html5.vim'
 
     " Hex mode
     Plug 'fidian/hexmode'
 
-    " Python
-    Plug 'heavenshell/vim-pydocstring'
-
-    " Go
-    " Plug 'fatih/vim-go'
-    " Plug 'cespare/vim-go-templates'
-    " Motion
-    " Plug 'easymotion/vim-easymotion'
-
     " Local vim settings
     Plug 'embear/vim-localvimrc'
 
+    " Status line
+    Plug 'nvim-lualine/lualine.nvim'
+
     " Buffer tabline
-    " Plug 'ap/vim-buftabline'
+    Plug 'ap/vim-buftabline'
+    " Plug 'akinsho/bufferline.nvim'
+    " Plug 'kdheepak/tabline.nvim'
 
     " Pretty stuff
     Plug 'luochen1990/rainbow'
@@ -102,33 +112,32 @@ call plug#begin('~/.vim/plugged')
 
     " PlatformIO stuff
     " https://gist.github.com/neta540/9e65261be52d6cd4d6c17399b78d34bb
-    Plug 'neomake/neomake'
-
-    " Code completion
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
-    " Plug 'Shougo/echodoc.vim'
-
-    " Scrolling stuff
-    Plug 'dstein64/nvim-scrollview', {'branch': 'main'}
+    " Plug 'neomake/neomake'
 
     " SQL completion
     Plug 'vim-scripts/dbext.vim'
+
+    " Editorconfig
+    Plug 'editorconfig/editorconfig-vim'
 
 " }}}
 " Local plugins {{{
     " Plug '~/.vim/plugins/prettyconceal'
     Plug '~/.vim/plugins/icons'
-    Plug '~/.vim/plugins/autocursor'
+    " Plug '~/.vim/plugins/autocursor'
     Plug '~/.vim/plugins/hi_yaml'
     Plug '~/.vim/plugins/icons'
     Plug '~/.vim/plugins/signs'
-    Plug '~/.vim/plugins/statusline'
-    Plug '~/.vim/plugins/tabline'
+    " Plug '~/.vim/plugins/statusline'
+    " Plug '~/.vim/plugins/tabline'
     Plug '~/.vim/plugins/pds'
     Plug '~/.vim/plugins/hi_godot'
     Plug '~/.vim/plugins/zipe'
 call plug#end()
 " }}}
+
+" Debug
+set redrawtime=1000
 
 " Internals (hotkeys, highlights, vim configs) {{{
 
@@ -216,7 +225,8 @@ inoremap <M-s> <C-o>:w<CR>
 
 " Delete buffer
 " nnoremap <silent> <M-x>      :bd<CR>
-nnoremap <silent> <M-x>      :Bdelete<CR>
+" nnoremap <silent> <M-x>      :Bdelete<CR>
+nnoremap <silent> <M-x>      :bdelete<CR>
 "nnoremap b  :buffers<CR>:b
 
 " Close window
@@ -253,6 +263,11 @@ nnoremap <Tab> <C-W>w
 " Word jumps in normal mode
 nnoremap <C-Left> b
 nnoremap <C-Right> e
+
+" Page scrolling
+map <PageUp> <C-u>
+map <PageDown> <C-d>
+
 
 " Show cursor line, hide cursor column
 set cursorline
@@ -297,7 +312,7 @@ aug EqualWindows
 aug END
 
 " Limit syntax highlight
-set synmaxcol=1000
+set synmaxcol=200
 
 " Text display tweaks
 set display=lastline,msgsep,uhex
@@ -316,6 +331,9 @@ set shada=!,'100,<50,s10,h,:500,@500,/500
 "set colorcolumn=80,100,120
 set colorcolumn=120
 
+" Blink yanked text
+au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout=100, on_visual=true}
+
 " Word jump config
 "set iskeyword=@,48-57
 
@@ -326,7 +344,7 @@ set colorcolumn=120
 
 hi CursorLine ctermbg=234 " cterm=underline
 " hi CursorColumn ctermbg=234
-hi CursorColumn ctermbg=94 ctermfg=255 " Used by Coc
+" hi CursorColumn ctermbg=94 ctermfg=255 " Used by Coc
 "hi StatusLine ctermfg=233
 "hi StatusLineNC ctermbg=None ctermfg=240 cterm=None
 
@@ -379,62 +397,35 @@ hi Conceal ctermfg=240 ctermbg=none
 hi VertSplit ctermbg=none ctermfg=242
 " }}}
 
-" NERD Commenter {{{
-let g:NERDSpaceDelims = 1
-let g:NERDCompactSexyComs = 1
-let g:NERDDefaultAlign = 'left'
-let g:NERDCustomDelimiters = {'python': {'leftAlt': '"""', 'rightAlt': '"""', 'left': '#'}}
-"let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' } }
-let g:NERDAltDelims_c = 1
-let g:NERDAltDelims_cpp = 0
-let g:NERDTrimTrailingWhitespace = 1
+" Commentary {{{
+"let g:NERDSpaceDelims = 1
+"let g:NERDCompactSexyComs = 1
+"let g:NERDDefaultAlign = 'left'
+"let g:NERDCustomDelimiters = {'python': {'leftAlt': '"""', 'rightAlt': '"""', 'left': '#'}}
+""let g:NERDCustomDelimiters = { 'c': { 'left': '//','right': '' } }
+"let g:NERDAltDelims_c = 1
+"let g:NERDAltDelims_cpp = 0
+"let g:NERDTrimTrailingWhitespace = 1
 
-nnoremap <silent> <M-/> :call NERDComment(0, "toggle")<CR><CR>
-"vnoremap <silent> <C-_> :call NERDComment(0, "alignleft")<CR><CR>
-"vnoremap <silent> <C-_> :call ToggleOrSexy()<CR>
-vnoremap <silent> <M-/> :call NERDComment(0, "toggle")<CR><CR>
-inoremap <silent> <M-/> <C-o>:call NERDComment(0, "toggle")<CR><C-o><CR>
+"" nnoremap <silent> <M-/> :call NERDComment(0, "toggle")<CR><CR>
+"""vnoremap <silent> <C-_> :call NERDComment(0, "alignleft")<CR><CR>
+"""vnoremap <silent> <C-_> :call ToggleOrSexy()<CR>
+"" vnoremap <silent> <M-/> :call NERDComment(0, "toggle")<CR><CR>
+"" inoremap <silent> <M-/> <C-o>:call NERDComment(0, "toggle")<CR><C-o><CR>
 
-map <PageUp> <C-u>
-map <PageDown> <C-d>
-"map <PageUp> 10<Up>
-"map <PageDown> 10<Down>
+"map <PageUp> <C-u>
+"map <PageDown> <C-d>
+""map <PageUp> 10<Up>
+""map <PageDown> 10<Down>
 
-map <S-Up> <C-y>
-map <S-Down> <C-e>
-"map <S-Up> {
-"map <S-Down> }
+"map <S-Up> <C-y>
+"map <S-Down> <C-e>
+""map <S-Up> {
+""map <S-Down> }
 
-" }}}
-" Ctrl-P {{{
-let g:ctrlp_funky_syntax_highlight = 1
-let g:ctrlp_funky_matchtype = 'path'
-
-let g:webdevicons_enable = 1
-let g:webdevicons_enable_ctrlp = 1
-" let g:ctrlp_max_height = 20
-let g:ctrlp_match_window = 'bottom,order:ttb,min:16,max:16,results:16'
-let g:ctrlp_match_window_reversed = 0
-let g:ctrlp_map = '<c-k>'
-let g:ctrlp_custom_ignore = '\v[\/](\.git|node_modules|\.env[236]*|\.cache|\.exe|\.so|\.pyc|\.pyo|__pycache__|build)'
-
-let g:ctrlp_user_command = {
-            \   'types': {
-            \       1: ['.git', 'cd %s && git ls-files -co --exclude-standard'],
-            \   },
-\}
-let g:ctrlp_match_current_file = 0
-let g:ctrlp_types = ['fil']
-
-let g:ctrlp_cmd = 'CtrlPMRUFiles' " Does not work
-
-"nnoremap <silent> <C-p>      :CtrlP<CR>
-"nnoremap <silent> <M-p>      :CtrlP<CR>
-
-" Completion mode
-"set wildmode=longest,list,full
-set wildmode=longest,list
-set wildmenu
+nnoremap <silent> <M-/> :Commentary<CR>
+vnoremap <silent> <M-/> :Commentary<CR>
+inoremap <silent> <M-/> <C-o>:Commentary<CR><C-o><CR>
 
 " }}}
 " intentLine {{{
@@ -515,137 +506,6 @@ aug CursorColor
     au InsertLeave * call InsertLeaveHook()
 aug END
 "au CursorMovedI * let CursorColumnI = col('.')
-
-" }}}
-" PieCrumbs {{{
-let g:piecrumbs_glue = '  '
-" }}}
-" ALE {{{
-" " TODO: Do not rewrite existing linters config?
-" "let g:ale_linters.javascript = ['eslint']
-" "let g:ale_linters.python = ['pylint']
-" let g:ale_linters = {
-"             \'javascript': ['eslint'],
-"             \'python': ['pylint'],
-"             \'go': [],
-"             \'cpp': [],
-"             \'haskell':
-"             \'vim': ['vint']
-"             \}
-" let g:ale_fixers = { 'cpp': [ 'clang-format' ], 'sql': ['pgformatter'] }
-" " \'go': ['gofmt', 'golint', 'go vet'],
-" " let g:ale_pattern_options = {'\.cpp$': {'ale_enabled': 0}}
-" "
-" "\'python': ['flake8', 'pylint']
-" "\'python': ['flake8']
-
-" " nnoremap <silent> ; :lprev<CR>
-" " nnoremap <silent> ' :lnext<CR>
-" " nnoremap <silent> ; :ALEPrevious<CR>
-" " nnoremap <silent> ' :ALENext<CR>
-
-" let g:ale_open_list = 0
-" let g:ale_sign_error = ''
-" let g:ale_sign_warning = ''
-" "let g:ale_sign_error = 'EE'
-" "let g:ale_sign_warning = 'EE'
-" let g:ale_lint_delay = 500
-" let g:ale_lint_on_enter = 0
-" let g:ale_lint_on_filetype_changed = 0
-" let g:ale_lint_on_save = 0
-" let g:ale_lint_on_text_changed = 'never'
-" let g:ale_lint_on_insert_leave = 0
-" let g:ale_cursor_detail = 0
-" let g:ale_writegood_use_global = 1
-" let g:ale_echo_cursor = 1
-
-" "let g:ale_virtualtext_cursor = 1
-" "let g:ale_virtualtext_prefix = ' *** '
-" "let g:ale_cursor_detail = 1
-
-" "let g:ale_python_pylint_options = '-j2 --load-plugins pylint_django'
-" let g:ale_python_pylint_options = '-j2'
-" "let g:ale_python_pylint_options = "-j2 --init-hook='import sys; sys.path.append(\".\")'"
-" let g:ale_python_pylint_change_directory = 1
-
-" " TODO: ?
-" let g:ale_python_flake8_executable = $VIRTUAL_ENV . '/bin/flake8'
-
-" " nmap <silent> <F5> :ALELint<CR>
-
-" "au BufNewFile,BufRead * ALELint
-" "let g:ale_sign_column_always = 1
-
-" noremap <silent> <A-e> :lopen<CR>
-
-" "hi ALEWarning ctermbg=190 ctermfg=233 cterm=bold
-" "hi ALEWarning cterm=underline
-" hi ALEWarning cterm=reverse ctermfg=yellow
-" hi ALEWarningSign ctermbg=233 ctermfg=190
-" "hi ALEError ctermbg=197 ctermfg=255
-" "hi ALEError ctermbg=197 ctermfg=255 cterm=bold,underline
-" "hi ALEError cterm=underline
-" hi ALEError cterm=reverse ctermfg=red
-" hi ALEErrorSign ctermbg=233 ctermfg=197 cterm=bold
-
-" hi ALEVirtualTextError ctermfg=197 cterm=bold
-" hi ALEVirtualTextWarning ctermfg=yellow cterm=bold
-" "hi ALEVirtualTextWarning ctermfg=190 cterm=bold,underline
-
-" let g:ale_annotations_ns_id = nvim_create_namespace('ALEAnnotations')
-
-" hi VirtualError ctermfg=244 cterm=underline
-
-" fu! ClearALEAnnotations()
-"     call nvim_buf_clear_highlight(bufnr('%'), g:ale_annotations_ns_id, 0, -1)
-" endf
-
-" fu! ShowALEAnnotations()
-"     for l:info in g:ale_buffer_info[bufnr('%')].loclist
-"         let l:class = 'ALEVirtualTextError'
-"         let l:prefix = 'EE'
-"         if l:info.type ==# 'W'
-"             let l:class = 'ALEVirtualTextWarning'
-"             let l:prefix = 'WW'
-"         endi
-"         let l:meta = ''
-"         if has_key(l:info, 'linter_name')
-"             let l:meta = l:info.linter_name
-"         end
-"         if has_key(l:info, 'code')
-"             if len(l:meta)
-"                 let l:meta .= '/'
-"             end
-"             let l:meta .= l:info.code
-"         end
-"         if len(l:meta)
-"             let l:meta .= ': '
-"         end
-"         "\ [[' ', 'Normal'], ['[' . l:prefix . '] ' . l:meta . l:info.text, l:class]],
-"         call nvim_buf_set_virtual_text(
-"                     \ bufnr('%'),
-"                     \ g:ale_annotations_ns_id,
-"                     \ l:info.lnum - 1,
-"                     \ [
-"                     \   [' ' . b:NERDCommenterDelims.left, 'Comment'],
-"                     \   ['[' . l:prefix . '] ', l:class],
-"                     \   [l:meta . l:info.text, 'VirtualError']
-"                     \ ],
-"                     \ {}
-"                     \ )
-"     endfo
-" endf
-
-" aug ALEAutoLint
-"     au! BufRead,BufWrite * :ALELint
-"     "au! BufRead,BufWrite,TextChanged,InsertLeave * :ALELint
-"     " au! User ALELintPre :call ClearALEAnnotations()
-"     " au! User ALELintPost :call ShowALEAnnotations()
-"     au! User ALEJobStarted :let &stl=&stl
-"     au! User ALELintPost :let &stl=&stl
-" aug END
-
-"let g:ale_go_golint_executable = '...'
 
 " }}}
 " GitGutter {{{
@@ -745,61 +605,6 @@ nmap ]z :cal GoToOpenFold("next")
 nmap [z :cal GoToOpenFold("prev")
 
 " }}}
-" Deoplete {{{
-"let g:deoplete#enable_at_startup = 1
-"let g:deoplete#auto_complete_start_length = 0
-
-"inoremap <expr> <Esc>      pumvisible() ? "\<C-o>\<Esc>" : "\<Esc>"
-"inoremap <expr> <CR>       pumvisible() ? "\<C-y>" : "\<CR>"
-
-" python3 plugins
-"call remote#host#RegisterPlugin(
-            "\ 'python3', '/home/anderson/.vim/config/compl2.py', [
-            "\ {'sync': v:false, 'name': 'BufWritePost', 'type': 'au', 'opts': {'pattern': '*', 'eval': 'expand("<afile>:p")'}},
-            "\ ]
-            "\ )
-" }}}
-" FZF {{{
-function! FindGitRoot()
-    return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
-endfunction
-
-nnoremap <silent> <C-p>      :execute 'Files' FindGitRoot()<CR>
-nnoremap <silent> <M-p>      :execute 'Files' FindGitRoot()<CR>
-nnoremap <silent> <C-l>      :Lines<CR>
-nnoremap <silent> <M-l>      :Lines<CR>
-
-"let g:fzf_prefer_tmux = 1
-
-fu! s:fzf_statusline()
-  " Override statusline as you like
-  "highlight fzf1 ctermfg=161 ctermbg=251
-  hi link fzf1 StatusBarVisual
-  "highlight fzf2 ctermfg=23 ctermbg=251
-  hi link fzf2 StatusBarVisual
-  "highlight fzf3 ctermfg=237 ctermbg=251
-  hi link fzf3 StatusBarVisual
-  setlocal statusline=%#fzf1#\ \ %*\ %#fzf2#fzf%#fzf3#
-endf
-
-aug FZFCustomStatusLine
-    au! User FzfStatusLine call <SID>fzf_statusline()
-
-    au! FileType fzf
-    au FileType fzf set conceallevel=0
-      \| au BufLeave <buffer> set conceallevel=2
-aug END
-
-"com! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
-com! -bang -nargs=? -complete=dir Files call fzf#vim#files(<q-args>, {'options': ['--reverse', '--preview', 'highlight -O xterm256 --style molokai --force -n {}']}, <bang>0)
-
-let g:fzf_layout = {'down': '~40%'}
-
-nnoremap <silent> <M-f> :Rg<CR>
-
-"let g:fzf_files_options = '--prefiew "cat {}"'
-
-" }}}
 " NERDTree {{{
 "au FileType nerdtree mapc <buffer>
 aug NerdTreeCustom
@@ -852,7 +657,7 @@ let g:tagbar_status_func = 'TagbarStatusFn'
 "au VimEnter * nested :TagbarOpen
 nnoremap <silent> <F2> :TagbarToggle<CR>
 inoremap <silent> <F2> <C-o>:TagbarToggle<CR>
-set updatetime=100
+set updatetime=500
 
 let g:tagbar_type_go = {
     \ 'ctagstype' : 'go',
@@ -884,9 +689,9 @@ let g:tagbar_type_go = {
 " }}}
 " JSX {{{
 " let g:jsx_ext_required = 0
-aug JavascriptReactAuto
-    au BufNewFile,BufRead *.js set filetype=javascriptreact
-aug END
+" aug JavascriptReactAuto
+"     au BufNewFile,BufRead *.js set filetype=javascriptreact
+" aug END
 "
 " }}}
 " Virtualenv {{{
@@ -947,92 +752,15 @@ let g:rainbow_conf = {
             \ }
 " }}}
 " Colorizer {{{
-let g:colorizer_auto_filetype='css,html,lua'
+" let g:colorizer_auto_filetype='css,html,lua'
 " }}}
 " Hex mode {{{
 let g:hexmode_xxd_options = '-g 1'
 " }}}
-" Python {{{
-" Python-mode
-let g:pymode_rope = 1
-let g:pymode_doc = 1
-let g:pymode_doc_bind = '<C-k>'
-let g:pymode_rope_completion = 1
-let g:pymode_rope_complete_on_dot = 0
-let g:pymode_rope_completion_bind = '<C-Space>'
-let g:pymode_rope_lookup_project = 1
-let g:pymode_rope_goto_definition_bind = '<Return>'
-let g:pymode_quickfix_minheight = 6
-let g:pymode_quickfix_maxheight = 8
-let g:pymode_options_max_line_length = 120
-let g:pymode_lint_options_pep8 = {'max_line_length': g:pymode_options_max_line_length}
-let g:pymode_lint_options_pylint = {'max-line-length': g:pymode_options_max_line_length}
-let g:pymode_syntax_all = 1
-let g:pymode_rope_goto_definition_cmd = 'vnew'
-let g:pymode_options_colorcolumn = 0
+" Supertab {{{
 
-" https://github.com/python-mode/python-mode/issues/384#issuecomment-38399715
-set completeopt=menu
-
-" Jedi
-"let g:jedi#auto_initialization = 0
-let g:jedi#show_call_signatures = 2
-let g:jedi#show_call_signatures_delay = 100
-let g:jedi#popup_select_first = 0
-let g:jedi#max_doc_height = 15
-" let g:jedi#rename_command = '<C-r>'
-let g:jedi#usages_command = '<C-n>'
-let g:jedi#popup_on_dot = 0
-let g:jedi#popup_select_first = 0
-" let g:jedi#use_splits_not_buffers = 'right'
-let g:jedi#smart_auto_mappings = 0
-let g:jedi#fuzzy_completion = 1
-" aug PythonJediConfig
-"     au FileType python :py3 from jedi import settings; settings.fuzzy_completion = 1
-"     "au TextChangedI,CursorMovedI * :call jedi#show_call_signatures()
-" aug end
-"let g:jedi#godo_command = '<C-g>'
-" aug PythonJediGoto
-"     au FileType python nmap <silent> <C-g> :call jedi#goto()<CR>
-" aug end
 let g:SuperTabDefaultCompletionType = 'context'
 let g:SuperTabContextTextOmniPrecedence = ['&omnifunc', '&contextfunc']
-
-hi TabLine ctermbg=236 ctermfg=red
-
-aug PythonCompletion
-    au FileType python :set omnifunc=
-aug end
-
-" More obvious active windows. Neovim rocks!
-"hi! NormalNC ctermfg=240 ctermbg=none cterm=none
-"hi! LineNrNC ctermbg=none
-"hi! SignColumnNC ctermbg=none
-"hi! IdentifierNC ctermfg=100
-"hi! StatementNC ctermfg=89
-"hi! SpecialNC ctermfg=25
-"hi! PreProcNC ctermfg=65
-
-aug BgHighlight
-    au!
-    "autocmd WinEnter * set nu
-    "autocmd WinLeave * set nonu
-
-    " Tired of this
-    "au WinEnter * setlocal winhl=
-    "au WinLeave * setlocal winhl=Normal:NormalNC
-
-    " ,LineNr:LineNrNC,SignColumn:SignColumnNC
-    " ,Identifier:IdentifierNC
-    " ,Statement:StatementNC,Special:SpecialNC,PreProc:PreProcNC
-aug END
-
-" Conceal tweaks for jedi signature display
-hi jediFat ctermfg=197 ctermbg=233 cterm=bold,underline
-"hi jediFatSymbol ctermfg=233 ctermbg=233
-"au BufRead *.py :syn match jediFatSymbol "\*_\*" contained  " conceal
-
-autocmd FileType python let b:coc_root_patterns = ['.git', '.env', 'requirements.txt', 'Dockerfile']
 
 " }}}
 " Go {{{
@@ -1147,194 +875,277 @@ aug SystemdAuto
     au BufNewFile,BufRead *.tpl set filetype=bash
 aug END
 " }}}
-" Lightline (statusline & tabline via lightline-bufferline) {{{
-set noshowmode
-let g:lightline = {
-            \ 'colorscheme': 'molokai',
-            \ 'active': {
-            \   'left': [['mode', 'paste'], ['readonly', 'filename_and_position', 'modified']],
-            \   'right': [[], [], ['filetype', 'bufnum', 'fileformat', 'fileencoding'], ['ale_warnings'], ['ale_errors']]
-            \ },
-            \ 'inactive': {
-            \   'left': [['filename']],
-            \   'right': [[], [], ['filetype', 'bufnum', 'fileformat', 'fileencoding'], ['ale_warnings'], ['ale_errors']]
-            \ },
-            \ 'mode_map': {
-            \   'n': '', 'i': '', 'R': '', 'v': '', 'V': '', "\<C-v>": '',
-            \   'c': 'C', 's': 'S', 'S': 'S-L', "\<C-s>": 'S-B', 't': 'T'
-            \ },
-            \ 'component_expand': {
-            \   'buffers': 'lightline#bufferline#buffers',
-            \   'ale_errors': 'AleErrors',
-            \   'ale_warnings': 'AleWarnings'
-            \ },
-            \ 'component': {
-            \   'filename_and_position': '%t:%l:%c',
-            \   'lineinfo_short': '%l:%c',
-            \ },
-            \ 'component_function': {
-            \ },
-            \ 'component_type': {
-            \   'buffers': 'tabsel',
-            \ },
-            \ 'component_raw': {
-            \   'ale_errors': 1,
-            \   'ale_warnings': 1
-            \ }
-            \ }
-let g:lightline.tabline = {
-            \ 'left': [ [ 'buffers' ] ],
-            \ 'right': [ [] ]
-            \ }
-            " \ 'right': [ [ 'close' ] ]
-set showtabline=2
-let g:lightline#bufferline#show_number = 2
-let g:lightline#bufferline#enable_nerdfont = 1
-aug CurrentBuf
-    au WinEnter * :call setwinvar(winnr(), 'winnr', winnr())
-aug end
-fu! AleErrors() abort
-    let l:is_checking = ale#engine#IsCheckingBuffer(b:id)
-    let l:counts = ale#statusline#Count(b:id)
-    let l:errors = l:counts.error + l:counts.style_error
-    let l:err_msg = '' . expand('<abuf>')
-    if l:is_checking
-        let l:err_msg = '  ' . '… '
-    else
-        if l:errors
-            let l:err_msg .= '%#ALEError#  ' . printf('%d', l:errors) . ' '
-        else
-            let l:err_msg .= '  ' . '0 '  " ' —'
-        endi
-    endi
-    return l:err_msg
-endf
-fu! AleWarnings() abort
-    let l:is_checking = ale#engine#IsCheckingBuffer(b:id)
-    let l:counts = ale#statusline#Count(b:id)
-    let l:errors = l:counts.error + l:counts.style_error
-    let l:warnings = l:counts.total - l:errors
-    let l:warn_msg = '' . w:winnr
-    if l:is_checking
-        let l:warn_msg .= '  ' . '… '
-    else
-        if l:warnings
-            let l:warn_msg .= '%#ALEWarning#  ' . printf('%d', l:warnings) . ' '
-        else
-            let l:warn_msg .= '  ' . '0 '  " ' —'
-        endi
-    endi
-    return l:warn_msg
-endf
-aug ALERefreshStatusline
-    " au! User ALEJobStarted :call lightline#update()
-    " " au! User ALELintPre :call lightline#update()
-    " au! User ALELintPost :call lightline#update()
-aug END
-" hi LightlineLeft_inactive_0 ctermfg=245
-" }}}
-" Coc {{{
-
-" let g:coc_global_extensions = ['coc-json', 'coc-diagnostic', 'coc-jedi', 'coc-java']
-let g:coc_global_extensions = ['coc-json', 'coc-java', 'coc-tsserver', 'coc-eslint', 'coc-go', 'coc-pyright']
-" let g:coc_global_extensions = ['coc-json', 'coc-java', 'coc-tsserver', 'coc-go', 'coc-jedi']
-" let g:coc_borderchars = ['1', '2', '3', '4', '5', '6', '7', '8']
-" let g:coc_global_extensions = ['coc-json', 'coc-jedi', 'coc-java', 'coc-tsserver', 'coc-go']
-
-" https://github.com/neoclide/coc.nvim#example-vim-configuration
-" aug CPPCocGoto
-nmap <silent> <C-g> <Plug>(coc-definition)
-nmap <silent> ; <Plug>(coc-diagnostic-prev)
-nmap <silent> ' <Plug>(coc-diagnostic-next)
-" set keywordprg=:call CocAction('doHover')
-nmap <silent> K :call CocAction('doHover')<CR>
-nmap <silent> <M-i> :CocCommand go.impl.cursor<CR>
-nmap <silent> <M-Enter> :CocAction<CR>
-" aug end
-aug CocHighlight
-    autocmd CursorHold * silent call CocActionAsync('highlight')
-    autocmd CursorHoldI * silent call CocActionAsync('highlight')
-aug end
-
-" https://github.com/neoclide/coc.nvim/wiki/Completion-with-sources
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~ '\s'
-endfunction
-
-inoremap <silent><expr> <Tab>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<Tab>" :
-      \ coc#refresh()
-"
-" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>""
-
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
-nnoremap <expr><C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-nnoremap <expr><C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-inoremap <expr><C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<Right>"
-inoremap <expr><C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<Left>"
-
-" Golang
-" au FileType go au BufWritePre <buffer> <Plug>(coc-format)
-" autocmd BufWritePre *.go :call CocAction('runCommand', 'editor.action.organizeImport')
-aug CocGolang
-    " au BufWritePost *.go :silent exec '!go fmt' | let b:v=winsaveview() | :e | call winrestview(b:v)
-    au BufWritePre,InsertLeave *.go :call CocAction('format')
-    " au FileType go au BufWritePre <buffer> <Plug>(coc-format)
-aug end
-
-" https://www.reddit.com/r/vim/comments/a4bn0w/how_do_i_show_documentation_with_coc_with/
-" Show docstring immediately after selecting completion
-autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-
-hi CocErrorSign ctermfg=9 ctermbg=235
-hi CocWarningSign ctermfg=130 ctermbg=235
-hi CocInfoSign ctermfg=11 ctermbg=235
-hi CocHintSign ctermfg=12 ctermbg=235
-
-"
-" }}}
-" ScrollView {{{
-let g:scrollview_column = 1
-
-" https://github.com/dstein64/nvim-scrollview/issues/10#issuecomment-751959901
-command Bdelete
-    \ silent! ScrollViewDisable
-    \ | bdelete
-    \ | silent! ScrollViewEnable
-
-" let g:scrollview_mode = 'virtual'
-" }}}
-" Minimap {{{
-let g:minimap_width = 10
-let g:minimap_auto_start = 1
-let g:minimap_auto_start_win_enter = 1
-" }}}
-" IndentLine (NVIM) {{{
-            " \ indent_soft_pattern = '\\s',
-" lua require('indent_guides').setup({
-"             \ indent_char = '▏';
-"             \ indent_pretty_mode = true;
-"             \ })
-
-" let g:indent_blankline_buftype_exclude = ['help', 'startify'] " Does not seem to work
-" let g:indent_blankline_show_first_indent_level = v:false
-" aug BlanklineDisable
-"     au FileType startify :IndentBlanklineDisable
-" aug end
-" }}}
 " vim.zip {{{
 let g:zip_nomax = 1
 " let g:loaded_zipPlugin= 1
 " let g:loaded_zip      = 1
 " }}}
-" SQL {{{
-" au BufWritePre,InsertLeave *.sql :ALEFix
-" }}}
 " OS X stuff {{{
 au BufNewFile,BufRead *.plist set filetype=xml
+" }}}
+" LSP {{{
+hi LspDiagnosticsDefaultError ctermfg=9 ctermbg=235
+hi LspDiagnosticsDefaultWarning ctermfg=130 ctermbg=235
+hi LspDiagnosticsDefaultInformation ctermfg=38 ctermbg=235
+hi LspDiagnosticsDefaultHint ctermfg=156 ctermbg=235
+" hi CocInfoSign ctermfg=11 ctermbg=235
+" hi CocHintSign ctermfg=12 ctermbg=235
+
+lua << EOF
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+  local opts = { noremap=true, silent=true }
+  buf_set_keymap('n', '<C-g>', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '<M-Enter>', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', ';', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', '\'', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<M-r>', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+  -- autocmd CursorHold * :lua vim.lsp.buf.signature_help()
+  vim.api.nvim_command([[
+    autocmd CursorMoved * :lua require('ts_context_commentstring.internal').update_commentstring()
+  ]])
+end
+-- require'lspconfig'.pyright.setup{
+--     on_attach=on_attach
+-- }
+kind_icons = {
+  Class = " ",
+  Color = " ",
+  Constant = " ",
+  Constructor = " ",
+  Enum = "了 ",
+  EnumMember = " ",
+  Field = " ",
+  File = " ",
+  Folder = " ",
+  Function = " ",
+  Interface = "ﰮ ",
+  Keyword = " ",
+  Method = "ƒ ",
+  Module = " ",
+  Property = " ",
+  Snippet = "﬌ ",
+  Struct = " ",
+  Text = " ",
+  Unit = " ",
+  Value = " ",
+  Variable = " ",
+}
+
+local kinds = vim.lsp.protocol.CompletionItemKind
+for i, kind in ipairs(kinds) do
+    if kind_icons[kind] then
+        kinds[i] = kind_icons[kind] .. kind
+    end
+end
+
+local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+for type, icon in pairs(signs) do
+    local hl = "DiagnosticSign" .. type
+    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+end
+
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+    virtual_text = {
+        source = "always",    -- Or "if_many"
+    }
+})
+
+require'lspconfig'.pylsp.setup{
+    on_attach=on_attach,
+    settings = {
+        pylsp = {
+            plugins = {
+                pylint = {
+                    enabled = true,
+                    args = {},
+                    executable = 'pylint'
+                    },
+                flake8 = {
+                    enabled = false
+                    },
+                pycodestyle = {
+                    enabled = false
+                    },
+                pyflakes = {
+                    enabled = false
+                    },
+                }
+            }
+        }
+}
+require'lspconfig'.ccls.setup{
+    on_attach=on_attach
+}
+require'lspconfig'.gopls.setup{
+    on_attach=on_attach
+}
+require'lspconfig'.vimls.setup{
+    on_attach=on_attach
+}
+require'lspconfig'.cssls.setup{
+    on_attach=on_attach
+}
+require'lspconfig'.eslint.setup{
+    on_attach=on_attach
+}
+require'lspconfig'.html.setup{
+    on_attach=on_attach
+}
+require'lspconfig'.jsonls.setup{
+    on_attach=on_attach
+}
+local lsp_status = require('lsp-status')
+-- lsp_status.config({
+--     indicator_errors = '✖',
+--     indicator_warnings = '',
+--     indicator_info = 'i',
+--     indicator_hint = '',
+--     indicator_ok = 'Ok',
+-- })
+lsp_status.register_progress()
+
+--  lsp_status.config({
+--    indicator_errors = 'E',
+--    indicator_warnings = 'W',
+--    indicator_info = 'i',
+--    indicator_hint = '?',
+--    indicator_ok = 'Ok',
+--  })
+EOF
+" }}}
+" TreeSitter {{{
+lua << EOF
+require'nvim-treesitter.configs'.setup {
+  context_commentstring = {
+    enable = true,
+    enable_autocmd = true,
+  },
+  incremental_selection = {
+    enable = false,
+  },
+  highlight = {
+    enable = true,
+    custom_captures = {
+      -- Highlight the @foo.bar capture group with the "Identifier" highlight group.
+      ["foo.bar"] = "Identifier",
+    },
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+  },
+  ensure_installed = {'javascript', 'typescript'},
+  playground = {
+    enable = true,
+    disable = {},
+    updatetime = 25, -- Debounced time for highlighting nodes in the playground from source code
+    persist_queries = false, -- Whether the query persists across vim sessions
+    keybindings = {
+      toggle_query_editor = 'o',
+      toggle_hl_groups = 'i',
+      toggle_injected_languages = 't',
+      toggle_anonymous_nodes = 'a',
+      toggle_language_display = 'I',
+      focus_language = 'f',
+      unfocus_language = 'F',
+      update = 'R',
+      goto_node = '<cr>',
+      show_help = '?',
+    },
+  }
+}
+EOF
+" }}}
+" Status line {{{
+lua << EOF
+mode_map = {
+    N= '',
+    I= '',
+    R= '',
+    C= '',
+    V= '',
+    T= '',
+    }
+
+function lspStatus()
+    stats = require("lsp-status/diagnostics")(0)
+    parts = {}
+    if stats.errors > 0 then
+        table.insert(parts, '✖ ' .. stats.errors)
+    end
+    if stats.warnings > 0 then
+        table.insert(parts, ' ' .. stats.warnings)
+    end
+    return table.concat(parts, ', ')
+end
+
+require('lualine').setup{
+options = {
+    theme = 'onedark',
+    section_separators = {
+        left = '',
+        right = ''
+        },
+    component_separators = {
+        left = '|',
+        right = '|'
+        },
+    },
+sections = {
+    lualine_a = {{'mode', fmt = function(str) return mode_map[str:sub(1, 1)] end}},
+    lualine_c = {{'filename', fmt = function(str) cur = vim.api.nvim_win_get_cursor(0); return str .. ':' .. cur[1] .. ':' .. cur[2] end}},
+    lualine_b={},
+    lualine_x={'filetype', 'encoding', 'filetype'},
+    lualine_y={'branch'},
+    lualine_z={'lspStatus()'},
+    }
+}
+EOF
+" }}}
+" Buffer line {{{
+" lua << EOF
+" require("tabline").setup{
+" enable = true,
+" options = {
+"     }
+" }
+" EOF
+" hi TabLine ctermbg=236 ctermfg=red
+hi TabLineFill ctermfg=0
+hi TabLine ctermbg=0 ctermfg=245 cterm=none
+hi TabLineSel ctermbg=150 ctermfg=0 cterm=none
+hi BufTabLineActive ctermbg=239 ctermfg=255
+let g:buftabline_numbers = 2
+let g:buftabline_indicators = 1
+let g:buftabline_separators = 1
+nmap <M-1> <Plug>BufTabLine.Go(1)
+nmap <M-2> <Plug>BufTabLine.Go(2)
+nmap <M-3> <Plug>BufTabLine.Go(3)
+nmap <M-4> <Plug>BufTabLine.Go(4)
+nmap <M-5> <Plug>BufTabLine.Go(5)
+
+" }}}
+" Telescope {{{
+lua << EOF
+local actions = require('telescope.actions')
+require('telescope').setup{
+  defaults = {
+    mappings = {
+      i = {
+        -- ["<C-j>"]   = actions.move_selection_next,
+        -- ["<C-k>"]   = actions.move_selection_previous,
+        -- ["<C-q>"]   = actions.smart_send_to_qflist + actions.open_qflist,
+        ["<ESC>"]   = actions.close,
+      },
+    },
+  }
+}
+EOF
+nnoremap <silent> <M-l> :Telescope live_grep<CR>
+nnoremap <silent> <M-p> :Telescope find_files<CR>
 " }}}

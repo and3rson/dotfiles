@@ -1,5 +1,5 @@
 #!/bin/bash
 
-case $(tty) in /dev/tty[0-9]*)
-    setfont /usr/share/kbd/consolefonts/ter-912n.psf.gz
-esac
+#case $(tty) in /dev/tty[0-9]*)
+#    setfont /usr/share/kbd/consolefonts/ter-912n.psf.gz
+#esac

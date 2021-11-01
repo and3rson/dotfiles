@@ -349,7 +349,59 @@ endf
 "    return ''
 "endf
 " }}}
+" TreeSitter statusline {{{
+" fu! TreeSitter(bufnr, m, is_active_window)
+"     return g:sep . nvim_treesitter#statusline(60)
+" endf
+" }}}
+" LSP info {{{
+fu! LSPInfo(bufnr, m, is_active_window)
+    " lua for k, v in pairs(vim.diagnostic.get()) do print(k, v) end
+    " https://github.com/nvim-lua/lsp-status.nvim/blob/master/lua/lsp-status/diagnostics.lua
 
+    if luaeval('#vim.lsp.buf_get_clients() > 0')
+        let l:msg = ''
+
+        let b:bufnr = a:bufnr
+        let l:result = luaeval('require("lsp-status/diagnostics")(vim.b["bufnr"])')
+
+        if l:result.errors
+            let l:msg .= '%#StatusBarError#✖ ' . printf('%2d', l:result.errors)
+        else
+            let l:msg .= '%#StatusBarText#✖ ' . ' 0'  " ' —'
+        endi
+
+        let l:msg .= '  '
+
+        if l:result.warnings
+            let l:msg .= '%#StatusBarWarning# ' . printf('%2d', l:result.warnings)
+        else
+            let l:msg .= '%#StatusBarText# ' . ' 0'  " ' —'
+        endi
+
+        " let l:msg .= '  '
+
+        " if l:result.info
+        "     let l:msg .= '%#StatusBarInfo# ' . printf('%2d', l:result.info)
+        " else
+        "     let l:msg .= '%#StatusBarText# ' . ' 0'  " ' —'
+        " endi
+
+        " let l:msg .= '  '
+
+        " if l:result.hints
+        "     let l:msg .= '%#StatusBarHints# ' . printf('%2d', l:result.hints)
+        " else
+        "     let l:msg .= '%#StatusBarText# ' . ' 0'  " ' —'
+        " endi
+        return g:sep . l:msg . '%#StatusBarText#'
+    else
+        return g:sep . '%#StatusBarWarning#No servers%#StatusBarText#'
+    endi
+
+    " return luaeval('require("lsp-status").status()')
+endf
+" }}}
 fu! CocOrAle(bufnr, m, is_active_window)
     if !empty(getbufvar(a:bufnr, 'coc_diagnostic_info'))
         return ' [Coc]' . CocErrors(a:bufnr, a:m, a:is_active_window) . CocWarnings(a:bufnr, a:m, a:is_active_window)
@@ -373,10 +425,12 @@ let g:status_bar = [
             \ 'Spacer',
             \ 'FileType',
             \
+            \ 'LSPInfo',
             \ 'FilePos',
             \
-            \ 'CocOrAle',
             \ ]
+            " \ 'TreeSitter',
+            " \ 'CocOrAle',
             " \ 'CocErrors',
             " \ 'CocWarnings',
             " \ 'AleErrors',

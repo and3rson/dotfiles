@@ -60,3 +60,19 @@ function paste() {
     local file=${1:-/dev/stdin}
     curl --data-binary @${file} https://paste.rs
 }
+
+qkkdiff () {
+	ver=$(pacman -Q $1 | cut -f2 -d' ')
+	pacman -Qkkq $1 | while read package file
+	do
+		echo $file
+		bsdtar -xOf /var/cache/pacman/pkg/${package}-${ver}-x86_64.pkg.tar.zst ${file/\//} | diff -uN - $file
+	done
+	return 0
+}
+
+qkkdiff-file () {
+	pkg="$(pacman -Qo $1 | awk '//{printf "%s-%s", $(NF-1), $NF;}')"
+	bsdtar -xOf /var/cache/pacman/pkg/${pkg}-x86_64.pkg.tar.zst ${1/\//} | diff -uN - $1
+	return 0
+}

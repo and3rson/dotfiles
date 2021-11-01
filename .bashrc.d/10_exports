@@ -47,3 +47,10 @@ export PATH="$PATH:$ANDROID_SDK/platform-tools:$ANDROID_SDK/tools"
 
 export SWAYSOCK=$(ls /run/user/1000/sway-ipc.* | head -n 1)
 # export SWAYSOCK=$(sway --get-socketpath)
+
+# https://www.reddit.com/r/swaywm/comments/azyxbj/my_one_huge_problem_with_sway_10_intellij_doesnt/
+export _JAVA_AWT_WM_NONREPARENTING=1
+
+# https://wiki.archlinux.org/title/PipeWire#WebRTC_screen_sharing
+# https://mozilla.github.io/webrtc-landing/
+# export XDG_CURRENT_DESKTOP=sway

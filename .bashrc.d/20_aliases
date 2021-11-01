@@ -52,3 +52,7 @@ alias largepkg='expac "%n %m" -l'\n' -Q $(pacman -Qq) | sort -rhk 2 | less'
 
 alias scrot='scrot -o'
 alias sxiv='sxiv -p'
+
+alias r='ranger'
+
+alias ixio="curl -F 'f:1=<-' ix.io"

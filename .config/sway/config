@@ -5,6 +5,7 @@ xwayland enable
     set $term alacritty
     # set $menu dmenu_path | dmenu | xargs swaymsg exec --
     set $menu "rofi -show run"
+    set $confdir ~/.config/sway
 
 # Output
     output * bg /home/anderson/.wallpapers/lights2.jpg fill
@@ -27,16 +28,16 @@ xwayland enable
     }
 
 # Basic keys
-    bindsym $mod+Return exec $term
-    # bindsym --release Escape exec dunstctl close
-    bindsym Ctrl+Escape exec dunstctl close
+    bindsym --to-code $mod+Return exec $term
+    bindsym --to-code --release Escape exec dunstctl close
+    # bindsym --to-code Ctrl+Escape exec dunstctl close
 
-    bindsym Alt+f4 kill
+    bindsym --to-code Alt+f4 kill
 
-    bindsym $mod+r exec $menu
-    bindsym $mod+b exec blueman-manager
-    bindsym $mod+n exec networkmanager_dmenu
-    bindsym $mod+c exec clipman pick --tool=rofi
+    bindsym --to-code $mod+r exec $menu
+    bindsym --to-code $mod+b exec blueman-manager
+    bindsym --to-code $mod+n exec networkmanager_dmenu
+    bindsym --to-code $mod+c exec clipman pick --tool=rofi
 
     # Drag floating windows by holding down $mod and left mouse button.
     # Resize them with right mouse button + $mod.
@@ -46,53 +47,53 @@ xwayland enable
     floating_modifier $mod normal
 
     # Reload the configuration file
-    bindsym $mod+Control+r reload
+    bindsym --to-code $mod+Control+r reload
 
     # Exit sway (logs you out of your Wayland session)
-    # bindsym $mod+Ctrl+q exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
-    bindsym $mod+Ctrl+q exec "CMD=`echo -e 'Yes\nNo' | rofi -dmenu -p Quit`; if [[ $CMD == Yes ]]; then swaymsg exit; fi"
+    # bindsym --to-code $mod+Ctrl+q exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+    bindsym --to-code $mod+Ctrl+q exec "CMD=`echo -e 'Yes\nNo' | rofi -dmenu -p Quit`; if [[ $CMD == Yes ]]; then swaymsg exit; fi"
 
     # Lock screen
-    # bindsym Ctrl+Alt+l exec swaylock -i ~/.wallpapers/lights1920.png
-    bindsym Ctrl+Alt+l exec swaylock -i ~/.wallpapers/332450.jpg
+    # bindsym --to-code Ctrl+Alt+l exec swaylock -i ~/.wallpapers/lights1920.png
+    bindsym --to-code Ctrl+Alt+l exec swaylock -i ~/.wallpapers/332450.jpg
 
     # Screenshot
-    bindsym Print exec grim -o eDP-1 -t png - > /tmp/sshot.png && (wl-copy < /tmp/sshot.png && notify-send -i /tmp/sshot.png "Screen copied to clipboard") || notify-send "Terminated"
-    bindsym Alt+Print exec grim -g "$(slurp)" -t png - > /tmp/sshot.png && (wl-copy < /tmp/sshot.png && notify-send -i /tmp/sshot.png "Selected area copied to clipboard") || notify-send "Terminated"
+    bindsym --to-code Print exec grim -o eDP-1 -t png - > /tmp/sshot.png && (wl-copy < /tmp/sshot.png && notify-send -i /tmp/sshot.png "Screen copied to clipboard") || notify-send "Terminated"
+    bindsym --to-code Alt+Print exec grim -g "$(slurp)" -t png - > /tmp/sshot.png && (wl-copy < /tmp/sshot.png && notify-send -i /tmp/sshot.png "Selected area copied to clipboard") || notify-send "Terminated"
 
 # Client keys
     # Move your focus around
-    bindsym $mod+Left focus left
-    bindsym $mod+Down focus down
-    bindsym $mod+Up focus up
-    bindsym $mod+Right focus right
+    bindsym --to-code $mod+Left focus left # sibling
+    bindsym --to-code $mod+Down focus down
+    bindsym --to-code $mod+Up focus up
+    bindsym --to-code $mod+Right focus right # sibling
 
     # Move the focused window with the same, but add Shift
-    bindsym $mod+Shift+Left move left
-    bindsym $mod+Shift+Down move down
-    bindsym $mod+Shift+Up move up
-    bindsym $mod+Shift+Right move right
+    bindsym --to-code $mod+Shift+Left move left
+    bindsym --to-code $mod+Shift+Down move down
+    bindsym --to-code $mod+Shift+Up move up
+    bindsym --to-code $mod+Shift+Right move right
 
     # Does not work
-    # bindsym $mod+1 focus number 1
-    # bindsym $mod+2 focus number 2
-    # bindsym $mod+3 focus number 3
+    # bindsym --to-code $mod+1 focus number 1
+    # bindsym --to-code $mod+2 focus number 2
+    # bindsym --to-code $mod+3 focus number 3
 
     focus_follows_mouse no
 
 # Workspaces
     # Switch to workspace
-    bindsym $mod+q workspace q
-    bindsym $mod+w workspace w
-    bindsym $mod+i workspace i
-    bindsym $mod+m workspace m
-    bindsym $mod+a workspace a
+    bindsym --to-code $mod+q workspace q
+    bindsym --to-code $mod+w workspace w
+    bindsym --to-code $mod+i workspace i
+    bindsym --to-code $mod+m workspace m
+    bindsym --to-code $mod+a workspace a
     # Move focused container to workspace
-    bindsym $mod+Shift+q move container to workspace q
-    bindsym $mod+Shift+w move container to workspace w
-    bindsym $mod+Shift+i move container to workspace i
-    bindsym $mod+Shift+m move container to workspace m
-    bindsym $mod+Shift+a move container to workspace a
+    bindsym --to-code $mod+Shift+q move container to workspace q
+    bindsym --to-code $mod+Shift+w move container to workspace w
+    bindsym --to-code $mod+Shift+i move container to workspace i
+    bindsym --to-code $mod+Shift+m move container to workspace m
+    bindsym --to-code $mod+Shift+a move container to workspace a
     # Note: workspaces can have any name you want, not just numbers.
     # We just use 1-10 as the default.
 
@@ -102,51 +103,29 @@ xwayland enable
 
 # Layout stuff
     # Make the current focus fullscreen
-    bindsym $mod+f fullscreen
+    bindsym --to-code $mod+f fullscreen
 
     # Toggle the current focus between tiling and floating mode
-    bindsym $mod+x floating toggle
+    bindsym --to-code $mod+x floating toggle
 
     # Swap focus between the tiling area and the floating area
-    # bindsym $mod+space focus mode_toggle
+    # bindsym --to-code $mod+space focus mode_toggle
 
     # Move focus to the parent container
-    # bindsym $mod+a focus parent
+    # bindsym --to-code $mod+a focus parent
 
 
 # Media keys
-    bindsym KP_Begin exec playerctl play-pause
-    bindsym KP_Left exec playerctl previous
-    bindsym KP_Right exec playerctl next
-    bindsym KP_Up exec notify-send \
-        --hint=string:x-dunst-stack-tag:volume -t 300 -a Volume \
-        -i /usr/share/icons/hicolor/48x48/apps/hwmixvolume.png \
-        "Volume: `amixer -D pulse sset Master 2%+ | grep Left: | awk -F'[][]' '{ print $2 }'`" \
-        `pacmd dump | grep default-sink | awk -F ' ' '{print $2}'`
-    bindsym KP_Down exec notify-send \
-        --hint=string:x-dunst-stack-tag:volume -t 300 -a Volume \
-        -i /usr/share/icons/hicolor/48x48/apps/hwmixvolume.png \
-        "Volume: `amixer -D pulse sset Master 2%- | grep Left: | awk -F'[][]' '{ print $2 }'`" \
-        `pacmd dump | grep default-sink | awk -F ' ' '{print $2}'`
-    bindsym XF86AudioRaiseVolume exec notify-send \
-        --hint=string:x-dunst-stack-tag:volume -t 300 -a Volume \
-        -i /usr/share/icons/hicolor/48x48/apps/hwmixvolume.png \
-        "Volume: `amixer -D pulse sset Master 2%+ | grep Left: | awk -F'[][]' '{ print $2 }'`" \
-        `pacmd dump | grep default-sink | awk -F ' ' '{print $2}'`
-    bindsym XF86AudioLowerVolume exec notify-send \
-        --hint=string:x-dunst-stack-tag:volume -t 300 -a Volume \
-        -i /usr/share/icons/hicolor/48x48/apps/hwmixvolume.png \
-        "Volume: `amixer -D pulse sset Master 2%- | grep Left: | awk -F'[][]' '{ print $2 }'`" \
-        `pacmd dump | grep default-sink | awk -F ' ' '{print $2}'`
+    bindsym --to-code KP_Begin exec playerctl play-pause
+    bindsym --to-code KP_Left exec playerctl previous
+    bindsym --to-code KP_Right exec playerctl next
+    bindsym --to-code KP_Up exec $confdir/volume.sh 2%+
+    bindsym --to-code KP_Down exec $confdir/volume.sh 2%-
+    bindsym --to-code XF86AudioRaiseVolume exec $confdir/volume.sh 2%+
+    bindsym --to-code XF86AudioLowerVolume exec $confdir/volume.sh 2%-
 
-    bindsym XF86MonBrightnessUp exec notify-send \
-        --hint=string:x-dunst-stack-tag:brightness -t 300 -a Brightness \
-        -i /usr/share/icons/menta/48x48/devices/display.png \
-        "Brightness: `brightnessctl s 5%+ | egrep -o '[0-9]+%'`"
-    bindsym XF86MonBrightnessDown exec notify-send \
-        --hint=string:x-dunst-stack-tag:brightness -t 300 -a Brightness \
-        -i /usr/share/icons/menta/48x48/devices/display.png \
-        "Brightness: `brightnessctl s 5%- | egrep -o '[0-9]+%'`"
+    bindsym --to-code XF86MonBrightnessUp exec $confdir/brightness.sh 2%+
+    bindsym --to-code XF86MonBrightnessDown exec $confdir/brightness.sh 2%-
 
 # Status Bar:
     # Read `man 5 sway-bar` for more information about this section.
@@ -179,15 +158,24 @@ client.focused #222222 #222222 #EEEEEE
 client.unfocused #000000 #000000 #777777
 # default_border pixel 1
 
+# Screen sharing via xdg-desktop-portal-wlr
+# exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway XDG_SESSION_TYPE=wayland
+exec "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
+
 # App configs
 assign [app_id="hometerm"] workspace q
 exec alacritty --class hometerm -e ~/.scripts/stmux.sh
 assign [app_id="padterm"] workspace x
 exec alacritty --class padterm -e bash -c 'TERM=rxvt-256color cava'
 assign [app_id="firefoxdeveloperedition"] workspace w
+for_window [title="Firefox Developer Edition — Sharing Indicator"] floating enable; move position 930 1040
+# move position 930 1040;
 exec firefox-developer-edition
 assign [app_id="telegramdesktop"] workspace i
 exec telegram-desktop
+for_window [title="TDR 2000"] floating disable
+for_window [title="Steam"] move window to workspace a
+# for_window [title="IRCCloud"] workspace i
 # assign [instance="spotify"] workspace m
 # assign [class="Spotify"] workspace m
 # assign [title=".*Spotify.*"] workspace m
@@ -197,8 +185,12 @@ exec spotify
 
 # for_window [app_id="gcolor3"] floating enable
 
-exec flashfocus
+# exec flashfocus
 exec wl-paste -t text --watch clipman store
+
+exec $confdir/nmmonitor.sh
+exec swayidle timeout 300 "swaymsg output '*' dpms off" resume "swaymsg output '*' dpms on"
+# exec $confdir/mqtt.sh
 
 # Built-in configs
 include /etc/sway/config.d/*
