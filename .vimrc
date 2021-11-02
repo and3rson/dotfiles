@@ -100,6 +100,7 @@ call plug#begin('~/.vim/plugged')
 
     " Status line
     Plug 'nvim-lualine/lualine.nvim'
+    Plug 'wfxr/minimap.vim'
 
     " Buffer tabline
     Plug 'ap/vim-buftabline'
@@ -330,6 +331,17 @@ set shada=!,'100,<50,s10,h,:500,@500,/500
 " Color column
 "set colorcolumn=80,100,120
 set colorcolumn=120
+
+" Command line horizontal completion instead of vertical
+set nowildmenu
+set wildoptions-=pum
+set wildoptions-=tagfile
+" No fancy list
+set wildmode=list:longest
+
+" Disable preview for completions
+set completeopt-=preview
+" set completeopt+=noinsert
 
 " Blink yanked text
 au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout=100, on_visual=true}
@@ -657,7 +669,7 @@ let g:tagbar_status_func = 'TagbarStatusFn'
 "au VimEnter * nested :TagbarOpen
 nnoremap <silent> <F2> :TagbarToggle<CR>
 inoremap <silent> <F2> <C-o>:TagbarToggle<CR>
-set updatetime=500
+set updatetime=250
 
 let g:tagbar_type_go = {
     \ 'ctagstype' : 'go',
@@ -893,20 +905,17 @@ hi LspDiagnosticsDefaultHint ctermfg=156 ctermbg=235
 
 lua << EOF
 local on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
   local opts = { noremap=true, silent=true }
-  buf_set_keymap('n', '<C-g>', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-  buf_set_keymap('n', '<M-Enter>', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-  buf_set_keymap('n', ';', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-  buf_set_keymap('n', '\'', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-  buf_set_keymap('n', '<M-r>', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-g>', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', ';', '<cmd>lua vim.lsp.diagnostic.goto_prev{float=false}<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '\'', '<cmd>lua vim.lsp.diagnostic.goto_next{float=false}<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-r>', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
   -- autocmd CursorHold * :lua vim.lsp.buf.signature_help()
-  vim.api.nvim_command([[
-    autocmd CursorMoved * :lua require('ts_context_commentstring.internal').update_commentstring()
-  ]])
+  vim.api.nvim_command("autocmd CursorMoved * :lua require('ts_context_commentstring.internal').update_commentstring()")
+  vim.api.nvim_command("autocmd CursorHoldI * :lua vim.lsp.buf.signature_help()")
 end
 -- require'lspconfig'.pyright.setup{
 --     on_attach=on_attach
@@ -948,11 +957,11 @@ for type, icon in pairs(signs) do
     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-    virtual_text = {
-        source = "always",    -- Or "if_many"
-    }
-})
+-- vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+--     virtual_text = {
+--         source = "always",    -- Or "if_many"
+--     }
+-- })
 
 require'lspconfig'.pylsp.setup{
     on_attach=on_attach,
@@ -1073,7 +1082,8 @@ mode_map = {
     }
 
 function lspStatus()
-    stats = require("lsp-status/diagnostics")(0)
+    -- stats = require("lsp-status/diagnostics")(0)
+    stats = require("lsp-status").diagnostics()
     parts = {}
     if stats.errors > 0 then
         table.insert(parts, '✖ ' .. stats.errors)
@@ -1081,7 +1091,7 @@ function lspStatus()
     if stats.warnings > 0 then
         table.insert(parts, ' ' .. stats.warnings)
     end
-    return table.concat(parts, ', ')
+    return table.concat(parts, ' ')
 end
 
 require('lualine').setup{
