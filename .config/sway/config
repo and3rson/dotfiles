@@ -174,7 +174,7 @@ exec firefox-developer-edition
 assign [app_id="telegramdesktop"] workspace i
 exec telegram-desktop
 for_window [title="TDR 2000"] floating disable
-for_window [title="Steam"] move window to workspace a
+for_window [title="^Steam$"] move window to workspace a
 # for_window [title="IRCCloud"] workspace i
 # assign [instance="spotify"] workspace m
 # assign [class="Spotify"] workspace m
@@ -183,13 +183,19 @@ for_window [title="Steam"] move window to workspace a
 for_window [class="Spotify"] move window to workspace m
 exec spotify
 
+for_window [title="Minecraft Launcher"] move window to workspace a
+
 # for_window [app_id="gcolor3"] floating enable
 
 # exec flashfocus
 exec wl-paste -t text --watch clipman store
 
 exec $confdir/nmmonitor.sh
-exec swayidle timeout 300 "swaymsg output '*' dpms off" resume "swaymsg output '*' dpms on"
+exec swayidle -w \
+    timeout 300 "swaymsg output '*' dpms off" \
+    resume "swaymsg output '*' dpms on"
+
+    # after-resume 'swaylock -d -f -i /home/anderson/.wallpapers/332450.jpg'
 # exec $confdir/mqtt.sh
 
 # Built-in configs
