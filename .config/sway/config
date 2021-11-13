@@ -130,23 +130,24 @@ xwayland enable
 # Status Bar:
     # Read `man 5 sway-bar` for more information about this section.
     font pango:RobotoMonoNerdFont 10
-    # bar {
-    #     position top
-    #     output eDP-1
+    bar {
+        position top
+        output eDP-1
 
-    #     # When the status_command prints a new line to stdout, swaybar updates.
-    #     # The default just shows the current date and time.
-    #     # status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
-    #     status_command while true; do echo -n `~/.tmux.d/status.sh ansi | ansifilter -M -F RobotoMonoNerdFont`; sleep 1; done
-    #     pango_markup true
-    #     workspace_buttons no
+        # When the status_command prints a new line to stdout, swaybar updates.
+        # The default just shows the current date and time.
+        # status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
+        # status_command while true; do echo -n `~/.tmux.d/status.sh ansi | ansifilter -M -F RobotoMonoNerdFont`; sleep 1; done
+        status_command ~/.config/sway/status/status done
+        pango_markup true
+        workspace_buttons no
 
-    #     colors {
-    #         statusline #ffffff
-    #         background #000000
-    #         inactive_workspace #32323200 #32323200 #5c5c5c
-    #     }
-    # }
+        colors {
+            statusline #ffffff
+            background #000000
+            inactive_workspace #32323200 #32323200 #5c5c5c
+        }
+    }
 
 
 # Styles

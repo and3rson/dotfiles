@@ -291,10 +291,10 @@ function cpu() {
     cpu_util=$((100*( cpu_active_cur-cpu_active_prev ) / (cpu_total_cur-cpu_total_prev) ))
 
     ##E=$((E0+E1+E2+E3/4))
-    if (( $E > 99 ))
-    then
-        E=99
-    fi
+    # if [ $(($E > 99)) -eq "1" ]
+    # then
+    #     E=99
+    # fi
 
     # cpu_fraction=$E
     cpu_fraction=$cpu_util
@@ -308,7 +308,7 @@ function cpu() {
     #G=`cat /tmp/cpud_graph.txt`
     #V=`cat /tmp/cpud_value.txt`
 
-    if (( $E > 50 ))
+    if [ $(($cpu_fraction > 50)) -eq "1" ]
     then
         #warn "\uE266  "
         # warn $graph
