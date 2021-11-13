@@ -1,5 +1,6 @@
 -- vim:foldmethod=marker
-require('packer').startup(function()
+-- Plugins {{{
+require('packer').startup(function(use)
     -- General
     use 'wbthomason/packer.nvim'
     use 'tomasr/molokai'
@@ -10,6 +11,12 @@ require('packer').startup(function()
     use 'nvim-lua/lsp-status.nvim'
     use 'tpope/vim-commentary'
     use 'jose-elias-alvarez/null-ls.nvim'
+    use 'hrsh7th/nvim-cmp' -- Autocompletion plugin
+    use 'hrsh7th/cmp-nvim-lsp' -- LSP source for nvim-cmp
+    -- use 'hrsh7th/cmp-vsnip'
+    -- use 'hrsh7th/vim-vsnip'
+    use 'L3MON4D3/LuaSnip'
+    use 'saadparwaiz1/cmp_luasnip'
 
     -- TS
     use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
@@ -21,6 +28,9 @@ require('packer').startup(function()
     use 'Vimjas/vim-python-pep8-indent'
     use 'airblade/vim-gitgutter'
     use 'ervandew/supertab'
+
+    -- Cursor position
+    use 'farmergreg/vim-lastplace'
 
     -- Telescope
     use 'nvim-lua/plenary.nvim'
@@ -45,6 +55,7 @@ require('packer').startup(function()
     -- Editorconfig
     -- use 'editorconfig/editorconfig-vim'
 end)
+-- }}}
 
 -- Commentary {{{
 nnoremap('<M-/>', '<cmd>Commentary<CR>')
@@ -66,6 +77,11 @@ vim.g.indentLine_fileTypeExclude = {'text', 'help', 'startify'}
 vim.g.indentLine_faster = 1 -- TODO: Experimental
 -- }}}
 -- GitGutter {{{
+vim.cmd([[
+hi GitGutterAdd guifg=#50C650 guibg=#202020
+hi GitGutterChange guifg=#C6C600 guibg=#202020
+hi GitGutterDelete guifg=#C60050 guibg=#202020
+]])
 vim.g.gitgutter_realtime = 1
 vim.g.gitgutter_eager = 0
 vim.g.gitgutter_max_signs=1000
@@ -77,8 +93,8 @@ aug END
 ]])
 -- }}}
 -- Supertab {{{
-vim.g.SuperTabDefaultCompletionType = 'context'
-vim.g.SuperTabContextTextOmniPrecedence = {'&omnifunc', '&contextfunc'}
+-- vim.g.SuperTabDefaultCompletionType = 'context'
+-- vim.g.SuperTabContextTextOmniPrecedence = {'&omnifunc', '&contextfunc'}
 -- }}}
 -- Status line {{{
 mode_map = {
@@ -103,25 +119,56 @@ function lspStatus()
     return table.concat(parts, ' ')
 end
 
+local ts_utils = require('nvim-treesitter.ts_utils');
+
+local ts_node_icons = {
+    class_definition = '',
+    method_definition = '',
+    function_definition = '',
+}
+
+local ts_node_highlights = {
+    class_definition = 'TSType',
+    method_definition = 'TSFunction',
+    function_definition = 'TSFunction',
+}
+
+function tsPath()
+    local node = ts_utils.get_node_at_cursor()
+    local parts = {}
+    while node do
+        if vim.tbl_contains({"class_definition", "method_definition", "function_definition"}, node:type()) then
+            local name_node = node:named_child('name')
+            local name = ts_utils.get_node_text(name_node)
+            table.insert(parts, 1, '%#' .. ts_node_highlights[node:type()] .. '#' .. ts_node_icons[node:type()] .. ' ' .. table.concat(name, ''))
+        end
+        node = node:parent()
+    end
+    return table.concat(parts, ' -> ')
+end
+
 require('lualine').setup{
-options = {
-    theme = 'onedark',
-    section_separators = {
-        left = '',
-        right = ''
+    options = {
+        theme = 'onedark',
+        section_separators = {
+            left = '',
+            right = ''
         },
-    component_separators = {
-        left = '|',
-        right = '|'
+        component_separators = {
+            left = '|',
+            right = '|'
         },
     },
-sections = {
-    lualine_a = {{'mode', fmt = function(str) return mode_map[str:sub(1, 1)] end}},
-    lualine_c = {{'filename', fmt = function(str) cur = vim.api.nvim_win_get_cursor(0); return str .. ':' .. cur[1] .. ':' .. cur[2] end}},
-    lualine_b={},
-    lualine_x={'filetype', 'encoding', 'filetype'},
-    lualine_y={'branch'},
-    lualine_z={'lspStatus()'},
+    sections = {
+        lualine_a = {{'mode', fmt = function(str) return mode_map[str:sub(1, 1)] end}},
+        lualine_b = {{'filename', fmt = function(str) cur = vim.api.nvim_win_get_cursor(0); return str .. ':' .. cur[1] .. ':' .. cur[2] end}},
+        -- lualine_c={'tsPath()'},
+        lualine_x={'filetype', 'encoding'}, -- %04B
+        lualine_y={'branch'},
+        -- lualine_z={'lspStatus()'},
+        lualine_z={
+            {'diagnostics', color={bg='#202020'}}
+        },
     }
 }
 -- }}}

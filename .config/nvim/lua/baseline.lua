@@ -47,6 +47,9 @@ end
 nnoremap('<Home>', 'v:lua.smart_home()', true)
 imap('<Home>', '<C-O><Home>')
 
+-- Delete words with Alt-BackSpace
+inoremap('<M-BS>', '<C-W>')
+
 -- General configs
 vim.o.redrawtime = 1000
 
@@ -106,6 +109,9 @@ vim.opt.listchars = {
 -- Clipboard
 vim.o.clipboard = 'unnamedplus'
 
+-- Change line when cursor is moved beyond the line
+vim.o.whichwrap = '<,>,h,l,[,]'
+
 -- Force python path
 vim.g.python_host_prog = '/usr/bin/python'
 
@@ -156,7 +162,9 @@ vim.opt.wildoptions = vim.opt.wildoptions - 'tagfile'
 vim.o.wildmode = 'list:longest'
 
 -- Disable preview for completions
-vim.opt.completeopt = vim.opt.completeopt - 'preview'
+-- vim.opt.completeopt = vim.opt.completeopt - 'preview'
+-- vim.opt.completeopt = vim.opt.completeopt + 'noinsert'
+vim.o.completeopt = 'menuone,longest,noinsert'
 
 -- Blink yanked text
 vim.cmd([[
@@ -173,6 +181,11 @@ hi ErrorMsg guibg=none
 " TODO:
 hi Conceal ctermfg=240 ctermbg=none
 hi VertSplit ctermbg=none ctermfg=242
+
+hi Pmenu ctermfg=81 ctermbg=16 guifg=#66D9EF guibg=#202020
+hi! link PmenuSbar Pmenu
+hi! PmenuThumb guibg=#66D9EF
+hi PmenuSel guifg=#000000
 ]])
 
 -- Remove trailing whitespaces
@@ -191,3 +204,12 @@ nnoremap('<space>', 'za')
 vim.o.foldmethod = 'manual'
 vim.o.foldnestmax = 2
 
+-- Spell checking
+vim.o.spelllang = 'uk,en'
+vim.go.spell = true
+function EnableSpellchecking()
+    vim.bo.spell = true
+end
+vim.cmd([[
+    au FileType markdown setlocal spell
+]])
