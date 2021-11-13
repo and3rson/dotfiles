@@ -3,6 +3,11 @@ hi LspDiagnosticsDefaultError ctermfg=9 ctermbg=235
 hi LspDiagnosticsDefaultWarning ctermfg=130 ctermbg=235
 hi LspDiagnosticsDefaultInformation ctermfg=38 ctermbg=235
 hi LspDiagnosticsDefaultHint ctermfg=156 ctermbg=235
+
+hi DiagnosticSignError guifg=red guibg=#202020
+hi DiagnosticSignWarn guifg=orange guibg=#202020
+hi DiagnosticSignInfo guifg=lightblue guibg=#202020
+hi DiagnosticSignHint guifg=lightgrey guibg=#202020
 ]])
 
 local on_attach = function(client, bufnr)
@@ -18,7 +23,7 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_command("autocmd CursorMoved * :lua require('ts_context_commentstring.internal').update_commentstring()")
     -- vim.api.nvim_command("autocmd CursorHoldI * :lua vim.lsp.buf.signature_help()")
 end
-kind_icons = {
+local kind_icons = {
     Class = " ",
     Color = " ",
     Constant = " ",
@@ -52,7 +57,7 @@ end
 local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
 for type, icon in pairs(signs) do
     local hl = "DiagnosticSign" .. type
-    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = nil })
 end
 
 -- vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -62,7 +67,7 @@ end
 -- })
 vim.lsp.handlers["textDocument/publishDiagnostics"] = function(a, data, params, client_id, b, config)
     -- TODO: This is a hack
-    if data ~= nil and data.diagnostics ~= nil and table.getn(data.diagnostics) > 0 then
+    if data ~= nil and data.diagnostics ~= nil and table.getn(data.diagnostics) > 0 then ---@diagnostic disable-line
         if data.diagnostics[1].source == 'Pyright' then
             return
             -- Ignore pyright
@@ -83,7 +88,7 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 local has_words_before = function()
-    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+    local line, col = unpack(vim.api.nvim_win_get_cursor(0)) ---@diagnostic disable-line
     return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
@@ -157,7 +162,7 @@ cmp.setup {
 inoremap('<up>', "pumvisible() ? '<c-e><up>' : '<up>'", true)
 inoremap('<down>', "pumvisible() ? '<c-e><down>' : '<down>'", true)
 
-lspconfig = require('lspconfig')
+local lspconfig = require('lspconfig')
 lspconfig.pylsp.setup{
     on_attach=on_attach,
     capabilities=capabilities,
@@ -238,9 +243,20 @@ lspconfig.jsonls.setup{
     capabilities=capabilities,
 }
 lspconfig.sumneko_lua.setup{
+    -- https://github.com/sumneko/lua-language-server/wiki/Setting
     on_attach=on_attach,
     capabilities=capabilities,
     cmd={'lua-language-server'},
+    settings={
+        Lua={
+            runtime={
+                version='LuaJIT',
+            },
+            diagnostics={
+                globals={"vim"},
+            },
+        },
+    },
 }
 local null_ls = require("null-ls")
 null_ls.config({

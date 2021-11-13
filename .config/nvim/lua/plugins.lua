@@ -97,7 +97,7 @@ aug END
 -- vim.g.SuperTabContextTextOmniPrecedence = {'&omnifunc', '&contextfunc'}
 -- }}}
 -- Status line {{{
-mode_map = {
+local mode_map = {
     N= '',
     I= '',
     R= '',
@@ -106,10 +106,10 @@ mode_map = {
     T= '',
     }
 
-function lspStatus()
+local function lspStatus()
     -- stats = require("lsp-status/diagnostics")(0)
-    stats = require("lsp-status").diagnostics()
-    parts = {}
+    local stats = require("lsp-status").diagnostics()
+    local parts = {}
     if stats.errors > 0 then
         table.insert(parts, '✖ ' .. stats.errors)
     end
@@ -133,7 +133,7 @@ local ts_node_highlights = {
     function_definition = 'TSFunction',
 }
 
-function tsPath()
+local function tsPath()
     local node = ts_utils.get_node_at_cursor()
     local parts = {}
     while node do
@@ -161,7 +161,7 @@ require('lualine').setup{
     },
     sections = {
         lualine_a = {{'mode', fmt = function(str) return mode_map[str:sub(1, 1)] end}},
-        lualine_b = {{'filename', fmt = function(str) cur = vim.api.nvim_win_get_cursor(0); return str .. ':' .. cur[1] .. ':' .. cur[2] end}},
+        lualine_b = {{'filename', fmt = function(str) local cur = vim.api.nvim_win_get_cursor(0); return str .. ':' .. cur[1] .. ':' .. cur[2] end}},
         -- lualine_c={'tsPath()'},
         lualine_x={'filetype', 'encoding'}, -- %04B
         lualine_y={'branch'},

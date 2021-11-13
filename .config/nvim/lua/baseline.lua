@@ -206,7 +206,7 @@ vim.o.foldnestmax = 2
 
 -- Spell checking
 vim.o.spelllang = 'uk,en'
-vim.go.spell = true
+vim.go.spell = false
 function EnableSpellchecking()
     vim.bo.spell = true
 end
