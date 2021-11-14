@@ -1,25 +1,29 @@
 package main
 
 import (
-    "context"
-    "fmt"
-    "log"
-    "strings"
-    "time"
+	"context"
+	"fmt"
+	"strings"
+	"time"
 
-    "github.com/godbus/dbus/v5"
+	"github.com/godbus/dbus/v5"
 )
 
 type PlayerCtl struct {
     isPlaying bool
     title string
+    err interface{}
+}
+
+func (p *PlayerCtl) Name() string {
+    return "playerctl"
 }
 
 func FetchMetadata(obj dbus.BusObject) dbus.Variant {
     // TODO: return err
     result, err := obj.GetProperty("org.mpris.MediaPlayer2.Player.Metadata")
     if err != nil {
-        log.Fatal("Failed to fetch metadata")
+        panic("fetch metadata: " + err.Error())
     }
     return result
 }
@@ -54,7 +58,7 @@ func GetTitleFromMetadata(rawMetadata dbus.Variant) string {
 func FetchPlaybackStatus(obj dbus.BusObject) dbus.Variant {
     result, err := obj.GetProperty("org.mpris.MediaPlayer2.Player.PlaybackStatus")
     if err != nil {
-        log.Fatal("Failed to fetch playback status")
+        panic("fetch playback status: " + err.Error())
     }
     return result
 }
@@ -65,10 +69,18 @@ func GetPlayingFromPlaybackStatus(rawPlaybackStatus dbus.Variant) bool {
     return playbackStatus == "Playing"
 }
 
-func (w *PlayerCtl) Run(ctx context.Context, updates chan<- Widget) {
+func (p *PlayerCtl) Run(ctx context.Context, updates chan<- Widget, click <-chan int) {
+    defer func() {
+        if e := recover(); e != nil {
+            p.err = e
+            <-time.After(time.Second)
+            go p.Run(ctx, updates, click)
+        }
+    }()
+
     conn, err := dbus.ConnectSessionBus()
     if err != nil {
-        log.Fatal("Failed to connect to DBus")
+        panic("Failed to connect to DBus: " + err.Error())
     }
     obj := conn.Object("org.mpris.MediaPlayer2.playerctld", "/org/mpris/MediaPlayer2")
     obj.AddMatchSignal("org.freedesktop.DBus.Properties", "PropertiesChanged")
@@ -77,53 +89,69 @@ func (w *PlayerCtl) Run(ctx context.Context, updates chan<- Widget) {
     conn.Signal(c)
 
     metadata := FetchMetadata(obj)
-    w.title = GetTitleFromMetadata(metadata)
+    p.title = GetTitleFromMetadata(metadata)
     playbackStatus := FetchPlaybackStatus(obj)
-    w.isPlaying = GetPlayingFromPlaybackStatus(playbackStatus)
-    updates <- w
+    p.isPlaying = GetPlayingFromPlaybackStatus(playbackStatus)
+    p.err = nil
+    updates <- p
 
     for {
         select {
         case <-time.After(5 * time.Second):
             metadata := FetchMetadata(obj)
-            w.title = GetTitleFromMetadata(metadata)
+            p.title = GetTitleFromMetadata(metadata)
             playbackStatus := FetchPlaybackStatus(obj)
-            w.isPlaying = GetPlayingFromPlaybackStatus(playbackStatus)
-            updates <- w
-        case <-ctx.Done():
-            return
+            p.isPlaying = GetPlayingFromPlaybackStatus(playbackStatus)
+            p.err = nil
+            updates <- p
         case v := <-c:
             variants := v.Body[1]
             for name, variant := range variants.(map[string]dbus.Variant) {
                 matched := false
                 if name == "Metadata" {
                     title := GetTitleFromMetadata(variant)
-                    if title != w.title {
-                        w.title = title
+                    if title != p.title {
+                        p.title = title
                         matched = true
                     }
                 } else if name == "PlaybackStatus" {
                     isPlaying := GetPlayingFromPlaybackStatus(variant)
-                    if isPlaying != w.isPlaying {
-                        w.isPlaying = isPlaying
+                    if isPlaying != p.isPlaying {
+                        p.isPlaying = isPlaying
                         matched = true
                     }
                 }
                 if matched {
-                    updates <- w
+                    p.err = nil
+                    updates <- p
                 }
             }
             // w.content = ParseMetadata(v.Body[1].(dbus.Variant))
+        case <-ctx.Done():
+            return
+        case <-click:
         }
     }
 }
 
-func (w *PlayerCtl) Content() string {
+func (p *PlayerCtl) Content() Repr {
+    if (p.err != nil) {
+        return Repr{
+            FullText: fmt.Sprint(p.err),
+            Color: "#FFD787",
+            Urgent: true,
+        }
+    }
     icon := "\uF04B"
     color := "#FFD787"
-    if !w.isPlaying {
+    if !p.isPlaying {
         icon = "\uF04C"
         color = "#FF005F"
     }
-    return fmt.Sprintf("<span fgcolor=\"%s\">%v %s</span>", color, icon, w.title)
+    return Repr{
+    	FullText:   fmt.Sprintf("%v %s", icon, p.title),
+    	Background: "",
+    	Color:      color,
+    }
+    // return fmt.Sprintf("<span fgcolor=\"%s\">%v %s</span>", color, icon, p.title)
 }

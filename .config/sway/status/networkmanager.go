@@ -1,26 +1,38 @@
 package main
 
 import (
-    "context"
-    "fmt"
-    "log"
-    "time"
+	"context"
+	"fmt"
+	"time"
 
-    "github.com/Wifx/gonetworkmanager"
+	"github.com/Wifx/gonetworkmanager"
 )
 
 type NetworkManager struct {
     isChanging bool
     isConnected bool
     network string
+    err interface{}
 }
 
-func (n *NetworkManager) Run(ctx context.Context, updates chan<- Widget) {
+func (n *NetworkManager) Name() string {
+    return "networkmanager"
+}
+
+func (n *NetworkManager) Run(ctx context.Context, updates chan<- Widget, click <-chan int) {
+    defer func() {
+        if e := recover(); e != nil {
+            n.err = e
+            <-time.After(time.Second)
+            go n.Run(ctx, updates, click)
+        }
+    }()
+
     nm, err := gonetworkmanager.NewNetworkManager()
-    nmUpdates := nm.Subscribe()
     if err != nil {
-        log.Fatal(err)
+        panic("connect to networkmanager: " + err.Error())
     }
+    nmUpdates := nm.Subscribe()
 
     needsRefresh := true
 
@@ -28,18 +40,18 @@ func (n *NetworkManager) Run(ctx context.Context, updates chan<- Widget) {
         if needsRefresh {
             devices, err := nm.GetPropertyAllDevices() // TODO: Or GetAllDevices?
             if err != nil {
-                log.Fatal(err)
+                panic("get all devices: " + err.Error())
             }
             found := false
             for _, device := range devices {
                 deviceType, err := device.GetPropertyDeviceType()
                 if err != nil {
-                    log.Fatal(err)
+                    panic("get device type: " + err.Error())
                 }
                 if (deviceType == gonetworkmanager.NmDeviceTypeWifi) {
                     conn, err := device.GetPropertyActiveConnection()
                     if err != nil {
-                        log.Fatal(err)
+                        panic("get active connection: " + err.Error())
                     }
                     if conn == nil {
                         // No connection at all - WiFi disabled?
@@ -48,15 +60,15 @@ func (n *NetworkManager) Run(ctx context.Context, updates chan<- Widget) {
                     found = true
                     obj, err := conn.GetPropertySpecificObject()
                     if err != nil {
-                        log.Fatal(err)
+                        panic("get specific object: " + err.Error())
                     }
                     ssid, err := obj.GetPropertySSID()
                     if err != nil {
-                        log.Fatal(err)
+                        panic("get ssid: " + err.Error())
                     }
                     state, err := conn.GetPropertyState()
                     if err != nil {
-                        log.Fatal(err)
+                        panic("get state: " + err.Error())
                     }
                     found = true
                     n.isConnected = state == gonetworkmanager.NmActiveConnectionStateActivating || state == gonetworkmanager.NmActiveConnectionStateActivated
@@ -67,6 +79,7 @@ func (n *NetworkManager) Run(ctx context.Context, updates chan<- Widget) {
                         n.network = ssid
                         n.isChanging = false
                     }
+                    n.err = nil
                     updates <- n
                 }
             }
@@ -74,6 +87,7 @@ func (n *NetworkManager) Run(ctx context.Context, updates chan<- Widget) {
                 n.isConnected = false
                 n.isChanging = false
                 n.network = "Offline"
+                n.err = nil
                 updates <- n
             }
             needsRefresh = false
@@ -88,18 +102,34 @@ func (n *NetworkManager) Run(ctx context.Context, updates chan<- Widget) {
             }
         case <-ctx.Done():
             return
+        case <-click:
         }
     }
 }
 
-func (n *NetworkManager) Content() string {
+func (n *NetworkManager) Content() Repr {
+    if n.err != nil {
+        return Repr{
+            FullText: fmt.Sprint(n.err),
+            Color: "#FFD787",
+            Urgent: true,
+        }
+    }
     icon := "\uFAA8"
     color := "#5FD7FF"
+    urgent := false
     if n.isChanging {
         icon = "\uF6D7"
     }
     if !n.isConnected {
         color = "#FF005F"
+        urgent = true
     }
-    return fmt.Sprintf("<span fgcolor=\"%s\">%s %s</span>", color, icon, n.network)
+    return Repr{
+    	FullText:   fmt.Sprintf("%s %s", icon, n.network),
+    	Background: "",
+    	Color:      color,
+        Urgent:     urgent,
+    }
+    // return fmt.Sprintf("<span fgcolor=\"%s\">%s %s</span>", color, icon, n.network)
 }
