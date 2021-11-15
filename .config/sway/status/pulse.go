@@ -31,15 +31,15 @@ func (p *Pulse) Run(ctx context.Context, updates chan<- Widget, click <-chan int
     }()
     client, err := pulseaudio.NewClient()
     if err != nil {
-        panic(err)
+        panic("failed to create pulseaudio client")
     }
     paUpdates, err := client.Updates()
     if err != nil {
-        panic(err)
+        panic("failed to subscribe to pulseaudio updates")
     }
     for {
         if !client.Connected() {
-            panic("client not connected")
+            panic("pulseaudio client not connected")
         }
 
         // TODO: Move this out of the loop?

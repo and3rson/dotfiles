@@ -30,7 +30,7 @@ func (n *NetworkManager) Run(ctx context.Context, updates chan<- Widget, click <
 
     nm, err := gonetworkmanager.NewNetworkManager()
     if err != nil {
-        panic("connect to networkmanager: " + err.Error())
+        panic("failed to connect to networkmanager")
     }
     nmUpdates := nm.Subscribe()
 
@@ -40,18 +40,18 @@ func (n *NetworkManager) Run(ctx context.Context, updates chan<- Widget, click <
         if needsRefresh {
             devices, err := nm.GetPropertyAllDevices() // TODO: Or GetAllDevices?
             if err != nil {
-                panic("get all devices: " + err.Error())
+                panic("failed to get all devices")
             }
             found := false
             for _, device := range devices {
                 deviceType, err := device.GetPropertyDeviceType()
                 if err != nil {
-                    panic("get device type: " + err.Error())
+                    panic("failed to get device type")
                 }
                 if (deviceType == gonetworkmanager.NmDeviceTypeWifi) {
                     conn, err := device.GetPropertyActiveConnection()
                     if err != nil {
-                        panic("get active connection: " + err.Error())
+                        panic("failed to get active connection")
                     }
                     if conn == nil {
                         // No connection at all - WiFi disabled?
@@ -60,15 +60,15 @@ func (n *NetworkManager) Run(ctx context.Context, updates chan<- Widget, click <
                     found = true
                     obj, err := conn.GetPropertySpecificObject()
                     if err != nil {
-                        panic("get specific object: " + err.Error())
+                        panic("failed to get specific object")
                     }
                     ssid, err := obj.GetPropertySSID()
                     if err != nil {
-                        panic("get ssid: " + err.Error())
+                        panic("failed to get ssid")
                     }
                     state, err := conn.GetPropertyState()
                     if err != nil {
-                        panic("get state: " + err.Error())
+                        panic("failed to get state")
                     }
                     found = true
                     n.isConnected = state == gonetworkmanager.NmActiveConnectionStateActivating || state == gonetworkmanager.NmActiveConnectionStateActivated

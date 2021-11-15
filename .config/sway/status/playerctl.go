@@ -23,7 +23,7 @@ func FetchMetadata(obj dbus.BusObject) dbus.Variant {
     // TODO: return err
     result, err := obj.GetProperty("org.mpris.MediaPlayer2.Player.Metadata")
     if err != nil {
-        panic("fetch metadata: " + err.Error())
+        panic("failed to fetch metadata")
     }
     return result
 }
@@ -58,7 +58,7 @@ func GetTitleFromMetadata(rawMetadata dbus.Variant) string {
 func FetchPlaybackStatus(obj dbus.BusObject) dbus.Variant {
     result, err := obj.GetProperty("org.mpris.MediaPlayer2.Player.PlaybackStatus")
     if err != nil {
-        panic("fetch playback status: " + err.Error())
+        panic("failed to fetch playback status")
     }
     return result
 }
@@ -80,7 +80,7 @@ func (p *PlayerCtl) Run(ctx context.Context, updates chan<- Widget, click <-chan
 
     conn, err := dbus.ConnectSessionBus()
     if err != nil {
-        panic("Failed to connect to DBus: " + err.Error())
+        panic("failed to connect to DBus")
     }
     obj := conn.Object("org.mpris.MediaPlayer2.playerctld", "/org/mpris/MediaPlayer2")
     obj.AddMatchSignal("org.freedesktop.DBus.Properties", "PropertiesChanged")

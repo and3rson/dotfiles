@@ -204,8 +204,14 @@ require('telescope').setup{
     },
   }
 }
+_G.project_files = function()
+    local opts = {} -- define here if you want to define something
+    local ok = pcall(require'telescope.builtin'.git_files, opts)
+    if not ok then require'telescope.builtin'.find_files(opts) end
+end
 vim.cmd([[
 nnoremap <silent> <M-l> :Telescope live_grep<CR>
-nnoremap <silent> <M-p> :Telescope find_files<CR>
+nnoremap <silent> <M-p> :lua project_files()<CR>
+nnoremap <silent> <M-o> :Telescope file_browser<CR>
 ]])
 -- }}}
