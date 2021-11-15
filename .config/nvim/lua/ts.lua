@@ -6,6 +6,9 @@ require'nvim-treesitter.configs'.setup {
   incremental_selection = {
     enable = false,
   },
+  -- indent = {
+  --     enable = false,
+  -- },
   highlight = {
     enable = true,
     custom_captures = {
@@ -18,7 +21,8 @@ require'nvim-treesitter.configs'.setup {
     -- Instead of true it can also be a list of languages
     additional_vim_regex_highlighting = false,
   },
-  ensure_installed = {'javascript', 'typescript', 'c', 'python', 'cpp', 'css', 'go', 'html', 'lua', 'query', 'typescript', 'vim'},
+  -- ensure_installed = 'maintained',
+  ensure_installed = {'c', 'python', 'cpp', 'css', 'go', 'html', 'lua', 'query', 'vim'},
   playground = {
     enable = true,
     disable = {},

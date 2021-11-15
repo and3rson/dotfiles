@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"os"
@@ -30,7 +31,7 @@ func read(r io.Reader) <-chan string {
 }
 
 func main() {
-    widgets := []Widget{&PlayerCtl{}, &DF{}, &CPU{}, &NetworkManager{}, &Pulse{}, &Time{}}
+    widgets := []Widget{&PlayerCtl{}, &OpenWeatherMap{}, &DF{}, &CPU{}, &NetworkManager{}, &Pulse{}, &Time{}}
 
     updates := make(chan Widget)
     clicks := map[string]chan int{}
@@ -41,20 +42,33 @@ func main() {
         go widget.Run(ctx, updates, click)
     }
 
+    plainFlag := flag.Bool("plain", false, "Print plain text")
+    flag.Parse()
+
+    plain := *plainFlag
+
     stdin := read(os.Stdin)
 
-    fmt.Println("{\"version\": 1, \"click_events\": true}")
-    fmt.Print("[")
-    fmt.Print("[]")
+    if !plain {
+        fmt.Println("{\"version\": 1, \"click_events\": true}")
+        fmt.Print("[")
+        fmt.Print("[]")
+    }
 
     for {
         select {
         case _ = <-updates:
             first := true
-            fmt.Print(",[")
+            if !plain {
+                fmt.Print(",[")
+            }
             for _, widget := range widgets {
                 if !first {
-                    fmt.Print(",")
+                    if !plain {
+                        fmt.Print(",")
+                    } else {
+                        fmt.Print("|")
+                    }
                 }
                 r := widget.Content()
                 r.Name = widget.Name()
@@ -63,10 +77,18 @@ func main() {
                 if len(r.FullText) > 0 {
                     r.FullText = " " + r.FullText + " "
                 }
-                fmt.Print(r.Serialize())
+                if !plain {
+                    fmt.Print(r.Serialize())
+                } else {
+                    fmt.Print(r.FullText)
+                }
                 first = false
             }
-            fmt.Print("]")
+            if !plain {
+                fmt.Print("]")
+            } else {
+                fmt.Println()
+            }
             // fmt.Println(strings.Join(outputs, Sep))
         case line := <-stdin:
             if line == "[" {

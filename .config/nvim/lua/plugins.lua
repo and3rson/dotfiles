@@ -28,6 +28,8 @@ require('packer').startup(function(use)
     use 'Vimjas/vim-python-pep8-indent'
     use 'airblade/vim-gitgutter'
     use 'ervandew/supertab'
+    use 'yuezk/vim-js'
+    use 'MaxMEllon/vim-jsx-pretty'
 
     -- Cursor position
     use 'farmergreg/vim-lastplace'

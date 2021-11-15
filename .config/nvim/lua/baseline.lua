@@ -2,7 +2,7 @@ vim.cmd([[
 filetype on
 filetype plugin on
 filetype plugin indent on
-syntax enable
+" syntax enable
 ]])
 
 vim.cmd('colorscheme molokai')
@@ -126,7 +126,7 @@ aug END
 ]])
 
 -- Limit syntax highlight
-vim.o.synmaxcol = 200
+vim.o.synmaxcol = 300
 
 -- Text display tweaks
 vim.opt.display = ''
@@ -186,6 +186,8 @@ hi Pmenu ctermfg=81 ctermbg=16 guifg=#66D9EF guibg=#202020
 hi! link PmenuSbar Pmenu
 hi! PmenuThumb guibg=#66D9EF
 hi PmenuSel guifg=#000000
+
+hi MatchParen guifg=red guibg=none gui=underline,bold
 ]])
 
 -- Remove trailing whitespaces

@@ -143,7 +143,7 @@ func (p *PlayerCtl) Content() Repr {
         }
     }
     icon := "\uF04B"
-    color := "#FFD787"
+    color := "#87D787"
     if !p.isPlaying {
         icon = "\uF04C"
         color = "#FF005F"
