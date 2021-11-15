@@ -43,6 +43,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'nvim-lua/lsp-status.nvim'
     Plug 'JoosepAlviste/nvim-ts-context-commentstring'
     Plug 'tpope/vim-commentary'
+    Plug 'jose-elias-alvarez/null-ls.nvim'
 
     Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " We recommend updating the parsers on update
     Plug 'nvim-treesitter/playground'
@@ -86,7 +87,7 @@ call plug#begin('~/.vim/plugged')
     " Plug 'calviken/vim-gdscript3'
     " Plug 'leafgarland/typescript-vim'
     " Plug 'cespare/vim-toml'
-    " Plug 'hashivim/vim-terraform'
+    Plug 'hashivim/vim-terraform'
     " Plug 'tikhomirov/vim-glsl'
     " Faster YAML syntax
     Plug 'stephpy/vim-yaml'
@@ -915,7 +916,7 @@ local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-r>', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
   -- autocmd CursorHold * :lua vim.lsp.buf.signature_help()
   vim.api.nvim_command("autocmd CursorMoved * :lua require('ts_context_commentstring.internal').update_commentstring()")
-  vim.api.nvim_command("autocmd CursorHoldI * :lua vim.lsp.buf.signature_help()")
+  -- vim.api.nvim_command("autocmd CursorHoldI * :lua vim.lsp.buf.signature_help()")
 end
 -- require'lspconfig'.pyright.setup{
 --     on_attach=on_attach
@@ -1005,6 +1006,15 @@ require'lspconfig'.html.setup{
     on_attach=on_attach
 }
 require'lspconfig'.jsonls.setup{
+    on_attach=on_attach
+}
+require("null-ls").config({
+    sources = {
+        require("null-ls").builtins.formatting.stylua,
+        require("null-ls").builtins.completion.spell,
+    },
+})
+require('lspconfig')['null-ls'].setup{
     on_attach=on_attach
 }
 local lsp_status = require('lsp-status')
