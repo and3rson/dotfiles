@@ -153,6 +153,7 @@ xwayland enable
         colors {
             statusline #ffffff
             background #000000
+            # background #4E315E
             inactive_workspace #32323200 #32323200 #5c5c5c
             urgent_workspace "#000000FF" "#CC2040FF" "#FFFFFF"
         }
@@ -178,7 +179,7 @@ exec alacritty --class hometerm -e ~/.scripts/stmux.sh
 assign [app_id="padterm"] workspace x
 exec alacritty --class padterm -e bash -c 'TERM=rxvt-256color cava'
 assign [app_id="firefoxdeveloperedition"] workspace w
-for_window [title="Firefox Developer Edition — Sharing Indicator"] floating enable; move position 930 1040
+for_window [title="Firefox Developer Edition — Sharing Indicator"] floating enable; move position 930 1000
 # move position 930 1040;
 exec firefox-developer-edition
 assign [app_id="telegramdesktop"] workspace i
