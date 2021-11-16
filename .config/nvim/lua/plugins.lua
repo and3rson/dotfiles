@@ -49,7 +49,13 @@ require('packer').startup(function(use)
 
     -- Status lines
     use 'nvim-lualine/lualine.nvim'
-    use 'ap/vim-buftabline'
+    -- use 'ap/vim-buftabline'
+    use 'kyazdani42/nvim-web-devicons'
+    -- use 'akinsho/bufferline.nvim'
+    use 'romgrk/barbar.nvim'
+
+    -- Man pages
+    use 'lambdalisue/vim-manpager'
 
     -- SQL completion
     -- use 'vim-scripts/dbext.vim'
@@ -149,9 +155,26 @@ local function tsPath()
     return table.concat(parts, ' -> ')
 end
 
+local custom_onedark = require'lualine.themes.onedark'
+custom_onedark.inactive.a.bg = '#000000'
+custom_onedark.inactive.b.bg = '#000000'
+custom_onedark.inactive.c.bg = '#000000'
+
+local lualine_sections = {
+    lualine_a = {{'mode', fmt = function(str) return mode_map[str:sub(1, 1)] end}},
+    lualine_b = {{'filename', fmt = function(str) local cur = vim.api.nvim_win_get_cursor(0); return str .. ':' .. cur[1] .. ':' .. cur[2] end}},
+    -- lualine_c={'tsPath()'},
+    lualine_x={{'filetype', colored=true}, 'encoding'}, -- %04B
+    lualine_y={'branch'},
+    -- lualine_z={'lspStatus()'},
+    lualine_z={
+        {'diagnostics', color={bg='#202020'}}
+    },
+}
+
 require('lualine').setup{
     options = {
-        theme = 'onedark',
+        theme = custom_onedark,
         section_separators = {
             left = '',
             right = ''
@@ -161,20 +184,15 @@ require('lualine').setup{
             right = '|'
         },
     },
-    sections = {
-        lualine_a = {{'mode', fmt = function(str) return mode_map[str:sub(1, 1)] end}},
-        lualine_b = {{'filename', fmt = function(str) local cur = vim.api.nvim_win_get_cursor(0); return str .. ':' .. cur[1] .. ':' .. cur[2] end}},
-        -- lualine_c={'tsPath()'},
-        lualine_x={'filetype', 'encoding'}, -- %04B
-        lualine_y={'branch'},
-        -- lualine_z={'lspStatus()'},
-        lualine_z={
-            {'diagnostics', color={bg='#202020'}}
-        },
-    }
+    sections = lualine_sections,
+    inactive_sections = lualine_sections,
 }
+vim.cmd([[
+hi lualine_a_inactive guibg=#FF0000
+]])
 -- }}}
 -- Buffer line {{{
+-- old
 vim.cmd([[
 hi TabLineFill ctermfg=0 guifg=#000000
 hi TabLine ctermbg=0 ctermfg=245 guibg=#000000 guifg=#606060 cterm=none
@@ -188,6 +206,39 @@ nmap <M-2> <Plug>BufTabLine.Go(2)
 nmap <M-3> <Plug>BufTabLine.Go(3)
 nmap <M-4> <Plug>BufTabLine.Go(4)
 nmap <M-5> <Plug>BufTabLine.Go(5)
+]])
+-- new
+-- require("bufferline").setup{
+--     options = {
+--         -- numbers = function(x) return x.ordinal end,
+--         indicator_icon = ' ',
+--         -- left_trunc_marker = '',
+--         -- right_trunc_marker = '',
+--         separator_style = {'', ''},
+--         show_buffer_close_icons = false,
+--         tab_size = 1,
+--         -- max_name_length = 10,
+--         enforce_regular_tabs = false,
+--     },
+-- }
+-- barbar
+vim.g.bufferline = {
+    animation = false,
+    -- closable = false,
+    icon_separator_active = ' ',
+    icon_separator_inactive = ' ',
+    icon_custom_colors = true,
+    icon_close_tab = '',
+    maximum_padding = 0,
+    -- icon_close_tab_modified = 'X',
+}
+vim.cmd([[
+hi BufferInactive guifg=#999999 guibg=#202020
+hi link BufferInactiveSign BufferInactive
+hi BufferCurrent guibg=#98C379 guifg=#000000
+hi link BufferCurrentSign BufferCurrent
+" hi BufferCurrentIcon guifg=red
+hi link BufferCurrentMod BufferCurrent
 ]])
 -- }}}
 -- Telescope {{{

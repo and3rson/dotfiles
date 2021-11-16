@@ -102,7 +102,6 @@ func (n *NetworkManager) Run(ctx context.Context, updates chan<- Widget, click <
             }
         case <-ctx.Done():
             return
-        case <-click:
         }
     }
 }
@@ -122,6 +121,7 @@ func (n *NetworkManager) Content() Repr {
         icon = "\uF6D7"
     }
     if !n.isConnected {
+        icon = "\uf818"
         color = "#FF005F"
         urgent = true
     }

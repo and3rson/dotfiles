@@ -144,7 +144,7 @@
     startup_notification = false
 
     # dmenu path.
-    #dmenu = /usr/bin/dmenu -p dunst:
+    # dmenu = /usr/bin/dmenu -p dunst:
     # dmenu = /home/anderson/.scripts/dmenu.sh
     dmenu = /usr/bin/rofi -dmenu -p dunst
 
@@ -182,6 +182,7 @@
 
     # Context menu.
     context = ctrl+Escape
+    # context = ctrl+Space
 
 [urgency_low]
     # IMPORTANT: colors have to be defined in quotation marks.

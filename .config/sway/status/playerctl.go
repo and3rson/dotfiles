@@ -130,6 +130,7 @@ func (p *PlayerCtl) Run(ctx context.Context, updates chan<- Widget, click <-chan
         case <-ctx.Done():
             return
         case <-click:
+            obj.Call("org.mpris.MediaPlayer2.Player.PlayPause", 0)
         }
     }
 }
@@ -152,6 +153,8 @@ func (p *PlayerCtl) Content() Repr {
     	FullText:   fmt.Sprintf("%v %s", icon, p.title),
     	Background: "",
     	Color:      color,
+        // MinWidth:   1500,
+        // Align:      "left",
     }
     // return fmt.Sprintf("<span fgcolor=\"%s\">%v %s</span>", color, icon, p.title)
 }

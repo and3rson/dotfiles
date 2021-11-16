@@ -29,7 +29,8 @@ xwayland enable
 
 # Basic keys
     bindsym --to-code $mod+Return exec $term
-    bindsym --to-code --release Escape exec dunstctl close
+    bindsym --to-code Escape exec "[[ `dunstctl count displayed` != \"0\" ]] && dunstctl close || wtype -P Escape"
+    # bindsym --to-code Escape exec "wtype -P Escape"
     # bindsym --to-code Ctrl+Escape exec dunstctl close
 
     bindsym --to-code Alt+f4 kill
@@ -127,10 +128,16 @@ xwayland enable
     bindsym --to-code XF86MonBrightnessUp exec $confdir/brightness.sh 2%+
     bindsym --to-code XF86MonBrightnessDown exec $confdir/brightness.sh 2%-
 
+# Title bar
+
+    font pango:monospace 0
+    titlebar_border_thickness 0
+    titlebar_padding 0
+
 # Status Bar:
     # Read `man 5 sway-bar` for more information about this section.
-    font pango:RobotoMonoNerdFont 10
     bar {
+        font pango:RobotoMonoNerdFont 10
         position top
         output eDP-1
 
@@ -141,11 +148,13 @@ xwayland enable
         status_command ~/.config/sway/status/status done
         pango_markup true
         workspace_buttons no
+        # separator_symbol "|"
 
         colors {
             statusline #ffffff
             background #000000
             inactive_workspace #32323200 #32323200 #5c5c5c
+            urgent_workspace "#000000FF" "#CC2040FF" "#FFFFFF"
         }
     }
 
@@ -185,6 +194,8 @@ for_window [class="Spotify"] move window to workspace m
 exec spotify
 
 for_window [title="Minecraft Launcher"] move window to workspace a
+for_window [class="Microsoft Teams - Preview"] move window to workspace i
+for_window [class="microsoft teams - preview"] move window to workspace i
 
 # for_window [app_id="gcolor3"] floating enable
 

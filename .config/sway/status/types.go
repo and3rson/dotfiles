@@ -13,6 +13,8 @@ type Repr struct {
     Color string `json:"color"`
     Markup string `json:"markup"`
     Urgent bool `json:"urgent"`
+    MinWidth int `json:"min_width,omitempty"`
+    Align string `json:"align,omitempty"`
 }
 
 func (r Repr) Serialize() string {

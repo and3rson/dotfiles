@@ -20,5 +20,5 @@ rofi.color-window:                   #222222, #222222, #1177AA
 
 rofi.separator-style:                solid
 
-! rofi.modi:                           run,window,ssh
+rofi.modi:                           run,drun,ssh
 rofi.modi: run

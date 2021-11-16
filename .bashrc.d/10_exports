@@ -54,3 +54,5 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 # https://wiki.archlinux.org/title/PipeWire#WebRTC_screen_sharing
 # https://mozilla.github.io/webrtc-landing/
 # export XDG_CURRENT_DESKTOP=sway
+
+export MANPAGER='nvim -c MANPAGER -'

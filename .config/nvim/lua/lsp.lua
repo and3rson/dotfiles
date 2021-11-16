@@ -64,27 +64,27 @@ for type, icon in pairs(signs) do
     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = nil })
 end
 
--- vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
---     virtual_text = {
---         source = "always",    -- Or "if_many"
---     }
--- })
-vim.lsp.handlers["textDocument/publishDiagnostics"] = function(a, data, params, client_id, b, config)
-    -- TODO: This is a hack
-    if data ~= nil and data.diagnostics ~= nil and table.getn(data.diagnostics) > 0 then ---@diagnostic disable-line
-        if data.diagnostics[1].source == 'Pyright' then
-            return
-            -- Ignore pyright
-        end
-    end
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+    virtual_text = {
+        source = "always",    -- Or "if_many"
+    }
+})
+-- vim.lsp.handlers["textDocument/publishDiagnostics"] = function(a, data, params, client_id, b, config)
+--     -- TODO: This is a hack
+--     if data ~= nil and data.diagnostics ~= nil and table.getn(data.diagnostics) > 0 then ---@diagnostic disable-line
+--         if data.diagnostics[1].source == 'Pyright' then
+--             return
+--             -- Ignore pyright
+--         end
+--     end
 
-    vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-        virtual_text = {
-            source = "always",    -- Or "if_many"
-        }
-    })(a, data, params, client_id, b, config)
-    -- print(vim.inspect(params))
-end
+--     vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+--         virtual_text = {
+--             source = "always",    -- Or "if_many"
+--         }
+--     })(a, data, params, client_id, b, config)
+--     -- print(vim.inspect(params))
+-- end
 
 -- Completion via cmp
 -- Add additional capabilities supported by nvim-cmp
@@ -204,6 +204,9 @@ lspconfig.pyright.setup{
     on_attach=on_attach,
     capabilities=capabilities,
     typeCheckingMode = 'off',
+    handlers = {
+        ['textDocument/publishDiagnostics'] = function(...) end,
+    },
     settings = {
         typeCheckingMode = 'off',
         -- reportUnusedVariable = false,

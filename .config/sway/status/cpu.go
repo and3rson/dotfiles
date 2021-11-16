@@ -28,7 +28,6 @@ func (c *CPU) Run(ctx context.Context, updates chan<- Widget, click <-chan int) 
             continue
         case <-ctx.Done():
             return
-        case <-click:
         }
     }
 }
@@ -36,12 +35,21 @@ func (c *CPU) Run(ctx context.Context, updates chan<- Widget, click <-chan int) 
 func (c *CPU) Content() Repr {
     color := "#5FD7FF"
     urgent := false
+    // urgent = rand.Float64() < 0.5
+
+    rel_value := int(float64(c.load) / 100 * 8)
+    if rel_value > 7 {
+        rel_value = 7
+    }
+    icon := rune(0x2581 + rel_value)
+
     if c.load > 50 {
         color = "#0E0105"
         urgent = true
     }
     return Repr{
-    	FullText:   fmt.Sprintf("%2d%%", c.load),
+        // \uf437
+    	FullText:   fmt.Sprintf("%c %2d%%", icon, c.load),
     	Background: "",
     	Color:      color,
         Urgent:     urgent,

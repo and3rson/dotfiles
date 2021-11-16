@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"time"
 )
 
 // var Sep = " <span fgcolor=\"#666666\">\u2502</span> "
@@ -31,13 +32,13 @@ func read(r io.Reader) <-chan string {
 }
 
 func main() {
-    widgets := []Widget{&PlayerCtl{}, &OpenWeatherMap{}, &DF{}, &CPU{}, &NetworkManager{}, &Pulse{}, &Time{}}
+    widgets := []Widget{&Clients{}, &PlayerCtl{}, &Pulse{}, &OpenWeatherMap{}, &DF{}, &CPU{}, &NetworkManager{}, &Time{}, &Battery{}}
 
     updates := make(chan Widget)
     clicks := map[string]chan int{}
     ctx, cancel := context.WithCancel(context.Background())
     for _, widget := range widgets {
-        click := make(chan int, 10)
+        click := make(chan int, 1)
         clicks[widget.Name()] = click
         go widget.Run(ctx, updates, click)
     }
@@ -74,6 +75,7 @@ func main() {
                 r.Name = widget.Name()
                 r.Instance = widget.Name()
                 r.Markup = "pango"
+                // r.Background, r.Color = r.Color, "#222222"
                 if len(r.FullText) > 0 {
                     r.FullText = " " + r.FullText + " "
                 }
@@ -99,7 +101,13 @@ func main() {
             _ = json.Unmarshal([]byte(line), &e)
             click, ok := clicks[e.Name]
             if ok {
-                click <- e.Button
+                select {
+                case click <- e.Button:
+                default:
+                    // fmt.Println(",[{\"full_text\":\"Click ignored\"}]")
+                    // Click not being consumed
+                    <-time.After(time.Second / 4.0)
+                }
             }
             // fmt.Printf(",[{\"full_text\":\"%s\"}]\n", strings.Replace(line, "\"", "~", -1))
         }

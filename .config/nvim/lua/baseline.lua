@@ -203,8 +203,8 @@ aug END
 
 -- Folding
 nnoremap('<space>', 'za')
-vim.o.foldmethod = 'manual'
-vim.o.foldnestmax = 2
+vim.o.foldmethod = 'syntax'
+vim.o.foldnestmax = 10
 
 -- Spell checking
 vim.o.spelllang = 'uk,en'

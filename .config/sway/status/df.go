@@ -28,7 +28,6 @@ func (d *DF) Run(ctx context.Context, updates chan<- Widget, click <-chan int) {
             continue
         case <-ctx.Done():
             return
-        case <-click:
         }
     }
 }

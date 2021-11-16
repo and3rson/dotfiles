@@ -16,7 +16,7 @@ func (t *Time) Name() string {
 
 func (t *Time) Run(ctx context.Context, updates chan<- Widget, click <-chan int) {
     for {
-        t.content = time.Now().Format("15:03") // :05
+        t.content = time.Now().Format("15:04") // :05
         updates <- t
         select {
         case <-time.After(1 * time.Second):
