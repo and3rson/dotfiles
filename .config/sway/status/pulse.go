@@ -70,7 +70,7 @@ func (d *Pulse) Content() Repr {
     if (d.err != nil) {
         return Repr{
             FullText: fmt.Sprint(d.err),
-            Color: "#FFD787",
+            // Color: "#FFD787",
             Urgent: true,
         }
     }

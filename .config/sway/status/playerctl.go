@@ -11,8 +11,13 @@ import (
 
 type PlayerCtl struct {
     isPlaying bool
-    title string
+    info Info
     err interface{}
+}
+
+type Info struct {
+    title string
+    duration string
 }
 
 func (p *PlayerCtl) Name() string {
@@ -28,31 +33,29 @@ func FetchMetadata(obj dbus.BusObject) dbus.Variant {
     return result
 }
 
-func GetTitleFromMetadata(rawMetadata dbus.Variant) string {
+func GetInfoFromMetadata(rawMetadata dbus.Variant) Info {
     var metadata map[string]interface{}
+    var result Info
     rawMetadata.Store(&metadata)
-    parts := []string{}
     artists, ok := metadata["xesam:artist"].([]string)
     if ok && len(artists) > 0 {
-        parts = append(parts, strings.Join(artists, ", "))
+        result.title = strings.Join(artists, ", ")
         // parts = append(parts, strings.Join(artistsIf.([]string), ", "))
     }
     title, ok := metadata["xesam:title"].(string)
     if ok && len(title) > 0 {
-        if len(artists) > 0 {
-            parts = append(parts, "-")
+        if len(result.title) > 0 {
+            result.title += " - "
         }
-        parts = append(parts, title)
+        result.title += title
     }
     length, ok := metadata["mpris:length"].(uint64)
+    result.duration = "(00:00)"
     if ok {
         length = length / 1e6
-        parts = append(parts, fmt.Sprintf("(%02d:%02d)", length / 60, length % 60))
+        result.duration = fmt.Sprintf("(%02d:%02d)", length / 60, length % 60)
     }
-    if len(parts) == 0 {
-        return "Not playing"
-    }
-    return strings.Join(parts, " ")
+    return result
 }
 
 func FetchPlaybackStatus(obj dbus.BusObject) dbus.Variant {
@@ -67,6 +70,22 @@ func GetPlayingFromPlaybackStatus(rawPlaybackStatus dbus.Variant) bool {
     var playbackStatus string
     rawPlaybackStatus.Store(&playbackStatus)
     return playbackStatus == "Playing"
+}
+
+func ellipsize(s string) string {
+    runes := []rune(s)
+    if len(runes) > 48 {
+        runes = append(runes[:48], rune('\u2026'))
+    }
+    return string(runes)
+}
+
+func (p *PlayerCtl) update(obj dbus.BusObject) {
+    metadata := FetchMetadata(obj)
+    p.info = GetInfoFromMetadata(metadata)
+    playbackStatus := FetchPlaybackStatus(obj)
+    p.isPlaying = GetPlayingFromPlaybackStatus(playbackStatus)
+    p.err = nil
 }
 
 func (p *PlayerCtl) Run(ctx context.Context, updates chan<- Widget, click <-chan int) {
@@ -88,30 +107,22 @@ func (p *PlayerCtl) Run(ctx context.Context, updates chan<- Widget, click <-chan
     c := make(chan *dbus.Signal, 10)
     conn.Signal(c)
 
-    metadata := FetchMetadata(obj)
-    p.title = GetTitleFromMetadata(metadata)
-    playbackStatus := FetchPlaybackStatus(obj)
-    p.isPlaying = GetPlayingFromPlaybackStatus(playbackStatus)
-    p.err = nil
+    p.update(obj)
     updates <- p
 
     for {
         select {
         case <-time.After(5 * time.Second):
-            metadata := FetchMetadata(obj)
-            p.title = GetTitleFromMetadata(metadata)
-            playbackStatus := FetchPlaybackStatus(obj)
-            p.isPlaying = GetPlayingFromPlaybackStatus(playbackStatus)
-            p.err = nil
+            p.update(obj)
             updates <- p
         case v := <-c:
             variants := v.Body[1]
             for name, variant := range variants.(map[string]dbus.Variant) {
                 matched := false
                 if name == "Metadata" {
-                    title := GetTitleFromMetadata(variant)
-                    if title != p.title {
-                        p.title = title
+                    info := GetInfoFromMetadata(variant)
+                    if info != p.info {
+                        p.info = info
                         matched = true
                     }
                 } else if name == "PlaybackStatus" {
@@ -150,10 +161,10 @@ func (p *PlayerCtl) Content() Repr {
         color = "#FF005F"
     }
     return Repr{
-    	FullText:   fmt.Sprintf("%v %s", icon, p.title),
+    	FullText:   fmt.Sprintf("%v %s %s", icon, p.info.title, p.info.duration),
     	Background: "",
     	Color:      color,
-        // MinWidth:   1500,
+        // MinWidth:   150,
         // Align:      "left",
     }
     // return fmt.Sprintf("<span fgcolor=\"%s\">%v %s</span>", color, icon, p.title)

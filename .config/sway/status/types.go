@@ -15,6 +15,7 @@ type Repr struct {
     Urgent bool `json:"urgent"`
     MinWidth int `json:"min_width,omitempty"`
     Align string `json:"align,omitempty"`
+    Separator bool `json:"separator"`
 }
 
 func (r Repr) Serialize() string {

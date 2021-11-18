@@ -2,6 +2,7 @@ xwayland enable
 
 # Definitions
     set $mod Mod4
+    set $cm Mod5
     set $term alacritty
     # set $menu dmenu_path | dmenu | xargs swaymsg exec --
     set $menu "rofi -show run"
@@ -29,7 +30,8 @@ xwayland enable
 
 # Basic keys
     bindsym --to-code $mod+Return exec $term
-    bindsym --to-code Escape exec "[[ `dunstctl count displayed` != \"0\" ]] && dunstctl close || wtype -P Escape"
+    bindsym --to-code Escape exec "[[ `dunstctl count displayed` != \"0\" ]] && dunstctl close || (wtype -P Escape; xdotool key Escape)"
+
     # bindsym --to-code Escape exec "wtype -P Escape"
     # bindsym --to-code Ctrl+Escape exec dunstctl close
 
@@ -65,15 +67,21 @@ xwayland enable
 # Client keys
     # Move your focus around
     bindsym --to-code $mod+Left focus left # sibling
+    bindsym --to-code $mod+$cm+j focus left # sibling
     bindsym --to-code $mod+Down focus down
     bindsym --to-code $mod+Up focus up
     bindsym --to-code $mod+Right focus right # sibling
+    bindsym --to-code $mod+$cm+l focus right # sibling
+    # bindsym --to-code $mod+Left prev_on_output
+    # bindsym --to-code $mod+Right next_on_output
 
     # Move the focused window with the same, but add Shift
-    bindsym --to-code $mod+Shift+Left move left
-    bindsym --to-code $mod+Shift+Down move down
-    bindsym --to-code $mod+Shift+Up move up
-    bindsym --to-code $mod+Shift+Right move right
+    # bindsym --to-code $mod+Shift+Left move left
+    # bindsym --to-code $mod+Shift+Down move down
+    # bindsym --to-code $mod+Shift+Up move up
+    # bindsym --to-code $mod+Shift+Right move right
+    bindsym --to-code $mod+j move left
+    bindsym --to-code $mod+k move right
 
     # Does not work
     # bindsym --to-code $mod+1 focus number 1
@@ -81,6 +89,8 @@ xwayland enable
     # bindsym --to-code $mod+3 focus number 3
 
     focus_follows_mouse no
+    focus_wrapping workspace
+    bindsym --to-code $mod+space focus mode_toggle
 
 # Workspaces
     # Switch to workspace
@@ -149,6 +159,7 @@ xwayland enable
         pango_markup true
         workspace_buttons no
         # separator_symbol "|"
+        tray_output none
 
         colors {
             statusline #ffffff

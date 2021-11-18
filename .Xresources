@@ -4,3 +4,4 @@
 Xcursor.size: 16
 Sxiv.background: #000000
 Sxiv.foreground: #FFFFFF
+rofi.font: mono 12

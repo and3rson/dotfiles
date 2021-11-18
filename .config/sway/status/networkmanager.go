@@ -73,7 +73,7 @@ func (n *NetworkManager) Run(ctx context.Context, updates chan<- Widget, click <
                     found = true
                     n.isConnected = state == gonetworkmanager.NmActiveConnectionStateActivating || state == gonetworkmanager.NmActiveConnectionStateActivated
                     if state == gonetworkmanager.NmActiveConnectionStateActivating || state == gonetworkmanager.NmActiveConnectionStateDeactivating {
-                        n.network = ssid + "..."
+                        n.network = ssid
                         n.isChanging = true
                     } else {
                         n.network = ssid
@@ -122,7 +122,7 @@ func (n *NetworkManager) Content() Repr {
     }
     if !n.isConnected {
         icon = "\uf818"
-        color = "#FF005F"
+        // color = "#FF005F"
         urgent = true
     }
     return Repr{

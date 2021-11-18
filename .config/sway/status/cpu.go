@@ -8,7 +8,7 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 )
 
-const HistorySize = 12
+const HistorySize = 10
 
 type CPU struct {
     load int
@@ -37,7 +37,7 @@ func (c *CPU) Run(ctx context.Context, updates chan<- Widget, click <-chan int) 
             updates <- c
         }
         select {
-        case <-time.After(time.Second / 5.0):
+        case <-time.After(time.Second / 2.0):
             continue
         case <-ctx.Done():
             return
@@ -50,11 +50,11 @@ func (c *CPU) Content() Repr {
     urgent := false
     // urgent = rand.Float64() < 0.5
 
-    rel_value := int(float64(c.load) / 100 * 8)
-    if rel_value > 7 {
-        rel_value = 7
-    }
-    icon := rune(0x2581 + rel_value)
+    // rel_value := int(float64(c.load) / 100 * 8)
+    // if rel_value > 7 {
+    //     rel_value = 7
+    // }
+    // icon := rune(0x2581 + rel_value)
 
     bar := ""
     for i := 0; i < HistorySize; i += 2 {
@@ -70,7 +70,6 @@ func (c *CPU) Content() Repr {
     }
 
     if c.load > 70 {
-        color = "#0E0105"
         urgent = true
     }
     var loadStr string
@@ -81,7 +80,7 @@ func (c *CPU) Content() Repr {
     }
     return Repr{
         // \uf437
-    	FullText:   fmt.Sprintf("%s %c %s", bar, icon, loadStr),
+    	FullText:   fmt.Sprintf("%s %s", bar, loadStr),
     	Background: "",
     	Color:      color,
         Urgent:     urgent,

@@ -10,6 +10,15 @@ hi DiagnosticSignInfo guifg=lightblue guibg=#202020
 hi DiagnosticSignHint guifg=lightgrey guibg=#202020
 ]])
 
+require'lsp_signature'.setup({
+    bind = true,
+    timer_interval = 200,
+    handler_opts = {
+        border = 'none',
+    },
+    padding = ' ',
+})
+
 local on_attach = function(client, bufnr)
     -- vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
     local opts = { noremap=true, silent=true }
@@ -26,6 +35,8 @@ local on_attach = function(client, bufnr)
     -- autocmd CursorHold * :lua vim.lsp.buf.signature_help()
     vim.api.nvim_command("autocmd CursorMoved * :lua require('ts_context_commentstring.internal').update_commentstring()")
     -- vim.api.nvim_command("autocmd CursorHoldI * :lua vim.lsp.buf.signature_help()")
+
+    require "lsp_signature".on_attach()
 end
 local kind_icons = {
     Class = " ",
@@ -89,6 +100,8 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagn
 -- Completion via cmp
 -- Add additional capabilities supported by nvim-cmp
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+
+-- disable start
 capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
 
 local has_words_before = function()
@@ -97,15 +110,15 @@ local has_words_before = function()
 end
 
 local cmp = require 'cmp'
-local luasnip = require 'luasnip'
+-- local luasnip = require 'luasnip'
 cmp.setup {
     snippet = {
         -- REQUIRED - you must specify a snippet engine
         expand = function(args)
             -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-            require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+            -- require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
             -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
-            -- require'snippy'.expand_snippet(args.body) -- For `snippy` users.
+            require'snippy'.expand_snippet(args.body) -- For `snippy` users.
             end,
     },
     mapping = {
@@ -119,7 +132,7 @@ cmp.setup {
         ['<C-n>'] = cmp.mapping.select_next_item(),
         ['<C-d>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
-        ['<C-Space>'] = cmp.mapping.complete(),
+        ['<C-Space>'] = cmp.mapping.complete({reason = cmp.ContextReason.Manual}),
         ['<C-e>'] = cmp.mapping.close(),
         ['<CR>'] = cmp.mapping.confirm {
             behavior = cmp.ConfirmBehavior.Replace,
@@ -128,9 +141,10 @@ cmp.setup {
         ['<Tab>'] = function(fallback)
             -- https://github.com/hrsh7th/nvim-cmp/issues/174#issuecomment-939262013
             if cmp.visible() then
+                -- cmp.mapping.confirm{behavior = cmp.ConfirmBehavior.Replace, select = true}()
                 cmp.select_next_item()
-            elseif luasnip.expand_or_jumpable() then
-                luasnip.expand_or_jump()
+            -- elseif luasnip.expand_or_jumpable() then
+            --     luasnip.expand_or_jump()
                 -- cmp.complete()
 				-- vim.fn.feedkeys(t("<Plug>(vsnip-expand-or-jump)"), "")
             elseif has_words_before() then
@@ -158,13 +172,21 @@ cmp.setup {
     }),
     completion = {
         autocomplete = false,
+        -- completeopt = 'x',
+        -- completeopt = 'menu,menuone,noselect,noinsert,preview',
+        -- completeopt = 'menu,noselect'
+    },
+    experimental = {
+        ghost_text = true,
+        -- native_menu = true,
     },
 }
+-- disable end
 
 -- Do not hijack arrow keys for completion popup
 
-inoremap('<up>', "pumvisible() ? '<c-e><up>' : '<up>'", true)
-inoremap('<down>', "pumvisible() ? '<c-e><down>' : '<down>'", true)
+-- inoremap('<up>', "pumvisible() ? '<c-e><up>' : '<up>'", true)
+-- inoremap('<down>', "pumvisible() ? '<c-e><down>' : '<down>'", true)
 
 local lspconfig = require('lspconfig')
 lspconfig.pylsp.setup{

@@ -164,7 +164,7 @@ vim.o.wildmode = 'list:longest'
 -- Disable preview for completions
 -- vim.opt.completeopt = vim.opt.completeopt - 'preview'
 -- vim.opt.completeopt = vim.opt.completeopt + 'noinsert'
-vim.o.completeopt = 'menuone,longest,noinsert'
+vim.o.completeopt = 'menu,noselect'
 
 -- Blink yanked text
 vim.cmd([[

@@ -32,7 +32,7 @@ func read(r io.Reader) <-chan string {
 }
 
 func main() {
-    widgets := []Widget{&Clients{}, &PlayerCtl{}, &Pulse{}, &OpenWeatherMap{}, &DF{}, &CPU{}, &NetworkManager{}, &Time{}, &Battery{}}
+    widgets := []Widget{&Clients{}, &PlayerCtl{}, &OpenWeatherMap{}, &DF{}, &Pulse{}, &CPU{}, &NetworkManager{}, &Time{}, &Battery{}}
 
     updates := make(chan Widget)
     clicks := map[string]chan int{}
@@ -75,6 +75,11 @@ func main() {
                 r.Name = widget.Name()
                 r.Instance = widget.Name()
                 r.Markup = "pango"
+
+                if r.Urgent {
+                    r.Urgent = false
+                    r.Background, r.Color = "#AF002F", "#FFFFFF"
+                }
                 // r.Background, r.Color = r.Color, "#222222"
                 if len(r.FullText) > 0 {
                     r.FullText = " " + r.FullText + " "

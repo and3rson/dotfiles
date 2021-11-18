@@ -15,8 +15,13 @@ require('packer').startup(function(use)
     use 'hrsh7th/cmp-nvim-lsp' -- LSP source for nvim-cmp
     -- use 'hrsh7th/cmp-vsnip'
     -- use 'hrsh7th/vim-vsnip'
-    use 'L3MON4D3/LuaSnip'
-    use 'saadparwaiz1/cmp_luasnip'
+    -- use 'L3MON4D3/LuaSnip'
+    -- use 'saadparwaiz1/cmp_luasnip'
+    use 'dcampos/nvim-snippy'
+    use 'dcampos/nvim-snippy'
+    use 'ray-x/lsp_signature.nvim'
+    -- use {'ms-jpq/coq_nvim', branch='coq'}
+    -- use {'ms-jpq/coq.artifacts', branch='artifacts'}
 
     -- TS
     use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
@@ -27,7 +32,7 @@ require('packer').startup(function(use)
     use 'Yggdroot/indentLine'
     use 'Vimjas/vim-python-pep8-indent'
     use 'airblade/vim-gitgutter'
-    use 'ervandew/supertab'
+    -- use 'ervandew/supertab'
     use 'yuezk/vim-js'
     use 'MaxMEllon/vim-jsx-pretty'
 
@@ -230,6 +235,9 @@ vim.g.bufferline = {
     icon_custom_colors = true,
     icon_close_tab = '',
     maximum_padding = 0,
+    add_in_buffer_number_order = true,
+    -- icons = 'both',
+    -- insert_at_end = true,
     -- icon_close_tab_modified = 'X',
 }
 vim.cmd([[
@@ -240,6 +248,10 @@ hi link BufferCurrentSign BufferCurrent
 " hi BufferCurrentIcon guifg=red
 hi link BufferCurrentMod BufferCurrent
 ]])
+nnoremap('<S-PageUp>', '<cmd>BufferPrevious<CR>')
+nnoremap('<S-PageDown>', '<cmd>:BufferNext<CR>')
+inoremap('<S-PageUp>', '<cmd>BufferPrevious<CR>')
+inoremap('<S-PageDown>', '<cmd>BufferNext<CR>')
 -- }}}
 -- Telescope {{{
 local actions = require('telescope.actions')
