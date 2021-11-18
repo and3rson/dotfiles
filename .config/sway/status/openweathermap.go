@@ -88,10 +88,10 @@ func (o *OpenWeatherMap) Content() Repr {
         }
     }
     return Repr{
-    	FullText:   fmt.Sprintf("<span font_desc=\"owfont\" rise=\"-2000\">%s</span><span> %s</span>", o.icon, o.content),
-    	Background: "",
-    	// Color:      "#FFD787",
-    	Color:      "#FFD787",
+		FullText:   fmt.Sprintf("<span font_desc=\"owfont\" rise=\"-2000\">%s</span><span> %s</span>", o.icon, o.content),
+		Background: "",
+		// Color:      "#FFD787",
+		Color:      "#FFD787",
     }
     // return fmt.Sprintf("<span fgcolor=\"#FFD787\">%s</span>", t.content)
 }

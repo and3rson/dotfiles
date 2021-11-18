@@ -80,6 +80,9 @@ vim.g.sublimemonokai_term_italic = 1
 vim.o.cursorline = true
 vim.o.cursorcolumn = false
 
+-- CursorHold
+vim.o.updatetime = 500
+
 -- Fill chars
 -- vim.opt.fillchars = vim.opt.fillchars + 'stl: ' + 'stlnc: ' + 'fold:-' + 'msgsep:+' + 'eob: '
 vim.opt.fillchars = {
@@ -99,7 +102,8 @@ vim.api.nvim_set_option('list', true)
 vim.api.nvim_win_set_option(0, 'list', true)
 -- vim.opt.listchars = vim.opt.listchars + 'tab:▏ ' + 'trail:·' + 'extends:»' + 'precedes:«' + 'nbsp:×'
 vim.opt.listchars = {
-    tab = '▏ ',
+    -- tab = '▏ ',
+    tab = '  ',
     trail = '·',
     extends = '»',
     precedes = '«',
@@ -188,6 +192,8 @@ hi! PmenuThumb guibg=#66D9EF
 hi PmenuSel guifg=#000000
 
 hi MatchParen guifg=red guibg=none gui=underline,bold
+" hi Whitespace guifg=red gui=underline
+hi IndentBlanklineChar guifg=#444444
 ]])
 
 -- Remove trailing whitespaces
@@ -214,4 +220,5 @@ function EnableSpellchecking()
 end
 vim.cmd([[
     au FileType markdown setlocal spell
+    au FileType go set noet
 ]])

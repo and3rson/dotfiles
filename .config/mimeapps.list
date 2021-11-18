@@ -1,0 +1,14 @@
+[Default Applications]
+application/pdf=evince.desktop
+x-scheme-handler/tg=userapp-Telegram Desktop-RHCHW0.desktop
+x-scheme-handler/irc=io.github.Hexchat.desktop
+x-scheme-handler/ircs=io.github.Hexchat.desktop
+text/plain=alacritty_nvim.desktop
+image/png=sxiv.desktop
+image/jpeg=sxiv.desktop
+x-scheme-handler/msteams=teams.desktop
+inode/directory=alacritty_ranger.desktop
+
+[Added Associations]
+x-scheme-handler/tg=userapp-Telegram Desktop-RHCHW0.desktop;
+application/pdf=firefox-developer-edition.desktop;

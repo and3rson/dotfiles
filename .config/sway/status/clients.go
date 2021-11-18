@@ -81,15 +81,6 @@ func getCurrentWorkspace(root *Node) *Node {
     return nil
 }
 
-func waitForChange(ctx context.Context) chan struct{} {
-    changed := make(chan struct{}, 1)
-    go func() {
-        exec.CommandContext(ctx, "swaymsg", "-t", "subscribe", "[\"window\", \"workspace\"]").Output()
-        changed <- struct{}{}
-    }()
-    return changed
-}
-
 type Clients struct {
     workspace *Node
     node *Node
@@ -104,7 +95,7 @@ func (c *Clients) Run(ctx context.Context, updates chan<- Widget, click <-chan i
     c.workspace = getCurrentWorkspace(root)
     c.node = getClientNode(root)
     updates <- c
-    changed := waitForChange(ctx)
+    changed := SwaySubscribe(ctx, []string{"window", "workspace"})
     for {
         select {
         case <-time.After(time.Second * 10):
@@ -116,13 +107,13 @@ func (c *Clients) Run(ctx context.Context, updates chan<- Widget, click <-chan i
             c.workspace = getCurrentWorkspace(root)
             c.node = getClientNode(root)
             updates <- c
-            changed = waitForChange(ctx)
+            changed = SwaySubscribe(ctx, []string{"window", "workspace"})
         }
     }
 }
 
 func (c *Clients) Content() Repr {
-    // color := "#FFD787"
+	// color := "#FFD787"
     if c.node == nil {
         return Repr{}
     }
@@ -132,12 +123,12 @@ func (c *Clients) Content() Repr {
     }
     parts = append(parts, c.workspace.Representation)
     return Repr{
-    	FullText:   strings.Join(parts, " "),
-    	// Background: "",
+		FullText:   strings.Join(parts, " "),
+		// Background: "",
         // MinWidth: 150,
         Align: "left",
         // Background: "#448844",
-    	Color:      "#FFFFFF",
+		Color:      "#FFFFFF",
     }
     // return fmt.Sprintf("<span fgcolor=\"%s\">\uF7C9 %2dG</span>", color, d.free)
     // return fmt.Sprintf("<span fgcolor=\"#FFD787\">%s</span>", t.content)

@@ -126,9 +126,9 @@ func (n *NetworkManager) Content() Repr {
         urgent = true
     }
     return Repr{
-    	FullText:   fmt.Sprintf("%s %s", icon, n.network),
-    	Background: "",
-    	Color:      color,
+		FullText:   fmt.Sprintf("%s %s", icon, n.network),
+		Background: "",
+		Color:      color,
         Urgent:     urgent,
     }
     // return fmt.Sprintf("<span fgcolor=\"%s\">%s %s</span>", color, icon, n.network)

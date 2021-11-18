@@ -33,9 +33,9 @@ func (t *Time) Run(ctx context.Context, updates chan<- Widget, click <-chan int)
 
 func (t *Time) Content() Repr {
     return Repr{
-    	FullText:   t.content,
-    	Background: "",
-    	Color:      "#FFD787",
+		FullText:   t.content,
+		Background: "",
+		Color:      "#FFD787",
     }
     // return fmt.Sprintf("<span fgcolor=\"#FFD787\">%s</span>", t.content)
 }

@@ -50,9 +50,9 @@ func (d *Battery) Content() Repr {
         urgent = true
     }
     return Repr{
-    	FullText:   fmt.Sprintf("%s %d%%", icon, d.charge),
-    	Background: "",
-    	Color:      color,
+		FullText:   fmt.Sprintf("%s %d%%", icon, d.charge),
+		Background: "",
+		Color:      color,
         Urgent:     urgent,
     }
     // return fmt.Sprintf("<span fgcolor=\"%s\">\uF7C9 %2dG</span>", color, d.free)

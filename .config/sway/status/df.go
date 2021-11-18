@@ -40,9 +40,9 @@ func (d *DF) Content() Repr {
         urgent = true
     }
     return Repr{
-    	FullText:   fmt.Sprintf("\uF7C9 %2dG", d.free),
-    	Background: "",
-    	Color:      color,
+		FullText:   fmt.Sprintf("\uF7C9 %2dG", d.free),
+		Background: "",
+		Color:      color,
         Urgent:     urgent,
     }
     // return fmt.Sprintf("<span fgcolor=\"%s\">\uF7C9 %2dG</span>", color, d.free)

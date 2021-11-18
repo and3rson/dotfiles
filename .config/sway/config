@@ -30,7 +30,7 @@ xwayland enable
 
 # Basic keys
     bindsym --to-code $mod+Return exec $term
-    bindsym --to-code Escape exec "[[ `dunstctl count displayed` != \"0\" ]] && dunstctl close || (wtype -P Escape; xdotool key Escape)"
+    # bindsym --to-code Escape exec "[[ `dunstctl count displayed` != \"0\" ]] && dunstctl close || (wtype -P Escape; xdotool key Escape)"
 
     # bindsym --to-code Escape exec "wtype -P Escape"
     # bindsym --to-code Ctrl+Escape exec dunstctl close
@@ -206,6 +206,7 @@ for_window [class="Spotify"] move window to workspace m
 exec spotify
 
 for_window [title="Minecraft Launcher"] move window to workspace a
+for_window [title="Minecraft 1.17.1"] move window to workspace a
 for_window [class="Microsoft Teams - Preview"] move window to workspace i
 for_window [class="microsoft teams - preview"] move window to workspace i
 

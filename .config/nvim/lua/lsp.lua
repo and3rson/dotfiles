@@ -26,7 +26,8 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
 
     -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>Telescope lsp_code_actions<CR>', opts)
+    -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>Telescope lsp_code_actions<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>CodeActionMenu<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-d>', '<cmd>Telescope lsp_document_diagnostics<CR>', opts)
 
     vim.api.nvim_buf_set_keymap(bufnr, 'n', ';', '<cmd>lua vim.lsp.diagnostic.goto_prev{float=false}<CR>', opts)
@@ -36,7 +37,9 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_command("autocmd CursorMoved * :lua require('ts_context_commentstring.internal').update_commentstring()")
     -- vim.api.nvim_command("autocmd CursorHoldI * :lua vim.lsp.buf.signature_help()")
 
-    require "lsp_signature".on_attach()
+    require'lsp_signature'.on_attach()
+    -- require'virtualtypes'.on_attach()
+
 end
 local kind_icons = {
     Class = " ",
@@ -138,6 +141,14 @@ cmp.setup {
             behavior = cmp.ConfirmBehavior.Replace,
             select = true,
         },
+        ['<Esc>'] = cmp.mapping.close(),
+        -- ['<Esc>'] = function(fallback)
+        --     if cmp.visible() then
+        --         cmp.close()
+        --     else
+        --         fallback()
+        --     end
+        -- end,
         ['<Tab>'] = function(fallback)
             -- https://github.com/hrsh7th/nvim-cmp/issues/174#issuecomment-939262013
             if cmp.visible() then
@@ -167,6 +178,7 @@ cmp.setup {
     },
     sources = cmp.config.sources({
         { name = 'nvim_lsp' },
+        { name = 'snippy' },
     }, {
         { name = 'buffer' },
     }),

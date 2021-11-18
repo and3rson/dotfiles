@@ -18,10 +18,13 @@ require('packer').startup(function(use)
     -- use 'L3MON4D3/LuaSnip'
     -- use 'saadparwaiz1/cmp_luasnip'
     use 'dcampos/nvim-snippy'
-    use 'dcampos/nvim-snippy'
+    use 'dcampos/cmp-snippy'
     use 'ray-x/lsp_signature.nvim'
     -- use {'ms-jpq/coq_nvim', branch='coq'}
     -- use {'ms-jpq/coq.artifacts', branch='artifacts'}
+    use 'kosayoda/nvim-lightbulb'
+    use 'weilbith/nvim-code-action-menu'
+    -- use 'jubnzv/virtual-types.nvim'
 
     -- TS
     use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
@@ -29,7 +32,8 @@ require('packer').startup(function(use)
     use 'JoosepAlviste/nvim-ts-context-commentstring'
 
     -- Indentation
-    use 'Yggdroot/indentLine'
+    -- use 'Yggdroot/indentLine'
+    use 'lukas-reineke/indent-blankline.nvim'
     use 'Vimjas/vim-python-pep8-indent'
     use 'airblade/vim-gitgutter'
     -- use 'ervandew/supertab'
@@ -76,11 +80,12 @@ vnoremap('<M-/>', ':Commentary<CR>')
 -- inoremap <silent> <M-/> <C-o>:Commentary<CR><C-o><CR>
 imap('<M-/>', '<cmd>Commentary<CR>')
 -- }}}
--- indentLine {{{
+-- indentLine & blankline {{{
 vim.g.indent_guides_enable_on_vim_startup = 1
 vim.g.indent_guides_guide_size=1
 
 vim.g.indentLine_char = '▏'
+-- vim.g.indentLine_char = ''
 vim.g.indentLine_first_char = '▏'
 vim.g.indentLine_concealcursor = 0
 vim.g.indentLine_conceallevel = 1
@@ -161,9 +166,9 @@ local function tsPath()
 end
 
 local custom_onedark = require'lualine.themes.onedark'
-custom_onedark.inactive.a.bg = '#000000'
-custom_onedark.inactive.b.bg = '#000000'
-custom_onedark.inactive.c.bg = '#000000'
+custom_onedark.inactive.a.bg = '#222222'
+custom_onedark.inactive.b.bg = '#222222'
+custom_onedark.inactive.c.bg = '#222222'
 
 local lualine_sections = {
     lualine_a = {{'mode', fmt = function(str) return mode_map[str:sub(1, 1)] end}},
@@ -276,5 +281,26 @@ vim.cmd([[
 nnoremap <silent> <M-l> :Telescope live_grep<CR>
 nnoremap <silent> <M-p> :lua project_files()<CR>
 nnoremap <silent> <M-o> :Telescope file_browser<CR>
+]])
+-- }}}
+-- Custom file types {{{
+vim.cmd([[
+au BufRead level.dat* :set ft=nbted
+au FileType nbted :set noet
+]])
+-- }}}
+-- Lightbulb {{{
+_G.lightbulb_config = {
+    sign = {
+        enabled = false,
+    },
+    virtual_text = {
+        enabled = true,
+        text = "  ",
+    },
+}
+vim.cmd([[
+autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb(lightbulb_config)
+hi LightBulbVirtualText guibg=#D7D787 guifg=#222222
 ]])
 -- }}}

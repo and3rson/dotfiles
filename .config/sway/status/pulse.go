@@ -79,9 +79,9 @@ func (d *Pulse) Content() Repr {
         icon = "\uF7CA"
     }
     return Repr{
-    	FullText:   fmt.Sprintf("%s %d%%", icon, d.volume),
-    	Background: "",
-    	Color:      "#AF87FF",
+		FullText:   fmt.Sprintf("%s %d%%", icon, d.volume),
+		Background: "",
+		Color:      "#AF87FF",
     }
     // return fmt.Sprintf("<span bgcolor=\"#440000\" fgcolor=\"#AF87FF\">%s %d%%</span>", icon, d.volume)
     // return fmt.Sprintf("<span fgcolor=\"#FFD787\">%s</span>", t.content)
