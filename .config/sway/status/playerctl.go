@@ -161,7 +161,7 @@ func (p *PlayerCtl) Content() Repr {
         color = "#FF005F"
     }
     return Repr{
-		FullText:   fmt.Sprintf("%v %s %s", icon, p.info.title, p.info.duration),
+		FullText:   fmt.Sprintf("%v %s %s", icon, ellipsize(p.info.title), p.info.duration),
 		Background: "",
 		Color:      color,
         // MinWidth:   150,

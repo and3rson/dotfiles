@@ -80,7 +80,7 @@ func (c *CPU) Content() Repr {
     }
     return Repr{
         // \uf437
-		FullText:   fmt.Sprintf("%s %s", bar, loadStr),
+		FullText:   fmt.Sprintf("%s <span font_desc=\"monospace\">%s</span>", bar, loadStr),
 		Background: "",
 		Color:      color,
         Urgent:     urgent,

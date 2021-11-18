@@ -26,8 +26,8 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
 
     -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-    -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>Telescope lsp_code_actions<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>CodeActionMenu<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>Telescope lsp_code_actions<CR>', opts)
+    -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>CodeActionMenu<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-d>', '<cmd>Telescope lsp_document_diagnostics<CR>', opts)
 
     vim.api.nvim_buf_set_keymap(bufnr, 'n', ';', '<cmd>lua vim.lsp.diagnostic.goto_prev{float=false}<CR>', opts)
