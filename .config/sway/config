@@ -1,177 +1,178 @@
 xwayland enable
 
-# Definitions
-    set $mod Mod4
-    set $cm Mod5
-    set $term alacritty
-    # set $menu dmenu_path | dmenu | xargs swaymsg exec --
-    set $menu "rofi -show run"
-    set $confdir ~/.config/sway
+# Definitions {{{
+set $mod Mod4
+set $cm Mod5
+set $term alacritty
+# set $menu dmenu_path | dmenu | xargs swaymsg exec --
+set $menu "rofi -show run"
+set $waylanddir ~/.config/wayland
+# }}}
+# Outputs {{{
+output * bg /home/anderson/.wallpapers/lights2.jpg fill
+output eDP-1 position 0,0
+output HDMI-A-1 position 1920,0 transform 90 scale 3
+# }}}
+# Inputs {{{
+input "1:1:AT_Translated_Set_2_keyboard" {
+    repeat_delay 167
+    repeat_rate 25
+    xkb_layout us,ua
+    xkb_options grp:alt_space_toggle,lv3:caps_switch
+}
+input "10182:500:GDX1515:00_27C6:01F4_Touchpad" {
+    tap enabled
+    scroll_factor 0.25
+    tap_button_map lrm
+    dwt disabled
+    click_method clickfinger
+}
+# }}}
+# Basic keys {{{
+bindsym --to-code $mod+Return exec $term
+bindsym --to-code Escape exec "[[ `dunstctl count displayed` != \"0\" ]] && dunstctl close || (wtype -P Escape; xdotool key Escape)"
 
-# Output
-    output * bg /home/anderson/.wallpapers/lights2.jpg fill
-    output eDP-1 position 0,0
-    output HDMI-A-1 position 1920,0 transform 90 scale 3
+# bindsym --to-code Escape exec "wtype -P Escape"
+# bindsym --to-code Ctrl+Escape exec dunstctl close
 
-# Input
-    input "1:1:AT_Translated_Set_2_keyboard" {
-        repeat_delay 167
-        repeat_rate 25
-        xkb_layout us,ua
-        xkb_options grp:alt_space_toggle,lv3:caps_switch
-    }
-    input "10182:500:GDX1515:00_27C6:01F4_Touchpad" {
-        tap enabled
-        scroll_factor 0.25
-        tap_button_map lrm
-        dwt disabled
-        click_method clickfinger
-    }
+bindsym --to-code Alt+f4 kill
 
-# Basic keys
-    bindsym --to-code $mod+Return exec $term
-    # bindsym --to-code Escape exec "[[ `dunstctl count displayed` != \"0\" ]] && dunstctl close || (wtype -P Escape; xdotool key Escape)"
+bindsym --to-code $mod+r exec $menu
+bindsym --to-code $mod+b exec blueman-manager
+bindsym --to-code $mod+n exec networkmanager_dmenu
+bindsym --to-code $mod+c exec clipman pick --tool=rofi
 
-    # bindsym --to-code Escape exec "wtype -P Escape"
-    # bindsym --to-code Ctrl+Escape exec dunstctl close
+# Drag floating windows by holding down $mod and left mouse button.
+# Resize them with right mouse button + $mod.
+# Despite the name, also works for non-floating windows.
+# Change normal to inverse to use left mouse button for resizing and right
+# mouse button for dragging.
+floating_modifier $mod normal
 
-    bindsym --to-code Alt+f4 kill
+# Reload the configuration file
+bindsym --to-code $mod+Control+r reload
 
-    bindsym --to-code $mod+r exec $menu
-    bindsym --to-code $mod+b exec blueman-manager
-    bindsym --to-code $mod+n exec networkmanager_dmenu
-    bindsym --to-code $mod+c exec clipman pick --tool=rofi
+# Exit sway (logs you out of your Wayland session)
+# bindsym --to-code $mod+Ctrl+q exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+bindsym --to-code $mod+Ctrl+q exec "CMD=`echo -e 'Yes\nNo' | rofi -dmenu -p Quit`; if [[ $CMD == Yes ]]; then swaymsg exit; fi"
 
-    # Drag floating windows by holding down $mod and left mouse button.
-    # Resize them with right mouse button + $mod.
-    # Despite the name, also works for non-floating windows.
-    # Change normal to inverse to use left mouse button for resizing and right
-    # mouse button for dragging.
-    floating_modifier $mod normal
+# Lock screen
+# bindsym --to-code Ctrl+Alt+l exec swaylock -i ~/.wallpapers/lights1920.png
+bindsym --to-code Ctrl+Alt+l exec swaylock -i ~/.wallpapers/332450.jpg
 
-    # Reload the configuration file
-    bindsym --to-code $mod+Control+r reload
-
-    # Exit sway (logs you out of your Wayland session)
-    # bindsym --to-code $mod+Ctrl+q exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
-    bindsym --to-code $mod+Ctrl+q exec "CMD=`echo -e 'Yes\nNo' | rofi -dmenu -p Quit`; if [[ $CMD == Yes ]]; then swaymsg exit; fi"
-
-    # Lock screen
-    # bindsym --to-code Ctrl+Alt+l exec swaylock -i ~/.wallpapers/lights1920.png
-    bindsym --to-code Ctrl+Alt+l exec swaylock -i ~/.wallpapers/332450.jpg
-
-    # Screenshot
-    bindsym --to-code Print exec grim -o eDP-1 -t png - > /tmp/sshot.png && (wl-copy < /tmp/sshot.png && notify-send -i /tmp/sshot.png "Screen copied to clipboard") || notify-send "Terminated"
-    bindsym --to-code Alt+Print exec grim -g "$(slurp)" -t png - > /tmp/sshot.png && (wl-copy < /tmp/sshot.png && notify-send -i /tmp/sshot.png "Selected area copied to clipboard") || notify-send "Terminated"
+# Screenshot
+bindsym --to-code Print exec grim -o eDP-1 -t png - > /tmp/sshot.png && (wl-copy < /tmp/sshot.png && notify-send -i /tmp/sshot.png "Screen copied to clipboard") || notify-send "Terminated"
+bindsym --to-code Alt+Print exec grim -g "$(slurp)" -t png - > /tmp/sshot.png && (wl-copy < /tmp/sshot.png && notify-send -i /tmp/sshot.png "Selected area copied to clipboard") || notify-send "Terminated"
 
 # Client keys
-    # Move your focus around
-    bindsym --to-code $mod+Left focus left # sibling
-    bindsym --to-code $mod+$cm+j focus left # sibling
-    bindsym --to-code $mod+Down focus down
-    bindsym --to-code $mod+Up focus up
-    bindsym --to-code $mod+Right focus right # sibling
-    bindsym --to-code $mod+$cm+l focus right # sibling
-    # bindsym --to-code $mod+Left prev_on_output
-    # bindsym --to-code $mod+Right next_on_output
+# Move your focus around
+bindsym --to-code $mod+Left focus left # sibling
+bindsym --to-code $mod+$cm+j focus left # sibling
+bindsym --to-code $mod+Down focus down
+bindsym --to-code $mod+Up focus up
+bindsym --to-code $mod+Right focus right # sibling
+bindsym --to-code $mod+$cm+l focus right # sibling
+# bindsym --to-code $mod+Left prev_on_output
+# bindsym --to-code $mod+Right next_on_output
 
-    # Move the focused window with the same, but add Shift
-    # bindsym --to-code $mod+Shift+Left move left
-    # bindsym --to-code $mod+Shift+Down move down
-    # bindsym --to-code $mod+Shift+Up move up
-    # bindsym --to-code $mod+Shift+Right move right
-    bindsym --to-code $mod+j move left
-    bindsym --to-code $mod+k move right
+# Move the focused window with the same, but add Shift
+# bindsym --to-code $mod+Shift+Left move left
+# bindsym --to-code $mod+Shift+Down move down
+# bindsym --to-code $mod+Shift+Up move up
+# bindsym --to-code $mod+Shift+Right move right
+bindsym --to-code $mod+j move left
+bindsym --to-code $mod+k move right
 
-    # Does not work
-    # bindsym --to-code $mod+1 focus number 1
-    # bindsym --to-code $mod+2 focus number 2
-    # bindsym --to-code $mod+3 focus number 3
+# Does not work
+# bindsym --to-code $mod+1 focus number 1
+# bindsym --to-code $mod+2 focus number 2
+# bindsym --to-code $mod+3 focus number 3
 
-    focus_follows_mouse no
-    focus_wrapping workspace
-    bindsym --to-code $mod+space focus mode_toggle
+focus_follows_mouse no
+focus_wrapping workspace
+bindsym --to-code $mod+space focus mode_toggle
 
 # Workspaces
-    # Switch to workspace
-    bindsym --to-code $mod+q workspace q
-    bindsym --to-code $mod+w workspace w
-    bindsym --to-code $mod+i workspace i
-    bindsym --to-code $mod+m workspace m
-    bindsym --to-code $mod+a workspace a
-    # Move focused container to workspace
-    bindsym --to-code $mod+Shift+q move container to workspace q
-    bindsym --to-code $mod+Shift+w move container to workspace w
-    bindsym --to-code $mod+Shift+i move container to workspace i
-    bindsym --to-code $mod+Shift+m move container to workspace m
-    bindsym --to-code $mod+Shift+a move container to workspace a
-    # Note: workspaces can have any name you want, not just numbers.
-    # We just use 1-10 as the default.
+# Switch to workspace
+bindsym --to-code $mod+q workspace q
+bindsym --to-code $mod+w workspace w
+bindsym --to-code $mod+i workspace i
+bindsym --to-code $mod+m workspace m
+bindsym --to-code $mod+a workspace a
+# Move focused container to workspace
+bindsym --to-code $mod+Shift+q move container to workspace q
+bindsym --to-code $mod+Shift+w move container to workspace w
+bindsym --to-code $mod+Shift+i move container to workspace i
+bindsym --to-code $mod+Shift+m move container to workspace m
+bindsym --to-code $mod+Shift+a move container to workspace a
+# Note: workspaces can have any name you want, not just numbers.
+# We just use 1-10 as the default.
 
-    workspace x output HDMI-A-1
-    workspace q output eDP-1
-    workspace_layout tabbed
+workspace x output HDMI-A-1
+workspace q output eDP-1
+workspace_layout tabbed
 
 # Layout stuff
-    # Make the current focus fullscreen
-    bindsym --to-code $mod+f fullscreen
+# Make the current focus fullscreen
+bindsym --to-code $mod+f fullscreen
 
-    # Toggle the current focus between tiling and floating mode
-    bindsym --to-code $mod+x floating toggle
+# Toggle the current focus between tiling and floating mode
+bindsym --to-code $mod+x floating toggle
 
-    # Swap focus between the tiling area and the floating area
-    # bindsym --to-code $mod+space focus mode_toggle
+# Swap focus between the tiling area and the floating area
+# bindsym --to-code $mod+space focus mode_toggle
 
-    # Move focus to the parent container
-    # bindsym --to-code $mod+a focus parent
+# Move focus to the parent container
+# bindsym --to-code $mod+a focus parent
+# }}}
+# Media keys {{{
+bindsym --to-code KP_Begin exec playerctl play-pause
+bindsym --to-code KP_Left exec playerctl previous
+bindsym --to-code KP_Right exec playerctl next
+bindsym --to-code KP_Up exec $waylanddir/volume.sh 2%+
+bindsym --to-code KP_Down exec $waylanddir/volume.sh 2%-
+bindsym --to-code XF86AudioRaiseVolume exec $waylanddir/volume.sh 2%+
+bindsym --to-code XF86AudioLowerVolume exec $waylanddir/volume.sh 2%-
 
+bindsym --to-code XF86MonBrightnessUp exec $waylanddir/brightness.sh 2%+
+bindsym --to-code XF86MonBrightnessDown exec $waylanddir/brightness.sh 2%-
+# }}}
+# Status bar {{{
 
-# Media keys
-    bindsym --to-code KP_Begin exec playerctl play-pause
-    bindsym --to-code KP_Left exec playerctl previous
-    bindsym --to-code KP_Right exec playerctl next
-    bindsym --to-code KP_Up exec $confdir/volume.sh 2%+
-    bindsym --to-code KP_Down exec $confdir/volume.sh 2%-
-    bindsym --to-code XF86AudioRaiseVolume exec $confdir/volume.sh 2%+
-    bindsym --to-code XF86AudioLowerVolume exec $confdir/volume.sh 2%-
-
-    bindsym --to-code XF86MonBrightnessUp exec $confdir/brightness.sh 2%+
-    bindsym --to-code XF86MonBrightnessDown exec $confdir/brightness.sh 2%-
-
-# Title bar
-
-    font pango:monospace 0
-    titlebar_border_thickness 0
-    titlebar_padding 0
+font pango:monospace 0
+titlebar_border_thickness 0
+titlebar_padding 0
 
 # Status Bar:
-    # Read `man 5 sway-bar` for more information about this section.
-    bar {
-        font pango:RobotoMonoNerdFont 10
-        position top
-        output eDP-1
+# Read `man 5 sway-bar` for more information about this section.
+bar {
+    font pango:RobotoMonoNerdFont 10
+    position top
+    output eDP-1
 
-        # When the status_command prints a new line to stdout, swaybar updates.
-        # The default just shows the current date and time.
-        # status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
-        # status_command while true; do echo -n `~/.tmux.d/status.sh ansi | ansifilter -M -F RobotoMonoNerdFont`; sleep 1; done
-        status_command ~/.config/sway/status/status done
-        pango_markup true
-        workspace_buttons no
-        # separator_symbol "|"
-        tray_output none
+    # When the status_command prints a new line to stdout, swaybar updates.
+    # The default just shows the current date and time.
+    # status_command while date +'%Y-%m-%d %l:%M:%S %p'; do sleep 1; done
+    # status_command while true; do echo -n `~/.tmux.d/status.sh ansi | ansifilter -M -F RobotoMonoNerdFont`; sleep 1; done
+    status_command ~/.config/sway/status/status
+    # status_command ~/src/graph-bars-font/example/example
+    pango_markup true
+    workspace_buttons no
+    # separator_symbol "▏"
+    separator_symbol "  "
+    # separator_symbol "|"
+    tray_output none
 
-        colors {
-            statusline #ffffff
-            background #000000
-            # background #4E315E
-            inactive_workspace #32323200 #32323200 #5c5c5c
-            urgent_workspace "#000000FF" "#CC2040FF" "#FFFFFF"
-        }
+    colors {
+        statusline #ffffff
+        background #000000
+        # background #4E315E
+        inactive_workspace #32323200 #32323200 #5c5c5c
+        urgent_workspace "#000000FF" "#CC2040FF" "#FFFFFF"
     }
-
-
-# Styles
+}
+# }}}
+# Styles {{{
 # default_border pixel 0
 default_border none
 hide_edge_borders --i3 both
@@ -179,12 +180,12 @@ hide_edge_borders --i3 both
 client.focused #222222 #222222 #EEEEEE
 client.unfocused #000000 #000000 #777777
 # default_border pixel 1
-
-# Screen sharing via xdg-desktop-portal-wlr
+# }}}
+# Screen sharing via xdg-desktop-portal-wlr {{{
 # exec dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway XDG_SESSION_TYPE=wayland
 exec "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP XDG_SESSION_TYPE"
-
-# App configs
+# }}}
+# App configs {{{
 assign [app_id="hometerm"] workspace q
 exec alacritty --class hometerm -e ~/.scripts/stmux.sh
 assign [app_id="padterm"] workspace x
@@ -214,14 +215,16 @@ for_window [class="microsoft teams - preview"] move window to workspace i
 
 # exec flashfocus
 exec wl-paste -t text --watch clipman store
-
-exec $confdir/nmmonitor.sh
+# }}}
+# Idle config {{{
+# exec $waylanddir/nmmonitor.sh
 exec swayidle -w \
     timeout 300 "swaymsg output '*' dpms off" \
     resume "swaymsg output '*' dpms on"
 
     # after-resume 'swaylock -d -f -i /home/anderson/.wallpapers/332450.jpg'
-# exec $confdir/mqtt.sh
-
-# Built-in configs
+# exec $waylanddir/mqtt.sh
+# }}}
+# Built-in configs {{{
 include /etc/sway/config.d/*
+# }}}

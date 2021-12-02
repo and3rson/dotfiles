@@ -12,6 +12,7 @@ import (
 type Battery struct {
     status string
     charge int
+	blink bool
 }
 
 func (b *Battery) Name() string {
@@ -30,8 +31,13 @@ func (b *Battery) Run(ctx context.Context, updates chan<- Widget, click <-chan i
             chargeInt, _ := strconv.Atoi(strings.TrimSpace(string(chargeBytes)))
             b.charge = chargeInt
         }
+		timeout := time.Second
+		if b.status != "Charging" && b.charge < 20 {
+			b.blink = !b.blink
+			timeout = time.Second / 5
+		}
         select {
-        case <-time.After(time.Second * 1):
+        case <-time.After(timeout):
             continue
         case <-ctx.Done():
             return
@@ -39,18 +45,21 @@ func (b *Battery) Run(ctx context.Context, updates chan<- Widget, click <-chan i
     }
 }
 
-func (d *Battery) Content() Repr {
+func (b *Battery) Content() Repr {
     color := "#FFFFFF"
     urgent := false
     icon := "\u2665" // heart
-    if d.status == "Charging" || d.status == "Full" || d.status == "Not charging" {
+    if b.status == "Charging" || b.status == "Full" || b.status == "Not charging" {
         color = "#AFFF00"
         icon = "\uF0E7" // bolt
-    } else if d.charge < 20 {
+    } else if b.charge < 20 {
         urgent = true
     }
+	if urgent {
+		urgent = b.blink
+	}
     return Repr{
-		FullText:   fmt.Sprintf("%s %d%%", icon, d.charge),
+		FullText:   fmt.Sprintf("%s %d%%", icon, b.charge),
 		Background: "",
 		Color:      color,
         Urgent:     urgent,

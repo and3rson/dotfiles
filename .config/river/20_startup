@@ -1,0 +1,5 @@
+#!/bin/bash
+set -e
+
+riverctl spawn yambar
+riverctl spawn 'alacritty --class hometerm -e ~/.scripts/stmux.sh'

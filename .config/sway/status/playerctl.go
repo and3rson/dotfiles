@@ -24,13 +24,20 @@ func (p *PlayerCtl) Name() string {
     return "playerctl"
 }
 
-func FetchMetadata(obj dbus.BusObject) dbus.Variant {
+func FetchMetadata(obj dbus.BusObject) (bool, dbus.Variant) {
     // TODO: return err
     result, err := obj.GetProperty("org.mpris.MediaPlayer2.Player.Metadata")
     if err != nil {
-        panic("failed to fetch metadata")
+		if err, ok := err.(dbus.Error); ok {
+			parts := strings.Split(err.Name, ".")
+			if parts[len(parts)-1] == "NoActivePlayer" {
+				return false, dbus.Variant{}
+			}
+		} else {
+			panic("failed to fetch metadata: " + err.Error())
+		}
     }
-    return result
+    return true, result
 }
 
 func GetInfoFromMetadata(rawMetadata dbus.Variant) Info {
@@ -81,11 +88,19 @@ func ellipsize(s string) string {
 }
 
 func (p *PlayerCtl) update(obj dbus.BusObject) {
-    metadata := FetchMetadata(obj)
-    p.info = GetInfoFromMetadata(metadata)
-    playbackStatus := FetchPlaybackStatus(obj)
-    p.isPlaying = GetPlayingFromPlaybackStatus(playbackStatus)
-    p.err = nil
+    controlled, metadata := FetchMetadata(obj)
+	if controlled {
+		p.info = GetInfoFromMetadata(metadata)
+		playbackStatus := FetchPlaybackStatus(obj)
+		p.isPlaying = GetPlayingFromPlaybackStatus(playbackStatus)
+	} else {
+		p.info = Info{
+			title:    "No players",
+			duration: "",
+		}
+		p.isPlaying = false
+	}
+	p.err = nil
 }
 
 func (p *PlayerCtl) Run(ctx context.Context, updates chan<- Widget, click <-chan int) {

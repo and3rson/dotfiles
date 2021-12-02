@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/Wifx/gonetworkmanager"
+	"github.com/godbus/dbus/v5"
 )
 
 type NetworkManager struct {
@@ -40,6 +41,10 @@ func (n *NetworkManager) Run(ctx context.Context, updates chan<- Widget, click <
         if needsRefresh {
             devices, err := nm.GetPropertyAllDevices() // TODO: Or GetAllDevices?
             if err != nil {
+				if e, ok := err.(dbus.Error); ok && e.Name == "org.freedesktop.DBus.Error.ServiceUnknown" {
+					panic("disabled")
+				}
+				// panic(fmt.Sprintf("%T", err))
                 panic("failed to get all devices")
             }
             found := false
@@ -122,8 +127,8 @@ func (n *NetworkManager) Content() Repr {
     }
     if !n.isConnected {
         icon = "\uf818"
-        // color = "#FF005F"
-        urgent = true
+        color = "#FF005F"
+        urgent = false
     }
     return Repr{
 		FullText:   fmt.Sprintf("%s %s", icon, n.network),

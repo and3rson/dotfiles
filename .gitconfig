@@ -56,3 +56,8 @@
 
 [include]
     path = ~/.gitconfig.local
+[sendemail]
+	smtpencryption = tls
+	smtpserver = smtppro.zoho.com
+	smtpserverport = 587
+    smtpuser = a@dun.ai

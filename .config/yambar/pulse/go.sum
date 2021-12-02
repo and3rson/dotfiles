@@ -1,0 +1,4 @@
+github.com/godbus/dbus/v5 v5.0.6 h1:mkgN1ofwASrYnJ5W6U/BxG15eXXXjirgZc7CLqkcaro=
+github.com/godbus/dbus/v5 v5.0.6/go.mod h1:xhWf0FNVPg57R7Z0UbKHbJfkEywrmjJnf7w5xrFpKfA=
+github.com/lawl/pulseaudio v0.0.0-20210928141934-ed754c0c6618 h1:lktbhQBHluc1oWEDow4DEv13qkWJ8zm/dTUSKer2iKk=
+github.com/lawl/pulseaudio v0.0.0-20210928141934-ed754c0c6618/go.mod h1:9h36x4KH7r2V8DOCKoPMt87IXZ++X90y8D5nnuwq290=

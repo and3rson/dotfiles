@@ -2,6 +2,7 @@ configuration {
     modi: "run,drun";
     kb-row-tab: "";
     kb-mode-next: "Tab";
+    /* kb-mode-previous: "Shift+Tab"; */
 }
 
 @import "/usr/share/rofi/themes/Monokai.rasi"

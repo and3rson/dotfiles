@@ -4,7 +4,8 @@ CHARS=' ▁▂▃▄▅▆▇█'
 while read line
 do
     # echo $line > /dev/udp/192.168.0.137/1337
-    echo -n $line | netcat -w0 -u 192.168.0.116 1337
+    # CC:50:E3:DA:C6:BB
+    echo -n $line | netcat -w0 -u 192.168.0.137 1337
     IFS=';'
     echo -en '\r'
     for c in $line

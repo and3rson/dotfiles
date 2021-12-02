@@ -1,0 +1,198 @@
+bar:
+  location: top
+  height: 15
+  font: RobotoMono Nerd Font:pixelsize=13
+  background: 000000FF
+  spacing: 10
+
+  left:
+    - foreign-toplevel:
+        content:
+          map:
+            tag: activated
+            values:
+              false: {empty: {}}
+              true:
+                - string: {text: "{app-id}", foreground: ffa0a0ff}
+                - string: {text: ": {title}"}
+  center:
+    - script:
+        path: /home/anderson/.config/yambar/spectrum/spectrum
+        args: [-l]
+        # foreground: 'FFD78780'
+        foreground: '5FFF47FF'
+        font: Bars
+        content:
+          - string: {text: "{bar}"}
+    - script:
+        path: /home/anderson/.config/yambar/playerctl/playerctl
+        content:
+          - map:
+              tag: playing
+              values:
+                true:
+                  - string: {text: "\uF04B {title} {duration}", foreground: "5FFF47FF"}
+                false:
+                  - string: {text: "\uF04C {title} {duration}", foreground: "FF005FFF"}
+    - script:
+        path: /home/anderson/.config/yambar/spectrum/spectrum
+        args: [-r]
+        # foreground: 'FFD78780'
+        foreground: '5FFF47FF'
+        font: Bars
+        content:
+          - string: {text: "{bar}"}
+  right:
+    # - river:
+    #     title: {string: { text: "{seat} - {title}" }}
+    #     content:
+    #      map:
+    #        tag: occupied
+    #        values:
+    #          false: {empty: {}}
+    #          true:
+    #            string:
+    #              margin: 5
+    #              text: "{id}: {state}"
+
+    # - xkb:
+    #     content:
+    #       - string: {text: "{symbol}"}
+    - script:
+        path: /home/anderson/.config/yambar/weather.sh
+        foreground: 'FFD787FF'
+        content:
+          - string: {text: "{icon}", font: "owfont"}
+          - string: {text: " {temp}\u00B0"}
+          - string: {text: " ({feels_like}\u00B0)"}
+    - script:
+        path: /home/anderson/.config/yambar/df.sh
+        foreground: 'FFD787FF'
+        content:
+          map:
+            tag: low
+            values:
+              true:
+                - string: {text: "{icon}", foreground: 'DF206FFF'}
+                - string: {text: " {value}", foreground: 'FF206FFF'}
+              false:
+                - string: {text: "{icon}"}
+                - string: {text: " {value}"}
+
+    - script:
+        path: /home/anderson/.config/yambar/pulse/pulse
+        foreground: 'AF87FFFF'
+        content:
+          - map:
+              tag: headset
+              values:
+                true:
+                  - string: {text: "\uF7CA"}
+                false:
+                  - string: {text: "\uF886"}
+          - string: {text: " {volume}%"}
+    - script:
+        path: /home/anderson/.config/yambar/cpu.sh
+        foreground: '5FD7FFFF'
+        content:
+          map:
+            tag: high
+            values:
+              true:
+                - string: {text: "{bar}", foreground: 'FF206FFF'}
+                - string: {text: " {value}%", foreground: 'FF206FFF'}
+              false:
+                - string: {text: "{bar}"}
+                - string: {text: " {value}%"}
+    - script:
+        path: /home/anderson/.config/yambar/networkmanager/networkmanager
+        font: Bars
+        content:
+          - map:
+              tag: state
+              values:
+                disconnected:
+                  - string: {text: "\uF818 offline", foreground: "FF005FFF"}
+                changing:
+                  - string: {text: "\uF6D7 {network}", foreground: "5FD7FFFF"}
+                connected:
+                  - string: {text: "\uFAA8 {network}", foreground: "5FD7FFFF"}
+    # - network:
+    #     name: 'wlan0'
+    #     content:
+    #       # - map:
+    #       #     tag: state
+    #       #     default:
+    #       #       string: {text: 'connecting'}
+    #       #     values:
+    #       #       up:
+    #       #         string: {text: 'up'}
+    #       #       down:
+    #       #         string: {text: 'down'}
+    #       - map:
+    #           tag: carrier
+    #           values:
+    #             true:
+    #               - map:
+    #                   tag: state
+    #                   default:
+    #                     string: {text: "\uF6D7 {ssid}"}
+    #                   values:
+    #                     up:
+    #                       string: {text: "\uFAA8 {ssid}"}
+    #             false:
+    #               - string: {text: "\uF818 offline"}
+    - clock:
+        foreground: FFD787FF
+        content:
+          - string: {text: "{time}"}
+    - battery:
+        name: BAT0
+        poll-interval: 5
+        anchors:
+          discharging: &discharging
+            list:
+              items:
+                - ramp:
+                    tag: capacity
+                    items:
+                      - string: {text: ' ', foreground: ff0000ff}
+                      - string: {text: ' ', foreground: ffa600ff}
+                      - string: {text: ' ',}
+                      - string: {text: ' ',}
+                      - string: {text: ' ',}
+                      - string: {text: ' ',}
+                      - string: {text: ' ',}
+                      - string: {text: ' ',}
+                      - string: {text: ' ',}
+                      - string: {text: ' ', foreground: 00ff00ff}
+                - string: {text: " {capacity}%"}
+        content:
+          map:
+            tag: state
+            values:
+              unknown:
+                <<: *discharging
+              discharging:
+                <<: *discharging
+              charging:
+                - string: {text: ' ', foreground: 00ff00ff}
+                - string: {text: " {capacity}%"}
+              full:
+                - string: {text: ' ', foreground: 00ff00ff}
+                - string: {text: " {capacity}% full"}
+              not charging:
+                - ramp:
+                    tag: capacity
+                    items:
+                      - string: {text: '  ', foreground: ff0000ff}
+                      - string: {text: '  ', foreground: ffa600ff}
+                      - string: {text: '  ', foreground: 00ff00ff}
+                      - string: {text: '  ', foreground: 00ff00ff}
+                      - string: {text: '  ', foreground: 00ff00ff}
+                      - string: {text: '  ', foreground: 00ff00ff}
+                      - string: {text: '  ', foreground: 00ff00ff}
+                      - string: {text: '  ', foreground: 00ff00ff}
+                      - string: {text: '  ', foreground: 00ff00ff}
+                      - string: {text: '  ', foreground: 00ff00ff}
+                - string: {text: " {capacity}%"}

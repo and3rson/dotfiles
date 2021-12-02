@@ -8,7 +8,7 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 )
 
-const HistorySize = 10
+const HistorySize = 16
 
 type CPU struct {
     load int
@@ -57,16 +57,21 @@ func (c *CPU) Content() Repr {
     // icon := rune(0x2581 + rel_value)
 
     bar := ""
-    for i := 0; i < HistorySize; i += 2 {
-        load1 := int(float64(c.history[i]) / 100 * 4) + 1
-        load2 := int(float64(c.history[i + 1]) / 100 * 4) + 1
-        if load1 > 4 {
-            load1 = 4
-        }
-        if load2 > 4 {
-            load2 = 4
-        }
-        bar += GraphIcons[load1][load2]
+    for i := 0; i < HistorySize; i++ {
+        // load1 := int(float64(c.history[i]) / 100 * 4) + 1
+        // load2 := int(float64(c.history[i + 1]) / 100 * 4) + 1
+        // if load1 > 4 {
+        //     load1 = 4
+        // }
+        // if load2 > 4 {
+        //     load2 = 4
+        // }
+        // bar += GraphIcons[load1][load2]
+		load := int(float64(c.history[i]) / 100 * 8) + 1
+		if load > 8 {
+			load = 8
+		}
+		bar += string(rune(0x3000 + load))
     }
 
     if c.load > 70 {
@@ -80,7 +85,7 @@ func (c *CPU) Content() Repr {
     }
     return Repr{
         // \uf437
-		FullText:   fmt.Sprintf("%s <span font_desc=\"monospace\">%s</span>", bar, loadStr),
+		FullText:   fmt.Sprintf("<span font_desc=\"Bars\">%s</span> %s", bar, loadStr),
 		Background: "",
 		Color:      color,
         Urgent:     urgent,

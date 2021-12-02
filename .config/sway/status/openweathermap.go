@@ -42,7 +42,7 @@ func (o *OpenWeatherMap) Run(ctx context.Context, updates chan<- Widget, click <
         }
         err = w.CurrentByName("Lviv,Ukraine")
         if err != nil {
-            panic("failed to retrieve weather")
+            panic("weather unavailable")
         }
         // mmhg := int(w.Main.Pressure / 1.33322387415)
         temp := int(w.Main.Temp)

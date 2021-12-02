@@ -10,14 +10,14 @@ hi DiagnosticSignInfo guifg=lightblue guibg=#202020
 hi DiagnosticSignHint guifg=lightgrey guibg=#202020
 ]])
 
-require'lsp_signature'.setup({
-    bind = true,
-    timer_interval = 200,
-    handler_opts = {
-        border = 'none',
-    },
-    padding = ' ',
-})
+-- require'lsp_signature'.setup({
+--     bind = true,
+--     timer_interval = 200,
+--     handler_opts = {
+--         border = 'none',
+--     },
+--     padding = ' ',
+-- })
 
 local on_attach = function(client, bufnr)
     -- vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
@@ -35,7 +35,7 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-r>', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
     -- autocmd CursorHold * :lua vim.lsp.buf.signature_help()
     vim.api.nvim_command("autocmd CursorMoved * :lua require('ts_context_commentstring.internal').update_commentstring()")
-    -- vim.api.nvim_command("autocmd CursorHoldI * :lua vim.lsp.buf.signature_help()")
+    vim.api.nvim_command("autocmd CursorHoldI * :lua vim.lsp.buf.signature_help()")
 
     require'lsp_signature'.on_attach()
     -- require'virtualtypes'.on_attach()
@@ -222,7 +222,8 @@ lspconfig.pylsp.setup{
                     executable = 'pylint'
                     },
                 flake8 = {
-                    enabled = false
+                    enabled = true,
+                    executable = 'flake8'
                     },
                 pycodestyle = {
                     enabled = false

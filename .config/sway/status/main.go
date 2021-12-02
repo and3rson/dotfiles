@@ -33,6 +33,7 @@ func read(r io.Reader) <-chan string {
 
 func main() {
     widgets := []Widget{&Clients{}, &PlayerCtl{}, &Spectrum{}, &OpenWeatherMap{}, &DF{}, &Pulse{}, &Keyboard{}, &CPU{}, &NetworkManager{}, &Time{}, &Battery{}}
+	var renderer Renderer = &JSONRenderer{}
 
     updates := make(chan Widget)
     clicks := map[string]chan int{}
@@ -46,57 +47,60 @@ func main() {
     plainFlag := flag.Bool("plain", false, "Print plain text")
     flag.Parse()
 
-    plain := *plainFlag
+    if *plainFlag {
+		renderer = &PlainRenderer{}
+	}
 
     stdin := read(os.Stdin)
 
-    if !plain {
-        fmt.Println("{\"version\": 1, \"click_events\": true}")
-        fmt.Print("[")
-        fmt.Print("[]")
-    }
+	renderer.Start()
 
     for {
         select {
-        case _ = <-updates:
-            first := true
-            if !plain {
-                fmt.Print(",[")
-            }
-            for _, widget := range widgets {
-                if !first {
-                    if !plain {
-                        fmt.Print(",")
-                    } else {
-                        fmt.Print("|")
-                    }
-                }
-                r := widget.Content()
+		case <-updates:
+			renderer.BeginRow()
+			for _, widget := range widgets {
+				r := widget.Content()
                 r.Name = widget.Name()
                 r.Instance = widget.Name()
-                r.Markup = "pango"
-
                 if r.Urgent {
                     r.Urgent = false
                     r.Background, r.Color = "#AF002F", "#FFFFFF"
                 }
-                // r.Background, r.Color = r.Color, "#222222"
-                if len(r.FullText) > 0 {
-                    r.FullText = " " + r.FullText + " "
-                }
-                if !plain {
-                    fmt.Print(r.Serialize())
-                } else {
-                    fmt.Print(r.FullText)
-                }
-                first = false
-            }
-            if !plain {
-                fmt.Print("]")
-            } else {
-                fmt.Println()
-            }
-            // fmt.Println(strings.Join(outputs, Sep))
+				renderer.Render(r)
+			}
+			renderer.EndRow()
+            // if !plain {
+            //     fmt.Print(",[")
+            // }
+            // for _, widget := range widgets {
+            //     if !first {
+            //         if !plain {
+            //             fmt.Print(",")
+            //         } else {
+            //             fmt.Print("|")
+            //         }
+            //     }
+            //     r := widget.Content()
+            //     r.Name = widget.Name()
+            //     r.Instance = widget.Name()
+            //     r.Markup = "pango"
+
+            //     if r.Urgent {
+            //         r.Urgent = false
+            //         r.Background, r.Color = "#AF002F", "#FFFFFF"
+            //     }
+            //     // r.Background, r.Color = r.Color, "#222222"
+            //     if len(r.FullText) > 0 {
+            //         r.FullText = " " + r.FullText + " "
+            //     }
+            //     if !plain {
+            //         fmt.Print(r.Serialize())
+            //     } else {
+            //         fmt.Print(r.FullText)
+            //     }
+            //     first = false
+            // }
         case line := <-stdin:
             if line == "[" {
                 continue

@@ -222,3 +222,10 @@ vim.cmd([[
     au FileType markdown setlocal spell
     au FileType go set noet
 ]])
+
+-- Filetype-specific
+vim.cmd([[
+    au FileType gitcommit setlocal nofen
+    au FileType javascript setlocal nofen
+    au FileType conf setlocal fdm=marker
+]])

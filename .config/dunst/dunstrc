@@ -11,7 +11,7 @@
     # <http://developer.gnome.org/pango/stable/PangoMarkupFormat.html>.
     # If markup is not allowed, those tags will be stripped out of the
     # message.
-    allow_markup = yes
+    markup = full
 
     # The format of the message.  Possible variables are:
     #   %a  appname
@@ -24,7 +24,7 @@
     # format = "<span font-family="Roboto" size="20000" font-weight="300">%s %p</span>\n<small></small>\n<span letter-spacing="0">%b</span>\n\n<small>@ %a</small>"
     format = "<span font-family="Roboto" size="16000" font-weight="300">%s %p</span><span size="5000">\n\n</span><span letter-spacing="0">%b</span>"
 
-    plain_text = yes
+    # plain_text = yes
 
     # Sort messages by urgency.
     sort = yes
@@ -35,12 +35,6 @@
     # Alignment of message text.
     # Possible values are "left", "center" and "right".
     alignment = left
-
-    # The frequency with wich text that is longer than the notification
-    # window allows bounces back and forth.
-    # This option conflicts with "word_wrap".
-    # Set to 0 to disable.
-    bounce_freq = 0
 
     # Show age of message if message is older than show_age_threshold
     # seconds.
@@ -54,7 +48,6 @@
     # Ignore newlines '\n' in notifications.
     ignore_newline = no
 
-
     # The geometry of the window:
     #   [{width}]x{height}[+/-{x}+/-{y}]
     # The geometry of the message window.
@@ -67,8 +60,12 @@
     # the top and down respectevly.
     # The width can be negative.  In this case the actual width is the
     # screen width minus the width defined in within the geometry option.
-    geometry = "480x0-16+43"
+    # geometry = "480x0-16+43"
     # geometry = "320x5-0+0"
+    width = 480
+    height = 120
+
+    # offset = 20x20
 
     max_icon_size = 80
 
@@ -138,11 +135,6 @@
     #  * anything else will be interpreted as a X color.
     separator_color = "#00000000"
 
-    # Print a notification on startup.
-    # This is mainly for error detection, since dbus (re-)starts dunst
-    # automatically after a crash.
-    startup_notification = false
-
     # dmenu path.
     # dmenu = /usr/bin/dmenu -p dunst:
     # dmenu = /home/anderson/.scripts/dmenu.sh
@@ -155,34 +147,10 @@
     icon_position = left
 
     # Paths to default icons.
-    icon_folders = /usr/share/icons/Numix-Circle/scalable/apps/:/usr/share/icons/Paper/32x32/apps/:/usr/share/icons/gnome/16x16/status/:/usr/share/icons/gnome/16x16/devices/:/usr/share/icons/Adwaita/32x32/actions
+    icon_path = /usr/share/icons/Numix-Circle/scalable/apps/:/usr/share/icons/Paper/32x32/apps/:/usr/share/icons/gnome/16x16/status/:/usr/share/icons/gnome/16x16/devices/:/usr/share/icons/Adwaita/32x32/actions
 
-[frame]
-    width = 0
-    color = "#444444"
-
-[shortcuts]
-
-    # Shortcuts are specified as [modifier+][modifier+]...key
-    # Available modifiers are "ctrl", "mod1" (the alt-key), "mod2",
-    # "mod3" and "mod4" (windows-key).
-    # Xev might be helpful to find names for keys.
-
-    # Close notification.
-    # close = ctrl+space
-    close = Escape
-
-    # Close all notifications.
-    close_all = ctrl+shift+space
-
-    # Redisplay last message(s).
-    # On the US keyboard layout "grave" is normally above TAB and left
-    # of "1".
-    history = ctrl+grave
-
-    # Context menu.
-    context = ctrl+Escape
-    # context = ctrl+Space
+    frame_width = 0
+    frame_color = "#444444"
 
 [urgency_low]
     # IMPORTANT: colors have to be defined in quotation marks.
@@ -220,6 +188,15 @@
 # to "".
 # NOTE: It might be helpful to run dunst -print in a terminal in order
 # to find fitting options for rules.
+
+# [spotify]
+#     appname = Spotify
+#     # Padding between text and separator.
+#     padding = 0
+
+#     horizontal_padding = 0
+
+#     text_icon_padding = 0
 
 #[espeak]
 #    summary = "*"

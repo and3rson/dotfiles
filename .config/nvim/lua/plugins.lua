@@ -19,17 +19,17 @@ require('packer').startup(function(use)
     -- use 'saadparwaiz1/cmp_luasnip'
     use 'dcampos/nvim-snippy'
     use 'dcampos/cmp-snippy'
-    use 'ray-x/lsp_signature.nvim'
+    -- use 'ray-x/lsp_signature.nvim'
     -- use {'ms-jpq/coq_nvim', branch='coq'}
     -- use {'ms-jpq/coq.artifacts', branch='artifacts'}
-    use 'kosayoda/nvim-lightbulb'
+    -- use 'kosayoda/nvim-lightbulb'
     -- use 'weilbith/nvim-code-action-menu' -- Does not work for golang's "fill struct"
     -- use 'jubnzv/virtual-types.nvim'
 
     -- TS
     use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
     use 'nvim-treesitter/playground'
-    use 'JoosepAlviste/nvim-ts-context-commentstring'
+    -- use 'JoosepAlviste/nvim-ts-context-commentstring'
 
     -- Indentation
     -- use 'Yggdroot/indentLine'
@@ -300,7 +300,7 @@ _G.lightbulb_config = {
     },
 }
 vim.cmd([[
-autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb(lightbulb_config)
-hi LightBulbVirtualText guibg=#D7D787 guifg=#222222
+" autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb(lightbulb_config)
+" hi LightBulbVirtualText guibg=#D7D787 guifg=#222222
 ]])
 -- }}}

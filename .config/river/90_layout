@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+# River will send the process group of the init executable SIGTERM on exit.
+# riverctl default-layout rivertile
+# exec rivertile -view-padding 0 -outer-padding 0
+riverctl default-layout stacktile
+riverctl send-layout-cmd stacktile "all_primary true"
+wlr-randr --output HDMI-A-1 --off
+exec stacktile --primary-count 1 --secondary-count 0 --primary-sublayout full --inner-padding 0 --outer-padding 0 --all-primary
