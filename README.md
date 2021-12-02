@@ -16,13 +16,14 @@ Those are my dotfiles.
 
 ## Stack
 
-  - [sway (wayland)](https://swaywm.org)
+  - [river (wayland)](https://github.com/riverwm/river)
   - [neovim](https://neovim.io/)
   - [tmux](https://github.com/tmux/tmux)
   - [bash](https://www.gnu.org/software/bash/)
 
 ## Additionals
 
+  - [yambar](https://codeberg.org/dnkl/yambar)
   - [alacritty](https://github.com/alacritty/alacritty)
   - [rofi (wayland fork)](https://github.com/lbonn/rofi)
   - [dircolors](https://github.com/trapd00r/LS_COLORS)
@@ -34,6 +35,7 @@ Those are my dotfiles.
 
 ## Old stack
 
+  - [sway (wayland)](https://swaywm.org)
   - [awesomewm](awesomewm.org)
   - [termite](https://github.com/thestinger/termite)
   - [compton](https://github.com/chjj/compton)
