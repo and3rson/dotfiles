@@ -1,6 +1,6 @@
 # dotfiles
 
-![Screenshot](./.images/sshot2.jpg?2)
+![Screenshot](./.images/sshot3.jpg?3)
 
 Those are my dotfiles.
 
