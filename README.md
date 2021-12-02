@@ -1,6 +1,16 @@
 # dotfiles
 
-![Screenshot](./.images/sshot3.jpg?3)
+v3 (RiverWM)
+
+![RiverWM](./.images/sshot3.jpg?3)
+
+v2 (Sway)
+
+![Sway](./.images/sshot2.jpg?2)
+
+v1 (AwesomeWM)
+
+![Sway](./.images/sshot.jpg?1)
 
 Those are my dotfiles.
 
