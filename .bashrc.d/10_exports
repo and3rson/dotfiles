@@ -20,8 +20,8 @@ esac
 
 export TTY=0
 #export TERM=my-256color
-export TERM=screen-256color
 # export TERM=alacritty
+# export TERM=screen-256color
 
 # GPG
 export GPG_TTY=$(tty)
