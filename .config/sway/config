@@ -6,7 +6,7 @@ set $cm Mod5
 set $term alacritty
 # set $menu dmenu_path | dmenu | xargs swaymsg exec --
 set $menu "rofi -show run"
-set $waylanddir ~/.config/wayland
+set $waylanddir ~/.local/share/wayland
 # }}}
 # Outputs {{{
 output * bg /home/anderson/.wallpapers/lights2.jpg fill

@@ -467,6 +467,7 @@ function make_prompt() {
     ret_part
     # duration_part
     #end_part
+    echo -n "$RST"
     brk
     pwd_part_monocolor
     #pwd_part

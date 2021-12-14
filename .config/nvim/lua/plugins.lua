@@ -5,6 +5,7 @@ require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
     use 'tomasr/molokai'
     use 'mhinz/vim-startify'
+    use 'embear/vim-localvimrc'
 
     -- LSP
     use 'neovim/nvim-lspconfig'
@@ -25,15 +26,17 @@ require('packer').startup(function(use)
     -- use 'kosayoda/nvim-lightbulb'
     -- use 'weilbith/nvim-code-action-menu' -- Does not work for golang's "fill struct"
     -- use 'jubnzv/virtual-types.nvim'
+    -- use 'liuchengxu/vista.vim'
+    -- use 'simrat39/symbols-outline.nvim'
 
     -- TS
     use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
     use 'nvim-treesitter/playground'
-    -- use 'JoosepAlviste/nvim-ts-context-commentstring'
+    use 'JoosepAlviste/nvim-ts-context-commentstring'
 
     -- Indentation
-    -- use 'Yggdroot/indentLine'
-    use 'lukas-reineke/indent-blankline.nvim'
+    use 'Yggdroot/indentLine'
+    -- use 'lukas-reineke/indent-blankline.nvim'
     use 'Vimjas/vim-python-pep8-indent'
     use 'airblade/vim-gitgutter'
     -- use 'ervandew/supertab'
@@ -66,6 +69,8 @@ require('packer').startup(function(use)
     -- Man pages
     use 'lambdalisue/vim-manpager'
 
+    -- use 'vimpostor/vim-tpipeline'
+
     -- SQL completion
     -- use 'vim-scripts/dbext.vim'
 
@@ -74,6 +79,9 @@ require('packer').startup(function(use)
 end)
 -- }}}
 
+-- Local RC {{{
+vim.g.localvimrc_persistent = 2
+-- }}}
 -- Commentary {{{
 nnoremap('<M-/>', '<cmd>Commentary<CR>')
 vnoremap('<M-/>', ':Commentary<CR>')
@@ -260,6 +268,23 @@ inoremap('<S-PageDown>', '<cmd>BufferNext<CR>')
 -- }}}
 -- Telescope {{{
 local actions = require('telescope.actions')
+local action_state = require('telescope.actions.state')
+function fzf_multi_select(prompt_bufnr)
+  local picker = action_state.get_current_picker(prompt_bufnr)
+  local num_selections = table.getn(picker:get_multi_selection())
+
+  if num_selections > 1 then
+    local picker = action_state.get_current_picker(prompt_bufnr)
+    local selections = picker:get_multi_selection()
+    vim.cmd('bw!')
+    for _, entry in ipairs(selections) do
+      vim.cmd(string.format("%s %s", ":e!", entry.path))
+    end
+    vim.cmd('stopinsert')
+  else
+    actions.file_edit(prompt_bufnr)
+  end
+end
 require('telescope').setup{
   defaults = {
     mappings = {
@@ -267,7 +292,9 @@ require('telescope').setup{
         -- ["<C-j>"]   = actions.move_selection_next,
         -- ["<C-k>"]   = actions.move_selection_previous,
         -- ["<C-q>"]   = actions.smart_send_to_qflist + actions.open_qflist,
-        ["<ESC>"]   = actions.close,
+        -- ["<ESC>"]   = actions.close,
+        ['<ESC>'] = actions.close,
+        -- ['<CR>'] = fzf_multi_select, -- disabled because it breaks code actions
       },
     },
   }

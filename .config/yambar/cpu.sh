@@ -8,6 +8,11 @@ do
     GRAPH="$GRAPH、　"
 done
 
+echo "high|bool|false"
+echo "value|string|`builtin printf %2d $value`"
+echo "bar|string|$GRAPH"
+echo
+
 while true
 do
     read cpu user nice system idle iowait irq softirq steal guest< /proc/stat

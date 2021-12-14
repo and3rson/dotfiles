@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=River
+Comment=A dynamic tiling Wayland compositor
+# Exec=env XDG_CURRENT_DESKTOP=river XKB_DEFAULT_LAYOUT=us,ua XKB_DEFAULT_OPTIONS=grp:alt_space_toggle,lv3:caps_switch dbus-run-session river
+Exec=env XDG_CURRENT_DESKTOP=river XKB_DEFAULT_LAYOUT=us,ua XKB_DEFAULT_OPTIONS=grp:alt_space_toggle,lv3:caps_switch river
+Type=Application

@@ -1,20 +1,94 @@
+icon: &icon
+  font: 'RobotoMono Nerd Font:pixelsize=14'
+
 bar:
   location: top
   height: 15
-  font: RobotoMono Nerd Font:pixelsize=13
-  background: 000000FF
+  font: RobotoMono Nerd Font:size=12
+  background: 080808FF
+  # background: 000000FF
   spacing: 10
 
   left:
+    # - river:
+    #      title: {string: { text: "{seat} - {title}" }}
+    #      content:
+    #        map:
+    #          tag: occupied
+    #          values:
+    #            false: {empty: {}}
+    #            true:
+    #              string:
+    #                margin: 5
+    #                text: "{id}: {state}"
+    # - script:
+    #     path: /usr/bin/python3
+    #     args: [/home/anderson/.config/yambar/clients]
+    #     foreground: 'FFD78780'
+    #     # foreground: '5FFF47FF'
+    #     content:
+    #       list:
+    #         spacing: 4
+    #         items:
+    #           - map:
+    #               tag: q
+    #               values:
+    #                 true:
+    #                   - string: {text: "q", foreground: 'FF206FFF'}
+    #                 false:
+    #                   - string: {text: "q"}
+    #           - map:
+    #               tag: w
+    #               values:
+    #                 true:
+    #                   - string: {text: "w", foreground: 'FF206FFF'}
+    #                 false:
+    #                   - string: {text: "w"}
+    #           - map:
+    #               tag: i
+    #               values:
+    #                 true:
+    #                   - string: {text: "i", foreground: 'FF206FFF'}
+    #                 false:
+    #                   - string: {text: "i"}
+    #           - map:
+    #               tag: m
+    #               values:
+    #                 true:
+    #                   - string: {text: "m", foreground: 'FF206FFF'}
+    #                 false:
+    #                   - string: {text: "m"}
+    #           - map:
+    #               tag: a
+    #               values:
+    #                 true:
+    #                   - string: {text: "a", foreground: 'FF206FFF'}
+    #                 false:
+    #                   - string: {text: "a"}
     - foreign-toplevel:
+        foreground: ffd787ff
         content:
           map:
             tag: activated
             values:
               false: {empty: {}}
               true:
-                - string: {text: "{app-id}", foreground: ffa0a0ff}
-                - string: {text: ": {title}"}
+                - map:
+                    tag: app-id
+                    default:
+                      - string: {text: "\uFB13", <<: *icon}
+                    values:
+                      Alacritty: &alacritty
+                        - string: {text: "\uF120", <<: *icon}
+                      main: *alacritty
+                      firefoxdeveloperedition:
+                        - string: {text: "\uF269", <<: *icon}
+                      telegramdesktop:
+                        - string: {text: "\uF2C6", <<: *icon}
+                      Spotify:
+                        - string: {text: "\uF1BC", <<: *icon}
+                - string: {text: " {app-id}"}
+                - string: {text: " - {title}", foreground: ffffffff}
   center:
     - script:
         path: /home/anderson/.config/yambar/spectrum/spectrum
@@ -62,7 +136,7 @@ bar:
         path: /home/anderson/.config/yambar/weather.sh
         foreground: 'FFD787FF'
         content:
-          - string: {text: "{icon}", font: "owfont"}
+          - string: {text: "{icon}", font: "owfont", <<: *icon}
           - string: {text: " {temp}\u00B0"}
           - string: {text: " ({feels_like}\u00B0)"}
     - script:
@@ -73,7 +147,7 @@ bar:
             tag: low
             values:
               true:
-                - string: {text: "{icon}", foreground: 'DF206FFF'}
+                - string: {text: "{icon}", foreground: 'DF206FFF', <<: *icon}
                 - string: {text: " {value}", foreground: 'FF206FFF'}
               false:
                 - string: {text: "{icon}"}
@@ -87,9 +161,9 @@ bar:
               tag: headset
               values:
                 true:
-                  - string: {text: "\uF7CA"}
+                  - string: {text: "\uF7CA", <<: *icon}
                 false:
-                  - string: {text: "\uF886"}
+                  - string: {text: "\uF886", <<: *icon}
           - string: {text: " {volume}%"}
     - script:
         path: /home/anderson/.config/yambar/cpu.sh
@@ -112,11 +186,14 @@ bar:
               tag: state
               values:
                 disconnected:
-                  - string: {text: "\uF818 offline", foreground: "FF005FFF"}
+                  - string: {text: "\uF818", <<: *icon, foreground: "FF005FFF"}
+                  - string: {text: " offline", foreground: "FF005FFF"}
                 changing:
-                  - string: {text: "\uF6D7 {network}", foreground: "5FD7FFFF"}
+                  - string: {text: "\uF6D7", <<: *icon, foreground: "5FD7FFFF"}
+                  - string: {text: " {network}", foreground: "5FD7FFFF"}
                 connected:
-                  - string: {text: "\uFAA8 {network}", foreground: "5FD7FFFF"}
+                  - string: {text: "\uFAA8", <<: *icon, foreground: "5FD7FFFF"}
+                  - string: {text: " {network}", foreground: "5FD7FFFF"}
     # - network:
     #     name: 'wlan0'
     #     content:
@@ -144,6 +221,7 @@ bar:
     #               - string: {text: "\uF818 offline"}
     - clock:
         foreground: FFD787FF
+        time-format: "%d %b, %H:%M"
         content:
           - string: {text: "{time}"}
     - battery:
@@ -175,24 +253,25 @@ bar:
                 <<: *discharging
               discharging:
                 <<: *discharging
-              charging:
+              charging: &charging
                 - string: {text: ' ', foreground: 00ff00ff}
                 - string: {text: " {capacity}%"}
               full:
                 - string: {text: ' ', foreground: 00ff00ff}
-                - string: {text: " {capacity}% full"}
-              not charging:
-                - ramp:
-                    tag: capacity
-                    items:
-                      - string: {text: '  ', foreground: ff0000ff}
-                      - string: {text: '  ', foreground: ffa600ff}
-                      - string: {text: '  ', foreground: 00ff00ff}
-                      - string: {text: '  ', foreground: 00ff00ff}
-                      - string: {text: '  ', foreground: 00ff00ff}
-                      - string: {text: '  ', foreground: 00ff00ff}
-                      - string: {text: '  ', foreground: 00ff00ff}
-                      - string: {text: '  ', foreground: 00ff00ff}
-                      - string: {text: '  ', foreground: 00ff00ff}
-                      - string: {text: '  ', foreground: 00ff00ff}
                 - string: {text: " {capacity}%"}
+              not charging: *charging
+              # not charging:
+              #   - ramp:
+              #       tag: capacity
+              #       items:
+              #         - string: {text: '  ', foreground: ff0000ff}
+              #         - string: {text: '  ', foreground: ffa600ff}
+              #         - string: {text: '  ', foreground: 00ff00ff}
+              #         - string: {text: '  ', foreground: 00ff00ff}
+              #         - string: {text: '  ', foreground: 00ff00ff}
+              #         - string: {text: '  ', foreground: 00ff00ff}
+              #         - string: {text: '  ', foreground: 00ff00ff}
+              #         - string: {text: '  ', foreground: 00ff00ff}
+              #         - string: {text: '  ', foreground: 00ff00ff}
+              #         - string: {text: '  ', foreground: 00ff00ff}
+              #   - string: {text: " {capacity}%"}

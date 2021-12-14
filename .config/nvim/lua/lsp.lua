@@ -28,16 +28,17 @@ local on_attach = function(client, bufnr)
     -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>Telescope lsp_code_actions<CR>', opts)
     -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>CodeActionMenu<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-d>', '<cmd>Telescope lsp_document_diagnostics<CR>', opts)
+    -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-d>', '<cmd>Telescope diagnostics bufnr=0<CR>', opts)
 
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', ';', '<cmd>lua vim.lsp.diagnostic.goto_prev{float=false}<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '\'', '<cmd>lua vim.lsp.diagnostic.goto_next{float=false}<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', ';', '<cmd>lua vim.diagnostic.goto_prev{float=false}<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '\'', '<cmd>lua vim.diagnostic.goto_next{float=false}<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-r>', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
     -- autocmd CursorHold * :lua vim.lsp.buf.signature_help()
     vim.api.nvim_command("autocmd CursorMoved * :lua require('ts_context_commentstring.internal').update_commentstring()")
-    vim.api.nvim_command("autocmd CursorHoldI * :lua vim.lsp.buf.signature_help()")
+    -- vim.api.nvim_command("autocmd CursorHoldI * :lua vim.lsp.buf.signature_help()")
 
-    require'lsp_signature'.on_attach()
+    -- require'lsp_signature'.on_attach()
     -- require'virtualtypes'.on_attach()
 
 end
@@ -256,6 +257,10 @@ lspconfig.pyright.setup{
         }
     }
 }
+-- lspconfig.clangd.setup{
+--     on_attach=on_attach,
+--     capabilities=capabilities,
+-- }
 lspconfig.ccls.setup{
     on_attach=on_attach,
     capabilities=capabilities,

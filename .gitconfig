@@ -11,13 +11,14 @@
     co = checkout
     br = branch
     spull = submodule update --init --recursive
-    commit = commit -S
+    ; commit = commit -S
 
 [core]
     # pager = less
     pager = delta
 
 [delta]
+    max-line-distance = 0
     syntax-theme = Monokai Extended
     ; minus-style = syntax "#550000"
     ; minus-non-emph-style = syntax
@@ -35,6 +36,8 @@
     line-numbers-minus-style = bold red "#550000"
     hunk-header-decoration-style = "#FF8800"
     hunk-header-line-number-style = "#FF8800"
+    ; plus-style = syntax "#225D22"
+    plus-style = syntax "#222222"
     ; hunk-header-file-style = red
     ; hunk-header = false
     ; commit-decoration-style = red
@@ -61,3 +64,5 @@
 	smtpserver = smtppro.zoho.com
 	smtpserverport = 587
     smtpuser = a@dun.ai
+[commit]
+	gpgsign = true

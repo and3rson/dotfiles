@@ -2,4 +2,5 @@
 set -e
 
 riverctl spawn yambar
-riverctl spawn 'alacritty --class hometerm -e ~/.scripts/stmux.sh'
+riverctl spawn 'alacritty --class main -e ~/.scripts/stmux.sh'
+riverctl spawn 'wlsunset -S 09:00 -s 21:00'

@@ -102,8 +102,8 @@ vim.api.nvim_set_option('list', true)
 vim.api.nvim_win_set_option(0, 'list', true)
 -- vim.opt.listchars = vim.opt.listchars + 'tab:▏ ' + 'trail:·' + 'extends:»' + 'precedes:«' + 'nbsp:×'
 vim.opt.listchars = {
-    -- tab = '▏ ',
-    tab = '  ',
+    tab = '▏ ',
+    -- tab = '  ',
     trail = '·',
     extends = '»',
     precedes = '«',
@@ -135,7 +135,7 @@ vim.o.synmaxcol = 300
 -- Text display tweaks
 vim.opt.display = ''
 vim.opt.display = vim.opt.display + 'lastline' + 'msgsep' + 'uhex'
-vim.o.numberwidth = 5
+vim.o.numberwidth = 2
 
 -- History length
 vim.o.history = 1000
@@ -170,6 +170,13 @@ vim.o.wildmode = 'list:longest'
 -- vim.opt.completeopt = vim.opt.completeopt + 'noinsert'
 vim.o.completeopt = 'menu,noselect'
 
+-- Cmdline height
+-- vim.o.cmdheight = 0
+-- vim.cmd([[
+--     au CmdlineEnter * set cmdheight=1
+--     au CmdlineLeave * set cmdheight=0
+-- ]])
+
 -- Blink yanked text
 vim.cmd([[
 au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout=100, on_visual=true}
@@ -197,15 +204,15 @@ hi IndentBlanklineChar guifg=#444444
 ]])
 
 -- Remove trailing whitespaces
-vim.cmd([[
-fu CleanUp()
-    exe '%s/\s\+$//e'
-    " |norm!``
-endf
-aug CleanUp
-    au BufWritePre * if !&bin | call CleanUp() | endi
-aug END
-]])
+-- vim.cmd([[
+-- fu CleanUp()
+--     exe '%s/\s\+$//e'
+--     " |norm!``
+-- endf
+-- aug CleanUp
+--     au BufWritePre * if !&bin | call CleanUp() | endi
+-- aug END
+-- ]])
 
 -- Folding
 nnoremap('<space>', 'za')
