@@ -1,0 +1,10 @@
+{
+    "comment": "This file does not seem to work",
+    "workspace": {
+        "library": [
+            "/home/anderson/.config/nvim/lua"
+        ],
+        "maxPreload": 1600,
+        "preloadFileSize": 1000
+    }
+}

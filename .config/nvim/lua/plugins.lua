@@ -10,7 +10,6 @@ require('packer').startup(function(use)
     -- LSP
     use 'neovim/nvim-lspconfig'
     use 'nvim-lua/lsp-status.nvim'
-    use 'tpope/vim-commentary'
     use 'jose-elias-alvarez/null-ls.nvim'
     use 'hrsh7th/nvim-cmp' -- Autocompletion plugin
     use 'hrsh7th/cmp-nvim-lsp' -- LSP source for nvim-cmp
@@ -29,6 +28,10 @@ require('packer').startup(function(use)
     -- use 'liuchengxu/vista.vim'
     -- use 'simrat39/symbols-outline.nvim'
 
+    use 'RishabhRD/popfix'
+    -- use 'RishabhRD/nvim-lsputils'
+    use 'hood/popui.nvim'
+
     -- TS
     use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
     use 'nvim-treesitter/playground'
@@ -42,6 +45,10 @@ require('packer').startup(function(use)
     -- use 'ervandew/supertab'
     use 'yuezk/vim-js'
     use 'MaxMEllon/vim-jsx-pretty'
+
+    -- Comments
+    use 'tpope/vim-commentary'
+    -- use 'preservim/nerdcommenter' -- Does not handle dynamic commentstring
 
     -- Cursor position
     use 'farmergreg/vim-lastplace'
@@ -83,9 +90,12 @@ end)
 vim.g.localvimrc_persistent = 2
 -- }}}
 -- Commentary {{{
+-- nnoremap('<M-/>', '<cmd>Commentary<CR>j')
 nnoremap('<M-/>', '<cmd>Commentary<CR>')
+-- vnoremap('<M-/>', 'm`:Commentary<CR>``')
 vnoremap('<M-/>', ':Commentary<CR>')
 -- inoremap <silent> <M-/> <C-o>:Commentary<CR><C-o><CR>
+-- imap('<M-/>', '<cmd>Commentary<CR><C-o>j')
 imap('<M-/>', '<cmd>Commentary<CR>')
 -- }}}
 -- indentLine & blankline {{{
