@@ -2,7 +2,7 @@
 
 v3 (RiverWM)
 
-![RiverWM](./.images/sshot3.jpg?3)
+![RiverWM](./.images/sshot3.jpg?3-1)
 
 v2 (Sway)
 
