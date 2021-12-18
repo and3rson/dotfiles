@@ -10,6 +10,50 @@ bar:
   spacing: 10
 
   left:
+    - script:
+        path: /home/anderson/src/rivertags/rivertags
+        args: []
+        foreground: 'FFD78740'
+        # foreground: '5FFF47FF'
+        content:
+          list:
+            spacing: 4
+            items:
+              - map:
+                  tag: tag1
+                  values:
+                    true:
+                      - string: {text: "\uf68c", foreground: 'FF206FFF'}
+                    false:
+                      - string: {text: "\uf68c"}
+              - map:
+                  tag: tag2
+                  values:
+                    true:
+                      - string: {text: "\ufa9e", foreground: 'FF206FFF'}
+                    false:
+                      - string: {text: "\ufa9e"}
+              - map:
+                  tag: tag3
+                  values:
+                    true:
+                      - string: {text: "\ue217", foreground: 'FF206FFF'}
+                    false:
+                      - string: {text: "\ue217"}
+              - map:
+                  tag: tag4
+                  values:
+                    true:
+                      - string: {text: "\uf6ed", foreground: 'FF206FFF'}
+                    false:
+                      - string: {text: "\uf6ed"}
+              - map:
+                  tag: tag5
+                  values:
+                    true:
+                      - string: {text: "\uf11b", foreground: 'FF206FFF'}
+                    false:
+                      - string: {text: "\uf11b"}
     - foreign-toplevel:
         foreground: ffd787ff
         content:
@@ -52,7 +96,7 @@ bar:
                 true:
                   - string: {text: "\uF04B {title} {duration}", foreground: "5FFF47FF"}
                 false:
-                  - string: {text: "\uF04C {title} {duration}", foreground: "FF005FFF"}
+                  - string: {text: "\uF04C {title} {duration}", foreground: "FFD78740"}
     - script:
         path: /home/anderson/.config/yambar/spectrum/spectrum
         args: [-r]
@@ -97,7 +141,6 @@ bar:
               false:
                 - string: {text: "{icon}"}
                 - string: {text: " {value}"}
-
     - script:
         path: /home/anderson/.config/yambar/pulse/pulse
         foreground: 'AF87FFFF'

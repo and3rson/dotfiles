@@ -35,7 +35,7 @@ require('packer').startup(function(use)
     -- TS
     use {'nvim-treesitter/nvim-treesitter', run = ':TSUpdate'}
     use 'nvim-treesitter/playground'
-    use 'JoosepAlviste/nvim-ts-context-commentstring'
+    -- use 'JoosepAlviste/nvim-ts-context-commentstring'
 
     -- Indentation
     use 'Yggdroot/indentLine'
@@ -340,4 +340,13 @@ vim.cmd([[
 " autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb(lightbulb_config)
 " hi LightBulbVirtualText guibg=#D7D787 guifg=#222222
 ]])
+-- }}}
+-- NERDCommenter {{{
+-- vim.cmd([[
+-- fu ReinitNERDCommenter()
+--     echo 'reinit ' .. v:option_new
+-- endf
+-- " au OptionSet commentstring :call ReinitNERDCommenter()
+-- au OptionSet commentstring :echo 42
+-- ]])
 -- }}}

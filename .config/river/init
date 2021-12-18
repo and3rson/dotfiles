@@ -1,3 +1,3 @@
 #!/bin/sh
 
-run-parts `dirname $0` --regex '\d*_' --exit-on-error > /tmp/river.log 2>&1
+run-parts `dirname $0` --regex '\d*_' --exit-on-error > /tmp/river_init.log 2>&1

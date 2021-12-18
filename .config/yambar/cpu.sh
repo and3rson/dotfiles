@@ -3,7 +3,7 @@
 enable -f /usr/lib/bash/sleep sleep
 
 GRAPH=""
-for i in `seq 16`
+for i in `seq 8`
 do
     GRAPH="$GRAPH、　"
 done
@@ -40,9 +40,9 @@ do
     fi
     CH=${CHARS:$I:1}
     GRAPH="$GRAPH$CH　"
-    if (( ${#GRAPH} > 32 ))
+    if (( ${#GRAPH} > 16 ))
     then
-        GRAPH=${GRAPH: -32}
+        GRAPH=${GRAPH: -16}
     fi
     if (( $value > 50 ))
     then

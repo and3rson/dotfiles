@@ -41,7 +41,7 @@ local on_attach = function(client, bufnr)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-r>', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
     -- autocmd CursorHold * :lua vim.lsp.buf.signature_help()
     vim.cmd([[
-        autocmd CursorMoved * :lua require('ts_context_commentstring.internal').update_commentstring()
+        " autocmd CursorMoved * :lua require('ts_context_commentstring.internal').update_commentstring()
         " au CursorHold * :lua vim.lsp.buf.signature_help()
     ]])
     -- vim.api.nvim_command("autocmd CursorHoldI * :lua vim.lsp.buf.signature_help()")

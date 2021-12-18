@@ -194,6 +194,8 @@ riverctl set-repeat 25 167
 # riverctl float-filter-add app-id float
 # riverctl float-filter-add title "popup title with spaces"
 riverctl float-filter-add title "Media viewer"
+# riverctl unfloat-filter-add title "Spotify"
+# riverctl unfloat-filter-add app-id "Spotify"
 
 # Set app-ids and titles of views which should use client side decorations
 riverctl csd-filter-add app-id "gedit"

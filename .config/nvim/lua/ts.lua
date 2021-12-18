@@ -1,8 +1,8 @@
 require'nvim-treesitter.configs'.setup {
-  context_commentstring = {
-    enable = true,
-    enable_autocmd = true,
-  },
+  -- context_commentstring = {
+  --   enable = false,
+  --   enable_autocmd = true,
+  -- },
   incremental_selection = {
     enable = false,
   },
@@ -22,7 +22,7 @@ require'nvim-treesitter.configs'.setup {
     additional_vim_regex_highlighting = false,
   },
   -- ensure_installed = 'maintained',
-  ensure_installed = {'c', 'python', 'cpp', 'css', 'go', 'html', 'lua', 'query', 'vim'},
+  ensure_installed = {'c', 'python', 'cpp', 'css', 'go', 'html', 'lua', 'query', 'vim', 'zig'},
   playground = {
     enable = true,
     disable = {},
