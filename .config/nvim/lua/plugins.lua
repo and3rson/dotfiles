@@ -23,7 +23,7 @@ require('packer').startup(function(use)
     -- use {'ms-jpq/coq_nvim', branch='coq'}
     -- use {'ms-jpq/coq.artifacts', branch='artifacts'}
     -- use 'kosayoda/nvim-lightbulb'
-    -- use 'weilbith/nvim-code-action-menu' -- Does not work for golang's "fill struct"
+    use 'weilbith/nvim-code-action-menu' -- Does not work for golang's "fill struct"
     -- use 'jubnzv/virtual-types.nvim'
     -- use 'liuchengxu/vista.vim'
     -- use 'simrat39/symbols-outline.nvim'

@@ -32,8 +32,8 @@ local on_attach = function(client, bufnr)
 
     -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
     -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>Telescope lsp_code_actions<CR>', opts)
-    -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>CodeActionMenu<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>CodeActionMenu<CR>', opts)
+    -- vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-Enter>', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-d>', '<cmd>Telescope diagnostics bufnr=0<CR>', opts)
 
     vim.api.nvim_buf_set_keymap(bufnr, 'n', ';', '<cmd>lua vim.diagnostic.goto_prev{float=false}<CR>', opts)
@@ -279,6 +279,7 @@ lspconfig.ccls.setup{
     capabilities=capabilities,
 }
 lspconfig.gopls.setup{
+    cmd={'gopls', '-vv'},
     on_attach=on_attach,
     capabilities=capabilities,
 }
