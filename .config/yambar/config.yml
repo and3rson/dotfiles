@@ -10,50 +10,57 @@ bar:
   spacing: 10
 
   left:
-    - script:
-        path: /home/anderson/src/rivertags/rivertags
-        args: []
-        foreground: 'FFD78740'
-        # foreground: '5FFF47FF'
-        content:
-          list:
-            spacing: 4
-            items:
-              - map:
-                  tag: tag1
-                  values:
-                    true:
-                      - string: {text: "\uf68c", foreground: 'FF206FFF'}
-                    false:
-                      - string: {text: "\uf68c"}
-              - map:
-                  tag: tag2
-                  values:
-                    true:
-                      - string: {text: "\ufa9e", foreground: 'FF206FFF'}
-                    false:
-                      - string: {text: "\ufa9e"}
-              - map:
-                  tag: tag3
-                  values:
-                    true:
-                      - string: {text: "\ue217", foreground: 'FF206FFF'}
-                    false:
-                      - string: {text: "\ue217"}
-              - map:
-                  tag: tag4
-                  values:
-                    true:
-                      - string: {text: "\uf6ed", foreground: 'FF206FFF'}
-                    false:
-                      - string: {text: "\uf6ed"}
-              - map:
-                  tag: tag5
-                  values:
-                    true:
-                      - string: {text: "\uf11b", foreground: 'FF206FFF'}
-                    false:
-                      - string: {text: "\uf11b"}
+    # - script:
+    #     path: /home/anderson/src/rivertags/rivertags
+    #     args: []
+    #     foreground: 'FFD78740'
+    #     # foreground: '5FFF47FF'
+    #     content:
+    #       list:
+    #         spacing: 4
+    #         items:
+    #           - map:
+    #               tag: tag1
+    #               values:
+    #                 true:
+    #                   - string: {text: "\uf68c", foreground: 'FFFFFFFF'}
+    #                 false:
+    #                   - string: {text: "\uf68c"}
+    #           - map:
+    #               tag: tag2
+    #               values:
+    #                 true:
+    #                   - string: {text: "\ufa9e", foreground: 'FFFFFFFF'}
+    #                 false:
+    #                   - string: {text: "\ufa9e"}
+    #           - map:
+    #               tag: tag3
+    #               values:
+    #                 true:
+    #                   - string: {text: "\ue217", foreground: 'FFFFFFFF'}
+    #                 false:
+    #                   - string: {text: "\ue217"}
+    #           # - map:
+    #           #     tag: tag4
+    #           #     values:
+    #           #       true:
+    #           #         - string: {text: "\uf6ed", foreground: 'FFFFFFFF'}
+    #           #       false:
+    #           #         - string: {text: "\uf6ed"}
+    #           - map:
+    #               tag: tag4
+    #               values:
+    #                 true:
+    #                   - string: {text: "\ufc58", foreground: 'FFFFFFFF'}
+    #                 false:
+    #                   - string: {text: "\ufc58"}
+    #           - map:
+    #               tag: tag5
+    #               values:
+    #                 true:
+    #                   - string: {text: "\uf11b", foreground: 'FFFFFFFF'}
+    #                 false:
+    #                   - string: {text: "\uf11b"}
     - foreign-toplevel:
         foreground: ffd787ff
         content:
@@ -77,7 +84,7 @@ bar:
                       Spotify:
                         - string: {text: "\uF1BC", <<: *icon}
                 - string: {text: " {app-id}"}
-                - string: {text: " - {title}", foreground: ffffffff}
+                - string: {text: " - {title}", foreground: ffffffff, max: 56}
   center:
     - script:
         path: /home/anderson/.config/yambar/spectrum/spectrum
@@ -121,13 +128,13 @@ bar:
     # - xkb:
     #     content:
     #       - string: {text: "{symbol}"}
-    - script:
-        path: /home/anderson/.config/yambar/weather.sh
-        foreground: 'FFD787FF'
-        content:
-          - string: {text: "{icon}", font: "owfont", <<: *icon}
-          - string: {text: " {temp}\u00B0"}
-          - string: {text: " ({feels_like}\u00B0)"}
+    # - script:
+    #     path: /home/anderson/.config/yambar/weather.sh
+    #     foreground: 'FFD787FF'
+    #     content:
+    #       - string: {text: "{icon}", font: "owfont", <<: *icon}
+    #       - string: {text: " {temp}\u00B0"}
+    #       - string: {text: " ({feels_like}\u00B0)"}
     - script:
         path: /home/anderson/.config/yambar/df.sh
         foreground: 'FFD787FF'
@@ -146,6 +153,14 @@ bar:
         foreground: 'AF87FFFF'
         content:
           - map:
+              tag: source_muted
+              values:
+                true:
+                  - string: {text: "\uF131 ", <<: *icon, foreground: 'FF206FFF'}
+                  - string: {text: "Mic muted ", foreground: 'FF206FFF'}
+                false:
+                  - string: {text: "\uF130 ", <<: *icon}
+          - map:
               tag: headset
               values:
                 true:
@@ -154,7 +169,20 @@ bar:
                   - string: {text: "\uF886", <<: *icon}
           - string: {text: " {volume}%"}
     - script:
-        path: /home/anderson/.config/yambar/cpu.sh
+        path: /home/anderson/.config/yambar/mem.sh
+        foreground: 'BFFF00FF'
+        content:
+          map:
+            tag: high
+            values:
+              true:
+                - string: {text: "{bar}", foreground: 'FF206FFF'}
+                - string: {text: " {value}%", foreground: 'FF206FFF'}
+              false:
+                - string: {text: "{bar}"}
+                - string: {text: " {value}%"}
+    - script:
+        path: /home/anderson/.config/yambar/percpu.sh
         foreground: '5FD7FFFF'
         content:
           map:
@@ -166,6 +194,22 @@ bar:
               false:
                 - string: {text: "{bar}"}
                 - string: {text: " {value}%"}
+    - removables:
+        content:
+          map:
+            tag: mounted
+            values:
+              false:
+                string:
+                  on-click: sh -c 'notify-send "{device}" "`udisksctl mount -b {device}`"'
+                  text: "\uF0C7 {label}"
+                  foreground: FFD787FF
+              true:
+                string:
+                  on-click: sh -c 'notify-send "{device}" "`udisksctl unmount -b {device}`"'
+                  text: "\uF62B {label}"
+                  foreground: BFFF00FF
+                  # deco: {underline: {size: 1, color: BFFF00FF}}
     - script:
         path: /home/anderson/.config/yambar/networkmanager/networkmanager
         font: Bars
@@ -231,7 +275,7 @@ bar:
                       - string: {text: ' ',}
                       - string: {text: ' ',}
                       - string: {text: ' ',}
-                      - string: {text: ' ', foreground: 00ff00ff}
+                      - string: {text: ' ', foreground: bfff00ff}
                 - string: {text: " {capacity}%"}
         content:
           map:
@@ -242,10 +286,10 @@ bar:
               discharging:
                 <<: *discharging
               charging: &charging
-                - string: {text: ' ', foreground: 00ff00ff}
+                - string: {text: '', foreground: bfff00ff}
                 - string: {text: " {capacity}%"}
               full:
-                - string: {text: ' ', foreground: 00ff00ff}
+                - string: {text: ' ', foreground: bfff00ff}
                 - string: {text: " {capacity}%"}
               not charging: *charging
               # not charging:

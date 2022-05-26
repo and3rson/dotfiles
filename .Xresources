@@ -1,6 +1,6 @@
 *background: #000000
 *foreground: #FFFFFF
-*font: xft:RobotoMono Nerd Font:weight=500:size=12:antialias=false
+*font: xft:RobotoMono Nerd Font:weight=300:size=9.5:antialias=true
 Xcursor.size: 16
 Sxiv.background: #000000
 Sxiv.foreground: #FFFFFF

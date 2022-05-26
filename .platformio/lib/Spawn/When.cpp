@@ -12,7 +12,7 @@ When::When(uint32_t initialTime) {
 
 bool When::after(uint32_t delta) volatile {
     uint32_t now = millis();
-    if (this->initial || abs(now - this->time) > delta) {
+    if (this->initial || (now - this->time) > delta) {
         this->time = now;
         this->initial = false;
         return true;

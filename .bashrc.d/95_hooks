@@ -23,3 +23,5 @@ fi
 #     preexec "$this_command"
 # }
 # trap 'preexec_invoke_exec' DEBUG
+
+# source /usr/share/nvm/init-nvm.sh

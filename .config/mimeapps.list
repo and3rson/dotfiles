@@ -9,6 +9,11 @@ image/jpeg=sxiv.desktop
 x-scheme-handler/msteams=teams.desktop
 inode/directory=alacritty_ranger.desktop
 x-scheme-handler/discord-472164236332630018=discord-472164236332630018.desktop
+image/x-nikon-nef=feh.desktop
+video/quicktime=vlc.desktop
+x-scheme-handler/http=firefox-developer-edition.desktop
+x-scheme-handler/https=firefox-developer-edition.desktop
+x-scheme-handler/viber=viber.desktop
 
 [Added Associations]
 x-scheme-handler/tg=userapp-Telegram Desktop-RHCHW0.desktop;

@@ -168,7 +168,7 @@ func main() {
 		select {
 		case <-updates:
 			fmt.Printf("playing|bool|%v\n", p.isPlaying)
-			fmt.Printf("title|string|%s\n", p.info.title)
+			fmt.Printf("title|string|%s\n", ellipsize(p.info.title))
 			fmt.Printf("duration|string|%s\n", p.info.duration)
 			fmt.Println()
 		}

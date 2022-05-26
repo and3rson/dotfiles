@@ -11,58 +11,71 @@ import (
 )
 
 type Pulse struct {
-    headset bool
-    volume int
-    err interface{}
+	headset     bool
+	volume      int
+	sourceMuted bool
+	err         interface{}
 }
 
 func (p *Pulse) Name() string {
-    return "pulse"
+	return "pulse"
 }
 
 func (p *Pulse) Run(ctx context.Context, updates chan<- bool) {
-    defer func() {
-        if e := recover(); e != nil {
-            p.err = e
-            <-time.After(time.Second)
-            go p.Run(ctx, updates)
-        }
-    }()
-    client, err := pulseaudio.NewClient()
-    if err != nil {
-        panic("failed to create pulseaudio client")
-    }
-    paUpdates, err := client.Updates()
-    if err != nil {
-        panic("failed to subscribe to pulseaudio updates")
-    }
-    for {
-        if !client.Connected() {
-            panic("pulseaudio client not connected")
-        }
+	defer func() {
+		if e := recover(); e != nil {
+			p.err = e
+			<-time.After(time.Second)
+			go p.Run(ctx, updates)
+		}
+	}()
+	client, err := pulseaudio.NewClient()
+	defer client.Close()
+	if err != nil {
+		panic("failed to create pulseaudio client")
+	}
+	paUpdates, err := client.Updates()
+	if err != nil {
+		panic("failed to subscribe to pulseaudio updates")
+	}
+	for {
+		if !client.Connected() {
+			panic("pulseaudio client not connected")
+		}
 
-        // TODO: Move this out of the loop?
-        server, err := client.ServerInfo()
+		// TODO: Move this out of the loop?
+		server, err := client.ServerInfo()
 
-        p.headset = strings.Contains(server.DefaultSink, "bluez")
+		p.headset = strings.Contains(server.DefaultSink, "bluez")
 
-        volume, err := client.Volume()
-        if err != nil {
-            log.Fatal(err)
-        }
-        p.volume = int(volume * 100)
-        p.err = nil
-        updates <- true
-        select {
-        case <-time.After(time.Second * 5):
-            continue
-        case <-paUpdates:
-        case <-ctx.Done():
-            return
-        // case <-click:
-        //     exec.Command("pavucontrol").Start()
-        }
-    }
+		volume, err := client.Volume()
+		if err != nil {
+			log.Fatal(err)
+		}
+		p.volume = int(volume * 100)
+		p.err = nil
+
+		sources, err := client.Sources()
+		if err != nil {
+			log.Fatal(err)
+		}
+		for _, source := range sources {
+			if source.Name == server.DefaultSource {
+				p.sourceMuted = source.Muted
+			}
+		}
+
+		updates <- true
+		select {
+		case <-time.After(time.Second * 5):
+			continue
+		case <-paUpdates:
+		case <-ctx.Done():
+			return
+			// case <-click:
+			//     exec.Command("pavucontrol").Start()
+		}
+	}
 }
 
 func main() {
@@ -75,6 +88,7 @@ func main() {
 		case <-updates:
 			fmt.Printf("headset|bool|%v\n", p.headset)
 			fmt.Printf("volume|int|%d\n", p.volume)
+			fmt.Printf("source_muted|bool|%v\n", p.sourceMuted)
 			fmt.Println()
 		}
 	}

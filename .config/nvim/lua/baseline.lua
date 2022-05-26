@@ -1,3 +1,5 @@
+require 'functions'
+
 vim.cmd([[
 filetype on
 filetype plugin on
@@ -5,7 +7,19 @@ filetype plugin indent on
 " syntax enable
 ]])
 
-vim.cmd('colorscheme molokai')
+-- TODO: Any effect from these?
+vim.g.molokai_original = 1
+vim.g.rehash256 = 1
+vim.g.sublimemonokai_term_italic = 1
+
+vim.g.sonokai_transparent_background = 1
+vim.g.sonokai_show_eob = 0
+vim.g.sonokai_enable_italic = 1
+
+-- vim.cmd('colorscheme molokai')
+vim.cmd('colorscheme sonokai')
+-- vim.cmd('colorscheme gruvbox-material')
+-- vim.cmd('colorscheme monokai')
 
 -- Switch buffers (NeoVIM)
 nnoremap('<S-PageUp>', '<cmd>bp<CR>')
@@ -16,7 +30,7 @@ inoremap('<S-PageDown>', '<cmd>:bn<CR>')
 -- Save with C-s
 nnoremap('<C-s>', '<cmd>w<CR>')
 inoremap('<C-s>', '<cmd><C-o>w<CR>')
-nnoremap('<M-s>', '<cmd>w<CR>')
+nnoremap('<M-s>', '<cmd>w<CR><cmd>nohlsearch<CR>')
 inoremap('<M-s>', '<cmd>w<CR>')
 
 -- Delete buffer
@@ -32,18 +46,23 @@ nnoremap('<Tab>', '<C-W>w')
 map('<PageUp>', '<C-u>')
 map('<PageDown>', '<C-d>')
 
+-- Moving around
+nnoremap('<C-Left>', 'b')
+nnoremap('<C-Right>', 'e')
+
 -- Redo
 nnoremap('<M-r>', '<C-r>')
 nnoremap('r', '<C-r>')
 
 -- Clear search
-nnoremap('<M-c>', '<cmd>nohlsearch<CR>')
-nnoremap('<esc>', '<cmd>nohlsearch<CR><esc>')
+-- nnoremap('<M-c>', '<cmd>nohlsearch<CR>')
+nnoremap('<esc>', '<cmd>nohlsearch<CR>')
 
 -- Smart home
 function _G.smart_home()
-    return vim.api.nvim_get_current_line():find('%S') == vim.api.nvim_win_get_cursor(0)[2] + 1 and t'0' or t'^'
+    return vim.api.nvim_get_current_line():find('%S') == vim.api.nvim_win_get_cursor(0)[2] + 1 and t '0' or t '^'
 end
+
 nnoremap('<Home>', 'v:lua.smart_home()', true)
 imap('<Home>', '<C-O><Home>')
 
@@ -66,15 +85,10 @@ vim.o.splitright = true
 
 vim.o.number = true
 
-vim.o.timeoutlen = 300
+vim.o.timeoutlen = 100
 vim.o.ttimeoutlen = 10
 
 vim.o.termguicolors = true
-
--- TODO: Any effect from these?
-vim.g.molokai_original = 1
-vim.g.rehash256 = 1
-vim.g.sublimemonokai_term_italic = 1
 
 -- Show cursor line, hide cursor column
 vim.o.cursorline = true
@@ -118,6 +132,7 @@ vim.o.whichwrap = '<,>,h,l,[,]'
 
 -- Force python path
 vim.g.python_host_prog = '/usr/bin/python'
+vim.g.python3_host_prog = '/usr/bin/python'
 
 -- Scrolling
 vim.o.scrolloff = 5
@@ -188,10 +203,11 @@ hi CursorLine guibg=#242424
 hi CursorLineNr guibg=#242424
 hi LineNr guibg=#202020
 hi SignColumn guibg=#202020
-hi ErrorMsg guibg=none
+" hi ErrorMsg guibg=none
+hi ColorColumn guibg=#111111
 " TODO:
-hi Conceal ctermfg=240 ctermbg=none
-hi VertSplit ctermbg=none ctermfg=242
+" hi Conceal ctermfg=240 ctermbg=none
+" hi VertSplit ctermbg=none ctermfg=242
 
 hi Pmenu ctermfg=81 ctermbg=16 guifg=#66D9EF guibg=#202020
 hi! link PmenuSbar Pmenu
@@ -225,6 +241,7 @@ vim.go.spell = false
 function EnableSpellchecking()
     vim.bo.spell = true
 end
+
 vim.cmd([[
     au FileType markdown setlocal spell
     au FileType go set noet
@@ -235,4 +252,7 @@ vim.cmd([[
     au FileType gitcommit setlocal nofen
     au FileType javascript setlocal nofen
     au FileType conf setlocal fdm=marker
+    au FileType markdown setlocal sw=2
 ]])
+vim.cmd('let g:vim_json_conceal = 0')
+vim.g.vim_json_conceal = 0

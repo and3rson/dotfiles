@@ -11,7 +11,7 @@ l = Lark(
     line: (sentence | message)? "\n"
     sentence: /.+/
     message: scope+ /.+/?
-    scope.2: /[a-z]+/ ": "
+    scope.2: /[a-z-]+/ ": "
     ''',
     propagate_positions=True
 )

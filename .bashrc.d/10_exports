@@ -59,3 +59,6 @@ export MANPAGER='nvim -c MANPAGER -'
 
 # Dart protobuf (CDMP)
 export PATH="$PATH:$HOME/.pub-cache/bin/"
+
+# QT dark theme
+export QT_QPA_PLATFORMTHEME=qt5ct

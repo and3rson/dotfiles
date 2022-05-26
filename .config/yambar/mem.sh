@@ -15,16 +15,10 @@ echo
 
 while true
 do
-    read cpu user nice system idle iowait irq softirq steal guest< /proc/stat
-    cpu_active_prev=$((user+system+nice+softirq+steal))
-    cpu_total_prev=$((user+system+nice+softirq+steal+idle+iowait))
-    sleep 0.25
-    read cpu user nice system idle iowait irq softirq steal guest< /proc/stat
-    cpu_active_cur=$((user+system+nice+softirq+steal))
-    cpu_total_cur=$((user+system+nice+softirq+steal+idle+iowait))
-    cpu_util=$((100*( cpu_active_cur-cpu_active_prev ) / (cpu_total_cur-cpu_total_prev) ))
+    IFS=' ' read total used <<< `free -b | sed '2q;d' | awk '{print $2" "$3}'`
+    mem_fraction=$((used*100/total))
 
-    value=$cpu_util
+    value=$mem_fraction
     if (( $value > 99 ))
     then
         value=99
@@ -53,6 +47,8 @@ do
     echo "value|string|`builtin printf %2d $value`"
     echo "bar|string|$GRAPH"
     echo
+
+    sleep 0.5
 
     # if [ $(($cpu_fraction > 50)) -eq "1" ]
     # then
