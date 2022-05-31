@@ -12,6 +12,7 @@
 
 class ClockMode : public Mode {
    public:
+    ClockMode();
     void mount(Display *display);
     void process();
 

@@ -16,14 +16,12 @@ void Display::render() {
 }
 
 void Display::setMode(Mode *newMode) {
-    if (mode) {
-        delete mode;
-    }
     mode = newMode;
-    while (nBlocks) {
-        delete blocks[--nBlocks];
-    }
+    nBlocks = 0;
     mode->mount(this);
+
+    matrix.clear();
+    matrix.latch();
 }
 
 void Display::addBlock(Block *block) {

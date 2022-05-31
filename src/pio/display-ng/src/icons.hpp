@@ -4,4 +4,4 @@
 
 #include <FastLED.h>
 
-extern uint8_t ICONS[100][8][8][3];
+extern uint8_t ICONS[110][8][8][3];

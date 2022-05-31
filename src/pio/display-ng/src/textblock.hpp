@@ -7,15 +7,16 @@
 class TextBlock : public Block {
    public:
     uint8_t render(Frame *frame, uint8_t offset);
-    void setText(Font *font, uint8_t nDigits, uint8_t *digits);
-    uint8_t drawChars(Frame *frame, uint8_t offset, uint8_t nChars, uint8_t *chars, Font *font, shader_t shader);
+    void setText(Font *font, uint8_t nChars, char *chars);
+    uint8_t drawChars(Frame *frame, uint8_t offset, uint8_t nChars, char *chars, Font *font, shader_t shader);
 
    private:
     Font *prevFont = 0;
-    uint8_t prevDigits[16];
-    uint8_t nPrevDigits = 0;
-    Font *font = 0;
-    uint8_t digits[16];
-    uint8_t nDigits = 0;
-    int32_t changed = -1; // TODO: int64?
+    char prevChars[16];
+    uint8_t nPrevChars = 0;
+    Font *currentFont = 0;
+    char currentChars[16];
+    uint8_t nCurrentChars = 0;
+    int32_t lastChange = -1; // TODO: int64?
+    /* shader_t shader = redShader; */
 };

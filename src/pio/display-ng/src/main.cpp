@@ -8,49 +8,41 @@
 #include <When.h>
 #include "display.hpp"
 #include "clockmode.hpp"
+#include "weathermode.hpp"
 
 Spawn spawn("spawn_display_ng", false);
 Display display;
+When modeSwitch;
+uint8_t nextMode = 0;
+
+ClockMode clockMode;
+WeatherMode weatherMode;
 
 void setup() {
     spawn.setup();
-    /* Serial.end(); */
     ArduinoOTA.begin();
-
-    display.setMode(new ClockMode());
+    spawn.connect();
+    for (int i = 0; i < 300; i++) {
+        ArduinoOTA.handle();
+        delay(10);
+    }
 }
 
 uint32_t lastIconChange = 0;
 
 void loop() {
-    /* int prev = iter, next = ++iter; */
-    /* iter = iter % 240; */
-    /* leds[prev] = CRGB::Black; */
-    /* leds[next] = CRGB::Green; */
     ArduinoOTA.handle();
     if (spawn.connect()) {
     }
-    /* time_t now; */
-    /* struct tm *timeinfo; */
-    /* time(&now); */
-    /* timeinfo = localtime(&now); */
-    /* uint8_t values[6] = { */
-    /*     (uint8_t)(timeinfo->tm_hour / 10), (uint8_t)(timeinfo->tm_hour % 10), (uint8_t)(timeinfo->tm_min / 10), (uint8_t)(timeinfo->tm_min % 10), */
-    /*     (uint8_t)(timeinfo->tm_sec / 10),  (uint8_t)(timeinfo->tm_sec % 10) */
-    /*     /1* timeinfo->tm_min / 10, timeinfo->tm_min % 10, timeinfo->tm_sec / 10, timeinfo->tm_sec % 10, *1/ */
-    /* }; */
 
-    /* /1* uint8_t offset = 0; *1/ */
-    /* /1* for (int i = 0; i < 6; i++) { *1/ */
-    /* /1*     offset = drawDigit(offset, values[i], rainbowShader); *1/ */
-    /* /1* } *1/ */
-    /* if (millis() - lastIconChange > 15000) { */
-    /*     display.setIcon(random(100)); */
-    /*     lastIconChange = millis(); */
-    /* } */
-    /* display.setDigits(values); */
-    /* display.render(); */
-    /* FastLED.show(); */
+    if (modeSwitch.after(5000)) {
+        if (nextMode == 0) {
+            display.setMode(&clockMode);
+        } else if (nextMode == 1) {
+            display.setMode(&weatherMode);
+        }
+        nextMode = (nextMode + 1) % 2;
+    }
     display.render();
     delay(15);
 }

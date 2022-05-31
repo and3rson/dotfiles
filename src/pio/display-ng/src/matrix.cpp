@@ -7,15 +7,21 @@ Matrix::Matrix() {
     }
 }
 
+void Matrix::clear() {
+    for (uint16_t i = 0; i < LED_COUNT; i++) {
+        this->frame.leds[i] = 0;
+    }
+}
+
 void Matrix::latch() {
     FastLED.show();
 }
 
 uint16_t Matrix::coordToIndex(uint8_t x, uint8_t y) {
-    if (x > COLS) {
+    if (x >= COLS) {
         x = COLS - 1;
     }
-    if (y > ROWS) {
+    if (y >= ROWS) {
         y = ROWS - 1;
     }
     if (y % 2 == 0) {

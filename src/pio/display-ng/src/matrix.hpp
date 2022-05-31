@@ -14,6 +14,7 @@ typedef struct {
 class Matrix {
    public:
     Matrix();
+    void clear();
     void latch();
     static uint16_t coordToIndex(uint8_t x, uint8_t y);
 

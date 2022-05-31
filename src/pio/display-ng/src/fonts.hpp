@@ -2,8 +2,10 @@
 
 #include <Arduino.h>
 
+typedef uint8_t Glyph[9];
+
 typedef struct {
-    uint8_t glyphs[11][9];
+    Glyph glyphs[128];
 } Font;
 
 extern Font FONT_5x7;
