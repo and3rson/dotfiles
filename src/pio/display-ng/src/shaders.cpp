@@ -1,21 +1,19 @@
 #include "shaders.hpp"
 
-CRGB randomColorShader(uint8_t x, uint8_t y, uint32_t time) {
+CRGB RainbowShader::render(uint8_t x, uint8_t y, uint64_t time) {
+    return CHSV(x * 16 + y * 4 + time / 5, 255, 64);
+}
+
+CRGB RandomColorShader::render(uint8_t x, uint8_t y, uint64_t time) {
     return CHSV(random(255), 255, 64);
 }
 
-CRGB whiteShader(uint8_t x, uint8_t y, uint32_t time) {
-    return CRGB(255, 255, 32);
+ColorShader::ColorShader(CRGB color) : color(color) {}
+
+void ColorShader::setColor(CRGB color) {
+    this->color = color;
 }
 
-CRGB redShader(uint8_t x, uint8_t y, uint32_t time) {
-    return CHSV(0, 255, 64);
-}
-
-CRGB greenShader(uint8_t x, uint8_t y, uint32_t time) {
-    return CHSV(64, 255, 64);
-}
-
-CRGB rainbowShader(uint8_t x, uint8_t y, uint32_t time) {
-    return CHSV(x * 16 + y * 4 + time / 5, 255, 64);
+CRGB ColorShader::render(uint8_t x, uint8_t y, uint64_t time) {
+    return color;
 }

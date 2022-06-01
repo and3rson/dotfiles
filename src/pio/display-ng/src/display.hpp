@@ -2,6 +2,8 @@
 
 #include <FastLED.h>
 
+#include <When.h>
+
 #include "matrix.hpp"
 
 class Mode;
@@ -18,8 +20,17 @@ class Display {
    private:
     Matrix matrix;
 
-    Mode *mode = 0;
+    uint64_t transitionTime = 500;
+    int64_t modeChanged = -1;
 
-    Block *blocks[16];
-    uint8_t nBlocks = 0;
+    Mode *prevMode = 0;
+    Block *prevBlocks[16];
+    uint8_t nPrevBlocks = 0;
+    Mode *currentMode = 0;
+    Block *currentBlocks[16];
+    uint8_t nCurrentBlocks = 0;
+
+    When lastFPSRender;
+    uint8_t frame = 0;
+    uint64_t lastFPS = 0;
 };

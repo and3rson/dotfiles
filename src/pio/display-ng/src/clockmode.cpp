@@ -30,6 +30,7 @@ void ClockMode::process() {
     timeinfo = localtime(&now);
     if (prevSec == 255 || prevSec != timeinfo->tm_sec) {
         prevSec = timeinfo->tm_sec;
+        lastSecondChange = millis64();  // TODO: Draw underline for seconds?
 
         char values[6] = {
             (char)(timeinfo->tm_hour / 10 + '0'), (char)(timeinfo->tm_hour % 10 + '0'),

@@ -22,13 +22,11 @@ void setup() {
     spawn.setup();
     ArduinoOTA.begin();
     spawn.connect();
-    for (int i = 0; i < 300; i++) {
+    for (int i = 0; i < 100; i++) {
         ArduinoOTA.handle();
         delay(10);
     }
 }
-
-uint32_t lastIconChange = 0;
 
 void loop() {
     ArduinoOTA.handle();
