@@ -1,4 +1,5 @@
 #include "clockmode.hpp"
+#include "utils.hpp"
 
 ClockMode::ClockMode() {
     char values[7] = "000000";
@@ -30,15 +31,15 @@ void ClockMode::process() {
     timeinfo = localtime(&now);
     if (prevSec == 255 || prevSec != timeinfo->tm_sec) {
         prevSec = timeinfo->tm_sec;
-        lastSecondChange = millis64();  // TODO: Draw underline for seconds?
+        lastSecondChange = millis64(); // TODO: Draw underline for seconds?
 
         char values[6] = {
-            (char)(timeinfo->tm_hour / 10 + '0'), (char)(timeinfo->tm_hour % 10 + '0'),
-            (char)(timeinfo->tm_min / 10 + '0'), (char)(timeinfo->tm_min % 10 + '0'),
-            (char)(timeinfo->tm_sec / 10 + '0'), (char)(timeinfo->tm_sec % 10 + '0'),
+            (char)(timeinfo->tm_hour / 10 + '0'), (char)(timeinfo->tm_hour % 10 + '0'), (char)(timeinfo->tm_min / 10 + '0'), (char)(timeinfo->tm_min % 10 + '0'), (char)(timeinfo->tm_sec / 10 + '0'), (char)(timeinfo->tm_sec % 10 + '0'),
         };
         this->hours.setText(&FONT_4x7, 2, values);
         this->minutes.setText(&FONT_4x7, 2, values + 2);
         this->seconds.setText(&FONT_3x5, 2, values + 4);
     }
+    sfract15 ratio = clamp((millis64() - lastSecondChange) * 32768 / 1000, 0, 32767);
+    this->seconds.setUnderline(ratio, timeinfo->tm_sec % 2);
 }

@@ -1,7 +1,7 @@
 #include "display.hpp"
 #include "mode.hpp"
 #include "block.hpp"
-#include "time.hpp"
+#include "utils.hpp"
 
 Display::Display() {}
 
@@ -16,9 +16,9 @@ void Display::render() {
     if (modeChanged != -1) {
         Frame prev = {0}, current = {0};
         uint8_t offset;
-        float k = ((float)millis64() - modeChanged) / transitionTime;
-        if (k >= 1.0f) {
-            k = 1.0f;
+        uint64_t k = (millis64() - modeChanged) * 65535 / transitionTime;
+        if (k >= 65535) {
+            k = 65535;
             modeChanged = -1;
         }
         offset = 0;
@@ -31,16 +31,9 @@ void Display::render() {
         }
         for (int y = 0; y < ROWS; y++) {
             for (int x = 0; x < COLS; x++) {
-                float k2 = k * 4.0f - ((float)x) / COLS * 2.0f - ((float)y) / ROWS * 0.5f;
-                if (k2 < 0.0f) {
-                    k2 = 0.0f;
-                } else if (k2 > 1.0f) {
-                    k2 = 1.0f;
-                }
+                int64_t k2 = clamp(k * 4 - ((int64_t)x) * 65535 / COLS * 2 - ((int64_t)y) * 65535 / ROWS / 2, 0, 65535);
                 uint16_t i = Matrix::coordToIndex(x, y);
-                matrix.frame.leds[i].r = (1.0f - k2) * prev.leds[i].r + k2 * current.leds[i].r;
-                matrix.frame.leds[i].g = (1.0f - k2) * prev.leds[i].g + k2 * current.leds[i].g;
-                matrix.frame.leds[i].b = (1.0f - k2) * prev.leds[i].b + k2 * current.leds[i].b;
+                matrix.frame.leds[i] = prev.leds[i].lerp16(current.leds[i], k2);
             }
         }
     } else {
@@ -67,7 +60,7 @@ void Display::render() {
         matrix.frame.leds[Matrix::coordToIndex(pos++, 7)] = CRGB::Green;
         fps--;
     }
-    while (pos < COLS) {
+    while (pos < COLS / 2) {
         matrix.frame.leds[Matrix::coordToIndex(pos++, 7)] = CRGB::Black;
     }
     /* matrix.frame.leds[Matrix::coordToIndex(frame, 7)] = CRGB::Black; */
