@@ -33,7 +33,7 @@ void loop() {
     if (spawn.connect()) {
     }
 
-    if (modeSwitch.after(5000)) {
+    if (modeSwitch.after(nextMode == 1 ? 5000 : 2000)) {
         if (nextMode == 0) {
             display.setMode(&clockMode);
         } else if (nextMode == 1) {

@@ -3,7 +3,7 @@
 
 uint8_t TextBlock::render(Frame *frame, uint8_t offset) {
     uint8_t newOffset = offset;
-    if (lastChange != -1 && prevFont) {
+    if (lastChange != -1) {
         float k = (millis64() - lastChange) * 65535 / 250;
         if (k >= 65535) {
             k = 65535;
@@ -26,15 +26,37 @@ uint8_t TextBlock::render(Frame *frame, uint8_t offset) {
     } else {
         newOffset = nCurrentChars;
     }
-    if (newOffset > offset) {
-        uint8_t maxWidth = newOffset - offset - 1;
-        uint8_t underlineWidth = clamp(((int32_t)underlineRatio) * maxWidth / 32767, 0, maxWidth);
-        for (uint8_t i = 0; i < maxWidth; i++) {
-            uint8_t x = offset + i;
-            if (x < COLS) {
-                frame->leds[Matrix::coordToIndex(x, 7)] = ((i < underlineWidth) != underlineInvert) ? CHSV(64, 255, 64) : CHSV(0, 0, 0);
-            }
+    if (newOffset > offset && borderVisible) {
+        uint8_t width = newOffset - offset;
+        uint8_t height = 6;
+        uint8_t maxLen = width * 2 + height * 2;
+        uint8_t len = clamp(((int32_t)borderRatio) * maxLen / 32767, 0, maxLen);
+
+        uint8_t pos = 0;
+        for (uint8_t i = 0; i < width; i++, pos++) {
+            frame->leds[Matrix::coordToIndex(offset - 1 + i, 6)] = dist(pos, len, maxLen) < 3 ? CHSV(96, 255, 16) : CHSV(0, 0, 0);
         }
+        for (uint8_t i = height; i; i--, pos++) {
+            frame->leds[Matrix::coordToIndex(newOffset - 1, i)] = dist(pos, len, maxLen) < 3 ? CHSV(96, 255, 16) : CHSV(0, 0, 0);
+        }
+        for (uint8_t i = width; i; i--, pos++) {
+            frame->leds[Matrix::coordToIndex(offset + i - 1, 0)] = dist(pos, len, maxLen) < 3 ? CHSV(96, 255, 16) : CHSV(0, 0, 0);
+        }
+        for (uint8_t i = 0; i < height; i++, pos++) {
+            frame->leds[Matrix::coordToIndex(offset - 1, i)] = dist(pos, len, maxLen) < 3 ? CHSV(96, 255, 16) : CHSV(0, 0, 0);
+        }
+        /* for (uint8_t i = 0; i < width && len; i++, len--) { */
+        /*     frame->leds[Matrix::coordToIndex(offset - 1 + i, 6)] = CHSV(64, 255, 16); */
+        /* } */
+        /* for (uint8_t i = height; i && len; i--, len--) { */
+        /*     frame->leds[Matrix::coordToIndex(newOffset - 1, i)] = CHSV(64, 255, 16); */
+        /* } */
+        /* for (uint8_t i = width; i && len; i--, len--) { */
+        /*     frame->leds[Matrix::coordToIndex(offset + i - 1, 0)] = CHSV(64, 255, 16); */
+        /* } */
+        /* for (uint8_t i = 0; i < height && len; i++, len--) { */
+        /*     frame->leds[Matrix::coordToIndex(offset - 1, i)] = CHSV(64, 255, 16); */
+        /* } */
     }
     return newOffset;
 }
@@ -99,7 +121,7 @@ uint8_t TextBlock::drawChars(Frame *frame, uint8_t offset, uint8_t nChars, char 
     return offset;
 }
 
-void TextBlock::setUnderline(sfract15 ratio, bool invert) {
-    underlineRatio = ratio;
-    underlineInvert = invert;
+void TextBlock::setBorder(sfract15 ratio, bool visible) {
+    borderRatio = ratio;
+    borderVisible = visible;
 }

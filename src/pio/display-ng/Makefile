@@ -1,7 +1,7 @@
 all:
 	pio -f -c vim run
 
-upload:
+upload-ota:
 	pio -f -c vim run --target upload -e ota
 
 upload-usb:

@@ -19,7 +19,7 @@ class ClockMode : public Mode {
    private:
     When lastUpdate;
     When lastIconChange;
-    uint64_t lastSecondChange;
+    /* uint64_t lastSecondChange; */
     uint8_t prevSec = 255;
     IconBlock icon;
     TextBlock hours;

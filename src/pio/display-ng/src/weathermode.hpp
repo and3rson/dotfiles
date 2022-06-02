@@ -31,16 +31,25 @@ class WeatherMode : public Mode {
     When lastUpdate;
 
     icondef_t icondefs[ICONDEF_COUNT] = {
+        // Clear
         {"01d", 100},
         {"01n", 101},
+        // Few clouds
         {"02d", 102},
         {"02n", 103},
+        // Scattered clouds
         {"03", 104},
+        // Broken clouds
         {"04", 104},
+        // Shower rain
         {"09", 105},
+        // Rain
         {"10", 105},
+        // Thunderstorm
         {"11", 106},
+        // Snow
         {"13", 107},
+        // Mist
         {"50", 108},
     };
 };

@@ -26,3 +26,7 @@
 !/.images/**
 !/.scripts
 !/.scripts/**
+!/src
+/src/*
+!/src/pio
+!/src/pio/**
