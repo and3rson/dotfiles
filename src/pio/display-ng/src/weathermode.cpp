@@ -6,9 +6,8 @@
 static WiFiClient wifiClient;
 
 WeatherMode::WeatherMode() {
-    char values[5] = "--*C";
-    this->temp.setText(&FONT_5x7, 2, values);
-    this->suffix.setText(&FONT_5x7, 2, values + 2);
+    this->temp.setText(&FONT_5x7, 2, "--");
+    this->suffix.setText(&FONT_5x7, 2, "*C");
 }
 
 void WeatherMode::mount(Display *display) {
@@ -17,16 +16,13 @@ void WeatherMode::mount(Display *display) {
     display->addBlock(&this->suffix);
 }
 
-static volatile int a;
-
 void WeatherMode::process() {
     if (lastUpdate.after(300000)) {
         HTTPClient client;
-        client.begin(wifiClient, "http://api.openweathermap.org/data/2.5/weather?appid=5041ca48d55a6669fe8b41ad1a8af753&q=Lviv,Ukraine&lang=ua");
+        client.begin(wifiClient, "http://api.openweathermap.org/data/2.5/weather?appid=" OWM_APPID "&q=Lviv,Ukraine&lang=ua");
         int code = client.GET();
         if (code != 200) {
-            char err[3] = "--";
-            this->temp.setText(&FONT_5x7, 2, err);
+            this->temp.setText(&FONT_5x7, 2, "--");
         } else {
             DynamicJsonDocument doc(1024);
             String body = client.getString();

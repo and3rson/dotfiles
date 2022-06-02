@@ -6,6 +6,10 @@
 #include "iconblock.hpp"
 #include "textblock.hpp"
 
+#ifndef OWM_APPID
+#    error "OWM_APPID is missing"
+#endif
+
 #define ICONDEF_COUNT 11
 
 typedef struct {

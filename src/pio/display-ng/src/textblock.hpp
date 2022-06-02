@@ -8,7 +8,7 @@
 class TextBlock : public Block {
    public:
     uint8_t render(Frame *frame, uint8_t offset);
-    void setText(Font *font, uint8_t nChars, char *chars);
+    void setText(Font *font, uint8_t nChars, const char *chars);
     uint8_t drawChars(Frame *frame, uint8_t offset, uint8_t nChars, char *chars, Font *font, Shader *shader);
 
    private:

@@ -29,7 +29,7 @@ uint8_t TextBlock::render(Frame *frame, uint8_t offset) {
     }
 }
 
-void TextBlock::setText(Font *newFont, uint8_t nNewChars, char *newChars) {
+void TextBlock::setText(Font *newFont, uint8_t nNewChars, const char *newChars) {
     bool changed = false;
     if (newFont != currentFont) {
         changed = true;
