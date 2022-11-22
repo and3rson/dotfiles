@@ -1,2 +1,2 @@
 #!/bin/bash
-alacritty -e /bin/bash -c "/bin/nvim ${@}"
+alacritty -e /bin/bash -c "/bin/nvim '${@}'"

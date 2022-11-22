@@ -14,6 +14,7 @@ require('packer').startup(function(use)
     use 'embear/vim-localvimrc'
     use 'editorconfig/editorconfig-vim'
     use 'lambdalisue/vim-manpager'
+    use 'lewis6991/impatient.nvim'
 
     -- LSP
     use 'neovim/nvim-lspconfig'
@@ -89,7 +90,8 @@ require('packer').startup(function(use)
     -- Status lines
     use 'nvim-lualine/lualine.nvim'
     -- use 'ap/vim-buftabline'
-    use 'kyazdani42/nvim-web-devicons'
+    use 'nvim-tree/nvim-web-devicons'
+    use 'nvim-tree/nvim-tree.lua'
     -- use 'akinsho/bufferline.nvim'
     use 'romgrk/barbar.nvim'
 
@@ -216,10 +218,12 @@ local function tsPath()
     return table.concat(parts, ' -> ')
 end
 
-local custom_onedark = require 'lualine.themes.onedark'
-custom_onedark.inactive.a.bg = '#222222'
-custom_onedark.inactive.b.bg = '#222222'
-custom_onedark.inactive.c.bg = '#222222'
+-- local custom_onedark = require 'lualine.themes.onedark'
+-- custom_onedark.inactive.a.bg = '#222222'
+-- custom_onedark.inactive.b.bg = '#222222'
+-- custom_onedark.inactive.c.bg = '#222222'
+local custom_sonokai = require 'lualine.themes.sonokai'
+
 
 local lualine_sections = {
     lualine_a = { { 'mode', fmt = function(str) return mode_map[str:sub(1, 1)] end } },
@@ -230,13 +234,21 @@ local lualine_sections = {
     lualine_y = { 'branch' },
     -- lualine_z={'lspStatus()'},
     lualine_z = {
-        { 'diagnostics', color = { bg = '#202020' } }
+        { 'diagnostics', color = { bg = '#404040' }, diagnostics_color = {
+            -- Same values as the general color option can be used here.
+            error = 'ErrorFloat', -- Changes diagnostics' error color.
+            warn  = 'WarningFloat', -- Changes diagnostics' warn color.
+            info  = 'InfoFloat', -- Changes diagnostics' info color.
+            hint  = 'HintFloat', -- Changes diagnostics' hint color.
+        },
+        }
+        -- { 'diagnostics' }
     },
 }
 
 require('lualine').setup {
     options = {
-        theme = custom_onedark,
+        theme = custom_sonokai,
         section_separators = {
             left = '',
             right = ''
@@ -427,33 +439,87 @@ end
 
 local base = require("notify.render.base")
 
-vim.notify = require('notify')
-vim.notify.setup({
-    -- stages = 'static',
-    stages = 'slide',
-    timeout = 3000,
-    -- render = 'minimal',
-    on_open = function(win)
-      vim.api.nvim_win_set_config(win, { focusable = false })
-    end,
-    render = function(buf, notification, highlights)
-        -- highlights.title
-        -- highlights.icon
-        -- highlights.border
-        -- highlights.body
-          -- local left_icon = notif.icon .. " "
-        local namespace = base.namespace()
-        notification.message[1] = ' ' .. notification.icon .. ' ' .. notification.message[1]
-        -- table.insert(notification.message, 0, notification.icon)
-        -- print(notification.icon)
-        vim.api.nvim_buf_set_lines(buf, 0, -1, false, notification.message)
-        vim.api.nvim_buf_set_extmark(buf, namespace, 0, 0, {
-            hl_group = highlights.icon,
-            end_line = #notification.message - 1,
-            end_col = #notification.message[#notification.message],
-            priority = 50,
-        })
-        return notification
-    end
+-- vim.notify = require('notify')
+-- vim.notify.setup({
+--     -- stages = 'static',
+--     stages = 'slide',
+--     timeout = 3000,
+--     -- render = 'minimal',
+--     on_open = function(win)
+--         vim.api.nvim_win_set_config(win, { focusable = false })
+--     end,
+--     render = function(buf, notification, highlights)
+--         -- highlights.title
+--         -- highlights.icon
+--         -- highlights.border
+--         -- highlights.body
+--         -- local left_icon = notif.icon .. " "
+--         local namespace = base.namespace()
+--         notification.message[1] = ' ' .. notification.icon .. ' ' .. notification.message[1]
+--         -- table.insert(notification.message, 0, notification.icon)
+--         -- print(notification.icon)
+--         vim.api.nvim_buf_set_lines(buf, 0, -1, false, notification.message)
+--         vim.api.nvim_buf_set_extmark(buf, namespace, 0, 0, {
+--             hl_group = highlights.icon,
+--             end_line = #notification.message - 1,
+--             end_col = #notification.message[#notification.message],
+--             priority = 50,
+--         })
+--         return notification
+--     end
+-- })
+-- }}}
+-- {{{ nvim-tree
+require("nvim-tree").setup({
+    sort_by = "case_sensitive",
+    view = {
+        adaptive_size = true,
+        mappings = {
+            list = {
+                { key = "u", action = "dir_up" },
+            },
+        },
+    },
+    renderer = {
+        group_empty = true,
+    },
+    filters = {
+        dotfiles = true,
+    },
+    remove_keymaps = { '<Tab>', '-', 'f' },
+    update_focused_file = {
+        enable = true,
+        -- update_root = true,
+    },
+    renderer = {
+        -- highlight_opened_files = 'all',
+        icons = {
+            git_placement = 'signcolumn',
+            show = {
+                folder = false,
+            },
+        },
+        indent_width = 2,
+        indent_markers = {
+            enable = true,
+            icons = {
+                item = '├',
+            },
+        },
+    },
+    hijack_cursor = true,
 })
+
+nnoremap('<F2>', '<cmd>NvimTreeToggle<CR>')
+nnoremap('f', '<cmd>NvimTreeToggle<CR>')
+
+-- vim.cmd('autocmd BufEnter * hi! link NvimTreeFolderIcon Blue')
+-- vim.cmd('autocmd BufEnter * hi! NvimTreeFolderName guifg=' .. vim.fn.synIDattr(vim.fn.hlID('Blue'), 'fg') .. ' gui=bold')
+vim.cmd('autocmd BufEnter * hi! NvimTreeFolderIcon guifg=#87AFFF')
+vim.cmd('autocmd BufEnter * hi! NvimTreeFolderName guifg=#87AFFF gui=bold')
+
+vim.cmd('autocmd BufEnter * hi! link NvimTreeOpenedFolderName NvimTreeFolderName')
+vim.cmd('autocmd BufEnter * hi! link NvimTreeEmptyFolderName NvimTreeFolderName')
+-- vim.cmd('autocmd VimEnter * asd')
+-- vim.cmd('hi! NvimTreeFolderIcon guifg=#FF0000')
 -- }}}

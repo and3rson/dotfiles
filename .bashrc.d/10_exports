@@ -62,3 +62,6 @@ export PATH="$PATH:$HOME/.pub-cache/bin/"
 
 # QT dark theme
 export QT_QPA_PLATFORMTHEME=qt5ct
+
+# React Native
+export ANDROID_SDK_ROOT=$HOME/Android/Sdk

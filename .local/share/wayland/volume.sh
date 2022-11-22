@@ -10,4 +10,4 @@ notify-send \
     --hint=string:x-dunst-stack-tag:volume -t 300 -a Volume \
     -i /usr/share/icons/Numix/48/notifications/notification-audio-volume-${ICONS[$INDEX]}.svg \
     "$VOLUME%" \
-    `pacmd dump | grep default-sink | awk -F ' ' '{print $2}'`
+    `pactl info | grep "Default Sink:" | awk -F ' ' '{print $3}'`

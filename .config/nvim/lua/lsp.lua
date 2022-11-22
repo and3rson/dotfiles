@@ -68,10 +68,11 @@ vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagn
 
 -- Completion via cmp
 -- Add additional capabilities supported by nvim-cmp
-local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- local capabilities = vim.lsp.protocol.make_client_capabilities()
 
 -- disable start
-capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+-- capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 local has_words_before = function()
     local line, col = unpack(vim.api.nvim_win_get_cursor(0)) ---@diagnostic disable-line
@@ -310,6 +311,15 @@ lspconfig.cssls.setup {
 lspconfig.eslint.setup {
     on_attach = on_attach,
     capabilities = capabilities,
+    -- settings = {
+    --     format = {
+    --         enable = false,
+    --     },
+    -- workingDirectories = { {
+    --     mode = "auto"
+    -- } }
+    -- },
+    -- editor={defaultFormatter='adbaeumer.avscode-eslint'}
 }
 lspconfig.tsserver.setup {
     on_attach = on_attach,
@@ -340,6 +350,7 @@ lspconfig.sumneko_lua.setup {
     },
 }
 lspconfig.terraformls.setup { on_attach = on_attach }
+-- lspconfig.terraform_lsp.setup { on_attach = on_attach }
 -- lspconfig['null-ls'].setup{
 --     on_attach=on_attach
 -- }
@@ -348,5 +359,6 @@ lspconfig.yamlls.setup { on_attach = on_attach }
 -- local lsp_status = require('lsp-status')
 -- lsp_status.register_progress()
 lspconfig.zls.setup {}
+lspconfig.gdscript.setup{}
 
 require 'fidget'.setup()

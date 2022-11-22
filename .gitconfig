@@ -70,3 +70,5 @@
     smtpuser = a@dun.ai
 [commit]
 	gpgsign = true
+[mergetool "meld"]
+	hideResolved = true

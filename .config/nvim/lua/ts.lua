@@ -21,10 +21,10 @@ require 'nvim-treesitter.configs'.setup {
         -- Using this option may slow down your editor, and you may see some duplicate highlights.
         -- Instead of true it can also be a list of languages
         additional_vim_regex_highlighting = false,
-        -- additional_vim_regex_highlighting = { "python" },
+        -- additional_vim_regex_highlighting = { "gdresource" },
     },
     -- ensure_installed = 'maintained',
-    ensure_installed = { 'c', 'python', 'cpp', 'css', 'go', 'html', 'lua', 'query', 'vim', 'zig', 'graphql', 'json', 'yaml', 'javascript' },
+    ensure_installed = { 'c', 'python', 'cpp', 'css', 'go', 'html', 'lua', 'query', 'vim', 'zig', 'graphql', 'json', 'yaml', 'javascript', 'hcl' },
     playground = {
         enable = true,
         disable = {},
@@ -47,7 +47,7 @@ require 'nvim-treesitter.configs'.setup {
         enable = true,
         -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
         extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
-        max_file_lines = nil, -- Do not enable for files with more than n lines, int
+        max_file_lines = 3000, -- Do not enable for files with more than n lines, int
         colors = {
             "#a89984",
             "#b16286",

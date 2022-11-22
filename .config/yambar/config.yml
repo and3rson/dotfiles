@@ -101,9 +101,9 @@ bar:
               tag: playing
               values:
                 true:
-                  - string: {text: "\uF04B {title} {duration}", foreground: "5FFF47FF"}
+                  - string: {text: "\uF04B {title} ({position} / {duration})", foreground: "5FFF47FF"}
                 false:
-                  - string: {text: "\uF04C {title} {duration}", foreground: "FFD78740"}
+                  - string: {text: "\uF04C {title} ({position} / {duration})", foreground: "FFD78740"}
     - script:
         path: /home/anderson/.config/yambar/spectrum/spectrum
         args: [-r]

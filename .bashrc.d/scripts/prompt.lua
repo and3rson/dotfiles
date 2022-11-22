@@ -47,7 +47,7 @@ local function git()
         return { { fg = 172, bg = 234, text = ('%s no repo'):format(GIT) } }
     end
 
-    local code, describe = call('git describe --tags 2> /dev/null')
+    local code, describe = call('git describe --tags --always 2> /dev/null')
     if code == true then
         table.insert(result, { fg = 41, bg = 234, text = (' %s'):format(describe) })
     end

@@ -1,13 +1,16 @@
 require 'functions'
 
 vim.cmd([[
-filetype on
-filetype plugin on
-filetype plugin indent on
+" filetype on
+" filetype plugin on
+" filetype plugin indent on
 " syntax enable
 ]])
 
+vim.o.termguicolors = true
+
 -- TODO: Any effect from these?
+vim.g.sonokai_better_performance = 1
 vim.g.molokai_original = 1
 vim.g.rehash256 = 1
 vim.g.sublimemonokai_term_italic = 1
@@ -15,8 +18,49 @@ vim.g.sublimemonokai_term_italic = 1
 vim.g.sonokai_transparent_background = 1
 vim.g.sonokai_show_eob = 0
 vim.g.sonokai_enable_italic = 1
+vim.g.sonokai_diagnostic_text_highlight = 1
+-- vim.g.sonokai_diagnostic_line_highlight = 1
+vim.g.sonokai_diagnostic_virtual_text = 'colored'
+vim.g.sonokai_style = 'andromeda'
+vim.g.sonokai_menu_selection_background = 'green'
+
+vim.cmd([[
+    fu! s:sonokai_custom() abort
+        hi CursorLine guibg=#242424
+        hi CursorLineNr guibg=#242424
+        hi LineNr guibg=#202020
+        hi SignColumn guibg=#202020
+        hi ColorColumn guibg=#111111
+
+        hi Pmenu ctermfg=81 ctermbg=16 guifg=#66D9EF guibg=#202020
+        hi! link PmenuSbar Pmenu
+        hi! PmenuThumb guibg=#66D9EF
+        hi PmenuSel guifg=#000000
+
+        hi MatchParen guifg=red guibg=none gui=underline,bold
+        " hi Whitespace guifg=red " gui=underline
+        hi IndentBlanklineChar guifg=#444444
+
+
+        hi! link TSInclude Green
+        " exec 'hi! TSInclude gui=bold guifg=' .. synIDattr(hlID('Green'), 'fg')
+        hi! link TSConstant Purple
+        " exec 'hi! TSConstant gui=bold guifg=' .. synIDattr(hlID('Purple'), 'fg')
+        exec 'hi! TSVariableBuiltin gui=bold guifg=' .. synIDattr(hlID('Purple'), 'fg')
+        " hi! link TSVariableBuiltin Red
+        " hi! TSVariableBuiltin gui=bold
+        " hi! link TSParameter Orange
+        hi! link TSTag Blue
+        " hi! link TSType Red
+    endf
+    augroup SonokaiCustom
+        autocmd!
+        autocmd ColorScheme sonokai call s:sonokai_custom()
+    augroup END
+]])
 
 -- vim.cmd('colorscheme molokai')
+-- vim.cmd('hi Normal guibg=none')
 vim.cmd('colorscheme sonokai')
 -- vim.cmd('colorscheme gruvbox-material')
 -- vim.cmd('colorscheme monokai')
@@ -88,8 +132,6 @@ vim.o.number = true
 vim.o.timeoutlen = 100
 vim.o.ttimeoutlen = 10
 
-vim.o.termguicolors = true
-
 -- Show cursor line, hide cursor column
 vim.o.cursorline = true
 vim.o.cursorcolumn = false
@@ -118,7 +160,8 @@ vim.api.nvim_win_set_option(0, 'list', true)
 vim.opt.listchars = {
     tab = '▏ ',
     -- tab = '  ',
-    trail = '·',
+    -- trail = '·',
+    trail = '×',
     extends = '»',
     precedes = '«',
     nbsp = '×',
@@ -197,28 +240,6 @@ vim.cmd([[
 au TextYankPost * lua vim.highlight.on_yank {higroup="IncSearch", timeout=100, on_visual=true}
 ]])
 
-vim.cmd([[
-hi Normal guibg=NONE ctermbg=NONE ctermfg=NONE
-hi CursorLine guibg=#242424
-hi CursorLineNr guibg=#242424
-hi LineNr guibg=#202020
-hi SignColumn guibg=#202020
-" hi ErrorMsg guibg=none
-hi ColorColumn guibg=#111111
-" TODO:
-" hi Conceal ctermfg=240 ctermbg=none
-" hi VertSplit ctermbg=none ctermfg=242
-
-hi Pmenu ctermfg=81 ctermbg=16 guifg=#66D9EF guibg=#202020
-hi! link PmenuSbar Pmenu
-hi! PmenuThumb guibg=#66D9EF
-hi PmenuSel guifg=#000000
-
-hi MatchParen guifg=red guibg=none gui=underline,bold
-" hi Whitespace guifg=red gui=underline
-hi IndentBlanklineChar guifg=#444444
-]])
-
 -- Remove trailing whitespaces
 -- vim.cmd([[
 -- fu CleanUp()
@@ -232,7 +253,7 @@ hi IndentBlanklineChar guifg=#444444
 
 -- Folding
 nnoremap('<space>', 'za')
-vim.o.foldmethod = 'syntax'
+-- vim.o.foldmethod = 'syntax'
 vim.o.foldnestmax = 10
 
 -- Spell checking
@@ -253,6 +274,7 @@ vim.cmd([[
     au FileType javascript setlocal nofen
     au FileType conf setlocal fdm=marker
     au FileType markdown setlocal sw=2
+    au BufRead *.tscn,*.tres,*.import set ft=dosini
 ]])
 vim.cmd('let g:vim_json_conceal = 0')
 vim.g.vim_json_conceal = 0

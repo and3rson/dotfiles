@@ -19,5 +19,5 @@ do
     echo "temp|int|$temp"
     echo "feels_like|int|$feels_like"
     echo
-    sleep 60
+    sleep 300
 done

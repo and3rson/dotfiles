@@ -1,3 +1,4 @@
+require('impatient')
 require('functions')
 require('baseline')
 require('plugins')

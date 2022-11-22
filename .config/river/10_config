@@ -73,6 +73,8 @@ do
     # Control screen backlight brighness
     $map $mode None XF86MonBrightnessUp   spawn "$waylanddir/brightness.sh 2%+"
     $map $mode None XF86MonBrightnessDown spawn "$waylanddir/brightness.sh 2%-"
+
+    $map $mode $mod p spawn "killall -s SIGINT wf-recorder"
 done
 # }}}
 # Screenshot keys {{{
@@ -83,6 +85,7 @@ $map normal $alt Print spawn 'grim -g "$(slurp)" -t png - > /tmp/sshot.png && (w
 riverctl declare-mode dunst
 # $map normal None Escape spawn "[[ \`dunstctl count displayed\` != \"0\" ]] && dunstctl close || (riverctl enter-mode dunst; wtype -P Escape; xdotool key Escape; riverctl enter-mode normal)"
 $map normal $alt Escape spawn "[[ \`dunstctl count displayed\` != \"0\" ]] && dunstctl close"
+# $map normal -passthrough None Escape spawn "[[ \`dunstctl count displayed\` != \"0\" ]] && dunstctl close"
 # }}}
 
 # Outputs {{{
@@ -96,6 +99,7 @@ $map normal $alt F4 close
 # Mod+J and Mod+K to focus the next/previous view in the layout stack
 $map normal $mod Left focus-view previous
 $map normal $mod Right focus-view next
+$map normal $mod Tab focus-view next
 $map normal $mod+$lv3 Left focus-view previous
 $map normal $mod+$lv3 Right focus-view next
 # $map normal $alt Tab focus-view next
@@ -185,7 +189,7 @@ riverctl csd-filter-add app-id "gedit"
 # }}}
 
 # Mouse & touchpad {{{
-riverctl hide-cursor when-typing enabled
+# riverctl hide-cursor when-typing enabled
 
 riverctl input $touchpad tap enabled
 # riverctl input $touchpad scroll_factor
