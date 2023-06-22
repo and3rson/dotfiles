@@ -212,4 +212,5 @@ riverctl input $touchpad disable-while-typing disabled
 # Keyboard {{{
 # Set keyboard repeat rate
 riverctl set-repeat 25 167
+riverctl keyboard-layout -options grp:alt_space_toggle us,ua
 # }}}
