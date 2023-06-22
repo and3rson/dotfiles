@@ -1,6 +1,6 @@
 #!/bin/bash
 # vim:fdm=marker
-set -e
+set -ex
 
 # See the river(1), riverctl(1), and rivertile(1) man pages for complete
 # documentation.
@@ -12,7 +12,13 @@ ctrl="Control"
 lv3="Mod5"
 
 # touchpad="10182:500:GDX1515:00_27C6:01F4_Touchpad"
-touchpad="pointer-10182-500-GDX1515:00_27C6:01F4_Touchpad"
+if [[ "$HOSTNAME" == "vivo" ]]
+then
+    touchpad="pointer-10182-500-GDX1515:00_27C6:01F4_Touchpad"
+else
+    # a13
+    touchpad="pointer-1267-12725-ELAN0798:01_04F3:31B5_Touchpad"
+fi
 waylanddir="$HOME/.local/share/wayland"
 
 map="riverctl map -layout 0"
@@ -93,6 +99,7 @@ $map normal $alt Escape spawn "[[ \`dunstctl count displayed\` != \"0\" ]] && du
 # Outputs {{{
 # Disable touchpad display
 wlr-randr --output HDMI-A-1 --off || true
+[[ "$HOSTNAME" == "a13" ]] && wlr-randr --output eDP-1 --scale 1.6
 $map normal $alt Tab focus-output next
 $map normal $alt+Shift Tab send-to-output next
 # }}}
@@ -189,7 +196,8 @@ $map normal $ctrl+Shift 0 set-view-tags $all_tags
 # riverctl unfloat-filter-add app-id "Spotify"
 
 # Set app-ids and titles of views which should use client side decorations
-riverctl csd-filter-add app-id "gedit"
+# riverctl csd-filter-add app-id "gedit"
+riverctl rule-add csd -app-id "gedit"
 # }}}
 
 # Mouse & touchpad {{{

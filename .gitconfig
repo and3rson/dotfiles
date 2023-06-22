@@ -28,7 +28,7 @@
     ; plus-style = syntax "#003300"
     ; plus-non-emph-style = syntax
     ; plus-emph-style = syntax "#003300" bold
-    side-by-side = true
+    side-by-side = false
     file-style = bold cyan
     file-decoration-style = ul cyan
     ; file-decoration-style = yellow ul ol

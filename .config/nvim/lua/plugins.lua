@@ -47,7 +47,7 @@ require('packer').startup(function(use)
     -- use 'RishabhRD/nvim-lsputils'
     use 'hood/popui.nvim'
     use 'rcarriga/nvim-notify'
-    use 'j-hui/fidget.nvim'
+    use { 'j-hui/fidget.nvim', tag = 'legacy' }
     use 'tpope/vim-fugitive'
 
     -- TS
