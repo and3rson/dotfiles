@@ -39,7 +39,7 @@ local on_attach = function(client, bufnr)
     -- if vim.api.nvim_buf_get_option(bufnr, 'filetype') == 'python' then
     --     vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-r>', '<cmd>%!autopep8 %<CR>', opts)
     -- else
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-r>', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<M-r>', '<cmd>lua vim.lsp.buf.format()<CR>', opts)
     -- end
     vim.cmd([[
         " autocmd CursorMoved * :lua require('ts_context_commentstring.internal').update_commentstring()
@@ -230,7 +230,8 @@ lspconfig.pylsp.setup {
                     enabled = false,
                 },
                 pylint = {
-                    enabled = true,
+                    -- enabled = true,
+                    enabled = false,
                     args = { '/usr/bin/pylint' },
                     executable = 'python'
                 },
@@ -288,7 +289,8 @@ lspconfig.gopls.setup {
     on_attach = function(client, bufnr)
         on_attach(client, bufnr)
         vim.cmd([[
-            au BufWritePre <buffer> :lua vim.lsp.buf.formatting_sync()
+            " au BufWritePre <buffer> :lua vim.lsp.buf.formatting_sync()
+            au BufWritePre <buffer> :lua vim.lsp.buf.format()
         ]])
     end,
     capabilities = capabilities,
@@ -333,22 +335,23 @@ lspconfig.jsonls.setup {
     on_attach = on_attach,
     capabilities = capabilities,
 }
-lspconfig.sumneko_lua.setup {
-    -- https://github.com/sumneko/lua-language-server/wiki/Setting
-    on_attach = on_attach,
-    capabilities = capabilities,
-    cmd = { '/home/anderson/src/lua-language-server/bin/lua-language-server', '--preview', '--logpath', '/tmp/lua-language-server/' },
-    settings = {
-        Lua = {
-            runtime = {
-                version = 'LuaJIT',
-            },
-            diagnostics = {
-                globals = { "vim" },
-            },
-        },
-    },
-}
+-- TODO: Replace with lua_ls
+-- lspconfig.sumneko_lua.setup {
+--     -- https://github.com/sumneko/lua-language-server/wiki/Setting
+--     on_attach = on_attach,
+--     capabilities = capabilities,
+--     cmd = { '/home/anderson/src/lua-language-server/bin/lua-language-server', '--preview', '--logpath', '/tmp/lua-language-server/' },
+--     settings = {
+--         Lua = {
+--             runtime = {
+--                 version = 'LuaJIT',
+--             },
+--             diagnostics = {
+--                 globals = { "vim" },
+--             },
+--         },
+--     },
+-- }
 lspconfig.terraformls.setup { on_attach = on_attach }
 -- lspconfig.terraform_lsp.setup { on_attach = on_attach }
 -- lspconfig['null-ls'].setup{
@@ -359,6 +362,9 @@ lspconfig.yamlls.setup { on_attach = on_attach }
 -- local lsp_status = require('lsp-status')
 -- lsp_status.register_progress()
 lspconfig.zls.setup {}
-lspconfig.gdscript.setup{}
+lspconfig.gdscript.setup {}
+lspconfig.lemminx.setup {
+    on_attach = on_attach
+}
 
 require 'fidget'.setup()

@@ -24,7 +24,7 @@ require 'nvim-treesitter.configs'.setup {
         -- additional_vim_regex_highlighting = { "gdresource" },
     },
     -- ensure_installed = 'maintained',
-    ensure_installed = { 'c', 'python', 'cpp', 'css', 'go', 'html', 'lua', 'query', 'vim', 'zig', 'graphql', 'json', 'yaml', 'javascript', 'hcl' },
+    ensure_installed = { 'c', 'python', 'cpp', 'css', 'go', 'html', 'lua', 'query', 'vim', 'zig', 'graphql', 'json', 'yaml', 'javascript', 'hcl', 'terraform' },
     playground = {
         enable = true,
         disable = {},

@@ -56,4 +56,5 @@ alias sxiv='sxiv -p'
 alias r='ranger'
 
 alias ixio="curl -F 'f:1=<-' ix.io"
+alias paast="curl p.dun.ai --data-binary @-"
 alias yaml="yq -y | highlight -S yaml -O xterm256 -s molokai"

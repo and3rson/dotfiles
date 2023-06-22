@@ -1,7 +1,10 @@
 #!/bin/bash
 
 export EDITOR="nvim"
-export BROWSER="firefox-developer-edition"
+# Set with:
+# $ sudo gio mime x-scheme-handler/http firefoxdeveloperedition.desktop
+# $ sudo gio mime x-scheme-handler/https firefoxdeveloperedition.desktop
+# export BROWSER="firefox-developer-edition"
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on'
 export GOPATH="/home/anderson/src/go"
 export PATH="$PATH:$HOME/.scripts:/sh:$GOPATH/bin"
@@ -55,7 +58,8 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 # https://mozilla.github.io/webrtc-landing/
 # export XDG_CURRENT_DESKTOP=sway
 
-export MANPAGER='nvim -c MANPAGER -'
+# export MANPAGER='nvim -c MANPAGER -'
+export MANPAGER='nvimpager -p'
 
 # Dart protobuf (CDMP)
 export PATH="$PATH:$HOME/.pub-cache/bin/"
@@ -65,3 +69,6 @@ export QT_QPA_PLATFORMTHEME=qt5ct
 
 # React Native
 export ANDROID_SDK_ROOT=$HOME/Android/Sdk
+
+# DockerX
+export BUILDKIT_PROGRESS=plain

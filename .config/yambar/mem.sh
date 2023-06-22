@@ -8,10 +8,10 @@ do
     GRAPH="$GRAPH、　"
 done
 
-echo "high|bool|false"
-echo "value|string|`builtin printf %2d $value`"
-echo "bar|string|$GRAPH"
-echo
+# echo "high|bool|false"
+# echo "value|string|`builtin printf %2d $value`"
+# echo "bar|string|$GRAPH"
+# echo
 
 while true
 do
@@ -38,17 +38,15 @@ do
     then
         GRAPH=${GRAPH: -8}
     fi
+    high=false
     if (( $value > 50 ))
     then
-        echo "high|bool|true"
-    else
-        echo "high|bool|false"
+        high=true
     fi
-    echo "value|string|`builtin printf %2d $value`"
-    echo "bar|string|$GRAPH"
-    echo
+    echo -e "high|bool|$high\nvalue|string|`builtin printf %2d $value`\nbar|string|$GRAPH\n"
 
-    sleep 0.5
+    # sleep 0.5
+    sleep 1
 
     # if [ $(($cpu_fraction > 50)) -eq "1" ]
     # then

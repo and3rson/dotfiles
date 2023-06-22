@@ -86,14 +86,14 @@ bar:
                 - string: {text: " {app-id}"}
                 - string: {text: " - {title}", foreground: ffffffff, max: 56}
   center:
-    - script:
-        path: /home/anderson/.config/yambar/spectrum/spectrum
-        args: [-l]
-        # foreground: 'FFD78780'
-        foreground: '5FFF47FF'
-        font: Bars
-        content:
-          - string: {text: "{bar}"}
+    # - script:
+    #     path: /home/anderson/.config/yambar/spectrum/spectrum
+    #     args: [-l]
+    #     # foreground: 'FFD78780'
+    #     foreground: '5FFF47FF'
+    #     font: Bars
+    #     content:
+    #       - string: {text: "{bar}"}
     - script:
         path: /home/anderson/.config/yambar/playerctl/playerctl
         content:
@@ -104,14 +104,14 @@ bar:
                   - string: {text: "\uF04B {title} ({position} / {duration})", foreground: "5FFF47FF"}
                 false:
                   - string: {text: "\uF04C {title} ({position} / {duration})", foreground: "FFD78740"}
-    - script:
-        path: /home/anderson/.config/yambar/spectrum/spectrum
-        args: [-r]
-        # foreground: 'FFD78780'
-        foreground: '5FFF47FF'
-        font: Bars
-        content:
-          - string: {text: "{bar}"}
+    # - script:
+    #     path: /home/anderson/.config/yambar/spectrum/spectrum
+    #     args: [-r]
+    #     # foreground: 'FFD78780'
+    #     foreground: '5FFF47FF'
+    #     font: Bars
+    #     content:
+    #       - string: {text: "{bar}"}
   right:
     # - river:
     #     title: {string: { text: "{seat} - {title}" }}
@@ -146,7 +146,7 @@ bar:
                 - string: {text: "{icon}", foreground: 'DF206FFF', <<: *icon}
                 - string: {text: " {value}", foreground: 'FF206FFF'}
               false:
-                - string: {text: "{icon}"}
+                - string: {text: "{icon}", <<: *icon}
                 - string: {text: " {value}"}
     - script:
         path: /home/anderson/.config/yambar/pulse/pulse

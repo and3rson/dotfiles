@@ -46,6 +46,8 @@ $map normal $ctrl+$alt L spawn 'swaylock -i ~/.wallpapers/332450.jpg'
 $map normal $mod Return spawn alacritty
 $map normal $mod r spawn "rofi -show run"
 $map normal $mod n spawn networkmanager_dmenu
+$map normal $mod o spawn "$waylanddir/okta.py"
+$map normal $mod o spawn "$waylanddir/okta.py"
 # }}}
 # Media keys {{{
 for mode in normal locked
@@ -90,7 +92,9 @@ $map normal $alt Escape spawn "[[ \`dunstctl count displayed\` != \"0\" ]] && du
 
 # Outputs {{{
 # Disable touchpad display
-wlr-randr --output HDMI-A-1 --off
+wlr-randr --output HDMI-A-1 --off || true
+$map normal $alt Tab focus-output next
+$map normal $alt+Shift Tab send-to-output next
 # }}}
 # Window management {{{
 # Alt+F4 to close the focused view
@@ -118,7 +122,7 @@ $map normal $mod K swap previous
 
 # Mod+Return to bump the focused view to the top of the layout stack
 # TODO: Switch stacktile layout between full & columns
-$map normal $mod Space send-layout-cmd stacktile 'primary_sublayout full,columns'
+$map normal $mod Space send-layout-cmd stacktile 'primary_sublayout full,columns,grid'
 
 # Mod+H and Mod+L to decrease/increase the main ratio of rivertile(1)
 $map normal $mod H send-layout-cmd rivertile "main-ratio -0.05"

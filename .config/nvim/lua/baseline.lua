@@ -113,6 +113,9 @@ imap('<Home>', '<C-O><Home>')
 -- Delete words with Alt-BackSpace
 inoremap('<M-BS>', '<C-W>')
 
+-- Align columns
+vnoremap('c', ':%!column -t<CR>')
+
 -- General configs
 vim.o.redrawtime = 1000
 
@@ -169,6 +172,9 @@ vim.opt.listchars = {
 
 -- Clipboard
 vim.o.clipboard = 'unnamedplus'
+
+-- Disable mouse
+vim.o.mouse = false
 
 -- Change line when cursor is moved beyond the line
 vim.o.whichwrap = '<,>,h,l,[,]'
@@ -275,6 +281,11 @@ vim.cmd([[
     au FileType conf setlocal fdm=marker
     au FileType markdown setlocal sw=2
     au BufRead *.tscn,*.tres,*.import set ft=dosini
+    au BufRead *.tfvars set ft=terraform
+    au BufNewFile,BufRead *.s set ft=asm_ca65
+    let g:asm_ca65_wdc = 1
+    let g:asm_ca65_rockwell = 1
 ]])
 vim.cmd('let g:vim_json_conceal = 0')
 vim.g.vim_json_conceal = 0
+
