@@ -5,4 +5,5 @@ riverctl spawn yambar
 riverctl spawn nm-applet
 riverctl spawn 'alacritty --class main -e ~/.scripts/stmux.sh'
 riverctl spawn 'wlsunset -S 08:00 -s 23:00'
+riverctl spawn 'evremap remap ~/.config/evremap.toml'
 # riverctl spawn './river-tag-overlay --timeout 200 --border-width 0 --tag-amount 5 --square-size 32 --square-inner-padding 8 --square-border-width 0'

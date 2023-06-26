@@ -1,0 +1,56 @@
+device_name = "AT Translated Set 2 keyboard"
+
+# Escape/Mod
+[[dual_role]]
+input = "KEY_CAPSLOCK"
+hold = ["KEY_RIGHTMETA"]
+tap = ["KEY_ESC"]
+
+# Cursor keys
+[[remap]]
+input = ["KEY_RIGHTMETA", "KEY_I"]
+output = ["KEY_UP"]
+[[remap]]
+input = ["KEY_RIGHTMETA", "KEY_J"]
+output = ["KEY_LEFT"]
+[[remap]]
+input = ["KEY_RIGHTMETA", "KEY_K"]
+output = ["KEY_DOWN"]
+[[remap]]
+input = ["KEY_RIGHTMETA", "KEY_L"]
+output = ["KEY_RIGHT"]
+
+# Home/end
+[[remap]]
+input = ["KEY_RIGHTMETA", "KEY_H"]
+output = ["KEY_HOME"]
+[[remap]]
+input = ["KEY_RIGHTMETA", "KEY_N"]
+output = ["KEY_END"]
+
+# Page up/down
+[[remap]]
+input = ["KEY_RIGHTMETA", "KEY_U"]
+output = ["KEY_PAGEUP"]
+[[remap]]
+input = ["KEY_RIGHTMETA", "KEY_O"]
+output = ["KEY_PAGEDOWN"]
+
+# Player
+[[remap]]
+input = ["KEY_RIGHTMETA", "KEY_Q"]
+output = ["KEY_PREVIOUSSONG"]
+[[remap]]
+input = ["KEY_RIGHTMETA", "KEY_W"]
+output = ["KEY_PLAYPAUSE"]
+[[remap]]
+input = ["KEY_RIGHTMETA", "KEY_E"]
+output = ["KEY_NEXTSONG"]
+
+# Volume
+[[remap]]
+input = ["KEY_RIGHTMETA", "KEY_S"]
+output = ["KEY_VOLUMEDOWN"]
+[[remap]]
+input = ["KEY_RIGHTMETA", "KEY_D"]
+output = ["KEY_VOLUMEUP"]
