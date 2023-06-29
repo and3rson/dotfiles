@@ -12,10 +12,11 @@ ctrl="Control"
 lv3="Mod5"
 
 # touchpad="10182:500:GDX1515:00_27C6:01F4_Touchpad"
-if [[ "$HOSTNAME" == "vivo" ]]
+if [[ "$MACHINE" == "vivo" ]]
 then
     touchpad="pointer-10182-500-GDX1515:00_27C6:01F4_Touchpad"
-else
+elif [[ "$HOSTNAME" == "a13" ]]
+then
     # a13
     touchpad="pointer-1267-12725-ELAN0798:01_04F3:31B5_Touchpad"
 fi
