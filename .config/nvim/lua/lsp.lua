@@ -366,5 +366,14 @@ lspconfig.gdscript.setup {}
 lspconfig.lemminx.setup {
     on_attach = on_attach
 }
+require'lspconfig'.rust_analyzer.setup{
+  settings = {
+    ['rust-analyzer'] = {
+      diagnostics = {
+        enable = true;
+      }
+    }
+  }
+}
 
 require 'fidget'.setup()

@@ -2,14 +2,25 @@
 
 enable -f /usr/lib/bash/sleep sleep
 
-CPUS=`cat /proc/stat | grep -o 'cpu[0-9]\+'`
-CPU_COUNT=`echo $CPUS | wc -w`
+export PATH=""
+CAT=/usr/bin/cat
+GREP=/usr/bin/grep
+WC=/usr/bin/wc
+
+CPUS=`$CAT /proc/stat | $GREP -o 'cpu[0-9]\+'`
+CPU_COUNT=`echo $CPUS | $WC -w`
 # echo $CPU_COUNT
 
 GRAPH=""
+I=0
 for i in $CPUS
 do
-    GRAPH="$GRAPH、　"
+    GRAPH="$GRAPH、"
+    INDEX=$((INDEX+1))
+    if (( $(($INDEX % 4)) == 0 && $INDEX != $CPU_COUNT ))
+    then
+        GRAPH="$GRAPH　"
+    fi
 done
 
 echo "high|bool|false"
@@ -22,7 +33,7 @@ do
     declare -A cpu_active_prev cpu_total_prev cpu_util
     for cpu in $CPUS
     do
-        read cpu user nice system idle iowait irq softirq steal guest <<<$(grep $cpu /proc/stat)
+        read cpu user nice system idle iowait irq softirq steal guest <<<$($GREP $cpu /proc/stat)
         cpu_active_prev[$cpu]=$((user+system+nice+softirq+steal))
         cpu_total_prev[$cpu]=$((user+system+nice+softirq+steal+idle+iowait))
     done
@@ -30,7 +41,7 @@ do
     total=0
     for cpu in $CPUS
     do
-        read cpu user nice system idle iowait irq softirq steal guest <<<$(grep $cpu /proc/stat)
+        read cpu user nice system idle iowait irq softirq steal guest <<<$($GREP $cpu /proc/stat)
         cpu_active_cur=$((user+system+nice+softirq+steal))
         cpu_total_cur=$((user+system+nice+softirq+steal+idle+iowait))
         cpu_util[$cpu]=$((100*( cpu_active_cur-${cpu_active_prev[$cpu]} ) / (cpu_total_cur-${cpu_total_prev[$cpu]}) ))
@@ -39,6 +50,7 @@ do
     total=$(($total/$CPU_COUNT))
 
     GRAPH=""
+    INDEX=0
     for cpu in $CPUS
     do
         value=${cpu_util[$cpu]}
@@ -58,7 +70,13 @@ do
         fi
 
         CH=${CHARS:$I:1}
-        GRAPH="$GRAPH$CH　"
+        GRAPH="$GRAPH$CH"
+
+        INDEX=$((INDEX+1))
+        if (( $(($INDEX % 4)) == 0 && $INDEX != $CPU_COUNT ))
+        then
+            GRAPH="$GRAPH　"
+        fi
     done
 
     echo "value|string|`builtin printf %2d $total`"

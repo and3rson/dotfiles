@@ -98,8 +98,8 @@ func GetPositionFromPosition(rawPosition dbus.Variant) string {
 
 func ellipsize(s string) string {
 	runes := []rune(s)
-	if len(runes) > 48 {
-		runes = append(runes[:48], rune('\u2026'))
+	if len(runes) > 40 {
+		runes = append(runes[:40], rune('\u2026'))
 	}
 	return string(runes)
 }

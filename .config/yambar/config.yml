@@ -1,13 +1,14 @@
 icon: &icon
-  font: 'RobotoMono Nerd Font:pixelsize=14'
+  # font: 'RobotoMono Nerd Font:pixelsize=28'
+  font: 'RobotoMono Nerd Font:pixelsize=30'
 
 bar:
   location: top
-  height: 15
-  font: RobotoMono Nerd Font:size=12
+  height: 42
+  font: RobotoMono Nerd Font:size=24
   background: 080808FF
   # background: 000000FF
-  spacing: 10
+  spacing: 20
 
   left:
     # - script:
@@ -65,26 +66,24 @@ bar:
         foreground: ffd787ff
         content:
           map:
-            tag: activated
-            values:
-              false: {empty: {}}
-              true:
+            conditions:
+              ~activated: {empty: {}}
+              activated:
                 - map:
-                    tag: app-id
                     default:
-                      - string: {text: "\uFB13", <<: *icon}
-                    values:
-                      Alacritty: &alacritty
-                        - string: {text: "\uF120", <<: *icon}
-                      main: *alacritty
-                      firefoxdeveloperedition:
+                      - string: {text: "\uF2D0", <<: *icon}
+                    conditions:
+                      app-id == Alacritty: &alacritty
+                        - string: {text: "\uEA85", <<: *icon}
+                      app-id == main: *alacritty
+                      app-id == firefoxdeveloperedition:
                         - string: {text: "\uF269", <<: *icon}
-                      telegramdesktop:
+                      app-id == "org.telegram.desktop":
                         - string: {text: "\uF2C6", <<: *icon}
-                      Spotify:
+                      app-id == Spotify:
                         - string: {text: "\uF1BC", <<: *icon}
                 - string: {text: " {app-id}"}
-                - string: {text: " - {title}", foreground: ffffffff, max: 56}
+                - string: {text: " - {title}", foreground: ffffffff, max: 32}
   center:
     # - script:
     #     path: /home/anderson/.config/yambar/spectrum/spectrum
@@ -98,12 +97,14 @@ bar:
         path: /home/anderson/.config/yambar/playerctl/playerctl
         content:
           - map:
-              tag: playing
-              values:
-                true:
-                  - string: {text: "\uF04B {title} ({position} / {duration})", foreground: "5FFF47FF"}
-                false:
-                  - string: {text: "\uF04C {title} ({position} / {duration})", foreground: "FFD78740"}
+              conditions:
+                playing:
+                  - string: {text: "\uF04B ", <<: *icon, foreground: "5FFF47FF"}
+                  - string: {text: "{title} ({position} / {duration})", foreground: "5FFF47FF"}
+                ~playing:
+                  - string: {text: "\uF04C ", <<: *icon, foreground: "FFD78740"}
+                  - string: {text: "{title} ({position} / {duration})", foreground: "FFD78740"}
+
     # - script:
     #     path: /home/anderson/.config/yambar/spectrum/spectrum
     #     args: [-r]
@@ -135,50 +136,58 @@ bar:
     #       - string: {text: "{icon}", font: "owfont", <<: *icon}
     #       - string: {text: " {temp}\u00B0"}
     #       - string: {text: " ({feels_like}\u00B0)"}
-    - script:
-        path: /home/anderson/.config/yambar/df.sh
-        foreground: 'FFD787FF'
-        content:
-          map:
-            tag: low
-            values:
-              true:
-                - string: {text: "{icon}", foreground: 'DF206FFF', <<: *icon}
-                - string: {text: " {value}", foreground: 'FF206FFF'}
-              false:
-                - string: {text: "{icon}", <<: *icon}
-                - string: {text: " {value}"}
-    - script:
-        path: /home/anderson/.config/yambar/pulse/pulse
+    # - script:
+    #     path: /home/anderson/.config/yambar/df.sh
+    #     foreground: 'FFD787FF'
+    #     content:
+    #       map:
+    #         tag: low
+    #         values:
+    #           true:
+    #             - string: {text: "{icon}", foreground: 'DF206FFF', <<: *icon}
+    #             - string: {text: " {value}", foreground: 'FF206FFF'}
+    #           false:
+    #             - string: {text: "{icon}", <<: *icon}
+    #             - string: {text: " {value}"}
+    - pulse:
         foreground: 'AF87FFFF'
         content:
           - map:
-              tag: source_muted
-              values:
-                true:
-                  - string: {text: "\uF131 ", <<: *icon, foreground: 'FF206FFF'}
-                  - string: {text: "Mic muted ", foreground: 'FF206FFF'}
-                false:
+              conditions:
+                ~source_muted:
                   - string: {text: "\uF130 ", <<: *icon}
-          - map:
-              tag: headset
-              values:
-                true:
-                  - string: {text: "\uF7CA", <<: *icon}
-                false:
-                  - string: {text: "\uF886", <<: *icon}
-          - string: {text: " {volume}%"}
+                  - string: {text: "{sink_percent}%"}
+                source_muted:
+                  - string: {text: "\uF131 ", <<: *icon}
+                  - string: {text: "{sink_percent}%", foreground: 'FF206FFF'}
+    # - script:
+    #     path: /home/anderson/.config/yambar/pulse/pulse
+    #     foreground: 'AF87FFFF'
+    #     content:
+    #       - map:
+    #           conditions:
+    #             source_muted:
+    #               - string: {text: "\uF131", <<: *icon, foreground: 'FF206FFF'}
+    #               - string: {text: "Mic muted ", foreground: 'FF206FFF'}
+    #             ~source_muted:
+    #               - string: {text: "\uF130", <<: *icon}
+    #       - map:
+    #           conditions:
+    #             headset:
+    #               - string: {text: "\uF7CA", <<: *icon}
+    #             ~headset:
+    #               - string: {text: "\uF886", <<: *icon}
+    #       - string: {text: "{volume}%"}
     - script:
         path: /home/anderson/.config/yambar/mem.sh
         foreground: 'BFFF00FF'
         content:
           map:
-            tag: high
-            values:
-              true:
+            conditions:
+              high:
                 - string: {text: "{bar}", foreground: 'FF206FFF'}
                 - string: {text: " {value}%", foreground: 'FF206FFF'}
-              false:
+              ~high:
                 - string: {text: "{bar}"}
                 - string: {text: " {value}%"}
     - script:
@@ -186,46 +195,77 @@ bar:
         foreground: '5FD7FFFF'
         content:
           map:
-            tag: high
-            values:
-              true:
+            conditions:
+              high:
                 - string: {text: "{bar}", foreground: 'FF206FFF'}
                 - string: {text: " {value}%", foreground: 'FF206FFF'}
-              false:
+              ~high:
                 - string: {text: "{bar}"}
                 - string: {text: " {value}%"}
+    - script:
+        path: /home/anderson/.config/yambar/temp.sh
+        foreground: '5FD7FFFF'
+        content:
+          - string: {text: "{temp}\u00B0C"}
     - removables:
         content:
           map:
-            tag: mounted
-            values:
-              false:
+            conditions:
+              mounted:
                 string:
                   on-click: sh -c 'notify-send "{device}" "`udisksctl mount -b {device}`"'
                   text: "\uF0C7 {label}"
                   foreground: FFD787FF
-              true:
+              ~mounted:
                 string:
                   on-click: sh -c 'notify-send "{device}" "`udisksctl unmount -b {device}`"'
                   text: "\uF62B {label}"
                   foreground: BFFF00FF
                   # deco: {underline: {size: 1, color: BFFF00FF}}
-    - script:
-        path: /home/anderson/.config/yambar/networkmanager/networkmanager
-        font: Bars
+    # - script:
+    #     path: /home/anderson/.config/yambar/networkmanager/networkmanager
+    #     content:
+    #       - map:
+    #           conditions:
+    #             state == disconnected:
+    #               - string: {text: "\uF4AD", <<: *icon, foreground: "FF005FFF"}
+    #               - string: {text: " offline", foreground: "FF005FFF"}
+    #             state == changing:
+    #               - string: {text: "\uF254", <<: *icon, foreground: "5FD7FFFF"}
+    #               - string: {text: " {network}", foreground: "5FD7FFFF"}
+    #             state == connected:
+    #               - string: {text: "\U000F08FA", <<: *icon, foreground: "5FD7FFFF"}
+    #               - string: {text: " {network}", foreground: "5FD7FFFF"}
+    - network:
+        name: wlan0
         content:
           - map:
-              tag: state
-              values:
-                disconnected:
-                  - string: {text: "\uF818", <<: *icon, foreground: "FF005FFF"}
+              conditions:
+                state == down:
+                  - string: {text: "\uF4AD", <<: *icon, foreground: "FF005FFF"}
                   - string: {text: " offline", foreground: "FF005FFF"}
-                changing:
-                  - string: {text: "\uF6D7", <<: *icon, foreground: "5FD7FFFF"}
-                  - string: {text: " {network}", foreground: "5FD7FFFF"}
-                connected:
-                  - string: {text: "\uFAA8", <<: *icon, foreground: "5FD7FFFF"}
-                  - string: {text: " {network}", foreground: "5FD7FFFF"}
+                state == up:
+                  # - string: {text: "\U000F08FA", <<: *icon, foreground: "5FD7FFFF"}
+                  - ramp:
+                      tag: signal
+                      min: -90
+                      max: -30
+                      items:
+                        # - string: {text: "\U000F0928", foreground: "5FD7FFFF"}
+                        # - string: {text: "\U000F0925", foreground: "5FD7FFFF"}
+                        # - string: {text: "\U000F0922", foreground: "5FD7FFFF"}
+                        # - string: {text: "\U000F091F", foreground: "5FD7FFFF"}
+                        # - string: {text: "\U000F092F", foreground: "5FD7FFFF"}
+                        - string: {text: "\U000F08FE", foreground: "5FD7FFFF", <<: *icon}
+                        - string: {text: "\U000F08F4", foreground: "5FD7FFFF", <<: *icon}
+                        - string: {text: "\U000F08F6", foreground: "5FD7FFFF", <<: *icon}
+                        - string: {text: "\U000F08F8", foreground: "5FD7FFFF", <<: *icon}
+                        - string: {text: "\U000F08FA", foreground: "5FD7FFFF", <<: *icon}
+                  - string: {text: " {ssid}", foreground: "5FD7FFFF"}
+                default:
+                  - string: {text: "\uF254", <<: *icon, foreground: "5FD7FFFF"}
+                  - string: {text: " {ssid}", foreground: "5FD7FFFF"}
+
     # - network:
     #     name: 'wlan0'
     #     content:
@@ -256,9 +296,33 @@ bar:
         time-format: "%d %b, %H:%M"
         content:
           - string: {text: "{time}"}
+    # - cpu:
+    #      poll-interval: 250
+    #      foreground: '5FD7FFFF'
+    #      anchors:
+    #        id_all: &id_all
+    #                  tag: cpu
+    #                  items:
+    #                    - string: {text: '、　'}
+    #                    - string: {text: '。　'}
+    #                    - string: {text: '〃　'}
+    #                    - string: {text: '〄　'}
+    #                    - string: {text: '々　'}
+    #                    - string: {text: '〆　'}
+    #                    - string: {text: '〇　'}
+    #                    - string: {text: '〈　'}
+    #      content:
+    #        - map:
+    #            conditions:
+    #              id == 4 || id == 8 || id == 12:
+    #                - string: {text: " "}
+    #                - ramp: *id_all
+    #              id >= 0:
+    #                - ramp: *id_all
+
     - battery:
         name: BAT0
-        poll-interval: 5
+        poll-interval: 5000
         anchors:
           discharging: &discharging
             list:
@@ -266,32 +330,31 @@ bar:
                 - ramp:
                     tag: capacity
                     items:
-                      - string: {text: ' ', foreground: ff0000ff}
-                      - string: {text: ' ', foreground: ffa600ff}
-                      - string: {text: ' ',}
-                      - string: {text: ' ',}
-                      - string: {text: ' ',}
-                      - string: {text: ' ',}
-                      - string: {text: ' ',}
-                      - string: {text: ' ',}
-                      - string: {text: ' ',}
-                      - string: {text: ' ', foreground: bfff00ff}
+                      - string: {text: ' ', foreground: ff0000ff, <<: *icon}
+                      - string: {text: ' ', foreground: ffa600ff, <<: *icon}
+                      - string: {text: ' ', <<: *icon}
+                      - string: {text: ' ', <<: *icon}
+                      - string: {text: ' ', <<: *icon}
+                      - string: {text: ' ', <<: *icon}
+                      - string: {text: ' ', <<: *icon}
+                      - string: {text: ' ', <<: *icon}
+                      - string: {text: ' ', <<: *icon}
+                      - string: {text: ' ', foreground: bfff00ff, <<: *icon}
                 - string: {text: " {capacity}%"}
         content:
           map:
-            tag: state
-            values:
-              unknown:
+            conditions:
+              state == unknown:
                 <<: *discharging
-              discharging:
+              state == discharging:
                 <<: *discharging
-              charging: &charging
-                - string: {text: '', foreground: bfff00ff}
+              state == charging: &charging
+                - string: {text: '', foreground: bfff00ff, <<: *icon}
                 - string: {text: " {capacity}%"}
-              full:
-                - string: {text: ' ', foreground: bfff00ff}
+              state == full:
+                - string: {text: ' ', foreground: bfff00ff, <<: *icon}
                 - string: {text: " {capacity}%"}
-              not charging: *charging
+              state == "not charging": *charging
               # not charging:
               #   - ramp:
               #       tag: capacity

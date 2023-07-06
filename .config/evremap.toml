@@ -5,6 +5,9 @@ device_name = "AT Translated Set 2 keyboard"
 input = "KEY_CAPSLOCK"
 hold = ["KEY_RIGHTMETA"]
 tap = ["KEY_ESC"]
+# [[remap]]
+# input = ["KEY_CAPSLOCK"]
+# output = ["KEY_RIGHTMETA"]
 
 # Cursor keys
 [[remap]]
@@ -54,3 +57,7 @@ output = ["KEY_VOLUMEDOWN"]
 [[remap]]
 input = ["KEY_RIGHTMETA", "KEY_D"]
 output = ["KEY_VOLUMEUP"]
+
+[[remap]]
+input = ["KEY_RIGHTMETA", "KEY_BACKSPACE"]
+output = ["KEY_DELETE"]
