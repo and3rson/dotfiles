@@ -293,7 +293,7 @@ bar:
     #               - string: {text: "\uF818 offline"}
     - clock:
         foreground: FFD787FF
-        time-format: "%d %b, %H:%M"
+        time-format: "%a %d %b %H:%M"
         content:
           - string: {text: "{time}"}
     # - cpu:
