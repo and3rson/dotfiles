@@ -5,7 +5,7 @@ enable -f /usr/lib/bash/sleep sleep
 GRAPH=""
 for i in `seq 8`
 do
-    GRAPH="$GRAPH、"
+    GRAPH="$GRAPH、　"
 done
 
 # echo "high|bool|false"
@@ -33,10 +33,10 @@ do
         I=7
     fi
     CH=${CHARS:$I:1}
-    GRAPH="$GRAPH$CH"
-    if (( ${#GRAPH} > 8 ))
+    GRAPH="$GRAPH$CH　"
+    if (( ${#GRAPH} > 16 ))
     then
-        GRAPH=${GRAPH: -8}
+        GRAPH=${GRAPH: -16}
     fi
     high=false
     if (( $value > 80 ))

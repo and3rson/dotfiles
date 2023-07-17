@@ -8,7 +8,7 @@ ICONS=(off low medium high)
 
 # -i /usr/share/icons/Numix/48/notifications/notification-audio-volume-${ICONS[$INDEX]}.svg \
 notify-send \
-    --hint=string:x-dunst-stack-tag:volume -t 300 -a Volume \
+    --hint=string:x-dunst-stack-tag:volume -t 300 -a volume \
     -i audio-volume-${ICONS[$INDEX]}-symbolic \
     "$VOLUME%" \
     `pactl info | grep "Default Sink:" | awk -F ' ' '{print $3}'`

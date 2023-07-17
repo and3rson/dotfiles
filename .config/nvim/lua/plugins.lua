@@ -102,6 +102,8 @@ require('packer').startup(function(use)
 
     -- 6502 assembly
     use 'maxbane/vim-asm_ca65'
+    -- Z80 assembly
+    use 'samsaga2/vim-z80'
 end)
 -- }}}
 
