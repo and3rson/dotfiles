@@ -84,6 +84,8 @@ do
     $map $mode None XF86MonBrightnessDown spawn "$waylanddir/brightness.sh 2%-"
 
     $map $mode $mod p spawn "killall -s SIGINT wf-recorder"
+
+    $map $mode $mod t spawn "$waylanddir/sink.sh"
 done
 # }}}
 # Screenshot keys {{{

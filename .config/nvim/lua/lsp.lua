@@ -179,12 +179,12 @@ cmp.setup {
         end,
         ['<Down>'] = cmp.mapping(cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Select }), { 'i' }),
         ['<Up>'] = cmp.mapping(cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Select }), { 'i' }),
-        ['<C-p>'] = cmp.mapping(function()
-            luasnip.jump(-1)
-        end, { 'c', 'i', 'n', 's' }),
-        ['<C-n>'] = cmp.mapping(function()
-            luasnip.jump(1)
-        end, { 'c', 'i', 'n', 's' }),
+        -- ['<C-p>'] = cmp.mapping(function()
+        --     luasnip.jump(-1)
+        -- end, { 'c', 'i', 'n', 's' }),
+        -- ['<C-n>'] = cmp.mapping(function()
+        --     luasnip.jump(1)
+        -- end, { 'c', 'i', 'n', 's' }),
     },
     sources = cmp.config.sources({
         -- { name = 'luasnip' }, -- Not used to snippets yet...

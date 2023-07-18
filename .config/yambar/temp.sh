@@ -8,8 +8,7 @@ if [[ "$HOSTNAME" == "a13" ]]
 then
     DEV=/sys/class/thermal/thermal_zone0/temp
 else
-    sleep 5
-    exit
+    DEV=/sys/class/thermal/thermal_zone0/temp
 fi
 
 while true

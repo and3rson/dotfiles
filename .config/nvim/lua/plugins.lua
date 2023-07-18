@@ -102,6 +102,9 @@ require('packer').startup(function(use)
 
     -- 6502 assembly
     use 'maxbane/vim-asm_ca65'
+
+    -- Copilot
+    use 'github/copilot.vim'
 end)
 -- }}}
 
@@ -623,4 +626,11 @@ vim.cmd('autocmd BufEnter * hi! link NvimTreeOpenedFolderName NvimTreeFolderName
 vim.cmd('autocmd BufEnter * hi! link NvimTreeEmptyFolderName NvimTreeFolderName')
 -- vim.cmd('autocmd VimEnter * asd')
 -- vim.cmd('hi! NvimTreeFolderIcon guifg=#FF0000')
+-- }}}
+-- Copilot {{{
+vim.cmd([[
+imap <silent><script><expr> <C-c> copilot#Accept("\<CR>")
+imap <silent><script><expr> <C-n> copilot#Next()
+let g:copilot_no_tab_map = v:true
+]])
 -- }}}
