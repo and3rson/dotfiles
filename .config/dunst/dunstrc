@@ -22,7 +22,7 @@
     #   %p  progress value if set ([  0%] to [100%]) or nothing
     # Markup is allowed
     # format = "<span font-family="Roboto" size="20000" font-weight="300">%s %p</span>\n<small></small>\n<span letter-spacing="0">%b</span>\n\n<small>@ %a</small>"
-    format = "<span font-family="Roboto" size="16000" font-weight="300">%s %p</span><span size="5000">\n\n</span><span letter-spacing="0">%b</span>"
+    format = "<span font-family="Roboto" size="16000" font-weight="300">%s %p</span><span size="5000">\n\n</span><span letter-spacing="0">%b</span>\n\n<small>@ %a</small>"
 
     # plain_text = yes
 
@@ -147,7 +147,12 @@
     icon_position = left
 
     # Paths to default icons.
-    icon_path = /usr/share/icons/Numix-Circle/scalable/apps/:/usr/share/icons/Paper/32x32/apps/:/usr/share/icons/gnome/16x16/status/:/usr/share/icons/gnome/16x16/devices/:/usr/share/icons/Adwaita/32x32/actions
+    # icon_path = /usr/share/icons/Numix-Circle/scalable/apps/:/usr/share/icons/Paper/32x32/apps/:/usr/share/icons/gnome/16x16/status/:/usr/share/icons/gnome/16x16/devices/:/usr/share/icons/Adwaita/32x32/actions
+    # https://github.com/dunst-project/dunst/pull/947
+    enable_recursive_icon_lookup = true
+    icon_theme = Numix
+    min_icon_size = 24
+    # icon_path = /usr/share/icons/
 
     frame_width = 0
     frame_color = "#444444"

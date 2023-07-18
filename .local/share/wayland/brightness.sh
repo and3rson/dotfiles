@@ -9,6 +9,6 @@ echo $BRIGHTNESS
 
 # -i /usr/share/icons/menta/48x48/devices/display.png \
 notify-send \
-    --hint=string:x-dunst-stack-tag:brightness -t 300 -a Brightness \
+    --hint=string:x-dunst-stack-tag:brightness -t 300 -a brightness \
     -i /usr/share/icons/Numix/48/notifications/notification-display-brightness-${ICONS[$INDEX]}.svg \
     "$BRIGHTNESS%"

@@ -72,3 +72,6 @@ export ANDROID_SDK_ROOT=$HOME/Android/Sdk
 
 # DockerX
 export BUILDKIT_PROGRESS=plain
+
+# Faster makes
+MAKEFLAGS='-j'

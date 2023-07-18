@@ -201,6 +201,7 @@ $map normal $ctrl+Shift 0 set-view-tags $all_tags
 # Set app-ids and titles of views which should use client side decorations
 # riverctl csd-filter-add app-id "gedit"
 riverctl rule-add csd -app-id "gedit"
+riverctl rule-add float -title '*Покажчик спільного доступу*'
 # }}}
 
 # Mouse & touchpad {{{
