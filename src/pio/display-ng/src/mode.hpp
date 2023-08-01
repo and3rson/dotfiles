@@ -3,9 +3,11 @@
 #include "matrix.hpp"
 #include "display.hpp"
 
+class Block;
+
 class Mode {
    public:
-    virtual void mount(Display *display) = 0;
+    virtual Block** getBlocks() = 0;
     virtual void process() = 0;
     virtual ~Mode() = default;
 };

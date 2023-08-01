@@ -13,7 +13,7 @@
 class ClockMode : public Mode {
    public:
     ClockMode();
-    void mount(Display *display);
+    Block **getBlocks();
     void process();
 
    private:
@@ -25,4 +25,6 @@ class ClockMode : public Mode {
     TextBlock hours;
     TextBlock minutes;
     TextBlock seconds;
+
+    Block *blocks[16];
 };

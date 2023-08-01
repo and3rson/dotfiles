@@ -2,40 +2,27 @@
 #include "WiFiClient.h"
 #include "ESP8266HTTPClient.h"
 #include "ArduinoJson.h"
+#include "AsyncHTTPRequest_Generic.hpp"
 
-static WiFiClient wifiClient;
+static AsyncHTTPRequest request;
 
-WeatherMode::WeatherMode() {
+WeatherMode::WeatherMode() : blocks{&this->icon, &this->temp, &this->suffix, 0} {
     this->temp.setText(&FONT_5x7, 2, "--");
     this->suffix.setText(&FONT_5x7, 2, "*C");
+
+    request.onReadyStateChange(WeatherMode::requestCB, this);
+    request.setDebug(true);
 }
 
-void WeatherMode::mount(Display *display) {
-    display->addBlock(&this->icon);
-    display->addBlock(&this->temp);
-    display->addBlock(&this->suffix);
+Block **WeatherMode::getBlocks() {
+    return this->blocks;
 }
 
 void WeatherMode::process() {
     if (lastUpdate.after(300000)) {
-        HTTPClient client;
-        client.begin(wifiClient, "http://api.openweathermap.org/data/2.5/weather?appid=" OWM_APPID "&q=Lviv,Ukraine&lang=ua");
-        int code = client.GET();
-        if (code != 200) {
-            this->temp.setText(&FONT_5x7, 2, "--");
-        } else {
-            DynamicJsonDocument doc(1024);
-            String body = client.getString();
-            deserializeJson(doc, body);
-            double temp = ((double)doc["main"]["temp"]) - 273.15f;
-            char tempStr[3];
-            itoa((int)temp, tempStr, 10);
-            this->temp.setText(&FONT_5x7, strlen(tempStr), tempStr);
-
-            const char *iconCode = doc["weather"][0]["icon"];
-            uint8_t iconIndex = findIcon(iconCode);
-            icon.setIcon(iconIndex);
-        }
+        /* if (request.readyState() == readyStateUnsent || request.readyState() == readyStateDone) */
+        request.open("GET", "http://api.openweathermap.org/data/2.5/weather?appid=" OWM_APPID "&q=Lviv,Ukraine&lang=ua");
+        request.send();
     }
 }
 
@@ -47,4 +34,30 @@ uint8_t WeatherMode::findIcon(const char *code) {
         }
     }
     return 255;
+}
+
+void WeatherMode::requestCB(void *optParm, AsyncHTTPRequest *request, int readyState) {
+    WeatherMode *self = (WeatherMode *)optParm;
+
+    if (readyState == readyStateDone) {
+        if (request->responseHTTPcode() != 200) {
+            self->temp.setText(&FONT_5x7, 2, "--");
+        } else {
+            DynamicJsonDocument doc(2048);
+            char buf[1024];
+            request->responseRead((uint8_t *)buf, request->responseLength());
+            deserializeJson(doc, buf);
+            double temp = ((double)doc["main"]["temp"]) - 273.15f;
+            char tempStr[3];
+            itoa((int)temp, tempStr, 10);
+            self->temp.setText(&FONT_5x7, strlen(tempStr), tempStr);
+
+            const char *iconCode = doc["weather"][0]["icon"];
+            uint8_t iconIndex = self->findIcon(iconCode);
+            self->icon.setIcon(iconIndex);
+
+            Serial.print("Temp: ");
+            Serial.println(tempStr);
+        }
+    }
 }

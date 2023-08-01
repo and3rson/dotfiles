@@ -7,15 +7,15 @@
 class TextBlock : public Block {
    public:
     uint8_t render(Frame *frame, uint8_t offset);
-    void setText(Font *font, uint8_t nChars, const char *chars);
-    uint8_t drawChars(Frame *frame, uint8_t offset, uint8_t nChars, char *chars, Font *font, Shader *shader);
+    void setText(const Font *font, uint8_t nChars, const char *chars);
+    uint8_t drawChars(Frame *frame, uint8_t offset, uint8_t nChars, char *chars, const Font *font, Shader *shader);
     void setBorder(sfract15 ratio, bool visible);
 
    private:
-    Font *prevFont = 0;
+    const Font *prevFont = 0;
     char prevChars[16];
     uint8_t nPrevChars = 0;
-    Font *currentFont = 0;
+    const Font *currentFont = 0;
     char currentChars[16];
     uint8_t nCurrentChars = 0;
     int64_t lastChange = -1;
@@ -23,6 +23,6 @@ class TextBlock : public Block {
     bool borderVisible = false;
 
     Frame prev;
-    ColorShader whiteShader = ColorShader(CHSV(0, 0, 64));
+    ColorShader whiteShader = ColorShader(CHSV(0, 0, 255));
     /* shader_t shader = redShader; */
 };

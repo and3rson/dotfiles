@@ -6,6 +6,7 @@
 Display::Display() {}
 
 void Display::render() {
+    Frame prev, current;
     uint64_t start = millis64();
     if (currentMode) {
         currentMode->process();
@@ -15,7 +16,8 @@ void Display::render() {
             prevMode->process();
         }
 
-        Frame prev = {0}, current = {0};
+        memset(&prev, 0, sizeof(Frame));
+        memset(&current, 0, sizeof(Frame));
         uint8_t offset;
         fract16 k = clamp((millis64() - modeChanged) * 65535 / transitionTime, 0, 65535);
         if (k == 65535) {
@@ -38,7 +40,7 @@ void Display::render() {
         lastFPS = 1000 / (duration ? duration : 1);
         lastFrameDuration = duration;
     }
-    renderFPS();
+    /* renderFPS(); */
     matrix.latch();
 }
 
@@ -48,7 +50,11 @@ void Display::setMode(Mode *newMode) {
 
     currentMode = newMode;
     currentBlockmap.clear();
-    currentMode->mount(this);
+
+    Block **blocks = currentMode->getBlocks();
+    while (Block *current = *(blocks++)) {
+        currentBlockmap.addBlock(current);
+    }
 
     modeChanged = millis64();
 }

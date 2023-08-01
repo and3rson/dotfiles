@@ -1,6 +1,6 @@
 #include "fonts.hpp"
 
-Font FONT_5x7 = {
+const Font FONT_5x7 = {
     .glyphs =
         {
             {0},
@@ -234,7 +234,7 @@ Font FONT_5x7 = {
         },
 };
 
-Font FONT_4x7 = {
+const Font FONT_4x7 = {
     .glyphs =
         {
             {0},
@@ -468,7 +468,7 @@ Font FONT_4x7 = {
         },
 };
 
-Font FONT_3x7 = {
+const Font FONT_3x7 = {
     .glyphs =
         {
             {0},
@@ -642,7 +642,7 @@ Font FONT_3x7 = {
         },
 };
 
-Font FONT_3x5 = {
+const Font FONT_3x5 = {
     .glyphs =
         {
             {0},

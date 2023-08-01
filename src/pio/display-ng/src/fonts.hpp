@@ -8,7 +8,7 @@ typedef struct {
     Glyph glyphs[128];
 } Font;
 
-extern Font FONT_5x7;
-extern Font FONT_4x7;
-extern Font FONT_3x7;
-extern Font FONT_3x5;
+extern const Font FONT_5x7 PROGMEM;
+extern const Font FONT_4x7 PROGMEM;
+extern const Font FONT_3x7 PROGMEM;
+extern const Font FONT_3x5 PROGMEM;

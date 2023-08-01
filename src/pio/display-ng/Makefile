@@ -18,3 +18,9 @@ uploadfs:
 
 update:
 	pio -f -c vim update
+
+icons:
+	python3 icons.py > ./src/icons.cpp
+
+compile_commands:
+	pio run -e ota -t compiledb

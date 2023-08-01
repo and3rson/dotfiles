@@ -1,6 +1,6 @@
 [Default Applications]
 application/pdf=evince.desktop
-x-scheme-handler/tg=userapp-Telegram Desktop-RHCHW0.desktop
+x-scheme-handler/tg=org.telegram.desktop.desktop
 x-scheme-handler/irc=io.github.Hexchat.desktop
 x-scheme-handler/ircs=io.github.Hexchat.desktop
 text/plain=alacritty_nvim.desktop
@@ -14,7 +14,8 @@ video/quicktime=vlc.desktop
 x-scheme-handler/http=firefox-developer-edition.desktop
 x-scheme-handler/https=firefox-developer-edition.desktop
 x-scheme-handler/viber=viber.desktop
+text/html=firefoxdeveloperedition.desktop
 
 [Added Associations]
-x-scheme-handler/tg=userapp-Telegram Desktop-RHCHW0.desktop;
+x-scheme-handler/tg=userapp-Telegram Desktop-RHCHW0.desktop;org.telegram.desktop.desktop;
 application/pdf=firefox-developer-edition.desktop;

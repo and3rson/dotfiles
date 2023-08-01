@@ -1,5 +1,7 @@
 #pragma once
 
+#include "AsyncHTTPRequest_Generic.hpp"
+
 #include <When.h>
 
 #include "mode.hpp"
@@ -20,11 +22,13 @@ typedef struct {
 class WeatherMode : public Mode {
    public:
     WeatherMode();
-    void mount(Display *display);
+    Block **getBlocks();
     void process();
     uint8_t findIcon(const char *code);
 
    private:
+    static void requestCB(void* optParm, AsyncHTTPRequest* request, int readyState);
+
     IconBlock icon;
     TextBlock temp;
     TextBlock suffix;
@@ -52,4 +56,6 @@ class WeatherMode : public Mode {
         // Mist
         {"50", 108},
     };
+
+    Block *blocks[16];
 };

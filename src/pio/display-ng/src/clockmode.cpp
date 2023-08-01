@@ -1,18 +1,15 @@
 #include "clockmode.hpp"
 #include "utils.hpp"
 
-ClockMode::ClockMode() {
+ClockMode::ClockMode() : blocks{&this->icon, &this->hours, &this->minutes, &this->seconds, 0} {
     char values[7] = "000000";
     this->hours.setText(&FONT_4x7, 2, values);
     this->minutes.setText(&FONT_4x7, 2, values + 2);
     this->seconds.setText(&FONT_4x7, 2, values + 4);
 }
 
-void ClockMode::mount(Display *display) {
-    display->addBlock(&this->icon);
-    display->addBlock(&this->hours);
-    display->addBlock(&this->minutes);
-    display->addBlock(&this->seconds);
+Block **ClockMode::getBlocks() {
+    return this->blocks;
 }
 
 void ClockMode::process() {

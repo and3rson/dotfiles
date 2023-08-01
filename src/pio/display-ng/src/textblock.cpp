@@ -34,16 +34,16 @@ uint8_t TextBlock::render(Frame *frame, uint8_t offset) {
 
         uint8_t pos = 0;
         for (uint8_t i = 0; i < width; i++, pos++) {
-            frame->leds[Matrix::coordToIndex(offset - 1 + i, 6)] = dist(pos, len, maxLen) < 3 ? CHSV(96, 255, 16) : CHSV(0, 0, 0);
+            frame->leds[Matrix::coordToIndex(offset - 1 + i, 6)] = dist(pos, len, maxLen) < 3 ? CHSV(96, 255, 160) : CHSV(0, 0, 0);
         }
         for (uint8_t i = height; i; i--, pos++) {
-            frame->leds[Matrix::coordToIndex(newOffset - 1, i)] = dist(pos, len, maxLen) < 3 ? CHSV(96, 255, 16) : CHSV(0, 0, 0);
+            frame->leds[Matrix::coordToIndex(newOffset - 1, i)] = dist(pos, len, maxLen) < 3 ? CHSV(96, 255, 160) : CHSV(0, 0, 0);
         }
         for (uint8_t i = width; i; i--, pos++) {
-            frame->leds[Matrix::coordToIndex(offset + i - 1, 0)] = dist(pos, len, maxLen) < 3 ? CHSV(96, 255, 16) : CHSV(0, 0, 0);
+            frame->leds[Matrix::coordToIndex(offset + i - 1, 0)] = dist(pos, len, maxLen) < 3 ? CHSV(96, 255, 160) : CHSV(0, 0, 0);
         }
         for (uint8_t i = 0; i < height; i++, pos++) {
-            frame->leds[Matrix::coordToIndex(offset - 1, i)] = dist(pos, len, maxLen) < 3 ? CHSV(96, 255, 16) : CHSV(0, 0, 0);
+            frame->leds[Matrix::coordToIndex(offset - 1, i)] = dist(pos, len, maxLen) < 3 ? CHSV(96, 255, 160) : CHSV(0, 0, 0);
         }
         /* for (uint8_t i = 0; i < width && len; i++, len--) { */
         /*     frame->leds[Matrix::coordToIndex(offset - 1 + i, 6)] = CHSV(64, 255, 16); */
@@ -61,7 +61,7 @@ uint8_t TextBlock::render(Frame *frame, uint8_t offset) {
     return newOffset;
 }
 
-void TextBlock::setText(Font *newFont, uint8_t nNewChars, const char *newChars) {
+void TextBlock::setText(const Font *newFont, uint8_t nNewChars, const char *newChars) {
     bool changed = false;
     if (newFont != currentFont) {
         changed = true;
@@ -93,15 +93,17 @@ void TextBlock::setText(Font *newFont, uint8_t nNewChars, const char *newChars) 
     }
 }
 
-uint8_t TextBlock::drawChars(Frame *frame, uint8_t offset, uint8_t nChars, char *chars, Font *font, Shader *shader) {
+uint8_t TextBlock::drawChars(Frame *frame, uint8_t offset, uint8_t nChars, char *chars, const Font *font, Shader *shader) {
     for (uint8_t i = 0; i < nChars; i++) {
         uint64_t time = millis64();
-        uint8_t *value = font->glyphs[chars[i]];
-        uint8_t width = value[0];
+        Glyph glyph;
+        memcpy_P(glyph, font->glyphs + chars[i], sizeof(Glyph));
+        /* uint8_t *value = font->glyphs[chars[i]]; */
+        uint8_t width = glyph[0];
         for (uint8_t relX = 0; relX < width; relX++) {
             if (offset < COLS) {
                 for (uint8_t y = 0; y < ROWS; y++) {
-                    if (value[1 + y] & (1 << (width - relX - 1))) {
+                    if (glyph[1 + y] & (1 << (width - relX - 1))) {
                         frame->leds[Matrix::coordToIndex(offset, y)] = shader->render(offset, y, time);
                         /* display[y] |= (1 << (31 - absOffset)); */
                     } else {
