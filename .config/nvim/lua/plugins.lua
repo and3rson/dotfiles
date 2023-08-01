@@ -345,6 +345,11 @@ nmap <M-5> <Plug>BufTabLine.Go(5)
 --     -- insert_at_end = true,
 --     -- icon_close_tab_modified = 'X',
 -- }
+require('barbar').setup({
+    icons = {
+        button = false,
+    }
+})
 vim.cmd([[
 " hi BufferInactive guifg=#999999 guibg=#202020
 " hi link BufferInactiveSign BufferInactive
