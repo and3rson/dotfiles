@@ -52,7 +52,7 @@ $map normal $ctrl+$alt L spawn 'swaylock -i ~/.wallpapers/332450.jpg'
 # $map normal $mod+Shift Return spawn foot
 $map normal $mod Return spawn alacritty
 $map normal $mod r spawn "rofi -show run"
-$map normal $mod n spawn networkmanager_dmenu
+$map normal $mod n spawn "networkmanager_dmenu -i"
 $map normal $mod o spawn "$waylanddir/okta.py"
 $map normal $mod o spawn "$waylanddir/okta.py"
 # }}}
