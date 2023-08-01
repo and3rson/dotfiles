@@ -49,7 +49,7 @@ local on_attach = function(client, bufnr)
 
 end
 
-local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
+local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
 for type, icon in pairs(signs) do
     local hl = "DiagnosticSign" .. type
     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = nil })
@@ -82,10 +82,34 @@ end
 -- null-ls
 local null_ls = require("null-ls")
 null_ls.setup({
+    on_attach = on_attach,
     sources = {
         -- require("null-ls").builtins.formatting.stylua,
         -- require("null-ls").builtins.completion.spell,
     },
+})
+null_ls.register({
+    method = null_ls.methods.FORMATTING,
+    filetypes = { 'asm_ca65' },
+    generator = null_ls.formatter({
+        -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/HELPERS.md
+        command = '/home/anderson/src/nice65/nice65.py',
+        args = {'-'},
+        to_stdin = true,
+        -- from_stderr = true,
+        from_stdout = true,
+        -- format = 'line',
+        -- runtime_condition = function(x) return true end,
+        -- check_exit_code = function(code)
+        --     return code == 0
+        -- end,
+        -- on_output = require('null-ls.helpers').diagnostics.from_patterns({
+        --     {
+        --         pattern = [[(%d+):(.*)]],
+        --         groups = { "row", "message" },
+        --     },
+        -- }),
+    }),
 })
 null_ls.register({
     method = null_ls.methods.DIAGNOSTICS,

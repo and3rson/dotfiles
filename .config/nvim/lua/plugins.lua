@@ -70,7 +70,8 @@ require('packer').startup(function(use)
     use 'dhruvasagar/vim-table-mode' -- VimScript
 
     -- Comments
-    use 'tpope/vim-commentary'
+    -- use 'tpope/vim-commentary'
+    use 'numToStr/Comment.nvim'
     -- use 'preservim/nerdcommenter' -- Does not handle dynamic commentstring
 
     -- Telescope
@@ -114,13 +115,31 @@ end)
 vim.g.localvimrc_persistent = 2
 -- }}}
 -- Commentary {{{
--- nnoremap('<M-/>', '<cmd>Commentary<CR>j')
-nnoremap('<M-/>', '<cmd>Commentary<CR>')
--- vnoremap('<M-/>', 'm`:Commentary<CR>``')
-vnoremap('<M-/>', ':Commentary<CR>')
--- inoremap <silent> <M-/> <C-o>:Commentary<CR><C-o><CR>
--- imap('<M-/>', '<cmd>Commentary<CR><C-o>j')
-imap('<M-/>', '<cmd>Commentary<CR>')
+-- -- nnoremap('<M-/>', '<cmd>Commentary<CR>j')
+-- nnoremap('<M-/>', '<cmd>Commentary<CR>')
+-- -- vnoremap('<M-/>', 'm`:Commentary<CR>``')
+-- vnoremap('<M-/>', ':Commentary<CR>')
+-- -- inoremap <silent> <M-/> <C-o>:Commentary<CR><C-o><CR>
+-- -- imap('<M-/>', '<cmd>Commentary<CR><C-o>j')
+-- imap('<M-/>', '<cmd>Commentary<CR>')
+-- require('Comment').setup({mappings=false})
+require('Comment').setup({
+    toggler = {
+        line = '<M-/>',
+    },
+    opleader = {
+        line = '<M-/>'
+    },
+})
+-- api = require('Comment.api')
+-- vim.keymap.set('n', '<M-/>', api.toggle.linewise.current)
+-- vim.keymap.set('v', '<M-/>', api.toggle.linewise.current)
+-- vim.keymap.set('v', '<M-/>', function() api.toggle.linewise(vim.fn.visualmode()) end)
+-- vim.api.nvim_set_keymap('n', '<M-/>', '<Plug>(comment_toggle_linewise)<CR>', {silent=true, noremap=false})
+-- vim.api.nvim_set_keymap('v', '<M-/>', '<Plug>(comment_toggle_blockwise)<CR>', {silent=true, noremap=false})
+-- vim.api.nvim_set_keymap('i', '<M-/>', '<C-o><Plug>(comment_toggle_linewise)<CR>', {silent=true, noremap=false})
+local ft = require('Comment.ft')
+ft.set('z80', '; %s')
 -- }}}
 -- indentLine & blankline {{{
 -- vim.g.indent_guides_enable_on_vim_startup = 1
