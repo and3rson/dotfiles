@@ -93,7 +93,7 @@ null_ls.register({
     filetypes = { 'asm_ca65' },
     generator = null_ls.formatter({
         -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/HELPERS.md
-        command = '/home/anderson/src/nice65/nice65.py',
+        command = 'nice65',
         args = {'-'},
         to_stdin = true,
         -- from_stderr = true,
