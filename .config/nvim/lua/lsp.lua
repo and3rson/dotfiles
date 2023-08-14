@@ -307,6 +307,12 @@ lspconfig.pyright.setup {
 lspconfig.ccls.setup {
     on_attach = on_attach,
     capabilities = capabilities,
+    init_options = {
+        filetypes = { "c", "cpp", "objc", "objcpp" },
+        index = {
+            threads = 0
+        },
+    },
 }
 lspconfig.gopls.setup {
     cmd = { 'gopls', '-vv' },
