@@ -76,3 +76,6 @@ export BUILDKIT_PROGRESS=plain
 
 # Faster makes
 MAKEFLAGS='-j'
+
+# Cargo
+export PATH="$PATH:$HOME/.cargo/bin"

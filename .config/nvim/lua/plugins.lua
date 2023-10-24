@@ -55,11 +55,12 @@ require('packer').startup(function(use)
     use 'nvim-treesitter/playground'
     -- use 'JoosepAlviste/nvim-ts-context-commentstring'
     -- use 'lewis6991/nvim-treesitter-context'
-    use 'p00f/nvim-ts-rainbow'
+    -- use 'p00f/nvim-ts-rainbow'
 
     -- Indentation and editing
     -- use 'Yggdroot/indentLine'
-    use 'lukas-reineke/indent-blankline.nvim'
+    -- use {'lukas-reineke/indent-blankline.nvim', tag = 'v2.20.8'}
+    use {'lukas-reineke/indent-blankline.nvim'}
     use 'Vimjas/vim-python-pep8-indent' -- TreeSitter is not enough
     use 'airblade/vim-gitgutter'
     -- use 'ervandew/supertab' -- nvim-cmp handles this
@@ -156,15 +157,29 @@ ft.set('z80', '; %s')
 -- vim.g.indentLine_faster = 1 -- TODO: Experimental
 
 -- Blankline
-require('indent_blankline').setup {
-    char = '▏',
-    -- char_list = {'|', '¦', '┆', '┊'},
-    -- show_first_indent_level = false,
-    show_current_context = true,
-    -- show_current_context_start = true,
-    filetype_exclude = { 'text', 'help', 'startify' },
-}
-vim.cmd('au CursorMovedI * IndentBlanklineRefresh')
+-- require('indent_blankline').setup {
+--     char = '▏',
+--     -- char_list = {'|', '¦', '┆', '┊'},
+--     -- show_first_indent_level = false,
+--     show_current_context = true,
+--     -- show_current_context_start = true,
+--     filetype_exclude = { 'text', 'help', 'startify' },
+-- }
+require('ibl').setup({
+    indent={
+        char='▏',
+    },
+    scope={
+        char='▎',
+        -- show_start=false,
+        show_end=false,
+        -- show_exact_scope=true,
+    },
+    exclude = {
+        filetypes = {'startify'},
+    },
+})
+-- vim.cmd('au CursorMovedI * IndentBlanklineRefresh')
 
 -- }}}
 -- GitGutter {{{
@@ -515,11 +530,12 @@ require("nvim-tree").setup({
     sort_by = "case_sensitive",
     view = {
         adaptive_size = true,
-        mappings = {
-            list = {
-                { key = "u", action = "dir_up" },
-            },
-        },
+        -- Deprecated
+        -- mappings = {
+        --     list = {
+        --         { key = "u", action = "dir_up" },
+        --     },
+        -- },
     },
     renderer = {
         group_empty = true,
@@ -527,7 +543,8 @@ require("nvim-tree").setup({
     filters = {
         dotfiles = true,
     },
-    remove_keymaps = { '<Tab>', '-', 'f' },
+    -- Deprecated
+    -- remove_keymaps = { '<Tab>', '-', 'f' },
     update_focused_file = {
         enable = true,
         -- update_root = true,

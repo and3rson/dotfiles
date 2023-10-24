@@ -3,6 +3,9 @@
 ---@diagnostic disable-next-line: unused-local
 local inspect = require('inspect')
 local signal = require('posix.signal')
+local socket = require('socket')
+
+local ANSI = os.getenv('ANSI')
 
 local ESC = string.char(27)
 local PYTHON = utf8.char(0xe606)
@@ -26,7 +29,11 @@ end
 
 local function esc(...)
     s = table.concat({...}, ';')
-    return ('\\[%s[%sm\\]'):format(ESC, s)
+    if ANSI ~= nil then
+        return ESC .. '['..s..'m'
+    else
+        return ('\\[%s[%sm\\]'):format(ESC, s)
+    end
 end
 
 local function virtualenv()
@@ -131,7 +138,10 @@ end)
 for row_index, row in pairs(rows) do
     local printed = false
     for segment_index, segment in pairs(row) do
+        local start = socket.gettime() * 1000
         local parts = segment()
+        local time = (socket.gettime() * 1000 - start)
+        -- print(segment_index, time)
         if parts ~= nil then
             if printed then
                 io.write(esc(48, 5, 234) .. ' ' .. esc(0))

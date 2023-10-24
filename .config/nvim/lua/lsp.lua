@@ -18,6 +18,9 @@ vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
     focusable = false,
 }
 )
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+  vim.lsp.handlers.hover, { focusable = false }
+)
 
 -- Attach handler
 ---@diagnostic disable-next-line: unused-local
@@ -44,6 +47,7 @@ local on_attach = function(client, bufnr)
     vim.cmd([[
         " autocmd CursorMoved * :lua require('ts_context_commentstring.internal').update_commentstring()
         " autocmd CursorHold * :lua vim.diagnostic.open_float({focusable=false})
+        " autocmd CursorHoldI * :lua vim.lsp.buf.hover()
     ]])
     -- require'virtualtypes'.on_attach()
 
@@ -111,6 +115,16 @@ null_ls.register({
         -- }),
     }),
 })
+-- null_ls.register({
+--     method = null_ls.methods.FORMATTING,
+--     filetypes = { 'asm' },
+--     generator = null_ls.formatter({
+--         command = 'asmfmt',
+--         args = {},
+--         to_stdin = true,
+--         from_stdout = true,
+--     }),
+-- })
 null_ls.register({
     method = null_ls.methods.DIAGNOSTICS,
     filetypes = { 'gitcommit' },
@@ -307,12 +321,6 @@ lspconfig.pyright.setup {
 lspconfig.ccls.setup {
     on_attach = on_attach,
     capabilities = capabilities,
-    init_options = {
-        filetypes = { "c", "cpp", "objc", "objcpp" },
-        index = {
-            threads = 0
-        },
-    },
 }
 lspconfig.gopls.setup {
     cmd = { 'gopls', '-vv' },
@@ -396,7 +404,7 @@ lspconfig.gdscript.setup {}
 lspconfig.lemminx.setup {
     on_attach = on_attach
 }
-require'lspconfig'.rust_analyzer.setup{
+lspconfig.rust_analyzer.setup{
   settings = {
     ['rust-analyzer'] = {
       diagnostics = {
@@ -405,5 +413,7 @@ require'lspconfig'.rust_analyzer.setup{
     }
   }
 }
+lspconfig.asm_lsp.setup{}
+lspconfig.pkgbuild_language_server.setup{}
 
 require 'fidget'.setup()

@@ -3,6 +3,7 @@ configuration {
     kb-row-tab: "";
     /* kb-mode-next: "Tab"; */
     /* kb-mode-previous: "Shift+Tab"; */
+    case-sensitive: false;
 }
 
 @import "/usr/share/rofi/themes/Monokai.rasi"

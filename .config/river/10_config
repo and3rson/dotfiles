@@ -95,7 +95,7 @@ $map normal $alt Print spawn 'grim -g "$(slurp)" -t png - > /tmp/sshot.png && (w
 # Notification keys {{{
 riverctl declare-mode dunst
 # $map normal None Escape spawn "[[ \`dunstctl count displayed\` != \"0\" ]] && dunstctl close || (riverctl enter-mode dunst; wtype -P Escape; xdotool key Escape; riverctl enter-mode normal)"
-$map normal $alt Escape spawn "[[ \`dunstctl count displayed\` != \"0\" ]] && dunstctl close"
+$map normal $alt Escape spawn "[[ \`dunstctl count displayed\` != \"0\" ]] && dunstctl close-all"
 # $map normal -passthrough None Escape spawn "[[ \`dunstctl count displayed\` != \"0\" ]] && dunstctl close"
 # }}}
 

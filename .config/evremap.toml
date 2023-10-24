@@ -61,3 +61,7 @@ output = ["KEY_VOLUMEUP"]
 [[remap]]
 input = ["KEY_RIGHTMETA", "KEY_BACKSPACE"]
 output = ["KEY_DELETE"]
+
+[[remap]]
+input = ["KEY_RIGHTMETA", "KEY_Y"]
+output = ["KEY_MINUS"]

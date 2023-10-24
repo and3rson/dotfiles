@@ -283,8 +283,22 @@ vim.cmd([[
     au BufRead *.tscn,*.tres,*.import set ft=dosini
     au BufRead *.tfvars set ft=terraform
     au BufNewFile,BufRead *.s set ft=asm_ca65
+    au BufNewFile,BufRead *.inc set ft=asm
+    au BufNewFile,BufRead *.vec set ft=vec
     let g:asm_ca65_wdc = 1
     let g:asm_ca65_rockwell = 1
+
+    " for hex editing
+    augroup Binary
+      au!
+      au BufReadPre  *.bin let &bin=1
+      au BufReadPost *.bin if &bin | %!xxd -g1
+      au BufReadPost *.bin set ft=xxd | endif
+      au BufWritePre *.bin if &bin | %!xxd -r -g1
+      au BufWritePre *.bin endif
+      au BufWritePost *.bin if &bin | %!xxd -g1
+      au BufWritePost *.bin set nomod | endif
+    augroup END
 ]])
 vim.cmd('let g:vim_json_conceal = 0')
 vim.g.vim_json_conceal = 0
