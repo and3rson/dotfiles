@@ -14,7 +14,7 @@ require('packer').startup(function(use)
     use 'embear/vim-localvimrc'
     use 'editorconfig/editorconfig-vim'
     -- use 'lambdalisue/vim-manpager'
-    use 'lewis6991/impatient.nvim'
+    -- use 'lewis6991/impatient.nvim'
 
     -- LSP
     use 'neovim/nvim-lspconfig'
@@ -361,16 +361,51 @@ nmap <M-5> <Plug>BufTabLine.Go(5)
 --     -- icon_close_tab_modified = 'X',
 -- }
 require('barbar').setup({
+    gitsigns = {
+      added = {enabled = true, icon = '+'},
+      changed = {enabled = true, icon = '~'},
+      deleted = {enabled = true, icon = '-'},
+    },
     icons = {
         button = false,
-    }
+        filetype = {
+            custom_colors = false,
+            enabled = true,
+        },
+        inactive = {
+            -- separator = ' ',
+        },
+        inactive = {
+            separator = {
+                left = ' ',
+                right = ''
+            }
+        },
+    --     separator = {
+    --         left = ' '
+    --     },
+        separator = {
+            left = ' ',
+            right = '',
+        },
+        separator_at_end = false,
+    },
+    animation = false,
 })
 vim.cmd([[
 " hi BufferInactive guifg=#999999 guibg=#202020
 " hi link BufferInactiveSign BufferInactive
+
+" hi BufferCurrent guibg=#98C379 guifg=#000000
+hi BufferCurrent guifg=#98C379 gui=bold
+
+" hi BufferCurrentSign guifg=none
+" hi BufferInactiveSign guibg=none guifg=none
+
 " hi BufferCurrent guibg=#98C379 guifg=#000000
 " hi link BufferCurrentSign BufferCurrent
 " hi link BufferCurrentMod BufferCurrent
+" hi link BufferCurrentIcon BufferCurrent
 ]])
 nnoremap('<S-PageUp>', '<cmd>BufferPrevious<CR>')
 nnoremap('<S-PageDown>', '<cmd>:BufferNext<CR>')

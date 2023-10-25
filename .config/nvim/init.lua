@@ -1,3 +1,6 @@
+vim.loader.enable()
+-- require('impatient')
+
 local ensure_packer = function()
   local fn = vim.fn
   local install_path = fn.stdpath('data')..'/site/pack/packer/start/packer.nvim'
@@ -24,7 +27,6 @@ require('packer').startup(function(use)
   end
 end)
 
-require('impatient')
 require('functions')
 require('baseline')
 require('plugins')
