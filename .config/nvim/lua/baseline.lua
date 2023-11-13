@@ -7,6 +7,8 @@ vim.cmd([[
 " syntax enable
 ]])
 
+vim.o.fileencodings = 'ucs-bom,utf-8,default,cp1251,latin1'
+
 vim.o.termguicolors = true
 
 -- TODO: Any effect from these?
@@ -285,6 +287,7 @@ vim.cmd([[
     au BufNewFile,BufRead *.s set ft=asm_ca65
     au BufNewFile,BufRead *.inc set ft=asm
     au BufNewFile,BufRead *.vec set ft=vec
+    au BufNewFile,BufRead *.ASM set ft=asm
     let g:asm_ca65_wdc = 1
     let g:asm_ca65_rockwell = 1
 

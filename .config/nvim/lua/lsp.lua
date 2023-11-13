@@ -289,6 +289,9 @@ lspconfig.pylsp.setup {
                 black = {
                     enabled = true
                 },
+                autopep8 = {
+                    enabled = false
+                },
             }
         }
     }

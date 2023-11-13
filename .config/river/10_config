@@ -54,7 +54,7 @@ $map normal $mod Return spawn alacritty
 $map normal $mod r spawn "rofi -show run"
 $map normal $mod n spawn "networkmanager_dmenu -i"
 $map normal $mod o spawn "$waylanddir/okta.py"
-$map normal $mod o spawn "$waylanddir/okta.py"
+$map normal $mod g spawn pcmanfm
 # }}}
 # Media keys {{{
 for mode in normal locked
