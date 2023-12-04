@@ -290,6 +290,7 @@ vim.cmd([[
     au BufNewFile,BufRead *.ASM set ft=asm
     au BufNewFile,BufRead *.asm set ft=nasm
     au FileType cupl set commentstring=/*%s*/
+    au FileType nasm set commentstring=;%s
     let g:asm_ca65_wdc = 1
     let g:asm_ca65_rockwell = 1
 
