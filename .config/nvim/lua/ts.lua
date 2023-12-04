@@ -12,10 +12,6 @@ require 'nvim-treesitter.configs'.setup {
     -- },
     highlight = {
         enable = true,
-        custom_captures = {
-            -- Highlight the @foo.bar capture group with the "Identifier" highlight group.
-            ["foo.bar"] = "Identifier",
-        },
         -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
         -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
         -- Using this option may slow down your editor, and you may see some duplicate highlights.
@@ -24,7 +20,7 @@ require 'nvim-treesitter.configs'.setup {
         -- additional_vim_regex_highlighting = { "gdresource" },
     },
     -- ensure_installed = 'maintained',
-    ensure_installed = { 'c', 'python', 'cpp', 'css', 'go', 'html', 'lua', 'query', 'vim', 'zig', 'graphql', 'json', 'yaml', 'javascript', 'hcl', 'terraform', 'tsx' },
+    ensure_installed = { 'c', 'python', 'cpp', 'css', 'go', 'html', 'lua', 'query', 'vim', 'zig', 'graphql', 'json', 'yaml', 'javascript', 'hcl', 'terraform', 'tsx', 'nasm' },
     playground = {
         enable = true,
         disable = {},
@@ -60,6 +56,13 @@ require 'nvim-treesitter.configs'.setup {
         -- termcolors = {} -- table of colour name strings
     }
 }
+
+-- vim.api.nvim_set_hl(0, "@keyword.nasm", { link = "Yellow" })  -- cpu, bits, extern, section, etc
+vim.api.nvim_set_hl(0, "@label.nasm", { link = "Purple" })  -- Label & uppercase reference
+vim.api.nvim_set_hl(0, "@function.builtin.nasm", { link = "Red" })  -- Instruction
+vim.api.nvim_set_hl(0, "@variable.builtin.nasm", { link = "Orange" })  -- Register
+vim.api.nvim_set_hl(0, "@number.nasm", { link = "Blue" })  -- Number
+vim.api.nvim_set_hl(0, "@variable.nasm", { link = "Green" })  -- Lowercase reference
 
 -- require 'treesitter-context'.setup {
 --     enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)

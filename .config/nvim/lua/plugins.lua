@@ -108,7 +108,7 @@ require('packer').startup(function(use)
     -- Z80 assembly
     use 'samsaga2/vim-z80'
     -- Copilot
-    -- use 'github/copilot.vim'
+    use 'github/copilot.vim'
 end)
 -- }}}
 

@@ -12,12 +12,11 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 " this language is oblivious to case.
-syn region vecTestName start=+^@+ end=+$+
+syn region vecTestName start=+@+ end=+$+
 syn region vecInputs start=+<+ end=+$+
 syn region vecOutputs start=+>+ end=+$+
-syn region vecVector start=+[01]+ end=+$+
+syn region vecVector start=+^[01]+ end=+[ $]+
 syn region vecAssertion start=+?+ end=+$+
-
 
 syn match vecComment "#.*$"
 
