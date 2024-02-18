@@ -98,6 +98,7 @@ null_ls.register({
     generator = null_ls.formatter({
         -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/HELPERS.md
         command = 'nice65',
+        -- args = {'-', '-c'},
         args = {'-'},
         to_stdin = true,
         -- from_stderr = true,
@@ -321,9 +322,32 @@ lspconfig.pyright.setup {
 --     on_attach=on_attach,
 --     capabilities=capabilities,
 -- }
-lspconfig.ccls.setup {
-    on_attach = on_attach,
+-- lspconfig.ccls.setup {
+--     on_attach = on_attach,
+--     capabilities = capabilities,
+-- }
+lspconfig.clangd.setup {
+    on_attach = function(client, bufnr)
+        on_attach(client, bufnr)
+        vim.cmd([[
+            " au BufWritePre <buffer> :lua vim.lsp.buf.formatting_sync()
+            " Map F4 to :ClangdSwitchSourceHeader
+            nnoremap <buffer> <F4> :ClangdSwitchSourceHeader<CR>
+        ]])
+    end,
     capabilities = capabilities,
+    -- cmd = { 'clangd', '--background-index', '--clang-tidy', '--header-insertion=iwyu' },
+    filetypes = { 'c', 'cpp', 'objc', 'objcpp' },
+    -- init_options = {
+    --     clangdFileStatus = true,
+    --     usePlaceholders = true,
+    --     completeUnimported = true,
+    --     semanticHighlighting = true,
+    -- },
+    -- handlers = {
+    --     ['textDocument/publishDiagnostics'] = function() end,
+    -- },
+    cmd = { 'clangd', '--offset-encoding=utf-16', '--log=verbose' },
 }
 lspconfig.gopls.setup {
     cmd = { 'gopls', '-vv' },

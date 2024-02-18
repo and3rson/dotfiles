@@ -165,8 +165,9 @@ vim.api.nvim_win_set_option(0, 'list', true)
 vim.opt.listchars = {
     tab = '▏ ',
     -- tab = '  ',
-    -- trail = '·',
-    trail = '×',
+    trail = '·',
+    -- trail = '×',
+    -- trail = '-',
     extends = '»',
     precedes = '«',
     nbsp = '×',
@@ -285,6 +286,7 @@ vim.cmd([[
     au BufRead *.tscn,*.tres,*.import set ft=dosini
     au BufRead *.tfvars set ft=terraform
     au BufNewFile,BufRead *.s set ft=asm_ca65
+    " au FileType asm lua vim.opt.listchars:append({trail = ' '})
     au BufNewFile,BufRead *.inc set ft=asm
     au BufNewFile,BufRead *.vec set ft=vec
     au BufNewFile,BufRead *.ASM set ft=asm
